@@ -1,6 +1,8 @@
 #include "value.h"
 
-struct ValueStruct *VNil = {VP_IMMUTABLE | VP_PINNED | VT_NIL << 2};
+static struct ValueStruct VNil_Value = {3, {0}};
+
+struct ValueStruct *VNil = &VNil_Value;
 
 struct ValueStruct *mkNil()
 {

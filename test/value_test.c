@@ -22,8 +22,13 @@ static char *test_ordinal_values()
 
 static char *test_unit_values()
 {
-    Value *nil = VNil;
+    mu_assert_label(IS_PINNED(mkNil()));
+    mu_assert_label(IS_IMMUTABLE(mkNil()));
+    mu_assert_label(IS_NIL(mkNil()));
 
+    mu_assert_label(IS_PINNED(VNil));
+    mu_assert_label(IS_IMMUTABLE(VNil));
+    mu_assert_label(!IS_NIL(VNil));
 
     return NULL;
 }
@@ -38,16 +43,16 @@ static char *test_suite()
 
 int main()
 {
-    printf("---=[ value_test\n");
+    printf("| Value Test\n");
     char *result = test_suite();
     if (result != 0)
     {
-        printf("%s\n", result);
+        printf(". Failed: %s\n", result);
     }
     else
     {
-        printf("ALL TESTS PASSED\n");
+        printf(". ALL TESTS PASSED\n");
     }
-    printf("Run: %d   Passed: %d   Failed: %d\n", tests_run, tests_passed, (tests_run - tests_passed));
+    printf(". Run: %d   Passed: %d   Failed: %d\n", tests_run, tests_passed, (tests_run - tests_passed));
     return result != 0;
 }

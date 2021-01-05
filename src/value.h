@@ -5,7 +5,7 @@
  * The structure of a value's tag is layed out as follows:
  *   - bit 0 - whether or not that the value is immutable
  *   - bit 1 - if pinned then this value is not to be garbage collected
- *   - bits 3-5 - the type of the value
+ *   - bits 3-6 - the type of the value
  */
 
 enum ValueProperties
@@ -29,7 +29,7 @@ enum ValueType
     VT_FUNCTION
 };
 
-typedef struct Value
+struct ValueStruct
 {
     enum ValueType tag;
     union
@@ -39,15 +39,19 @@ typedef struct Value
         int intV;
         struct
         {
-            struct Value *car;
-            struct Value *cdr;
+            struct ValueStruct *car;
+            struct ValueStruct *cdr;
         } pairV;
     };
-} ValueStruct;
+};
 
+extern struct ValueStruct *VNil;
 
-extern Value *VNil;
+extern struct ValueStruct *mkNil();
 
-extern Value *mkNil();
+#define IS_IMMUTABLE(v) ((v)->tag & VP_IMMUTABLE)
+#define IS_PINNED(v) ((v)->tag & VP_PINNED)
+
+#define IS_NIL(v) (((v)->tag >> 2 == 0))
 
 #endif

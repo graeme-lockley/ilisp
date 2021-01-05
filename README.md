@@ -28,7 +28,7 @@ This project is an implementation of Lisp with the following technical character
 
 ## Influences 
 
-The [mal (Make-a-Lisp) project](https://github.com/kanaka/mal) is a brilliant place to learn Lisp and understand what a Lisp implementation entails.  Huge shout-out to this project.
+The [mal (Make-a-Lisp)](https://github.com/kanaka/mal) project is a brilliant place to learn Lisp and understand what a Lisp implementation entails.  Huge shout-out to this project.
 
 Paul Graham's [note on a modern dialect of Lisp](http://paulgraham.com/bel.html) is well thought out and represents an unconstrained rethink of what a modern dialect would encompass.
 

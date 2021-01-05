@@ -2,8 +2,6 @@
 
 ## Build an iLisp- interpreter entirely in C
 
-- Implement Nil to get going
-- Get a pipeline setup in Github
 - Implement Value
    - VT_SYMBOL
    - VT_KEYWORD

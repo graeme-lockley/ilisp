@@ -28,7 +28,7 @@ static char *test_unit_values()
 
     mu_assert_label(IS_PINNED(VNil));
     mu_assert_label(IS_IMMUTABLE(VNil));
-    mu_assert_label(!IS_NIL(VNil));
+    mu_assert_label(IS_NIL(VNil));
 
     return NULL;
 }

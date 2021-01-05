@@ -20,11 +20,11 @@ all: $(TARGETS)
 clean:
 	rm ./*.o
 
-cleanall: clean
+cleanall:
 	rm ./*_test
 
 value_test: minunit.o *.h value_test.o ../src/*.o ../src/*.h
-	$(CC) $(LDFLAGS) $(LDLIBS) value_test.o minunit.o ../src/value.c -o value_test
+	$(CC) $(LDFLAGS) $(LDLIBS) value_test.o minunit.o ../src/value.o -o value_test
 
 %.o: %.c ../src/*.h *.h
 	$(CC) $(CFLAGS) -c $< -o $@

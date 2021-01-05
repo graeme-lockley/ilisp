@@ -11,7 +11,7 @@ This project is an implementation of Lisp with the following technical character
 
 ## Super High-Level Approach
 
-- Build in interpreter of iLisp- entirely in C
+- Build an iLisp- interpreter entirely in C
 - Add a garbage collector to the iLisp- C implementation
 - Write an iLisp- interpreter in iLisp-
 - Write a compiler of iLisp- in iLisp- to native code

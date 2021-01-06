@@ -37,7 +37,7 @@ static char *test_unit_values()
 
 static char *test_symbol_values()
 {
-    Value *symbol = stringToSymbol("hello");
+    Value *symbol = mkSymbol("hello");
 
     mu_assert_label(IS_PINNED(symbol));
     mu_assert_label(IS_IMMUTABLE(symbol));

@@ -19,7 +19,7 @@ Value *mkValue(enum ValueType type, size_t size)
     return result;
 }
 
-Value *stringToSymbol(char *string)
+Value *mkSymbol(char *string)
 {
     Value *value = mkValue(VT_SYMBOL, strlen(string) + 1);
     strcpy(SYMBOL(value), string);

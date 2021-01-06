@@ -66,6 +66,6 @@ extern Value *VNil;
 
 extern Value *mkNil();
 
-extern Value *stringToSymbol(char *string);
+extern Value *mkSymbol(char *string);
 
 #endif

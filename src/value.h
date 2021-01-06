@@ -49,6 +49,13 @@ typedef struct ValueStruct Value;
 
 #define IS_IMMUTABLE(v) ((v)->tag & VP_IMMUTABLE)
 #define IS_PINNED(v) ((v)->tag & VP_PINNED)
+#define UNPIN(v)                         \
+    {                                    \
+        Value *__v = v;                  \
+        __v->tag = __v->tag ^ VP_PINNED; \
+    }                                    \
+    while (0)                            \
+        ;
 
 #define IS_NIL(v) (((v)->tag >> 2 == 0))
 #define IS_SYMBOL(v) (((v)->tag >> 2 & VT_SYMBOL))

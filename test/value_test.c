@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "minunit.h"
@@ -42,6 +43,15 @@ static char *test_symbol_values()
     mu_assert_label(IS_IMMUTABLE(symbol));
     mu_assert_label(IS_SYMBOL(symbol));
     mu_assert_label(strcmp(SYMBOL(symbol), "hello") == 0);
+
+    UNPIN(symbol);
+
+    mu_assert_label(!IS_PINNED(symbol));
+    mu_assert_label(IS_IMMUTABLE(symbol));
+    mu_assert_label(IS_SYMBOL(symbol));
+    mu_assert_label(strcmp(SYMBOL(symbol), "hello") == 0);
+
+    free(symbol);
 
     return NULL;
 }

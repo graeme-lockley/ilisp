@@ -61,3 +61,10 @@ Value *mkNumber(int number)
     NUMBER(value) = number;
     return value;
 }
+
+Value *mkString(char *string)
+{
+    Value *value = mkValue(VT_STRING);
+    value->strV = strdup(string);
+    return value;
+}

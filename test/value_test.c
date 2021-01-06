@@ -123,6 +123,28 @@ static char *test_number_values()
     return NULL;
 }
 
+static char *test_string_values()
+{
+    char *string = "hello world";
+    Value *value = mkString(string);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_STRING(value));
+    mu_assert_label(strcmp(STRING(value), string) == 0);
+
+    UNPIN(value);
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_STRING(value));
+    mu_assert_label(strcmp(STRING(value), string) == 0);
+
+    freeValue(value);
+
+    return NULL;
+}
+
 static char *test_suite()
 {
     mu_run_test(test_ordinal_values);
@@ -131,6 +153,7 @@ static char *test_suite()
     mu_run_test(test_keyword_values);
     mu_run_test(test_character_values);
     mu_run_test(test_number_values);
+    mu_run_test(test_string_values);
 
     return NULL;
 }

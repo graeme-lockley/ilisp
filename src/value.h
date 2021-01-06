@@ -63,20 +63,23 @@ typedef struct ValueStruct Value;
         ;
 
 #define IS_NIL(v) (((v)->tag >> 2 == 0))
-#define IS_SYMBOL(v) (((v)->tag >> 2 & VT_SYMBOL))
-#define IS_KEYWORD(v) (((v)->tag >> 2 & VT_KEYWORD))
-#define IS_CHARACTER(v) (((v)->tag >> 2 & VT_CHARACTER))
-#define IS_NUMBER(v) (((v)->tag >> 2 & VT_NUMBER))
-#define IS_STRING(v) (((v)->tag >> 2 & VT_STRING))
-#define IS_PAIR(v) (((v)->tag >> 2 & VT_PAIR))
-#define IS_VECTOR(v) (((v)->tag >> 2 & VT_VECTOR))
+#define IS_SYMBOL(v) ((((v)->tag >> 2) == VT_SYMBOL))
+#define IS_KEYWORD(v) ((((v)->tag >> 2) == VT_KEYWORD))
+#define IS_CHARACTER(v) ((((v)->tag >> 2) == VT_CHARACTER))
+#define IS_NUMBER(v) ((((v)->tag >> 2) == VT_NUMBER))
+#define IS_STRING(v) ((((v)->tag >> 2) == VT_STRING))
+#define IS_PAIR(v) ((((v)->tag >> 2) == VT_PAIR))
+#define IS_VECTOR(v) ((((v)->tag >> 2) == VT_VECTOR))
 
-void freeValue(Value *value);
+extern void freeValue(Value *value);
+extern int Value_isTruthy(Value *v);
+extern Value *Value_equals(Value *a, Value *b);
 
 extern Value *VNil;
-
 extern Value *mkNil();
 
+extern Value *VTrue;
+extern Value *VFalse;
 extern Value *mkSymbol(char *string);
 #define SYMBOL(v) (((v)->strV))
 

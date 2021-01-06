@@ -59,13 +59,16 @@ typedef struct ValueStruct Value;
 
 #define IS_NIL(v) (((v)->tag >> 2 == 0))
 #define IS_SYMBOL(v) (((v)->tag >> 2 & VT_SYMBOL))
-
-#define SYMBOL(v) (((char *)&(v)->strV))
+#define IS_KEYWORD(v) (((v)->tag >> 2 & VT_KEYWORD))
 
 extern Value *VNil;
 
 extern Value *mkNil();
 
 extern Value *mkSymbol(char *string);
+#define SYMBOL(v) (((char *)&(v)->strV))
+
+extern Value *mkKeyword(char *string);
+#define KEYWORD(v) (((char *)&(v)->strV))
 
 #endif

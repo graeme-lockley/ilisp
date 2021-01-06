@@ -25,3 +25,10 @@ Value *mkSymbol(char *string)
     strcpy(SYMBOL(value), string);
     return value;
 }
+
+Value *mkKeyword(char *string)
+{
+    Value *value = mkValue(VT_KEYWORD, strlen(string) + 1);
+    strcpy(SYMBOL(value), string);
+    return value;
+}

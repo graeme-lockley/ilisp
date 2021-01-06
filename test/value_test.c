@@ -37,21 +37,44 @@ static char *test_unit_values()
 
 static char *test_symbol_values()
 {
-    Value *symbol = mkSymbol("hello");
+    char *word = "hello";
+    Value *symbol = mkSymbol(word);
 
     mu_assert_label(IS_PINNED(symbol));
     mu_assert_label(IS_IMMUTABLE(symbol));
     mu_assert_label(IS_SYMBOL(symbol));
-    mu_assert_label(strcmp(SYMBOL(symbol), "hello") == 0);
+    mu_assert_label(strcmp(SYMBOL(symbol), word) == 0);
 
     UNPIN(symbol);
 
     mu_assert_label(!IS_PINNED(symbol));
     mu_assert_label(IS_IMMUTABLE(symbol));
     mu_assert_label(IS_SYMBOL(symbol));
-    mu_assert_label(strcmp(SYMBOL(symbol), "hello") == 0);
+    mu_assert_label(strcmp(SYMBOL(symbol), word) == 0);
 
     free(symbol);
+
+    return NULL;
+}
+
+static char *test_keyword_values()
+{
+    char *word = "world";
+    Value *keyword = mkKeyword(word);
+
+    mu_assert_label(IS_PINNED(keyword));
+    mu_assert_label(IS_IMMUTABLE(keyword));
+    mu_assert_label(IS_KEYWORD(keyword));
+    mu_assert_label(strcmp(KEYWORD(keyword), word) == 0);
+
+    UNPIN(keyword);
+
+    mu_assert_label(!IS_PINNED(keyword));
+    mu_assert_label(IS_IMMUTABLE(keyword));
+    mu_assert_label(IS_KEYWORD(keyword));
+    mu_assert_label(strcmp(KEYWORD(keyword), word) == 0);
+
+    free(keyword);
 
     return NULL;
 }
@@ -61,6 +84,7 @@ static char *test_suite()
     mu_run_test(test_ordinal_values);
     mu_run_test(test_unit_values);
     mu_run_test(test_symbol_values);
+    mu_run_test(test_keyword_values);
 
     return NULL;
 }

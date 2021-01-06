@@ -62,9 +62,9 @@ typedef struct ValueStruct Value;
 
 #define SYMBOL(v) (((char *)&(v)->strV))
 
-extern struct ValueStruct *VNil;
+extern Value *VNil;
 
-extern struct ValueStruct *mkNil();
+extern Value *mkNil();
 
 extern Value *stringToSymbol(char *string);
 

@@ -3,11 +3,11 @@
 
 #include "value.h"
 
-static struct ValueStruct VNil_Value = {3, {0}};
+static Value VNil_Value = {3, {0}};
 
-struct ValueStruct *VNil = &VNil_Value;
+Value *VNil = &VNil_Value;
 
-struct ValueStruct *mkNil()
+Value *mkNil()
 {
     return VNil;
 }

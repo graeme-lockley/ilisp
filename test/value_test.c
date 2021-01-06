@@ -38,21 +38,21 @@ static char *test_unit_values()
 static char *test_symbol_values()
 {
     char *word = "hello";
-    Value *symbol = mkSymbol(word);
+    Value *value = mkSymbol(word);
 
-    mu_assert_label(IS_PINNED(symbol));
-    mu_assert_label(IS_IMMUTABLE(symbol));
-    mu_assert_label(IS_SYMBOL(symbol));
-    mu_assert_label(strcmp(SYMBOL(symbol), word) == 0);
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_SYMBOL(value));
+    mu_assert_label(strcmp(SYMBOL(value), word) == 0);
 
-    UNPIN(symbol);
+    UNPIN(value);
 
-    mu_assert_label(!IS_PINNED(symbol));
-    mu_assert_label(IS_IMMUTABLE(symbol));
-    mu_assert_label(IS_SYMBOL(symbol));
-    mu_assert_label(strcmp(SYMBOL(symbol), word) == 0);
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_SYMBOL(value));
+    mu_assert_label(strcmp(SYMBOL(value), word) == 0);
 
-    free(symbol);
+    freeValue(value);
 
     return NULL;
 }
@@ -60,21 +60,43 @@ static char *test_symbol_values()
 static char *test_keyword_values()
 {
     char *word = "world";
-    Value *keyword = mkKeyword(word);
+    Value *value = mkKeyword(word);
 
-    mu_assert_label(IS_PINNED(keyword));
-    mu_assert_label(IS_IMMUTABLE(keyword));
-    mu_assert_label(IS_KEYWORD(keyword));
-    mu_assert_label(strcmp(KEYWORD(keyword), word) == 0);
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_KEYWORD(value));
+    mu_assert_label(strcmp(KEYWORD(value), word) == 0);
 
-    UNPIN(keyword);
+    UNPIN(value);
 
-    mu_assert_label(!IS_PINNED(keyword));
-    mu_assert_label(IS_IMMUTABLE(keyword));
-    mu_assert_label(IS_KEYWORD(keyword));
-    mu_assert_label(strcmp(KEYWORD(keyword), word) == 0);
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_KEYWORD(value));
+    mu_assert_label(strcmp(KEYWORD(value), word) == 0);
 
-    free(keyword);
+    freeValue(value);
+
+    return NULL;
+}
+
+static char *test_character_values()
+{
+    char character = 'p';
+    Value *value = mkCharacter(character);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_CHARACTER(value));
+    mu_assert_label(CHARACTER(value) == character);
+
+    UNPIN(value);
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_CHARACTER(value));
+    mu_assert_label(CHARACTER(value) == character);
+
+    freeValue(value);
 
     return NULL;
 }
@@ -85,6 +107,7 @@ static char *test_suite()
     mu_run_test(test_unit_values);
     mu_run_test(test_symbol_values);
     mu_run_test(test_keyword_values);
+    mu_run_test(test_character_values);
 
     return NULL;
 }

@@ -31,7 +31,7 @@ enum ValueType
 
 struct ValueStruct
 {
-    enum ValueType tag;
+    char tag;
     union
     {
         char strV[1];
@@ -45,13 +45,20 @@ struct ValueStruct
     };
 };
 
-extern struct ValueStruct *VNil;
-
-extern struct ValueStruct *mkNil();
+typedef struct ValueStruct Value;
 
 #define IS_IMMUTABLE(v) ((v)->tag & VP_IMMUTABLE)
 #define IS_PINNED(v) ((v)->tag & VP_PINNED)
 
 #define IS_NIL(v) (((v)->tag >> 2 == 0))
+#define IS_SYMBOL(v) (((v)->tag >> 2 & VT_SYMBOL))
+
+#define SYMBOL(v) (((char *)&(v)->strV))
+
+extern struct ValueStruct *VNil;
+
+extern struct ValueStruct *mkNil();
+
+extern Value *stringToSymbol(char *string);
 
 #endif

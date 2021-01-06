@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "minunit.h"
 #include "../src/value.h"
@@ -33,10 +34,23 @@ static char *test_unit_values()
     return NULL;
 }
 
+static char *test_symbol_values()
+{
+    Value *symbol = stringToSymbol("hello");
+
+    mu_assert_label(IS_PINNED(symbol));
+    mu_assert_label(IS_IMMUTABLE(symbol));
+    mu_assert_label(IS_SYMBOL(symbol));
+    mu_assert_label(strcmp(SYMBOL(symbol), "hello") == 0);
+
+    return NULL;
+}
+
 static char *test_suite()
 {
     mu_run_test(test_ordinal_values);
     mu_run_test(test_unit_values);
+    mu_run_test(test_symbol_values);
 
     return NULL;
 }

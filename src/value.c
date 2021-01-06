@@ -101,6 +101,28 @@ Value *mkVector(Value *items[], int length)
     return value;
 }
 
+static Value *validateMap(Value *value)
+{
+    if (IS_PAIR(value))
+    {
+        Value *car = CAR(value);
+        Value *cdr = CDR(value);
+
+        if (IS_PAIR(car) && validateMap(cdr) == cdr)
+        {
+            return value;
+        }
+    }
+    return VNil;
+}
+
+Value *mkMap(Value *items)
+{
+    Value *value = mkValue(VT_MAP);
+    value->mapV = validateMap(items);
+    return value;
+}
+
 int Value_isTruthy(Value *v)
 {
     return (v == VFalse) ? 0 : 1;
@@ -207,4 +229,6 @@ Value *Value_equals(Value *a, Value *b)
     case VT_FUNCTION:
         return VFalse;
     }
+
+    return VFalse;
 }

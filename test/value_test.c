@@ -214,6 +214,32 @@ static char *test_vector_values()
     return NULL;
 }
 
+static char *test_map_values()
+{
+    Value *items = mkPair(
+        mkPair(mkString("a"), mkNumber(1)),
+        mkPair(
+            mkPair(mkString("b"), mkNumber(2)),
+            mkPair(
+                mkPair(mkString("c"), mkNumber(2)),
+                VNil)));
+
+    Value *value = mkMap(items);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_MAP(value));
+
+    UNPIN(value);
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_MAP(value));
+    mu_assert_label(MAP(value) == items);
+
+    return NULL;
+}
+
 #define mu_assert_truthy_equals_label(v1, v2)                  \
     {                                                          \
         mu_assert_label(Value_isTruthy(Value_equals(v1, v2))); \
@@ -352,6 +378,7 @@ static char *test_suite()
     mu_run_test(test_number_values);
     mu_run_test(test_string_values);
     mu_run_test(test_pair_values);
+    mu_run_test(test_map_values);
     mu_run_test(test_vector_values);
 
     mu_run_test(test_equals);

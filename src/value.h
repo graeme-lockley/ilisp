@@ -47,6 +47,7 @@ struct ValueStruct
             int length;
             struct ValueStruct **items;
         } vectorV;
+        struct ValueStruct *mapV;
     };
 };
 
@@ -70,6 +71,7 @@ typedef struct ValueStruct Value;
 #define IS_STRING(v) ((((v)->tag >> 2) == VT_STRING))
 #define IS_PAIR(v) ((((v)->tag >> 2) == VT_PAIR))
 #define IS_VECTOR(v) ((((v)->tag >> 2) == VT_VECTOR))
+#define IS_MAP(v) ((((v)->tag >> 2) == VT_MAP))
 
 extern void freeValue(Value *value);
 extern int Value_isTruthy(Value *v);
@@ -101,5 +103,9 @@ extern Value *mkPair(Value *car, Value *cdr);
 
 extern Value *mkVector(Value **items, int length);
 #define VECTOR(v) ((v)->vectorV)
+
+extern Value *mkMap();
+extern void Value_setMapping(Value *map, Value *key, Value *value);
+#define MAP(v) ((v)->mapV)
 
 #endif

@@ -3,7 +3,6 @@
 ## Build an iLisp- interpreter entirely in C
 
 - Implement Value
-   - VT_SYMBOL
    - VT_KEYWORD
    - VT_CHARACTER
    - VT_NUMBER

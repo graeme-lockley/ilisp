@@ -3,8 +3,6 @@
 ## Build an iLisp- interpreter entirely in C
 
 - Implement Value
-   - VT_STRING
-   - VT_PAIR
    - VT_VECTOR
    - VT_MAP
    - VT_NATIVE_FUNCTION

@@ -145,6 +145,34 @@ static char *test_string_values()
     return NULL;
 }
 
+static char *test_pair_values()
+{
+    Value *car = mkString("car");
+
+    Value *value = mkPair(car, VNil);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_PAIR(value));
+    mu_assert_label(strcmp(STRING(CAR(value)), STRING(car)) == 0);
+    mu_assert_label(IS_NIL(CDR(value)));
+
+    UNPIN(value);
+    UNPIN(car);
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_PAIR(value));
+    mu_assert_label(strcmp(STRING(CAR(value)), STRING(car)) == 0);
+    mu_assert_label(IS_NIL(CDR(value)));
+
+    freeValue(value);
+    freeValue(car);
+
+    return NULL;
+}
+
+
 static char *test_suite()
 {
     mu_run_test(test_ordinal_values);
@@ -154,6 +182,7 @@ static char *test_suite()
     mu_run_test(test_character_values);
     mu_run_test(test_number_values);
     mu_run_test(test_string_values);
+    mu_run_test(test_pair_values);
 
     return NULL;
 }

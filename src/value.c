@@ -13,7 +13,7 @@ Value *mkNil()
     return VNil;
 }
 
-Value *mkValue(enum ValueType type)
+static Value *mkValue(enum ValueType type)
 {
     Value *result = (Value *)malloc(sizeof(Value));
     result->tag = (type << 2) | VP_PINNED | VP_IMMUTABLE;
@@ -22,12 +22,14 @@ Value *mkValue(enum ValueType type)
 
 void freeValue(Value *value)
 {
+    if (IS_PINNED(value))
+        return;
+
     switch (value->tag >> 2)
     {
-    case VT_NIL:
-        return;
     case VT_SYMBOL:
     case VT_KEYWORD:
+    case VT_STRING:
         free(value->strV);
         break;
     }
@@ -66,5 +68,13 @@ Value *mkString(char *string)
 {
     Value *value = mkValue(VT_STRING);
     value->strV = strdup(string);
+    return value;
+}
+
+Value *mkPair(Value *car, Value *cdr)
+{
+    Value *value = mkValue(VT_PAIR);
+    value->pairV.car = car;
+    value->pairV.cdr = cdr;
     return value;
 }

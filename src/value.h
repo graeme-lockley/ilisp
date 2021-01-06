@@ -63,6 +63,7 @@ typedef struct ValueStruct Value;
 #define IS_CHARACTER(v) (((v)->tag >> 2 & VT_CHARACTER))
 #define IS_NUMBER(v) (((v)->tag >> 2 & VT_NUMBER))
 #define IS_STRING(v) (((v)->tag >> 2 & VT_STRING))
+#define IS_PAIR(v) (((v)->tag >> 2 & VT_PAIR))
 
 void freeValue(Value *value);
 
@@ -84,5 +85,9 @@ extern Value *mkNumber(int number);
 
 extern Value *mkString(char *string);
 #define STRING(v) ((v)->strV)
+
+extern Value *mkPair(Value *car, Value *cdr);
+#define CAR(v) ((v)->pairV.car)
+#define CDR(v) ((v)->pairV.cdr)
 
 #endif

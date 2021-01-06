@@ -54,3 +54,10 @@ Value *mkCharacter(char character)
     CHARACTER(value) = character;
     return value;
 }
+
+Value *mkNumber(int number)
+{
+    Value *value = mkValue(VT_NUMBER);
+    NUMBER(value) = number;
+    return value;
+}

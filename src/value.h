@@ -61,6 +61,7 @@ typedef struct ValueStruct Value;
 #define IS_SYMBOL(v) (((v)->tag >> 2 & VT_SYMBOL))
 #define IS_KEYWORD(v) (((v)->tag >> 2 & VT_KEYWORD))
 #define IS_CHARACTER(v) (((v)->tag >> 2 & VT_CHARACTER))
+#define IS_NUMBER(v) (((v)->tag >> 2 & VT_NUMBER))
 
 void freeValue(Value *value);
 
@@ -76,5 +77,8 @@ extern Value *mkKeyword(char *string);
 
 extern Value *mkCharacter(char character);
 #define CHARACTER(v) ((v)->chV)
+
+extern Value *mkNumber(int number);
+#define NUMBER(v) ((v)->intV)
 
 #endif

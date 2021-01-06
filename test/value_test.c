@@ -101,6 +101,28 @@ static char *test_character_values()
     return NULL;
 }
 
+static char *test_number_values()
+{
+    int number = 1234;
+    Value *value = mkNumber(number);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_NUMBER(value));
+    mu_assert_label(NUMBER(value) == number);
+
+    UNPIN(value);
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_NUMBER(value));
+    mu_assert_label(NUMBER(value) == number);
+
+    freeValue(value);
+
+    return NULL;
+}
+
 static char *test_suite()
 {
     mu_run_test(test_ordinal_values);
@@ -108,6 +130,7 @@ static char *test_suite()
     mu_run_test(test_symbol_values);
     mu_run_test(test_keyword_values);
     mu_run_test(test_character_values);
+    mu_run_test(test_number_values);
 
     return NULL;
 }

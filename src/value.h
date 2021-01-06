@@ -42,6 +42,11 @@ struct ValueStruct
             struct ValueStruct *car;
             struct ValueStruct *cdr;
         } pairV;
+        struct
+        {
+            int length;
+            struct ValueStruct **items;
+        } vectorV;
     };
 };
 
@@ -64,6 +69,7 @@ typedef struct ValueStruct Value;
 #define IS_NUMBER(v) (((v)->tag >> 2 & VT_NUMBER))
 #define IS_STRING(v) (((v)->tag >> 2 & VT_STRING))
 #define IS_PAIR(v) (((v)->tag >> 2 & VT_PAIR))
+#define IS_VECTOR(v) (((v)->tag >> 2 & VT_VECTOR))
 
 void freeValue(Value *value);
 
@@ -89,5 +95,8 @@ extern Value *mkString(char *string);
 extern Value *mkPair(Value *car, Value *cdr);
 #define CAR(v) ((v)->pairV.car)
 #define CDR(v) ((v)->pairV.cdr)
+
+extern Value *mkVector(Value **items, int length);
+#define VECTOR(v) ((v)->vectorV)
 
 #endif

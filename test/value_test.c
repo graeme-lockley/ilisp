@@ -172,6 +172,45 @@ static char *test_pair_values()
     return NULL;
 }
 
+static char *test_vector_values()
+{
+    int length = 2;
+    Value *vector[] = {mkString("v1"), mkSymbol("v2")};
+
+    Value *value = mkVector(vector, length);
+
+    mu_assert_label(IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_VECTOR(value));
+    mu_assert_label(VECTOR(value).length == length);
+    for (int lp = 0; lp < length; lp += 1)
+    {
+        mu_assert_label(VECTOR(value).items[lp] == vector[lp]);
+    }
+
+    UNPIN(value);
+    for (int lp = 0; lp < length; lp += 1)
+    {
+        UNPIN(vector[lp]);
+    }
+
+    mu_assert_label(!IS_PINNED(value));
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_PAIR(value));
+    mu_assert_label(VECTOR(value).length == length);
+    for (int lp = 0; lp < length; lp += 1)
+    {
+        mu_assert_label(VECTOR(value).items[lp] == vector[lp]);
+    }
+
+    freeValue(value);
+    for (int lp = 0; lp < length; lp += 1)
+    {
+        free(vector[lp]);
+    }
+
+    return NULL;
+}
 
 static char *test_suite()
 {
@@ -183,6 +222,7 @@ static char *test_suite()
     mu_run_test(test_number_values);
     mu_run_test(test_string_values);
     mu_run_test(test_pair_values);
+    mu_run_test(test_vector_values);
 
     return NULL;
 }

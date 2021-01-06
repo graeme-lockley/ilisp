@@ -78,3 +78,15 @@ Value *mkPair(Value *car, Value *cdr)
     value->pairV.cdr = cdr;
     return value;
 }
+
+Value *mkVector(Value *items[], int length)
+{
+    Value *value = mkValue(VT_VECTOR);
+    value->vectorV.length = length;
+    value->vectorV.items = malloc(sizeof(Value*) * length);
+    for (int lp = 0; lp < length; lp += 1) {
+        value->vectorV.items[lp] = items[lp];
+    }
+
+    return value;
+}

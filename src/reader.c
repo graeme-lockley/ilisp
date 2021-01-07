@@ -96,7 +96,8 @@ static Lexer next_token(Lexer lexer)
                 current = CHARACTER_AT_POSITION(&lexer, &cursor);
             }
         }
-        break;
+        else
+            break;
     }
 
     switch (CHARACTER_AT_POSITION(&lexer, &cursor))

@@ -19,5 +19,9 @@ jobs:
           clang-9 --version
           llvm-link-9 --version
           lli-9 --version
+      - name: Install readline
+        run: |
+          apt-get update
+          apt-get -y install libedit-dev
       - name: Build and test
         run: make test

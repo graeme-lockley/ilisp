@@ -21,7 +21,7 @@ jobs:
           lli-9 --version
       - name: Install readline
         run: |
-          apt-get update
-          apt-get -y install libedit-dev
+          sudo apt-get update
+          sudo apt-get -y install libedit-dev
       - name: Build and test
         run: make test

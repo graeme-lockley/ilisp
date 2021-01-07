@@ -2,27 +2,36 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "printer.h"
+#include "reader.h"
 #include "readline.h"
 #include "repl.h"
 
-static const char *Main_read(const char *content)
+static ReturnValue Main_read(char *content)
 {
-    return content;
+    return Reader_read(content);
 }
 
-static const char *Main_eval(const char *content)
+static ReturnValue Main_eval(Value *content)
 {
-    return content;
+    ReturnValue result = {0, content};
+    return result;
 }
 
-static const char *Main_print(const char *content)
+static ReturnValue Main_print(Value *content)
 {
-    return content;
+    return Printer_prStr(content, 1);
 }
 
-const char *Repl_rep(const char *content)
+ReturnValue Repl_rep(char *content)
 {
-    return strdup(Main_print(Main_eval(Main_read(content))));
+    ReturnValue readRV = Main_read(content);
+    if (IS_SUCCESSFUL(readRV))
+    {
+        ReturnValue evalRV = Main_eval(readRV.value);
+        return (IS_SUCCESSFUL(evalRV)) ? Main_print(readRV.value) : readRV;
+    }
+    return readRV;
 }
 
 int Repl_repl()
@@ -30,10 +39,7 @@ int Repl_repl()
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)
-    {
-        puts(Repl_rep(p));
-        free(p);
-    }
+        puts(Repl_rep(p).value->strV);
 
     return 0;
 }

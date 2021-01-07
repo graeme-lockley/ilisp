@@ -20,7 +20,7 @@ cleanall:
 	rm ./*_test
 
 repl_test: minunit.o *.h repl_test.o ../src/*.o ../src/*.h
-	$(CC) $(LDFLAGS) $(LDLIBS) repl_test.o minunit.o ../src/repl.o ../src/readline.o -o repl_test
+	$(CC) $(LDFLAGS) $(LDLIBS) repl_test.o minunit.o ../src/printer.o ../src/repl.o ../src/reader.o ../src/readline.o ../src/value.o -o repl_test
 
 value_test: minunit.o *.h value_test.o ../src/*.o ../src/*.h
 	$(CC) $(LDFLAGS) $(LDLIBS) value_test.o minunit.o ../src/value.o -o value_test

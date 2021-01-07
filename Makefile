@@ -7,6 +7,8 @@ RM=rm
 
 TARGETS=\
 	src/main.o \
+	src/printer.o \
+	src/reader.o \
 	src/readline.o \
 	src/repl.o \
 	src/value.o

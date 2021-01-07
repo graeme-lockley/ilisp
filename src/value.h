@@ -108,4 +108,13 @@ extern Value *mkMap();
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
+typedef struct ReturnValueStruct
+{
+    int isValue; // 0 - successful return, 1 - exception
+    Value *value;
+} ReturnValue;
+
+#define IS_SUCCESSFUL(v) ((v).isValue == 0)
+#define IS_EXCEPTION(v) ((v).isValue == 1)
+
 #endif

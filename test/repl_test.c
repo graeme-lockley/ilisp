@@ -105,7 +105,8 @@ static void validateTest()
             scenario_name = scenario_name == NULL ? strdup(buffer) : scenario_name;
             printf("  Test: %s\n", scenario_name);
         }
-        char *repl_result = (char *)Repl_rep(input);
+        
+        char *repl_result = (char *)Repl_rep(input).value->strV;
         if (strcmp(repl_result, output) == 0)
         {
             tests_passed += 1;

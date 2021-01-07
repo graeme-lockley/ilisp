@@ -1,23 +1,35 @@
-CC=clang-9
-CFLAGS=-g -Wall -Wextra -pedantic -Wno-gnu-zero-variadic-macro-arguments
+#CC=cc
+CC=clang-9 -Ofast
+CFLAGS=-g -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
 LDFLAGS=-g
-LDLIBS=
+LDLIBS=-ledit
 RM=rm
 
-TARGETS=src/value.o
+TARGETS=\
+	src/main.o \
+	src/readline.o \
+	src/repl.o \
+	src/value.o
+
+TEST_TARGETS=\
+	minunit.o \
+	test/repl_test.o \
+	test/value_test.o
 
 .PHONY: all
-all: $(TARGETS)
+all: $(TARGETS) test ./src/main
+
+./src/main: ${TARGETS}
+	$(CC) $(LDFLAGS) ${TARGETS} $(LDLIBS) -o ./src/main
 
 %.o: %.c ./src/*.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test: all
+test: ${TARGETS}
 	( cd ./test ; make )
 
 clean:
 	rm src/*.o
-	( cd ./test ; make clean )
-
-cleanall: clean
-	( cd ./test ; make cleanall )
+	rm test/*.o
+	rm src/main
+	rm test/value_test

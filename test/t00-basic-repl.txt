@@ -1,0 +1,9 @@
+; First things first
+"Hello World"
+> "Hello World"
+
+;; Some comment here that is ignored.... line starting with a single ';' before the input starts is the test scenario name
+;; If there is no test scenario name then the name is the line number
+; Numeric
+123
+> 123

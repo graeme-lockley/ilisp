@@ -3,7 +3,6 @@
 ## Build an iLisp- interpreter entirely in C
 
 - Implement Value
-   - VT_MAP
    - VT_NATIVE_FUNCTION
    - VT_FUNCTION
 
@@ -34,6 +33,10 @@
    - symbol->string
    - string->keyword
    - keyword->string
+
+- Hammock Time
+   - What are the different forms of printing a value?
+   - What is the structure of exceptions?
 
 - Comparitive Questions: these questions are a comparsion of something across the 5 flavours of Lisp - CLOS, Scheme, Clojure, Racket and Bel
    - Different forms of truth and truthy

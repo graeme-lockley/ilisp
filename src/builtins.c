@@ -77,6 +77,9 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
     return result;
 }
 
+/* Removes the binding associated with key and, if such a binding exists, 
+ * returns associated value otherwise returns ().
+ */
 Value *map_remove_bang(Value *map, Value *key)
 {
     ASSERT_IS_VALID_MAP(map);

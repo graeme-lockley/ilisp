@@ -65,7 +65,8 @@ static char *test_map_set_bang()
     ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 4 \"c\" 4 \"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v4), "1");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 4 \"b\" 4 \"c\" 4}");
-
+    UNPIN(m);
+    
     return NULL;
 }
 

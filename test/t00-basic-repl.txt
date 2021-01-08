@@ -1,4 +1,4 @@
-; First things first
+; First things first - hello world
 "Hello World"
 > "Hello World"
 
@@ -7,3 +7,27 @@
 ; Numeric
 123
 > 123
+
+; Symbol using quote
+'a
+> (quote . a)
+
+; Keyword
+:a
+> :a
+
+; Quoted empty list
+'()
+> (quote)
+
+; Empty list
+()
+> ()
+
+; List of numbers
+'(1 2 3 4 5)
+> (quote 1 2 3 4 5)
+
+; List of numbers, strings and keywords
+'(1 "two" :three 4 "five" :six)
+> (quote 1 "two" :three 4 "five" :six)

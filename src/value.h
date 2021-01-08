@@ -21,12 +21,12 @@ enum ValueType
     VT_KEYWORD,
     VT_CHARACTER,
     VT_NUMBER,
-    VT_STRING,
+    VT_STRING, // == 5
     VT_PAIR,
     VT_VECTOR,
     VT_MAP,
     VT_NATIVE_FUNCTION,
-    VT_FUNCTION
+    VT_FUNCTION // == 10
 };
 
 struct ValueStruct

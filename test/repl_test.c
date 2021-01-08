@@ -114,7 +114,7 @@ static void validateTest()
         else
         {
             printf("Failed: %s\n", scenario_name);
-            printf("  Input: %s\n", input);
+            printf("  Input:    | %s\n", input);
             printf("  Output:   | %s\n", repl_result);
             printf("  Expected: | %s\n", output);
         }

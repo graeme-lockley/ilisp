@@ -126,7 +126,7 @@ Value *mkMap(Value *items)
     return value;
 }
 
-int Value_isTruthy(Value *v)
+int Value_truthy(Value *v)
 {
     return (v == VFalse) ? 0 : 1;
 }
@@ -196,7 +196,7 @@ Value *Value_equals(Value *a, Value *b)
     case VT_PAIR:
         if (IS_PAIR(b))
         {
-            if (Value_isTruthy(Value_equals(CAR(a), CAR(b))))
+            if (Value_truthy(Value_equals(CAR(a), CAR(b))))
             {
                 {
                     return Value_equals(CDR(a), CDR(b));
@@ -216,7 +216,7 @@ Value *Value_equals(Value *a, Value *b)
 
                 for (int loop = 0; loop < length; loop += 1)
                 {
-                    if (!Value_isTruthy(Value_equals(as[loop], bs[loop])))
+                    if (!Value_truthy(Value_equals(as[loop], bs[loop])))
                     {
                         return VFalse;
                     }

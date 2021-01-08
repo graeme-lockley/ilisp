@@ -242,14 +242,14 @@ static char *test_map_values()
 
 #define mu_assert_truthy_equals_label(v1, v2)                  \
     {                                                          \
-        mu_assert_label(Value_isTruthy(Value_equals(v1, v2))); \
-        mu_assert_label(Value_isTruthy(Value_equals(v2, v1))); \
+        mu_assert_label(Value_truthy(Value_equals(v1, v2))); \
+        mu_assert_label(Value_truthy(Value_equals(v2, v1))); \
     }
 
 #define mu_assert_truthy_not_equals_label(v1, v2)               \
     {                                                           \
-        mu_assert_label(!Value_isTruthy(Value_equals(v1, v2))); \
-        mu_assert_label(!Value_isTruthy(Value_equals(v2, v1))); \
+        mu_assert_label(!Value_truthy(Value_equals(v1, v2))); \
+        mu_assert_label(!Value_truthy(Value_equals(v2, v1))); \
     }
 
 static char *test_equals()

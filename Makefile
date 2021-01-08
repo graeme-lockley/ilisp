@@ -6,6 +6,7 @@ LDLIBS=-ledit
 RM=rm
 
 TARGETS=\
+	src/builtins.o \
 	src/main.o \
 	src/printer.o \
 	src/reader.o \
@@ -15,6 +16,7 @@ TARGETS=\
 
 TEST_TARGETS=\
 	minunit.o \
+	test/builtins_test.o \
 	test/repl_test.o \
 	test/value_test.o
 

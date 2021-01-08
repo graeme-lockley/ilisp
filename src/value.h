@@ -74,7 +74,7 @@ typedef struct ValueStruct Value;
 #define IS_MAP(v) ((((v)->tag >> 2) == VT_MAP))
 
 extern void freeValue(Value *value);
-extern int Value_isTruthy(Value *v);
+extern int Value_truthy(Value *v);
 extern Value *Value_equals(Value *a, Value *b);
 
 extern Value *VNil;

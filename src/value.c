@@ -7,10 +7,13 @@
 static Value VNil_Value = {3, {0}};
 static Value VTrue_Value = {7, {"t"}};
 static Value VFalse_Value = {7, {"f"}};
+static Value *VEmptyVector_Value_Buffer = {0};
+static Value VEmptyVector_Value = {31, {0, &VEmptyVector_Value_Buffer}};
 
 Value *VNil = &VNil_Value;
 Value *VTrue = &VTrue_Value;
 Value *VFalse = &VFalse_Value;
+Value *VEmptyVector = &VEmptyVector_Value;
 
 Value *mkNil()
 {

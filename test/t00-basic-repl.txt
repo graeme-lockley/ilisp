@@ -28,6 +28,27 @@
 '(1 2 3 4 5)
 > (quote 1 2 3 4 5)
 
-; List of numbers, strings and keywords
+; Quoted list of numbers, strings and keywords
 '(1 "two" :three 4 "five" :six)
 > (quote 1 "two" :three 4 "five" :six)
+
+; List of numbers, strings and keywords
+(1 "two" :three 4 "five" :six)
+> (1 "two" :three 4 "five" :six)
+
+
+; Quoted empty sequence
+'[]
+> (quote . [])
+
+; Empty sequence
+[]
+> []
+
+; Quoted sequence of numbers, strings, keywords and lists
+'[1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
+> (quote . [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)])
+
+; Sequence of numbers, strings, keywords and lists
+[1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
+> [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]

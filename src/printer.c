@@ -16,9 +16,10 @@ static void append(WriteBuffer *wb, char *v)
 {
     int length_of_v = strlen(v);
 
-    if (wb->end_of_writer + length_of_v >= wb->buffer_size) {
+    if (wb->end_of_writer + length_of_v >= wb->buffer_size)
+    {
         int new_buffer_size = wb->end_of_writer + length_of_v + wb->buffer_size;
-        char *new_buffer = (char *) malloc(new_buffer_size);
+        char *new_buffer = (char *)malloc(new_buffer_size);
         strcpy(new_buffer, wb->buffer);
         free(wb->buffer);
         wb->buffer = new_buffer;
@@ -71,6 +72,21 @@ static void pString(WriteBuffer *wb, Value *v, int readable)
                 }
             }
         }
+        break;
+    }
+
+    case VT_VECTOR:
+    {
+        append(wb, "[");
+        for (int lp = 0; lp < VECTOR(v).length; lp += 1)
+        {
+            if (lp > 0)
+            {
+                append(wb, " ");
+            }
+            pString(wb, VECTOR(v).items[lp], readable);
+        }
+        append(wb, "]");
         break;
     }
 

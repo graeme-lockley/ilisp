@@ -4,6 +4,8 @@
 
 #include "value.h"
 
+#define BUFFER_TRANCHE 2
+
 enum Token
 {
     LPAREN, // == 0
@@ -301,21 +303,30 @@ static ReturnValue parse(Lexer *lexer)
 
                 while (1)
                 {
-                    if (lexer->token == EOS) {
+                    if (lexer->token == EOS)
+                    {
                         ReturnValue result = {1, head};
                         return result;
-                    } else if (lexer->token == RPAREN) {
+                    }
+                    else if (lexer->token == RPAREN)
+                    {
+                        next_token(lexer);
                         ReturnValue result = {0, head};
                         return result;
-                    } else {
+                    }
+                    else
+                    {
                         ReturnValue next = parse(lexer);
 
-                        if (IS_SUCCESSFUL(next)) {
+                        if (IS_SUCCESSFUL(next))
+                        {
                             cursor->pairV.cdr = mkPair(next.value, VNil);
                             UNPIN(next.value);
                             UNPIN(cursor->pairV.cdr);
                             cursor = CDR(cursor);
-                        } else {
+                        }
+                        else
+                        {
                             UNPIN(head);
                             return next;
                         }
@@ -326,6 +337,79 @@ static ReturnValue parse(Lexer *lexer)
                 return car;
         }
     }
+
+    case LBRACKET:
+    {
+        next_token(lexer);
+        if (lexer->token == RBRACKET)
+        {
+            next_token(lexer);
+
+            ReturnValue result = {0, VEmptyVector};
+            return result;
+        }
+        else
+        {
+            ReturnValue v = parse(lexer);
+
+            if (IS_SUCCESSFUL(v))
+            {
+                Value **buffer = (Value **)malloc(BUFFER_TRANCHE * sizeof(Value *));
+                int buffer_length = BUFFER_TRANCHE;
+                int buffer_end = 1;
+                buffer[0] = v.value;
+
+                UNPIN(v.value);
+
+                while (1)
+                {
+                    if (lexer->token == EOS)
+                    {
+                        ReturnValue result = {1, mkVector(buffer, buffer_end)};
+                        free(buffer);
+
+                        return result;
+                    }
+                    else if (lexer->token == RBRACKET)
+                    {
+                        next_token(lexer);
+                        ReturnValue result = {0, mkVector(buffer, buffer_end)};
+                        free(buffer);
+
+                        return result;
+                    }
+                    else
+                    {
+                        ReturnValue next = parse(lexer);
+
+                        if (IS_SUCCESSFUL(next))
+                        {
+                            if (buffer_end == buffer_length - 1)
+                            {
+                                int new_buffer_length = buffer_length + BUFFER_TRANCHE;
+                                Value **new_buffer = (Value **)malloc(new_buffer_length * sizeof(Value *));
+                                memcpy(new_buffer, buffer, buffer_end * sizeof(Value *));
+                                free(buffer);
+                                buffer_length = new_buffer_length;
+                                buffer = new_buffer;
+                            }
+                            buffer[buffer_end] = next.value;
+                            buffer_end += 1;
+                            UNPIN(next.value);
+                        }
+                        else
+                        {
+                            free(buffer);
+                            return next;
+                        }
+                    }
+                }
+            }
+            else
+                return v;
+        }
+    }
+
 
     default:
     {

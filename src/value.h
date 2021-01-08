@@ -42,7 +42,7 @@ struct ValueStruct
             struct ValueStruct *car;
             struct ValueStruct *cdr;
         } pairV;
-        struct
+        struct ValueVectorStruct
         {
             int length;
             struct ValueStruct **items;
@@ -102,6 +102,7 @@ extern Value *mkPair(Value *car, Value *cdr);
 #define CDR(v) ((v)->pairV.cdr)
 
 extern Value *mkVector(Value **items, int length);
+extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 
 extern Value *mkMap();

@@ -39,7 +39,22 @@ int Repl_repl()
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)
-        puts(Repl_rep(p).value->strV);
+    {
+        ReturnValue v = Repl_rep(p);
 
+        if (IS_SUCCESSFUL(v))
+        {
+            puts(v.value->strV);
+        }
+        else
+        {
+            ReturnValue e = Printer_prStr(v.value, 1);
+
+            if (IS_SUCCESSFUL(e))
+                printf("Error: %s\n", e.value->strV);
+            else
+                printf("Error: unable to show output\n");
+        }
+    }
     return 0;
 }

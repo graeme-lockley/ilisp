@@ -14,6 +14,7 @@ Value *v2;
 Value *k3;
 Value *v3;
 Value *k4;
+Value *v4;
 
 #define ASSERT_VALUE_VALUE_EQUALS(v1, v2) mu_assert_label(strcmp(as_string(v1), as_string(v2)) == 0)
 #define ASSERT_VALUE_STRING_EQUALS(v1, s2) mu_assert_label(strcmp(as_string(v1), s2) == 0)
@@ -48,6 +49,26 @@ static char *as_string(Value *v)
     return Printer_prStr(v, 1).value->strV;
 }
 
+static char *test_map_set_bang()
+{
+    Value *m = map_test_data_0();
+
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v1), "()");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v2), "()");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v3), "()");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"c\" 3 \"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v4), "3");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"c\" 4 \"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v4), "2");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 4 \"c\" 4 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v4), "1");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 4 \"b\" 4 \"c\" 4}");
+
+    return NULL;
+}
+
 static char *test_map_remove_bang()
 {
     // Empty map scenario
@@ -77,6 +98,7 @@ static char *test_map_remove_bang()
 
 static char *test_suite()
 {
+    mu_run_test(test_map_set_bang);
     mu_run_test(test_map_remove_bang);
 
     return NULL;
@@ -93,6 +115,7 @@ int main()
     k3 = mkString("c");
     v3 = mkNumber(3);
     k4 = mkString("d");
+    v4 = mkNumber(4);
 
     char *result = test_suite();
 

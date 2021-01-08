@@ -52,3 +52,20 @@
 ; Sequence of numbers, strings, keywords and lists
 [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 > [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
+
+
+; Quoted empty map
+'{}
+> (quote . {})
+
+; Empty map
+{}
+> {}
+
+; Quoted literal map
+'{:a 1 "hello" "world" 456 :c if 0}
+> (quote . {:a 1 "hello" "world" 456 :c if 0})
+
+; Literal map
+{:a 1 "hello" "world" 456 :c if 0}
+> {:a 1 "hello" "world" 456 :c if 0}

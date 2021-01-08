@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "printer.h"
 #include "value.h"
 
 #define BUFFER_TRANCHE 2
@@ -49,6 +50,13 @@ typedef struct LexerState
 // static void printer_lexer(char *msg, Lexer *lexer)
 // {
 //     printf("ls: %s: {., %d, {%d, %d, %d}, %d, (%d, %d, %d)\n", msg, lexer->content_length, lexer->start.offset, lexer->start.column, lexer->start.line, lexer->token, lexer->end.offset, lexer->end.column, lexer->end.line);
+// }
+
+// static void dumpValue(char *msg, Value *value)
+// {
+//     ReturnValue r = Printer_prStr(value, 1);
+
+//     printf("** %s: %d: %s\n", msg, r.isValue, IS_STRING(r.value) ? STRING(r.value) : "error");
 // }
 
 static void advance_position(Lexer *lexer, Position *position)
@@ -410,6 +418,94 @@ static ReturnValue parse(Lexer *lexer)
         }
     }
 
+    case LCURLY:
+    {
+        next_token(lexer);
+
+        if (lexer->token == RCURLEY)
+        {
+            next_token(lexer);
+
+            ReturnValue result = {0, mkMap(VNil)};
+            return result;
+        }
+        else
+        {
+            ReturnValue m1_key = parse(lexer);
+
+            if (IS_SUCCESSFUL(m1_key))
+            {
+                ReturnValue m1_value = parse(lexer);
+                if (IS_SUCCESSFUL(m1_value))
+                {
+                    Value *m1 = mkPair(m1_key.value, m1_value.value);
+                    UNPIN(m1_key.value);
+                    UNPIN(m1_value.value);
+                    Value *head = mkPair(m1, VNil);
+                    UNPIN(m1);
+                    Value *cursor = head;
+
+                    // dumpValue("matched head", head);
+
+                    while (1)
+                    {
+                        if (lexer->token == EOS)
+                        {
+                            ReturnValue result = {1, head};
+                            return result;
+                        }
+                        else if (lexer->token == RCURLEY)
+                        {
+                            next_token(lexer);
+                            ReturnValue result = {0, mkMap(head)};
+                            return result;
+                        }
+                        else
+                        {
+                            ReturnValue mi_key = parse(lexer);
+
+                            if (IS_SUCCESSFUL(mi_key))
+                            {
+                                ReturnValue mi_value = parse(lexer);
+                                if (IS_SUCCESSFUL(mi_value))
+                                {
+                                    Value *mi = mkPair(mi_key.value, mi_value.value);
+                                    UNPIN(mi_key.value);
+                                    UNPIN(mi_value.value);
+
+                                    Value *link = mkPair(mi, VNil);
+                                    UNPIN(mi);
+
+                                    cursor->pairV.cdr = link;
+                                    cursor = link;
+
+                                    // dumpValue("matched next", head);
+                                }
+                                else
+                                {
+                                    UNPIN(head);
+                                    UNPIN(mi_key.value);
+                                    return mi_value;
+                                }
+                            }
+                            else
+                            {
+                                UNPIN(head);
+                                return mi_key;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    UNPIN(m1_key.value);
+                    return m1_value;
+                }
+            }
+            else
+                return m1_key;
+        }
+    }
 
     default:
     {

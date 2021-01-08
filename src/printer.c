@@ -123,6 +123,31 @@ static void pString(WriteBuffer *wb, Value *v, int readable)
         }
         break;
 
+    case VT_MAP:
+    {
+        append(wb, "{");
+
+        Value *cursor = MAP(v);
+        if (!IS_NIL(cursor))
+        {
+            while (1)
+            {
+                pString(wb, CAR(CAR(cursor)), readable);
+                append(wb, " ");
+                pString(wb, CDR(CAR(cursor)), readable);
+
+                cursor = CDR(cursor);
+                if (IS_NIL(cursor))
+                    break;
+                else
+                    append(wb, " ");
+            }
+        }
+
+        append(wb, "}");
+        break;
+    }
+
     default:
     {
         char buffer[20];

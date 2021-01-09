@@ -11,8 +11,8 @@ TARGETS=builtins_test repl_test value_test
 all: $(TARGETS)
 	./value_test
 	./builtins_test
-	./repl_test t01-arithmetic.txt
 	./repl_test t00-basic-repl.txt
+	./repl_test t01-arithmetic.txt
 
 .PHONY: clean
 clean:

@@ -1,71 +1,71 @@
-; First things first - hello world
+; First things first - "Hello World"
 "Hello World"
 > "Hello World"
 
 ;; Some comment here that is ignored.... line starting with a single ';' before the input starts is the test scenario name
 ;; If there is no test scenario name then the name is the line number
-; Numeric
+; Numeric - 123
 123
 > 123
 
-; Symbol using quote
+; Symbol using quote - 'a
 'a
 > a
 
-; Keyword
+; Keyword - :a
 :a
 > :a
 
-; Quoted empty list
+; Quoted empty list - '()
 '()
 > ()
 
-; Empty list
+; Empty list - ()
 ()
 > ()
 
-; Quoted list of numbers
+; Quoted list of numbers - '(1 2 3 4 5)
 '(1 2 3 4 5)
 > (1 2 3 4 5)
 
-; Quoted list of numbers, strings and keywords
+; Quoted list of numbers, strings and keywords - '(1 "two" :three 4 "five" :six)
 '(1 "two" :three 4 "five" :six)
 > (1 "two" :three 4 "five" :six)
 
-; List of numbers, strings and keywords
+; List of numbers, strings and keywords - (1 "two" :three 4 "five" :six)
 (1 "two" :three 4 "five" :six)
 > (ValueNotApplicable . {:arguments ("two" :three 4 "five" :six) :value 1})
 
 
-; Quoted empty sequence
+; Quoted empty sequence - '[]
 '[]
 > []
 
-; Empty sequence
+; Empty sequence - []
 []
 > []
 
-; Quoted sequence of numbers, strings, keywords and lists
+; Quoted sequence of numbers, strings, keywords and lists - '[1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 '[1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 > [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 
-; Sequence of numbers, strings, keywords and lists
+; Sequence of numbers, strings, keywords and lists - [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 > [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 
 
-; Quoted empty map
+; Quoted empty map = '{}
 '{}
 > {}
 
-; Empty map
+; Empty map - {}
 {}
 > {}
 
-; Quoted literal map
+; Quoted literal map - '{:a 1 "hello" "world" 456 :c if 0}
 '{:a 1 "hello" "world" 456 :c if 0}
 > {:a 1 "hello" "world" 456 :c if 0}
 
-; Literal map
+; Literal map - {:a 1 "hello" "world" 456 :c if 0}
 {:a 1 "hello" "world" 456 :c if 0}
 > {:a 1 "hello" "world" 456 :c if 0}

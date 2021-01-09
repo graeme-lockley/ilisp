@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "minunit.h"
+#include "../src/printer.h"
 #include "../src/repl.h"
 
 #define LINE_LENGTH 2048
@@ -105,8 +106,10 @@ static void validateTest()
             scenario_name = scenario_name == NULL ? strdup(buffer) : scenario_name;
             printf("  Test: %s\n", scenario_name);
         }
-        
-        char *repl_result = (char *)Repl_rep(input).value->strV;
+
+        Value *env = initialise_environment();
+        ReturnValue rv = Repl_rep(input, env);
+        char *repl_result = (IS_SUCCESSFUL(rv)) ? rv.value->strV : Printer_prStr(rv.value, 1).value->strV;
         if (strcmp(repl_result, output) == 0)
         {
             tests_passed += 1;

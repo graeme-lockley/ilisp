@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "builtins.h"
+#include "printer.h"
 #include "value.h"
 
 #define ASSERT(e)                                                              \
@@ -66,11 +67,8 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
 
     Value *result = map_remove_bang(map, key);
 
-    Value *pair = mkPair(key, value);
-    Value *cons = mkPair(pair, MAP(map));
+    Value *cons = mkPair(mkPair(key, value), MAP(map));
     MAP(map) = cons;
-    UNPIN(pair);
-    UNPIN(cons);
 
     ASSERT_IS_VALID_MAP(map);
 
@@ -110,5 +108,81 @@ Value *map_remove_bang(Value *map, Value *key)
         }
 
         cursor = next;
+    }
+}
+
+Value *map_find(Value *map, Value *key)
+{
+    ASSERT_IS_VALID_MAP(map);
+
+    Value *cursor = MAP(map);
+
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            return VNil;
+
+        if (is_equals(CAR(CAR(cursor)), key))
+            return CDR(CAR(cursor));
+
+        cursor = CDR(cursor);
+    }
+}
+
+ReturnValue builtin_integer_plus(Value *parameters)
+{
+    int argument_count = 0;
+    int result = 0;
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+        {
+            Value *value_result = mkNumber(result);
+            ReturnValue rv = {0, value_result};
+
+            return rv;
+        }
+
+        if (IS_PAIR(parameters))
+        {
+            Value *car = CAR(parameters);
+            Value *cdr = CDR(parameters);
+
+            if (IS_NUMBER(car))
+            {
+                result += NUMBER(car);
+                parameters = cdr;
+                argument_count += 1;
+            }
+            else
+            {
+                Value *exception_name = mkSymbol("InvalidArgument");
+                Value *exception_payload = map_create();
+                map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("+"));
+                map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+                map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+                map_set_bang(exception_payload, mkKeyword(":received"), car);
+
+                Value *exception = mkPair(exception_name, exception_payload);
+
+                ReturnValue rv = {1, exception};
+                return rv;
+            }
+        }
+        else
+        {
+            Value *exception_name = mkSymbol("InvalidArgument");
+            Value *exception_payload = map_create();
+            map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("+"));
+            map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+            map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+            map_set_bang(exception_payload, mkKeyword(":received"), VNil);
+
+            Value *exception = mkPair(exception_name, exception_payload);
+
+            ReturnValue rv = {1, exception};
+            return rv;
+        }
     }
 }

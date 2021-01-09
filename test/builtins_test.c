@@ -65,8 +65,7 @@ static char *test_map_set_bang()
     ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 4 \"c\" 4 \"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v4), "1");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 4 \"b\" 4 \"c\" 4}");
-    UNPIN(m);
-    
+
     return NULL;
 }
 
@@ -76,7 +75,6 @@ static char *test_map_remove_bang()
     Value *m = map_test_data_0();
     map_remove_bang(m, k1);
     ASSERT_VALUE_STRING_EQUALS(m, "{}");
-    UNPIN(m);
 
     // Single binding map scenario
     m = map_test_data_1();
@@ -84,7 +82,6 @@ static char *test_map_remove_bang()
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_remove_bang(m, k1), "1");
     ASSERT_VALUE_STRING_EQUALS(m, "{}");
-    UNPIN(m);
 
     // Multiple binding map scenario
     m = map_test_data_3();
@@ -92,7 +89,27 @@ static char *test_map_remove_bang()
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2 \"c\" 3}");
     ASSERT_VALUE_STRING_EQUALS(map_remove_bang(m, k2), "2");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"c\" 3}");
-    UNPIN(m);
+
+    return NULL;
+}
+
+static char *test_map_find()
+{
+    // Empty map scenario
+    Value *m = map_test_data_0();
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "()");
+
+    // Single binding map scenario
+    m = map_test_data_1();
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "1");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k2), "()");
+
+    // Multiple binding map scenario
+    m = map_test_data_3();
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "1");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k2), "2");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k3), "3");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k4), "()");
 
     return NULL;
 }
@@ -101,6 +118,7 @@ static char *test_suite()
 {
     mu_run_test(test_map_set_bang);
     mu_run_test(test_map_remove_bang);
+    mu_run_test(test_map_find);
 
     return NULL;
 }

@@ -241,8 +241,6 @@ static ReturnValue parse(Lexer *lexer)
         {
             Value *quote = mkSymbol("quote");
             Value *result = mkPair(quote, v.value);
-            UNPIN(quote);
-            UNPIN(v.value);
 
             ReturnValue result1 = {0, result};
             return result1;
@@ -306,7 +304,6 @@ static ReturnValue parse(Lexer *lexer)
             if (IS_SUCCESSFUL(car))
             {
                 Value *head = mkPair(car.value, VNil);
-                UNPIN(car.value);
                 Value *cursor = head;
 
                 while (1)
@@ -329,15 +326,10 @@ static ReturnValue parse(Lexer *lexer)
                         if (IS_SUCCESSFUL(next))
                         {
                             cursor->pairV.cdr = mkPair(next.value, VNil);
-                            UNPIN(next.value);
-                            UNPIN(cursor->pairV.cdr);
                             cursor = CDR(cursor);
                         }
                         else
-                        {
-                            UNPIN(head);
                             return next;
-                        }
                     }
                 }
             }
@@ -366,8 +358,6 @@ static ReturnValue parse(Lexer *lexer)
                 int buffer_length = BUFFER_TRANCHE;
                 int buffer_end = 1;
                 buffer[0] = v.value;
-
-                UNPIN(v.value);
 
                 while (1)
                 {
@@ -403,7 +393,6 @@ static ReturnValue parse(Lexer *lexer)
                             }
                             buffer[buffer_end] = next.value;
                             buffer_end += 1;
-                            UNPIN(next.value);
                         }
                         else
                         {
@@ -439,10 +428,7 @@ static ReturnValue parse(Lexer *lexer)
                 if (IS_SUCCESSFUL(m1_value))
                 {
                     Value *m1 = mkPair(m1_key.value, m1_value.value);
-                    UNPIN(m1_key.value);
-                    UNPIN(m1_value.value);
                     Value *head = mkPair(m1, VNil);
-                    UNPIN(m1);
                     Value *cursor = head;
 
                     // dumpValue("matched head", head);
@@ -470,11 +456,8 @@ static ReturnValue parse(Lexer *lexer)
                                 if (IS_SUCCESSFUL(mi_value))
                                 {
                                     Value *mi = mkPair(mi_key.value, mi_value.value);
-                                    UNPIN(mi_key.value);
-                                    UNPIN(mi_value.value);
 
                                     Value *link = mkPair(mi, VNil);
-                                    UNPIN(mi);
 
                                     cursor->pairV.cdr = link;
                                     cursor = link;
@@ -483,14 +466,11 @@ static ReturnValue parse(Lexer *lexer)
                                 }
                                 else
                                 {
-                                    UNPIN(head);
-                                    UNPIN(mi_key.value);
                                     return mi_value;
                                 }
                             }
                             else
                             {
-                                UNPIN(head);
                                 return mi_key;
                             }
                         }
@@ -498,7 +478,6 @@ static ReturnValue parse(Lexer *lexer)
                 }
                 else
                 {
-                    UNPIN(m1_key.value);
                     return m1_value;
                 }
             }

@@ -10,7 +10,7 @@
 
 ; Symbol using quote
 'a
-> (quote . a)
+> a
 
 ; Keyword
 :a
@@ -18,28 +18,28 @@
 
 ; Quoted empty list
 '()
-> (quote)
+> ()
 
 ; Empty list
 ()
 > ()
 
-; List of numbers
+; Quoted list of numbers
 '(1 2 3 4 5)
-> (quote 1 2 3 4 5)
+> (1 2 3 4 5)
 
 ; Quoted list of numbers, strings and keywords
 '(1 "two" :three 4 "five" :six)
-> (quote 1 "two" :three 4 "five" :six)
+> (1 "two" :three 4 "five" :six)
 
 ; List of numbers, strings and keywords
 (1 "two" :three 4 "five" :six)
-> (1 "two" :three 4 "five" :six)
+> (ValueNotApplicable . {:arguments ("two" :three 4 "five" :six) :value 1})
 
 
 ; Quoted empty sequence
 '[]
-> (quote . [])
+> []
 
 ; Empty sequence
 []
@@ -47,7 +47,7 @@
 
 ; Quoted sequence of numbers, strings, keywords and lists
 '[1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
-> (quote . [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)])
+> [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
 
 ; Sequence of numbers, strings, keywords and lists
 [1 "two" :three (:a :b :c) 4 "five" :six (:e :f :g)]
@@ -56,7 +56,7 @@
 
 ; Quoted empty map
 '{}
-> (quote . {})
+> {}
 
 ; Empty map
 {}
@@ -64,7 +64,7 @@
 
 ; Quoted literal map
 '{:a 1 "hello" "world" 456 :c if 0}
-> (quote . {:a 1 "hello" "world" 456 :c if 0})
+> {:a 1 "hello" "world" 456 :c if 0}
 
 ; Literal map
 {:a 1 "hello" "world" 456 :c if 0}

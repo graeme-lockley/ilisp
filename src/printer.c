@@ -32,7 +32,7 @@ static void append(WriteBuffer *wb, char *v)
 
 static void pString(WriteBuffer *wb, Value *v, int readable)
 {
-    switch (v->tag >> 2)
+    switch (TAG_TO_VT(v))
     {
     case VT_NIL:
         append(wb, "()");
@@ -147,6 +147,10 @@ static void pString(WriteBuffer *wb, Value *v, int readable)
         append(wb, "}");
         break;
     }
+
+    case VT_NATIVE_PROCEDURE:
+        append(wb, "#NATIVE-PROCEDURE");
+        break;
 
     default:
     {

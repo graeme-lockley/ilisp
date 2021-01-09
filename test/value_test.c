@@ -16,19 +16,15 @@ static char *test_ordinal_values()
     mu_assert_label(VT_PAIR == 6);
     mu_assert_label(VT_VECTOR == 7);
     mu_assert_label(VT_MAP == 8);
-    mu_assert_label(VT_NATIVE_FUNCTION == 9);
-    mu_assert_label(VT_FUNCTION == 10);
+    mu_assert_label(VT_NATIVE_PROCEDURE == 9);
+    mu_assert_label(VT_PROCEDURE == 10);
 
     return NULL;
 }
 
 static char *test_unit_values()
 {
-    mu_assert_label(IS_PINNED(mkNil()));
     mu_assert_label(IS_IMMUTABLE(mkNil()));
-    mu_assert_label(IS_NIL(mkNil()));
-
-    mu_assert_label(IS_PINNED(VNil));
     mu_assert_label(IS_IMMUTABLE(VNil));
     mu_assert_label(IS_NIL(VNil));
 
@@ -40,19 +36,9 @@ static char *test_symbol_values()
     char *word = "hello";
     Value *value = mkSymbol(word);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_SYMBOL(value));
     mu_assert_label(strcmp(SYMBOL(value), word) == 0);
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_SYMBOL(value));
-    mu_assert_label(strcmp(SYMBOL(value), word) == 0);
-
-    freeValue(value);
 
     return NULL;
 }
@@ -62,20 +48,10 @@ static char *test_keyword_values()
     char *word = "world";
     Value *value = mkKeyword(word);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
 
     mu_assert_label(IS_KEYWORD(value));
     mu_assert_label(strcmp(KEYWORD(value), word) == 0);
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_KEYWORD(value));
-    mu_assert_label(strcmp(KEYWORD(value), word) == 0);
-
-    freeValue(value);
 
     return NULL;
 }
@@ -85,19 +61,9 @@ static char *test_character_values()
     char character = 'p';
     Value *value = mkCharacter(character);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_CHARACTER(value));
     mu_assert_label(CHARACTER(value) == character);
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_CHARACTER(value));
-    mu_assert_label(CHARACTER(value) == character);
-
-    freeValue(value);
 
     return NULL;
 }
@@ -107,19 +73,9 @@ static char *test_number_values()
     int number = 1234;
     Value *value = mkNumber(number);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_NUMBER(value));
     mu_assert_label(NUMBER(value) == number);
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_NUMBER(value));
-    mu_assert_label(NUMBER(value) == number);
-
-    freeValue(value);
 
     return NULL;
 }
@@ -129,19 +85,9 @@ static char *test_string_values()
     char *string = "hello world";
     Value *value = mkString(string);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_STRING(value));
     mu_assert_label(strcmp(STRING(value), string) == 0);
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_STRING(value));
-    mu_assert_label(strcmp(STRING(value), string) == 0);
-
-    freeValue(value);
 
     return NULL;
 }
@@ -152,24 +98,10 @@ static char *test_pair_values()
 
     Value *value = mkPair(car, VNil);
 
-    mu_assert_label(IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-
-    mu_assert_label(IS_PAIR(value));
-    mu_assert_label(strcmp(STRING(CAR(value)), STRING(car)) == 0);
-    mu_assert_label(IS_NIL(CDR(value)));
-
-    UNPIN(value);
-    UNPIN(car);
-
-    mu_assert_label(!IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_PAIR(value));
     mu_assert_label(strcmp(STRING(CAR(value)), STRING(car)) == 0);
     mu_assert_label(IS_NIL(CDR(value)));
-
-    freeValue(value);
-    freeValue(car);
 
     return NULL;
 }
@@ -181,34 +113,12 @@ static char *test_vector_values()
 
     Value *value = mkVector(vector, length);
 
-    mu_assert_label(IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_VECTOR(value));
     mu_assert_label(VECTOR(value).length == length);
     for (int lp = 0; lp < length; lp += 1)
     {
         mu_assert_label(VECTOR(value).items[lp] == vector[lp]);
-    }
-
-    UNPIN(value);
-    for (int lp = 0; lp < length; lp += 1)
-    {
-        UNPIN(vector[lp]);
-    }
-
-    mu_assert_label(!IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_VECTOR(value));
-    mu_assert_label(VECTOR(value).length == length);
-    for (int lp = 0; lp < length; lp += 1)
-    {
-        mu_assert_label(VECTOR(value).items[lp] == vector[lp]);
-    }
-
-    freeValue(value);
-    for (int lp = 0; lp < length; lp += 1)
-    {
-        freeValue(vector[lp]);
     }
 
     return NULL;
@@ -226,13 +136,6 @@ static char *test_map_values()
 
     Value *value = mkMap(items);
 
-    mu_assert_label(IS_PINNED(value));
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_MAP(value));
-
-    UNPIN(value);
-
-    mu_assert_label(!IS_PINNED(value));
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_MAP(value));
     mu_assert_label(MAP(value) == items);
@@ -335,35 +238,6 @@ static char *test_equals()
     mu_assert_truthy_equals_label(vector2, vector2);
 
     mu_assert_truthy_not_equals_label(vector1, vector2);
-
-    UNPIN(keyword1);
-    freeValue(keyword1);
-    UNPIN(keyword2);
-    freeValue(keyword2);
-    UNPIN(symbol1);
-    freeValue(symbol1);
-    UNPIN(symbol2);
-    freeValue(symbol2);
-    UNPIN(string1);
-    freeValue(string1);
-    UNPIN(string2);
-    freeValue(string2);
-    UNPIN(character1);
-    freeValue(character1);
-    UNPIN(character2);
-    freeValue(character2);
-    UNPIN(number1);
-    freeValue(number1);
-    UNPIN(number2);
-    freeValue(number2);
-    UNPIN(pair1);
-    freeValue(pair1);
-    UNPIN(pair2);
-    freeValue(pair2);
-    UNPIN(vector1);
-    freeValue(vector1);
-    UNPIN(vector2);
-    freeValue(vector2);
 
     return NULL;
 }

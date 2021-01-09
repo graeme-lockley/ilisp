@@ -11,7 +11,6 @@
 enum ValueProperties
 {
     VP_IMMUTABLE = 1,
-    VP_PINNED = 2
 };
 
 enum ValueType
@@ -25,9 +24,15 @@ enum ValueType
     VT_PAIR,
     VT_VECTOR,
     VT_MAP,
-    VT_NATIVE_FUNCTION,
-    VT_FUNCTION // == 10
+    VT_NATIVE_PROCEDURE,
+    VT_PROCEDURE // == 10
 };
+
+#define VALUE_SHIFT_WIDTH 1
+#define TAG_TO_VT(t) ((t)->tag >> VALUE_SHIFT_WIDTH)
+#define VT_TO_TAG(t) ((t) << VALUE_SHIFT_WIDTH)
+
+typedef struct ReturnValueStruct ReturnValue;
 
 struct ValueStruct
 {
@@ -48,30 +53,24 @@ struct ValueStruct
             struct ValueStruct **items;
         } vectorV;
         struct ValueStruct *mapV;
+        ReturnValue (*native_procedure)(struct ValueStruct *parameters);
     };
 };
 
 typedef struct ValueStruct Value;
 
 #define IS_IMMUTABLE(v) ((v)->tag & VP_IMMUTABLE)
-#define IS_PINNED(v) ((v)->tag & VP_PINNED)
-#define UNPIN(v)                         \
-    {                                    \
-        Value *__v = v;                  \
-        __v->tag = __v->tag ^ VP_PINNED; \
-    }                                    \
-    while (0)                            \
-        ;
 
-#define IS_NIL(v) (((v)->tag >> 2 == 0))
-#define IS_SYMBOL(v) ((((v)->tag >> 2) == VT_SYMBOL))
-#define IS_KEYWORD(v) ((((v)->tag >> 2) == VT_KEYWORD))
-#define IS_CHARACTER(v) ((((v)->tag >> 2) == VT_CHARACTER))
-#define IS_NUMBER(v) ((((v)->tag >> 2) == VT_NUMBER))
-#define IS_STRING(v) ((((v)->tag >> 2) == VT_STRING))
-#define IS_PAIR(v) ((((v)->tag >> 2) == VT_PAIR))
-#define IS_VECTOR(v) ((((v)->tag >> 2) == VT_VECTOR))
-#define IS_MAP(v) ((((v)->tag >> 2) == VT_MAP))
+#define IS_NIL(v) ((TAG_TO_VT(v) == 0))
+#define IS_SYMBOL(v) ((TAG_TO_VT(v) == VT_SYMBOL))
+#define IS_KEYWORD(v) ((TAG_TO_VT(v) == VT_KEYWORD))
+#define IS_CHARACTER(v) ((TAG_TO_VT(v) == VT_CHARACTER))
+#define IS_NUMBER(v) ((TAG_TO_VT(v) == VT_NUMBER))
+#define IS_STRING(v) ((TAG_TO_VT(v) == VT_STRING))
+#define IS_PAIR(v) ((TAG_TO_VT(v) == VT_PAIR))
+#define IS_VECTOR(v) ((TAG_TO_VT(v) == VT_VECTOR))
+#define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
+#define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
 
 extern void freeValue(Value *value);
 extern int Value_truthy(Value *v);
@@ -109,10 +108,13 @@ extern Value *mkMap();
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
+extern Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters));
+#define NATIVE_PROCEDURE(v) ((v)->native_procedure)
+
 typedef struct ReturnValueStruct
 {
     int isValue; // 0 - successful return, 1 - exception
-    Value *value;
+    struct ValueStruct *value;
 } ReturnValue;
 
 #define IS_SUCCESSFUL(v) ((v).isValue == 0)

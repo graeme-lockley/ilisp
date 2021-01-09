@@ -3,7 +3,8 @@
 
 #include "value.h"
 
-extern ReturnValue Repl_rep(char *content);
+extern Value *initialise_environment();
+extern ReturnValue Repl_rep(char *content, Value *env);
 extern int Repl_repl();
 
 #endif

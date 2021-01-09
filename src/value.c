@@ -4,11 +4,11 @@
 
 #include "value.h"
 
-static Value VNil_Value = {3, {0}};
-static Value VTrue_Value = {7, {"t"}};
-static Value VFalse_Value = {7, {"f"}};
+static Value VNil_Value = {VP_IMMUTABLE, {0}};
+static Value VTrue_Value = {VT_TO_TAG(VT_SYMBOL) | VP_IMMUTABLE, {"t"}};
+static Value VFalse_Value = {VT_TO_TAG(VT_SYMBOL) | VP_IMMUTABLE, {"f"}};
 static Value *VEmptyVector_Value_Buffer = {0};
-static Value VEmptyVector_Value = {31, {0, &VEmptyVector_Value_Buffer}};
+static Value VEmptyVector_Value = {VT_TO_TAG(VT_VECTOR) | VP_IMMUTABLE, {0, &VEmptyVector_Value_Buffer}};
 
 Value *VNil = &VNil_Value;
 Value *VTrue = &VTrue_Value;
@@ -23,24 +23,8 @@ Value *mkNil()
 static Value *mkValue(enum ValueType type)
 {
     Value *result = (Value *)malloc(sizeof(Value));
-    result->tag = (type << 2) | VP_PINNED | VP_IMMUTABLE;
+    result->tag = VT_TO_TAG(type) | VP_IMMUTABLE;
     return result;
-}
-
-void freeValue(Value *value)
-{
-    if (IS_PINNED(value))
-        return;
-
-    switch (value->tag >> 2)
-    {
-    case VT_SYMBOL:
-    case VT_KEYWORD:
-    case VT_STRING:
-        free(value->strV);
-        break;
-    }
-    free(value);
 }
 
 Value *mkSymbol(char *string)
@@ -126,6 +110,13 @@ Value *mkMap(Value *items)
     return value;
 }
 
+Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters))
+{
+    Value *value = mkValue(VT_NATIVE_PROCEDURE);
+    value->native_procedure = native_procedure;
+    return value;
+}
+
 int Value_truthy(Value *v)
 {
     return (v == VFalse) ? 0 : 1;
@@ -138,7 +129,7 @@ Value *Value_equals(Value *a, Value *b)
         return VTrue;
     }
 
-    switch (a->tag >> 2)
+    switch (TAG_TO_VT(a))
     {
     case VT_NIL:
         return IS_NIL(b) ? VTrue : VFalse;
@@ -228,8 +219,8 @@ Value *Value_equals(Value *a, Value *b)
         return VFalse;
 
     case VT_MAP:
-    case VT_NATIVE_FUNCTION:
-    case VT_FUNCTION:
+    case VT_NATIVE_PROCEDURE:
+    case VT_PROCEDURE:
         return VFalse;
     }
 

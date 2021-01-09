@@ -9,10 +9,10 @@ TARGETS=builtins_test repl_test value_test
 
 .PHONY: all
 all: $(TARGETS)
-	./builtins_test
-	./repl_test t00-basic-repl.txt
-	./repl_test t01-arithmetic.txt
 	./value_test
+	./builtins_test
+	./repl_test t01-arithmetic.txt
+	./repl_test t00-basic-repl.txt
 
 .PHONY: clean
 clean:

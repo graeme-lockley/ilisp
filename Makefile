@@ -27,7 +27,8 @@ TEST_TARGETS=\
 
 TEST_INPUT=\
 	test/t00-basic-repl.txt \
-	test/t01-arithmetic.txt
+	test/t01-arithmetic.txt \
+	test/t02-builtins.txt \
 
 TEST_FLAG=test/flag
 
@@ -51,6 +52,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT)
 	./test/builtins_test
 	./test/repl_test ./test/t00-basic-repl.txt
 	./test/repl_test ./test/t01-arithmetic.txt
+	./test/repl_test ./test/t02-builtins.txt
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h

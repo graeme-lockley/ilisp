@@ -33,6 +33,11 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "*", mkNativeProcedure(builtin_integer_multiply));
     add_binding_into_environment(root_bindings, "/", mkNativeProcedure(builtin_integer_divide));
 
+    add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
+    add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
+    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
+    add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
+
     return root_scope;
 }
 

@@ -90,7 +90,7 @@ static char *join_separated_with_newline(char *current, char *rest)
     }
 }
 
-static void validateTest()
+static void validateTest(Value *env)
 {
     if (input != NULL)
     {
@@ -107,7 +107,6 @@ static void validateTest()
             printf("  Test: %s\n", scenario_name);
         }
 
-        Value *env = initialise_environment();
         Value *rv = Repl_rep(input, env);
         char *repl_result = (IS_SUCCESSFUL(rv)) ? rv->strV : Printer_prStr(rv, 1)->strV;
         if (strcmp(repl_result, output) == 0)
@@ -150,6 +149,8 @@ int main(int argc, char *argv[])
 
     printf("| %s\n", argv[1]);
 
+    Value *env = initialise_environment();
+
     while (1)
     {
         char *line = NULL;
@@ -158,7 +159,7 @@ int main(int argc, char *argv[])
 
         if (characters_read == -1)
         {
-            validateTest();
+            validateTest(env);
             break;
         }
         else
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
             {
                 if (output != NULL)
                 {
-                    validateTest();
+                    validateTest(env);
                     scenario_name = trim(drop_left(line, 1));
                 }
                 else
@@ -189,7 +190,7 @@ int main(int argc, char *argv[])
             {
                 if (output != NULL)
                 {
-                    validateTest();
+                    validateTest(env);
 
                     input = line;
                 }

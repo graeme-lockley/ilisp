@@ -1,0 +1,102 @@
+; (car)
+(car)
+> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure car})
+
+; (car 1)
+(car 1)
+> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure car})
+
+; (car '(1 2) '(3 4))
+(car '(1 2) '(3 4))
+> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure car})
+
+; (car '())
+(car '())
+> (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure car})
+
+; (car '(1 2 3 4 5))
+(car '(1 2 3 4 5))
+> 1
+
+
+; (cdr)
+(cdr)
+> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure cdr})
+
+; (cdr 1)
+(cdr 1)
+> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure cdr})
+
+; (cdr '(1 2) '(3 4))
+(cdr '(1 2) '(3 4))
+> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure cdr})
+
+; (cdr '())
+(cdr '())
+> (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure cdr})
+
+; (cdr '(1 2 3 4 5))
+(cdr '(1 2 3 4 5))
+> (2 3 4 5)
+
+
+; (count)
+(count)
+> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure count})
+
+; (count 1)
+(count 1)
+> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure count})
+
+; (count '(1 2) '(3 4))
+(count '(1 2) '(3 4))
+> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure count})
+
+; (count '())
+(count '())
+> 0
+
+; (count '(1 2 3 4 5))
+(count '(1 2 3 4 5))
+> 5
+
+; (map-set! (car **root**) 'fred {})
+(map-set! (car **root**) 'fred {})
+> ()
+
+; fred
+fred
+> {}
+
+; (map-set! fred 'a 1)
+(map-set! fred 'a 1)
+> ()
+
+; fred
+fred
+> {a 1}
+
+; (map-set! fred 'b 2)
+(map-set! fred 'b 2)
+> ()
+
+; fred
+fred
+> {b 2 a 1}
+
+; (map-set! fred 'b 3)
+(map-set! fred 'b 3)
+> 2
+
+; fred
+fred
+> {b 3 a 1}
+
+; (map-set! fred :b 4)
+(map-set! fred :b 4)
+> ()
+
+; fred
+fred
+> {:b 4 b 3 a 1}
+

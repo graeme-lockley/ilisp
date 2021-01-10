@@ -130,6 +130,72 @@ Value *map_find(Value *map, Value *key)
     }
 }
 
+Value *builtin_car(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return exceptions_expected_argument_count(mkSymbol("car"), 1, parameters);
+
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameters);
+
+    if (!IS_NIL(CDR(parameters)))
+        return exceptions_expected_argument_count(mkSymbol("car"), 1, parameters);
+
+    Value *first_parameter = CAR(parameters);
+
+    if (!IS_PAIR(first_parameter))
+        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), first_parameter);
+
+    return CAR(first_parameter);
+}
+
+Value *builtin_cdr(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return exceptions_expected_argument_count(mkSymbol("cdr"), 1, parameters);
+
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), parameters);
+
+    if (!IS_NIL(CDR(parameters)))
+        return exceptions_expected_argument_count(mkSymbol("cdr"), 1, parameters);
+
+    Value *first_parameter = CAR(parameters);
+
+    if (!IS_PAIR(first_parameter))
+        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), first_parameter);
+
+    return CDR(first_parameter);
+}
+
+Value *builtin_count(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return exceptions_expected_argument_count(mkSymbol("count"), 1, parameters);
+
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), parameters);
+
+    if (!IS_NIL(CDR(parameters)))
+        return exceptions_expected_argument_count(mkSymbol("count"), 1, parameters);
+
+    Value *list = CAR(parameters);
+
+    int list_length = 0;
+    while (1)
+    {
+        if (IS_NIL(list))
+            return mkNumber(list_length);
+
+        if (IS_PAIR(list))
+            list = CDR(list);
+        else
+            return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), list);
+
+        list_length += 1;
+    }
+}
+
 Value *builtin_integer_plus(Value *parameters)
 {
     int argument_number = 0;
@@ -287,4 +353,43 @@ Value *builtin_integer_divide(Value *parameters)
         else
             return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkString("number"), VNil);
     }
+}
+
+Value *extract_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
+{
+    int index = 0;
+
+    Value *cursor = arguments;
+
+    while (1)
+    {
+        if (index == number)
+        {
+            if (IS_NIL(cursor))
+                return NULL;
+
+            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
+        }
+
+        if (!IS_PAIR(cursor))
+            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
+
+        parameters[index] = CAR(cursor);
+        index += 1;
+        cursor = CDR(cursor);
+    }
+}
+
+Value *builtin_map_set_bang(Value *parameters)
+{
+    Value *parameter[3];
+
+    Value *extract_result = extract_parameters(parameter, parameters, 3, "map-set!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_MAP(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("map-set!"), 0, mkString("map"), parameter[0]);
+
+    return map_set_bang(parameter[0], parameter[1], parameter[2]);
 }

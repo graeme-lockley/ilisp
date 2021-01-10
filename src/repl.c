@@ -27,6 +27,7 @@ Value *initialise_environment()
     Value *root_bindings = map_create();
     Value *root_scope = mkPair(root_bindings, VNil);
 
+    add_binding_into_environment(root_bindings, "**root**", root_scope);
     add_binding_into_environment(root_bindings, "+", mkNativeProcedure(builtin_integer_plus));
     add_binding_into_environment(root_bindings, "-", mkNativeProcedure(builtin_integer_minus));
     add_binding_into_environment(root_bindings, "*", mkNativeProcedure(builtin_integer_multiply));

@@ -4,3 +4,4 @@
 
 src/main
 test/*_test
+test/flag

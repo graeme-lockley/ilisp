@@ -1,3 +1,4 @@
+#include "builtins.h"
 #include "exceptions.h"
 
 ReturnValue exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *v)

@@ -159,7 +159,7 @@ ReturnValue builtin_integer_plus(Value *parameters)
             {
                 Value *exception_name = mkSymbol("InvalidArgument");
                 Value *exception_payload = map_create();
-                map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("+"));
+                map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_plus"));
                 map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
                 map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
                 map_set_bang(exception_payload, mkKeyword(":received"), car);
@@ -174,7 +174,90 @@ ReturnValue builtin_integer_plus(Value *parameters)
         {
             Value *exception_name = mkSymbol("InvalidArgument");
             Value *exception_payload = map_create();
-            map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("+"));
+            map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_plus"));
+            map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+            map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+            map_set_bang(exception_payload, mkKeyword(":received"), VNil);
+
+            Value *exception = mkPair(exception_name, exception_payload);
+
+            ReturnValue rv = {1, exception};
+            return rv;
+        }
+    }
+}
+
+ReturnValue builtin_integer_minus(Value *parameters)
+{
+    if (IS_NIL(parameters))
+    {
+        Value *value_result = mkNumber(0);
+        ReturnValue rv = {0, value_result};
+
+        return rv;
+    }
+
+    int argument_count = 0;
+    int result = 0;
+
+    if (IS_PAIR(parameters) && IS_NUMBER(CAR(parameters)))
+    {
+        if (IS_NIL(CDR(parameters)))
+        {
+            Value *value_result = mkNumber(-NUMBER(CAR(parameters)));
+            ReturnValue rv = {0, value_result};
+
+            return rv;
+        }
+        else
+        {
+            result = NUMBER(CAR(parameters));
+            parameters = CDR(parameters);
+            argument_count = 1;
+        }
+    }
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+        {
+            Value *value_result = mkNumber(result);
+            ReturnValue rv = {0, value_result};
+
+            return rv;
+        }
+
+        if (IS_PAIR(parameters))
+        {
+            Value *car = CAR(parameters);
+            Value *cdr = CDR(parameters);
+
+            if (IS_NUMBER(car))
+            {
+                result -= NUMBER(car);
+                parameters = cdr;
+                argument_count += 1;
+            }
+            else
+            {
+                Value *exception_name = mkSymbol("InvalidArgument");
+                Value *exception_payload = map_create();
+                map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_minus"));
+                map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+                map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+                map_set_bang(exception_payload, mkKeyword(":received"), car);
+
+                Value *exception = mkPair(exception_name, exception_payload);
+
+                ReturnValue rv = {1, exception};
+                return rv;
+            }
+        }
+        else
+        {
+            Value *exception_name = mkSymbol("InvalidArgument");
+            Value *exception_payload = map_create();
+            map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_minus"));
             map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
             map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
             map_set_bang(exception_payload, mkKeyword(":received"), VNil);

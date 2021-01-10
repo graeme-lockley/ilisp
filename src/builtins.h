@@ -9,5 +9,6 @@ extern Value *map_set_bang(Value *map, Value *key, Value *value);
 extern Value *map_remove_bang(Value *map, Value *key);
 
 extern ReturnValue builtin_integer_plus(Value *parameters);
+extern ReturnValue builtin_integer_minus(Value *parameters);
 
 #endif

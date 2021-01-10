@@ -18,6 +18,7 @@ static char *test_ordinal_values()
     mu_assert_label(VT_MAP == 8);
     mu_assert_label(VT_NATIVE_PROCEDURE == 9);
     mu_assert_label(VT_PROCEDURE == 10);
+    mu_assert_label(VT_EXCEPTION == 11);
 
     return NULL;
 }
@@ -143,14 +144,27 @@ static char *test_map_values()
     return NULL;
 }
 
-#define mu_assert_truthy_equals_label(v1, v2)                  \
-    {                                                          \
+static char *test_exception_values()
+{
+    char *string = "hello world";
+    Value *value = mkException(mkString(string));
+
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_EXCEPTION(value));
+    mu_assert_label(IS_STRING(EXCEPTION(value)));
+    mu_assert_label(strcmp(STRING(EXCEPTION(value)), string) == 0);
+
+    return NULL;
+}
+
+#define mu_assert_truthy_equals_label(v1, v2)                \
+    {                                                        \
         mu_assert_label(Value_truthy(Value_equals(v1, v2))); \
         mu_assert_label(Value_truthy(Value_equals(v2, v1))); \
     }
 
-#define mu_assert_truthy_not_equals_label(v1, v2)               \
-    {                                                           \
+#define mu_assert_truthy_not_equals_label(v1, v2)             \
+    {                                                         \
         mu_assert_label(!Value_truthy(Value_equals(v1, v2))); \
         mu_assert_label(!Value_truthy(Value_equals(v2, v1))); \
     }
@@ -254,6 +268,7 @@ static char *test_suite()
     mu_run_test(test_pair_values);
     mu_run_test(test_map_values);
     mu_run_test(test_vector_values);
+    mu_run_test(test_exception_values);
 
     mu_run_test(test_equals);
 

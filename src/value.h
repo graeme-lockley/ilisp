@@ -25,7 +25,8 @@ enum ValueType
     VT_VECTOR,
     VT_MAP,
     VT_NATIVE_PROCEDURE,
-    VT_PROCEDURE // == 10
+    VT_PROCEDURE, // == 10
+    VT_EXCEPTION
 };
 
 #define VALUE_SHIFT_WIDTH 1
@@ -54,6 +55,7 @@ struct ValueStruct
         } vectorV;
         struct ValueStruct *mapV;
         ReturnValue (*native_procedure)(struct ValueStruct *parameters);
+        struct ValueStruct *exceptionV;
     };
 };
 
@@ -71,8 +73,8 @@ typedef struct ValueStruct Value;
 #define IS_VECTOR(v) ((TAG_TO_VT(v) == VT_VECTOR))
 #define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
 #define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
+#define IS_EXCEPTION(v) ((TAG_TO_VT(v) == VT_EXCEPTION))
 
-extern void freeValue(Value *value);
 extern int Value_truthy(Value *v);
 extern Value *Value_equals(Value *a, Value *b);
 
@@ -111,6 +113,9 @@ extern void Value_setMapping(Value *map, Value *key, Value *value);
 extern Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters));
 #define NATIVE_PROCEDURE(v) ((v)->native_procedure)
 
+extern Value *mkException(Value *exception);
+#define EXCEPTION(v) ((v)->exceptionV)
+
 typedef struct ReturnValueStruct
 {
     int isValue; // 0 - successful return, 1 - exception
@@ -118,6 +123,5 @@ typedef struct ReturnValueStruct
 } ReturnValue;
 
 #define IS_SUCCESSFUL(v) ((v).isValue == 0)
-#define IS_EXCEPTION(v) ((v).isValue == 1)
 
 #endif

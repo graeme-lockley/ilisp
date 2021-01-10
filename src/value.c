@@ -117,6 +117,13 @@ Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters))
     return value;
 }
 
+Value *mkException(Value *exception)
+{
+    Value *value = mkValue(VT_EXCEPTION);
+    value->exceptionV = exception;
+    return value;
+}
+
 int Value_truthy(Value *v)
 {
     return (v == VFalse) ? 0 : 1;

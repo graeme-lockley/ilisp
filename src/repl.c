@@ -29,6 +29,7 @@ Value *initialise_environment()
 
     add_binding_into_environment(root_bindings, "+", mkNativeProcedure(builtin_integer_plus));
     add_binding_into_environment(root_bindings, "-", mkNativeProcedure(builtin_integer_minus));
+    add_binding_into_environment(root_bindings, "*", mkNativeProcedure(builtin_integer_multiply));
 
     return root_scope;
 }

@@ -187,6 +187,64 @@ ReturnValue builtin_integer_plus(Value *parameters)
     }
 }
 
+ReturnValue builtin_integer_multiply(Value *parameters)
+{
+    int argument_count = 0;
+    int result = 1;
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+        {
+            Value *value_result = mkNumber(result);
+            ReturnValue rv = {0, value_result};
+
+            return rv;
+        }
+
+        if (IS_PAIR(parameters))
+        {
+            Value *car = CAR(parameters);
+            Value *cdr = CDR(parameters);
+
+            if (IS_NUMBER(car))
+            {
+                result *= NUMBER(car);
+                parameters = cdr;
+                argument_count += 1;
+            }
+            else
+            {
+                Value *exception_name = mkSymbol("InvalidArgument");
+                Value *exception_payload = map_create();
+                map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_multiply"));
+                map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+                map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+                map_set_bang(exception_payload, mkKeyword(":received"), car);
+
+                Value *exception = mkPair(exception_name, exception_payload);
+
+                ReturnValue rv = {1, exception};
+                return rv;
+            }
+        }
+        else
+        {
+            Value *exception_name = mkSymbol("InvalidArgument");
+            Value *exception_payload = map_create();
+            map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer_multiply"));
+            map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_count));
+            map_set_bang(exception_payload, mkKeyword(":expected-type"), mkString("number"));
+            map_set_bang(exception_payload, mkKeyword(":received"), VNil);
+
+            Value *exception = mkPair(exception_name, exception_payload);
+
+            ReturnValue rv = {1, exception};
+            return rv;
+        }
+    }
+}
+
 ReturnValue builtin_integer_minus(Value *parameters)
 {
     if (IS_NIL(parameters))

@@ -7,6 +7,7 @@ RM=rm
 
 TARGETS=\
 	src/builtins.o \
+	src/exceptions.o \
 	src/main.o \
 	src/printer.o \
 	src/reader.o \

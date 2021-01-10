@@ -20,7 +20,11 @@
 
 ; (+ 1 "hello")
 (+ 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer_plus})
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-plus})
+
+; (+ "hello" 1)
+(+ "hello" 1)
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-plus})
 
 ; (-)
 (-)
@@ -44,8 +48,13 @@
 
 ; (- 1 "hello")
 (- 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer_minus})
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-minus})
 
+; (- "hello" 1)
+(- "hello" 1)
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-minus})
+
+;; integer-multiply
 ; (*)
 (*)
 > 1
@@ -68,4 +77,45 @@
 
 ; (* 1 "hello")
 (* 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer_multiply})
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-multiply})
+
+; (* "hello" 1)
+(* "hello" 1)
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-multiply})
+
+;; integer-divide
+; (/)
+(/)
+> 1
+
+; (/ 1)
+(/ 1)
+> 1
+
+; (/ 5)
+(/ 5)
+> 0
+
+; (/ 5 2)
+(/ 5 2)
+> 2
+
+; (/ 50 2 3)
+(/ 50 2 3)
+> 8
+
+; (/ 100 2 5 2)
+(/ 100 2 5 2)
+> 5
+
+; (/ 1 "hello")
+(/ 1 "hello")
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-divide})
+
+; (/ "hello" 1)
+(/ "hello" 1)
+> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-divide})
+
+; (/ 10 0)
+(/ 10 0)
+> (DivideByZero . {:arg-number 1 :procedure integer-divide})

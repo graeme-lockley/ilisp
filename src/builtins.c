@@ -130,7 +130,7 @@ Value *map_find(Value *map, Value *key)
     }
 }
 
-ReturnValue builtin_integer_plus(Value *parameters)
+Value *builtin_integer_plus(Value *parameters)
 {
     int argument_number = 0;
     int result = 0;
@@ -138,12 +138,7 @@ ReturnValue builtin_integer_plus(Value *parameters)
     while (1)
     {
         if (IS_NIL(parameters))
-        {
-            Value *value_result = mkNumber(result);
-            ReturnValue rv = {0, value_result};
-
-            return rv;
-        }
+            return mkNumber(result);
 
         if (IS_PAIR(parameters))
         {
@@ -164,7 +159,7 @@ ReturnValue builtin_integer_plus(Value *parameters)
     }
 }
 
-ReturnValue builtin_integer_multiply(Value *parameters)
+Value *builtin_integer_multiply(Value *parameters)
 {
     int argument_number = 0;
     int result = 1;
@@ -172,12 +167,7 @@ ReturnValue builtin_integer_multiply(Value *parameters)
     while (1)
     {
         if (IS_NIL(parameters))
-        {
-            Value *value_result = mkNumber(result);
-            ReturnValue rv = {0, value_result};
-
-            return rv;
-        }
+            return mkNumber(result);
 
         if (IS_PAIR(parameters))
         {
@@ -198,15 +188,10 @@ ReturnValue builtin_integer_multiply(Value *parameters)
     }
 }
 
-ReturnValue builtin_integer_minus(Value *parameters)
+Value *builtin_integer_minus(Value *parameters)
 {
     if (IS_NIL(parameters))
-    {
-        Value *value_result = mkNumber(0);
-        ReturnValue rv = {0, value_result};
-
-        return rv;
-    }
+        return mkNumber(0);
 
     int argument_number = 0;
     int result = 0;
@@ -214,12 +199,7 @@ ReturnValue builtin_integer_minus(Value *parameters)
     if (IS_PAIR(parameters) && IS_NUMBER(CAR(parameters)))
     {
         if (IS_NIL(CDR(parameters)))
-        {
-            Value *value_result = mkNumber(-NUMBER(CAR(parameters)));
-            ReturnValue rv = {0, value_result};
-
-            return rv;
-        }
+            return mkNumber(-NUMBER(CAR(parameters)));
         else
         {
             result = NUMBER(CAR(parameters));
@@ -231,12 +211,7 @@ ReturnValue builtin_integer_minus(Value *parameters)
     while (1)
     {
         if (IS_NIL(parameters))
-        {
-            Value *value_result = mkNumber(result);
-            ReturnValue rv = {0, value_result};
-
-            return rv;
-        }
+            return mkNumber(result);
 
         if (IS_PAIR(parameters))
         {
@@ -257,15 +232,10 @@ ReturnValue builtin_integer_minus(Value *parameters)
     }
 }
 
-ReturnValue builtin_integer_divide(Value *parameters)
+Value *builtin_integer_divide(Value *parameters)
 {
     if (IS_NIL(parameters))
-    {
-        Value *value_result = mkNumber(1);
-        ReturnValue rv = {0, value_result};
-
-        return rv;
-    }
+        return mkNumber(1);
 
     int argument_number = 0;
     int result = 0;
@@ -279,12 +249,7 @@ ReturnValue builtin_integer_divide(Value *parameters)
             if (n == 0)
                 return exceptions_divide_by_zero(0);
             else
-            {
-                Value *value_result = mkNumber(1 / n);
-                ReturnValue rv = {0, value_result};
-
-                return rv;
-            }
+                return mkNumber(1 / n);
         }
         else
         {
@@ -297,12 +262,7 @@ ReturnValue builtin_integer_divide(Value *parameters)
     while (1)
     {
         if (IS_NIL(parameters))
-        {
-            Value *value_result = mkNumber(result);
-            ReturnValue rv = {0, value_result};
-
-            return rv;
-        }
+            return mkNumber(result);
 
         if (IS_PAIR(parameters))
         {

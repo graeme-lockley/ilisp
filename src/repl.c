@@ -35,14 +35,14 @@ Value *initialise_environment()
     return root_scope;
 }
 
-static ReturnValue Main_read(char *content)
+static Value *Main_read(char *content)
 {
     return Reader_read(content);
 }
 
-extern ReturnValue Main_eval(Value *content, Value *env);
+extern Value *Main_eval(Value *content, Value *env);
 
-ReturnValue Main_evalValue(Value *v, Value *env)
+Value *Main_evalValue(Value *v, Value *env)
 {
     if (IS_SYMBOL(v))
     {
@@ -54,42 +54,33 @@ ReturnValue Main_evalValue(Value *v, Value *env)
             Value *exception_payload = map_create();
             map_set_bang(exception_payload, mkKeyword("name"), v);
 
-            Value *exception = mkPair(exception_name, exception_payload);
-
-            ReturnValue rv = {1, exception};
-            return rv;
+            return mkPair(exception_name, exception_payload);
         }
         else
-        {
-            ReturnValue rv = {0, binding};
-            return rv;
-        }
+            return binding;
     }
 
     if (IS_PAIR(v))
     {
-        ReturnValue car = Main_eval(CAR(v), env);
+        Value *car = Main_eval(CAR(v), env);
 
         if (IS_SUCCESSFUL(car))
         {
-            Value *root = mkPair(car.value, VNil);
+            Value *root = mkPair(car, VNil);
             Value *srcCursor = CDR(v);
             Value *resultCursor = root;
 
             while (1)
             {
                 if (IS_NIL(srcCursor))
-                {
-                    ReturnValue rv = {0, root};
-                    return rv;
-                }
+                    return root;
                 else if (IS_PAIR(srcCursor))
                 {
-                    ReturnValue cdr = Main_eval(CAR(srcCursor), env);
+                    Value *cdr = Main_eval(CAR(srcCursor), env);
 
                     if (IS_SUCCESSFUL(cdr))
                     {
-                        Value *pair = mkPair(cdr.value, VNil);
+                        Value *pair = mkPair(cdr, VNil);
                         CDR(resultCursor) = pair;
 
                         resultCursor = pair;
@@ -100,15 +91,14 @@ ReturnValue Main_evalValue(Value *v, Value *env)
                 }
                 else
                 {
-                    ReturnValue cdr = Main_eval(srcCursor, env);
+                    Value *cdr = Main_eval(srcCursor, env);
 
                     if (IS_SUCCESSFUL(cdr))
                     {
-                        CDR(resultCursor) = cdr.value;
+                        CDR(resultCursor) = cdr;
 
-                        resultCursor = cdr.value;
-                        ReturnValue rv = {0, root};
-                        return rv;
+                        resultCursor = cdr;
+                        return root;
                     }
                     else
                         return cdr;
@@ -119,17 +109,13 @@ ReturnValue Main_evalValue(Value *v, Value *env)
             return car;
     }
 
-    ReturnValue rv = {0, v};
-    return rv;
+    return v;
 }
 
-ReturnValue Main_eval(Value *v, Value *env)
+Value *Main_eval(Value *v, Value *env)
 {
     if (IS_NIL(v))
-    {
-        ReturnValue result = {0, v};
-        return result;
-    }
+        return v;
 
     if (IS_PAIR(v))
     {
@@ -137,25 +123,18 @@ ReturnValue Main_eval(Value *v, Value *env)
         {
             char *symbol_name = SYMBOL(CAR(v));
             if (strcmp(symbol_name, "quote") == 0)
-            {
-                Value *arguments = CDR(v);
-                ReturnValue rv = {0, arguments};
-                return rv;
-            }
+                return CDR(v);
         }
 
-        ReturnValue ve = Main_evalValue(v, env);
+        Value *ve = Main_evalValue(v, env);
 
         if (IS_SUCCESSFUL(ve))
         {
-            Value *f = CAR(ve.value);
-            Value *args = CDR(ve.value);
+            Value *f = CAR(ve);
+            Value *args = CDR(ve);
 
             if (IS_NATIVE_PROCEDURE(f))
-            {
-                ReturnValue rv = f->native_procedure(args);
-                return rv;
-            }
+                return f->native_procedure(args);
             else
             {
                 Value *exception_name = mkSymbol("ValueNotApplicable");
@@ -163,10 +142,7 @@ ReturnValue Main_eval(Value *v, Value *env)
                 map_set_bang(exception_payload, mkKeyword(":value"), f);
                 map_set_bang(exception_payload, mkKeyword(":arguments"), args);
 
-                Value *exception = mkPair(exception_name, exception_payload);
-
-                ReturnValue rv = {1, exception};
-                return rv;
+                return mkPair(exception_name, exception_payload);
             }
         }
         else
@@ -176,20 +152,16 @@ ReturnValue Main_eval(Value *v, Value *env)
     return Main_evalValue(v, env);
 }
 
-static ReturnValue Main_print(Value *content)
+static Value *Main_print(Value *content)
 {
     return Printer_prStr(content, 1);
 }
 
-ReturnValue Repl_rep(char *content, Value *env)
+Value *Repl_rep(char *content, Value *env)
 {
-    ReturnValue readRV = Main_read(content);
+    Value *readRV = Main_read(content);
     if (IS_SUCCESSFUL(readRV))
-    {
-        ReturnValue evalRV = Main_eval(readRV.value, env);
-        ReturnValue result = Main_print(evalRV.value);
-        return result;
-    }
+        return Main_print(Main_eval(readRV, env));
 
     return readRV;
 }
@@ -201,18 +173,18 @@ int Repl_repl()
 
     while ((p = Readline_readline("CLI> ")) != NULL)
     {
-        ReturnValue v = Repl_rep(p, env);
+        Value *v = Repl_rep(p, env);
 
         if (IS_SUCCESSFUL(v))
         {
-            puts(v.value->strV);
+            puts(v->strV);
         }
         else
         {
-            ReturnValue e = Printer_prStr(v.value, 1);
+            Value *e = Printer_prStr(v, 1);
 
             if (IS_SUCCESSFUL(e))
-                printf("Error: %s\n", e.value->strV);
+                printf("Error: %s\n", e->strV);
             else
                 printf("Error: unable to show output\n");
         }

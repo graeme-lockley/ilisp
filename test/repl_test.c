@@ -108,8 +108,8 @@ static void validateTest()
         }
 
         Value *env = initialise_environment();
-        ReturnValue rv = Repl_rep(input, env);
-        char *repl_result = (IS_SUCCESSFUL(rv)) ? rv.value->strV : Printer_prStr(rv.value, 1).value->strV;
+        Value *rv = Repl_rep(input, env);
+        char *repl_result = (IS_SUCCESSFUL(rv)) ? rv->strV : Printer_prStr(rv, 1)->strV;
         if (strcmp(repl_result, output) == 0)
         {
             tests_passed += 1;

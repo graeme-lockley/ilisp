@@ -46,7 +46,7 @@ static Value *map_test_data_3()
 
 static char *as_string(Value *v)
 {
-    return Printer_prStr(v, 1).value->strV;
+    return Printer_prStr(v, 1)->strV;
 }
 
 static char *test_map_set_bang()

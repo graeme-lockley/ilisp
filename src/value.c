@@ -110,7 +110,7 @@ Value *mkMap(Value *items)
     return value;
 }
 
-Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters))
+Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters))
 {
     Value *value = mkValue(VT_NATIVE_PROCEDURE);
     value->native_procedure = native_procedure;

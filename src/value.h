@@ -4,8 +4,7 @@
 /*
  * The structure of a value's tag is layed out as follows:
  *   - bit 0 - whether or not that the value is immutable
- *   - bit 1 - if pinned then this value is not to be garbage collected
- *   - bits 3-6 - the type of the value
+ *   - bits 1-6 - the type of the value
  */
 
 enum ValueProperties
@@ -33,8 +32,6 @@ enum ValueType
 #define TAG_TO_VT(t) ((t)->tag >> VALUE_SHIFT_WIDTH)
 #define VT_TO_TAG(t) ((t) << VALUE_SHIFT_WIDTH)
 
-typedef struct ReturnValueStruct ReturnValue;
-
 struct ValueStruct
 {
     char tag;
@@ -54,7 +51,7 @@ struct ValueStruct
             struct ValueStruct **items;
         } vectorV;
         struct ValueStruct *mapV;
-        ReturnValue (*native_procedure)(struct ValueStruct *parameters);
+        struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters);
         struct ValueStruct *exceptionV;
     };
 };
@@ -110,18 +107,12 @@ extern Value *mkMap();
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
-extern Value *mkNativeProcedure(ReturnValue (*native_procedure)(Value *parameters));
+extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters));
 #define NATIVE_PROCEDURE(v) ((v)->native_procedure)
 
 extern Value *mkException(Value *exception);
 #define EXCEPTION(v) ((v)->exceptionV)
 
-typedef struct ReturnValueStruct
-{
-    int isValue; // 0 - successful return, 1 - exception
-    struct ValueStruct *value;
-} ReturnValue;
-
-#define IS_SUCCESSFUL(v) ((v).isValue == 0)
+#define IS_SUCCESSFUL(v) (!IS_EXCEPTION(v))
 
 #endif

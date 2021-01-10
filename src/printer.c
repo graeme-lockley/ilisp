@@ -162,15 +162,12 @@ static void pString(WriteBuffer *wb, Value *v, int readable)
     }
 }
 
-ReturnValue Printer_prStr(Value *v, int readable)
+Value *Printer_prStr(Value *v, int readable)
 {
     WriteBuffer wb = {malloc(BUFFER_TRANCHE), BUFFER_TRANCHE, 0};
     wb.buffer[0] = (char)0;
 
     pString(&wb, v, readable);
 
-    ReturnValue rv = {0, mkString(wb.buffer)};
-    free(wb.buffer);
-
-    return rv;
+    return mkString(wb.buffer);
 }

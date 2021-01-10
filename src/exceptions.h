@@ -3,7 +3,7 @@
 
 #include "value.h"
 
-ReturnValue exceptions_divide_by_zero(int argument_number);
-ReturnValue exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *v);
+Value *exceptions_divide_by_zero(int argument_number);
+Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *v);
 
 #endif

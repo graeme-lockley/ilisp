@@ -1,7 +1,7 @@
 #include "builtins.h"
 #include "exceptions.h"
 
-ReturnValue exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *v)
+Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *v)
 {
     Value *exception_name = mkSymbol("InvalidArgument");
     Value *exception_payload = map_create();
@@ -10,22 +10,16 @@ ReturnValue exceptions_invalid_argument(Value *procedure_name, int argument_numb
     map_set_bang(exception_payload, mkKeyword(":expected-type"), expected_type);
     map_set_bang(exception_payload, mkKeyword(":received"), v);
 
-    Value *exception = mkPair(exception_name, exception_payload);
-
-    ReturnValue rv = {1, exception};
-    return rv;
+    return mkPair(exception_name, exception_payload);
 }
 
-ReturnValue exceptions_divide_by_zero(int argument_number)
+Value *exceptions_divide_by_zero(int argument_number)
 {
     Value *exception_name = mkSymbol("DivideByZero");
     Value *exception_payload = map_create();
     map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer-divide"));
     map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_number));
 
-    Value *exception = mkPair(exception_name, exception_payload);
-
-    ReturnValue rv = {1, exception};
-    return rv;
+    return mkPair(exception_name, exception_payload);
 }
 

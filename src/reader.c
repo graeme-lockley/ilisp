@@ -229,21 +229,18 @@ static Lexer initialise_lexer(char *content)
     return lexer;
 }
 
-static ReturnValue parse(Lexer *lexer)
+static Value *parse(Lexer *lexer)
 {
     switch (lexer->token)
     {
     case QUOTE:
     {
         next_token(lexer);
-        ReturnValue v = parse(lexer);
+        Value *v = parse(lexer);
         if (IS_SUCCESSFUL(v))
         {
             Value *quote = mkSymbol("quote");
-            Value *result = mkPair(quote, v.value);
-
-            ReturnValue result1 = {0, result};
-            return result1;
+            return mkPair(quote, v);
         }
         else
             return v;
@@ -256,8 +253,7 @@ static ReturnValue parse(Lexer *lexer)
 
         next_token(lexer);
 
-        ReturnValue result = {0, v};
-        return result;
+        return v;
     }
 
     case LITERAL_NUMBER:
@@ -268,8 +264,8 @@ static ReturnValue parse(Lexer *lexer)
         lexer->content[lexer->end.offset + 1] = c;
 
         next_token(lexer);
-        ReturnValue result = {0, v};
-        return result;
+
+        return v;
     }
 
     case IDENTIFIER:
@@ -282,8 +278,7 @@ static ReturnValue parse(Lexer *lexer)
         lexer->content[lexer->end.offset + 1] = c;
 
         next_token(lexer);
-        ReturnValue result = {0, v};
-        return result;
+        return v;
     }
 
     case LPAREN:
@@ -294,38 +289,33 @@ static ReturnValue parse(Lexer *lexer)
         {
             next_token(lexer);
 
-            ReturnValue result = {0, VNil};
-            return result;
+            return VNil;
         }
         else
         {
-            ReturnValue car = parse(lexer);
+            Value *car = parse(lexer);
 
             if (IS_SUCCESSFUL(car))
             {
-                Value *head = mkPair(car.value, VNil);
+                Value *head = mkPair(car, VNil);
                 Value *cursor = head;
 
                 while (1)
                 {
                     if (lexer->token == EOS)
-                    {
-                        ReturnValue result = {1, head};
-                        return result;
-                    }
+                        return head;
                     else if (lexer->token == RPAREN)
                     {
                         next_token(lexer);
-                        ReturnValue result = {0, head};
-                        return result;
+                        return head;
                     }
                     else
                     {
-                        ReturnValue next = parse(lexer);
+                        Value *next = parse(lexer);
 
                         if (IS_SUCCESSFUL(next))
                         {
-                            cursor->pairV.cdr = mkPair(next.value, VNil);
+                            cursor->pairV.cdr = mkPair(next, VNil);
                             cursor = CDR(cursor);
                         }
                         else
@@ -345,40 +335,37 @@ static ReturnValue parse(Lexer *lexer)
         {
             next_token(lexer);
 
-            ReturnValue result = {0, VEmptyVector};
-            return result;
+            return VEmptyVector;
         }
         else
         {
-            ReturnValue v = parse(lexer);
+            Value *v = parse(lexer);
 
             if (IS_SUCCESSFUL(v))
             {
                 Value **buffer = (Value **)malloc(BUFFER_TRANCHE * sizeof(Value *));
                 int buffer_length = BUFFER_TRANCHE;
                 int buffer_end = 1;
-                buffer[0] = v.value;
+                buffer[0] = v;
 
                 while (1)
                 {
                     if (lexer->token == EOS)
                     {
-                        ReturnValue result = {1, mkVector(buffer, buffer_end)};
+                        Value *result = mkVector(buffer, buffer_end);
                         free(buffer);
-
                         return result;
                     }
                     else if (lexer->token == RBRACKET)
                     {
                         next_token(lexer);
-                        ReturnValue result = {0, mkVector(buffer, buffer_end)};
+                        Value *result = mkVector(buffer, buffer_end);
                         free(buffer);
-
                         return result;
                     }
                     else
                     {
-                        ReturnValue next = parse(lexer);
+                        Value *next = parse(lexer);
 
                         if (IS_SUCCESSFUL(next))
                         {
@@ -391,7 +378,7 @@ static ReturnValue parse(Lexer *lexer)
                                 buffer_length = new_buffer_length;
                                 buffer = new_buffer;
                             }
-                            buffer[buffer_end] = next.value;
+                            buffer[buffer_end] = next;
                             buffer_end += 1;
                         }
                         else
@@ -415,19 +402,18 @@ static ReturnValue parse(Lexer *lexer)
         {
             next_token(lexer);
 
-            ReturnValue result = {0, mkMap(VNil)};
-            return result;
+            return mkMap();
         }
         else
         {
-            ReturnValue m1_key = parse(lexer);
+            Value *m1_key = parse(lexer);
 
             if (IS_SUCCESSFUL(m1_key))
             {
-                ReturnValue m1_value = parse(lexer);
+                Value *m1_value = parse(lexer);
                 if (IS_SUCCESSFUL(m1_value))
                 {
-                    Value *m1 = mkPair(m1_key.value, m1_value.value);
+                    Value *m1 = mkPair(m1_key, m1_value);
                     Value *head = mkPair(m1, VNil);
                     Value *cursor = head;
 
@@ -437,25 +423,23 @@ static ReturnValue parse(Lexer *lexer)
                     {
                         if (lexer->token == EOS)
                         {
-                            ReturnValue result = {1, head};
-                            return result;
+                            return mkException(head);
                         }
                         else if (lexer->token == RCURLEY)
                         {
                             next_token(lexer);
-                            ReturnValue result = {0, mkMap(head)};
-                            return result;
+                            return mkMap(head);
                         }
                         else
                         {
-                            ReturnValue mi_key = parse(lexer);
+                            Value *mi_key = parse(lexer);
 
                             if (IS_SUCCESSFUL(mi_key))
                             {
-                                ReturnValue mi_value = parse(lexer);
+                                Value *mi_value = parse(lexer);
                                 if (IS_SUCCESSFUL(mi_value))
                                 {
-                                    Value *mi = mkPair(mi_key.value, mi_value.value);
+                                    Value *mi = mkPair(mi_key, mi_value);
 
                                     Value *link = mkPair(mi, VNil);
 
@@ -465,21 +449,15 @@ static ReturnValue parse(Lexer *lexer)
                                     // dumpValue("matched next", head);
                                 }
                                 else
-                                {
                                     return mi_value;
-                                }
                             }
                             else
-                            {
                                 return mi_key;
-                            }
                         }
                     }
                 }
                 else
-                {
                     return m1_value;
-                }
             }
             else
                 return m1_key;
@@ -489,14 +467,12 @@ static ReturnValue parse(Lexer *lexer)
     default:
     {
         next_token(lexer);
-
-        ReturnValue result = {0, VNil};
-        return result;
+        return VNil;
     }
     }
 }
 
-ReturnValue Reader_read(char *content)
+Value *Reader_read(char *content)
 {
     struct LexerState lexer = initialise_lexer(content);
 

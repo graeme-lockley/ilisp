@@ -71,6 +71,15 @@ static void append(WriteBuffer *wb, char *v)
     wb->end_of_writer += length_of_v;
 }
 
+static void append_char(WriteBuffer *wb, char c)
+{
+    char s[2];
+
+    s[0] = c;
+    s[1] = '\0';
+    append(wb, s);
+}
+
 static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
 {
     int v_in_set = set_in(*s, v);
@@ -167,13 +176,25 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
         if (readable)
         {
             append(wb, "\"");
-            append(wb, STRING(v));
+
+            char *s = STRING(v);
+            int s_length = strlen(s);
+            for (int lp = 0; lp < s_length; lp += 1)
+            {
+                char c = s[lp];
+
+                if (c == '"')
+                {
+                    append(wb, "\\\"");
+                }
+                else
+                    append_char(wb, c);
+            }
+
             append(wb, "\"");
         }
         else
-        {
             append(wb, STRING(v));
-        }
         break;
 
     case VT_MAP:

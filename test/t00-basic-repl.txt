@@ -67,3 +67,52 @@
 ; Literal map - {:a 1 "hello" "world" 456 :c if 0}
 {:a 1 "hello" "world" 456 :c if 0}
 > {:a 1 "hello" "world" 456 :c if 0}
+
+
+; Unexpected EOS - unclosed paren
+(
+> (:exception (UnexpectedEndOfStream . {expected ")"}))
+
+; Unexpected EOS - unclosed paren
+(1
+> (:exception (UnexpectedEndOfStream . {expected ")"}))
+
+; Unexpected EOS - unclosed paren
+(1 2 3
+> (:exception (UnexpectedEndOfStream . {expected ")"}))
+
+; Unexpected EOS - unclosed bracket
+[
+> (:exception (UnexpectedEndOfStream . {expected "]"}))
+
+; Unexpected EOS - unclosed paren
+[1
+> (:exception (UnexpectedEndOfStream . {expected "]"}))
+
+; Unexpected EOS - unclosed paren
+[1 2 3
+> (:exception (UnexpectedEndOfStream . {expected "]"}))
+
+; Unexpected EOS - unclosed curley
+{
+> (:exception (UnexpectedEndOfStream . {expected "}"}))
+
+; Unexpected EOS - unclosed curley
+{:a 1
+> (:exception (UnexpectedEndOfStream . {expected "}"}))
+
+; Unexpected EOS - unclosed curley
+{:a 1 :b
+> (:exception (UnexpectedEndOfStream . {expected "}"}))
+
+; Unexpected EOS - unclosed quote
+"
+> (:exception (UnexpectedEndOfStream . {expected "\""}))
+
+; Unexpected EOS - unclosed quote
+"h
+> (:exception (UnexpectedEndOfStream . {expected "\""}))
+
+; Unexpected EOS - unclosed quote
+"hello
+> (:exception (UnexpectedEndOfStream . {expected "\""}))

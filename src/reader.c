@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "exceptions.h"
 #include "printer.h"
 #include "value.h"
 
@@ -24,7 +25,7 @@ enum Token
     IDENTIFIER,
     LITERAL_STRING,
     LITERAL_NUMBER,
-    ERROR, // == 15
+    ERROR_UNENCLOSED_QUOTE, // == 15
     EOS,
 };
 
@@ -188,7 +189,7 @@ static void next_token(Lexer *lexer)
             {
                 if (current == 0)
                 {
-                    set_token(lexer, ERROR, &start, &cursor);
+                    set_token(lexer, ERROR_UNENCLOSED_QUOTE, &start, &cursor);
                     break;
                 }
                 else if (current == '"')
@@ -223,7 +224,7 @@ static Lexer initialise_lexer(char *content)
 {
     Position position = {-1, 1, 0};
 
-    Lexer lexer = {content, strlen(content), position, ERROR, position};
+    Lexer lexer = {content, strlen(content), position, EOS, position};
     next_token(&lexer);
 
     return lexer;
@@ -293,7 +294,8 @@ static Value *parse(Lexer *lexer)
             while (1)
             {
                 if (lexer->token == EOS)
-                    return head;
+                    return exceptions_unexpected_end_of_stream(")");
+
                 else if (lexer->token == RPAREN)
                 {
                     next_token(lexer);
@@ -337,9 +339,8 @@ static Value *parse(Lexer *lexer)
             {
                 if (lexer->token == EOS)
                 {
-                    Value *result = mkException(mkVector(buffer, buffer_end));
                     free(buffer);
-                    return result;
+                    return exceptions_unexpected_end_of_stream("]");
                 }
 
                 if (lexer->token == RBRACKET)
@@ -398,7 +399,7 @@ static Value *parse(Lexer *lexer)
                 while (1)
                 {
                     if (lexer->token == EOS)
-                        return mkException(head);
+                        return exceptions_unexpected_end_of_stream("}");
 
                     if (lexer->token == RCURLEY)
                     {
@@ -432,6 +433,9 @@ static Value *parse(Lexer *lexer)
         else
             return m1_key;
     }
+
+    case ERROR_UNENCLOSED_QUOTE:
+        return exceptions_unexpected_end_of_stream("\"");
 
     default:
     {

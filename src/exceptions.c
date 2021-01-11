@@ -45,6 +45,15 @@ Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_unexpected_end_of_stream(char *expected)
+{
+    Value *exception_name = mkSymbol("UnexpectedEndOfStream");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword("expected"), mkString(expected));
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_unknown_symbol(Value *symbol)
 {
     Value *exception_name = mkSymbol("UnknownSymbol");

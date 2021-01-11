@@ -34,13 +34,32 @@ Value *exceptions_divide_by_zero(int argument_number)
     return mkException(mkPair(exception_name, exception_payload));
 }
 
-Value *exceptions_non_terminated_string(char *source_name, Value *start, Value*end) 
+Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *end)
 {
     Value *exception_name = mkSymbol("NonTerminatedString");
     Value *exception_payload = map_create();
     map_set_bang(exception_payload, mkKeyword(":source-name"), mkString(source_name));
     map_set_bang(exception_payload, mkKeyword(":start"), start);
     map_set_bang(exception_payload, mkKeyword(":end"), end);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_unknown_symbol(Value *symbol)
+{
+    Value *exception_name = mkSymbol("UnknownSymbol");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword("name"), symbol);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_value_not_applicable(Value *value, Value *arguments)
+{
+    Value *exception_name = mkSymbol("ValueNotApplicable");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":value"), value);
+    map_set_bang(exception_payload, mkKeyword(":arguments"), arguments);
 
     return mkException(mkPair(exception_name, exception_payload));
 }

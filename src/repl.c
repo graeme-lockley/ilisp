@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "builtins.h"
+#include "exceptions.h"
 #include "printer.h"
 #include "reader.h"
 #include "readline.h"
@@ -54,16 +55,7 @@ Value *Main_evalValue(Value *v, Value *env)
     {
         Value *binding = map_find(CAR(env), v);
 
-        if (IS_NIL(binding))
-        {
-            Value *exception_name = mkSymbol("UnknownSymbol");
-            Value *exception_payload = map_create();
-            map_set_bang(exception_payload, mkKeyword("name"), v);
-
-            return mkException(mkPair(exception_name, exception_payload));
-        }
-        else
-            return binding;
+        return (IS_NIL(binding)) ? exceptions_unknown_symbol(v) : binding;
     }
 
     if (IS_PAIR(v))
@@ -142,14 +134,7 @@ Value *Main_eval(Value *v, Value *env)
             if (IS_NATIVE_PROCEDURE(f))
                 return f->native_procedure(args);
             else
-            {
-                Value *exception_name = mkSymbol("ValueNotApplicable");
-                Value *exception_payload = map_create();
-                map_set_bang(exception_payload, mkKeyword(":value"), f);
-                map_set_bang(exception_payload, mkKeyword(":arguments"), args);
-
-                return mkException(mkPair(exception_name, exception_payload));
-            }
+                return exceptions_value_not_applicable(f, args);
         }
         else
             return ve;

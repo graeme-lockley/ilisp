@@ -55,7 +55,7 @@ Value *Main_evalValue(Value *v, Value *env)
     {
         Value *binding = map_find(CAR(env), v);
 
-        return (IS_NIL(binding)) ? exceptions_unknown_symbol(v) : binding;
+        return IS_NIL(binding) ? exceptions_unknown_symbol(v) : binding;
     }
 
     if (IS_PAIR(v))
@@ -131,10 +131,7 @@ Value *Main_eval(Value *v, Value *env)
             Value *f = CAR(ve);
             Value *args = CDR(ve);
 
-            if (IS_NATIVE_PROCEDURE(f))
-                return f->native_procedure(args);
-            else
-                return exceptions_value_not_applicable(f, args);
+            return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args) : exceptions_value_not_applicable(f, args);
         }
         else
             return ve;
@@ -167,17 +164,12 @@ int Repl_repl()
         Value *v = Repl_rep(p, env);
 
         if (IS_SUCCESSFUL(v))
-        {
             puts(v->strV);
-        }
         else
         {
             Value *e = Printer_prStr(v, 1);
 
-            if (IS_SUCCESSFUL(e))
-                printf("Error: %s\n", e->strV);
-            else
-                printf("Error: unable to show output\n");
+            printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
         }
     }
 

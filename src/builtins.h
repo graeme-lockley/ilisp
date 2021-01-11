@@ -17,4 +17,6 @@ extern Value *builtin_integer_multiply(Value *parameters);
 extern Value *builtin_integer_divide(Value *parameters);
 extern Value *builtin_map_set_bang(Value *parameters);
 
+extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
+    
 #endif

@@ -355,7 +355,7 @@ Value *builtin_integer_divide(Value *parameters)
     }
 }
 
-Value *extract_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
+Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
 {
     int index = 0;
 
@@ -380,11 +380,45 @@ Value *extract_parameters(Value **parameters, Value *arguments, int number, char
     }
 }
 
+Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name)
+{
+    int index = 0;
+
+    Value *cursor = arguments;
+
+    while (1)
+    {
+        if (index == max_number)
+        {
+            if (IS_NIL(cursor))
+                return NULL;
+
+            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
+        }
+
+        if (IS_NIL(cursor) && index < min_number) 
+            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
+        
+        if (IS_NIL(cursor)) {
+            while (index < max_number) {
+                parameters[index] = NULL;
+                index += 1;
+            }
+
+            return NULL;
+        }
+
+        parameters[index] = CAR(cursor);
+        index += 1;
+        cursor = CDR(cursor);
+    }
+}
+
 Value *builtin_map_set_bang(Value *parameters)
 {
     Value *parameter[3];
 
-    Value *extract_result = extract_parameters(parameter, parameters, 3, "map-set!");
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "map-set!");
     if (extract_result != NULL)
         return extract_result;
 

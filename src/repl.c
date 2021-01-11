@@ -139,10 +139,28 @@ Value *Main_eval(Value *v, Value *env)
 
                 return result;
             }
-            
+
+            if (strcmp(symbol_name, "if") == 0)
+            {
+                Value *arguments[3];
+
+                Value *error = extract_range_parameters(arguments, CDR(v), 2, 3, "if");
+                if (error != NULL)
+                    return error;
+
+                Value *e = Main_eval(arguments[0], env);
+                if (!IS_SUCCESSFUL(e))
+                    return e;
+
+                return Value_truthy(e)
+                           ? Main_eval(arguments[1], env)
+                           : arguments[2] == NULL
+                                 ? VNil
+                                 : Main_eval(arguments[2], env);
+            }
+
             if (strcmp(symbol_name, "quote") == 0)
                 return CDR(v);
-
         }
 
         Value *ve = Main_evalValue(v, env);

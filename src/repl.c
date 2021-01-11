@@ -60,7 +60,7 @@ Value *Main_evalValue(Value *v, Value *env)
             Value *exception_payload = map_create();
             map_set_bang(exception_payload, mkKeyword("name"), v);
 
-            return mkPair(exception_name, exception_payload);
+            return mkException(mkPair(exception_name, exception_payload));
         }
         else
             return binding;
@@ -148,7 +148,7 @@ Value *Main_eval(Value *v, Value *env)
                 map_set_bang(exception_payload, mkKeyword(":value"), f);
                 map_set_bang(exception_payload, mkKeyword(":arguments"), args);
 
-                return mkPair(exception_name, exception_payload);
+                return mkException(mkPair(exception_name, exception_payload));
             }
         }
         else

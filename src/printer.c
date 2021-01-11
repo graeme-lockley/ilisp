@@ -212,6 +212,12 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
         append(wb, "#NATIVE-PROCEDURE");
         break;
 
+    case VT_EXCEPTION:
+        append(wb, "(:exception ");
+        pString(s, wb, v->exceptionV, readable);
+        append(wb, ")");
+        break;
+
     default:
     {
         char buffer[20];

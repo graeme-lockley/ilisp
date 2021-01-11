@@ -1,18 +1,18 @@
 ; (car)
 (car)
-> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure car})
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure car}))
 
 ; (car 1)
 (car 1)
-> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure car})
+> (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure car}))
 
 ; (car '(1 2) '(3 4))
 (car '(1 2) '(3 4))
-> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure car})
+> (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure car}))
 
 ; (car '())
 (car '())
-> (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure car})
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure car}))
 
 ; (car '(1 2 3 4 5))
 (car '(1 2 3 4 5))
@@ -21,19 +21,19 @@
 
 ; (cdr)
 (cdr)
-> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure cdr})
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure cdr}))
 
 ; (cdr 1)
 (cdr 1)
-> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure cdr})
+> (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure cdr}))
 
 ; (cdr '(1 2) '(3 4))
 (cdr '(1 2) '(3 4))
-> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure cdr})
+> (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure cdr}))
 
 ; (cdr '())
 (cdr '())
-> (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure cdr})
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure cdr}))
 
 ; (cdr '(1 2 3 4 5))
 (cdr '(1 2 3 4 5))
@@ -42,15 +42,15 @@
 
 ; (count)
 (count)
-> (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure count})
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure count}))
 
 ; (count 1)
 (count 1)
-> (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure count})
+> (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure count}))
 
 ; (count '(1 2) '(3 4))
 (count '(1 2) '(3 4))
-> (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure count})
+> (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure count}))
 
 ; (count '())
 (count '())
@@ -99,4 +99,8 @@ fred
 ; fred
 fred
 > {:b 4 b 3 a 1}
+
+; (map-set! fred a 1)
+(map-set! fred a 1)
+> (:exception (UnknownSymbol . {name a}))
 

@@ -20,11 +20,11 @@
 
 ; (+ 1 "hello")
 (+ 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-plus})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-plus}))
 
 ; (+ "hello" 1)
 (+ "hello" 1)
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-plus})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-plus}))
 
 ; (-)
 (-)
@@ -48,11 +48,11 @@
 
 ; (- 1 "hello")
 (- 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-minus})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-minus}))
 
 ; (- "hello" 1)
 (- "hello" 1)
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-minus})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-minus}))
 
 ;; integer-multiply
 ; (*)
@@ -77,11 +77,11 @@
 
 ; (* 1 "hello")
 (* 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-multiply})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-multiply}))
 
 ; (* "hello" 1)
 (* "hello" 1)
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-multiply})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-multiply}))
 
 ;; integer-divide
 ; (/)
@@ -110,12 +110,12 @@
 
 ; (/ 1 "hello")
 (/ 1 "hello")
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-divide})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-divide}))
 
 ; (/ "hello" 1)
 (/ "hello" 1)
-> (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-divide})
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-divide}))
 
 ; (/ 10 0)
 (/ 10 0)
-> (DivideByZero . {:arg-number 1 :procedure integer-divide})
+> (:exception (DivideByZero . {:arg-number 1 :procedure integer-divide}))

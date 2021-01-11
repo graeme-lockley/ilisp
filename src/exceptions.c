@@ -10,7 +10,7 @@ Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, V
     map_set_bang(exception_payload, mkKeyword(":expected-type"), expected_type);
     map_set_bang(exception_payload, mkKeyword(":received"), v);
 
-    return mkPair(exception_name, exception_payload);
+    return mkException(mkPair(exception_name, exception_payload));
 }
 
 Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments)
@@ -21,7 +21,7 @@ Value *exceptions_expected_argument_count(Value *procedure_name, int argument_co
     map_set_bang(exception_payload, mkKeyword(":arg-count"), mkNumber(argument_count));
     map_set_bang(exception_payload, mkKeyword(":arguments"), arguments);
 
-    return mkPair(exception_name, exception_payload);
+    return mkException(mkPair(exception_name, exception_payload));
 }
 
 Value *exceptions_divide_by_zero(int argument_number)
@@ -31,5 +31,16 @@ Value *exceptions_divide_by_zero(int argument_number)
     map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol("integer-divide"));
     map_set_bang(exception_payload, mkKeyword(":arg-number"), mkNumber(argument_number));
 
-    return mkPair(exception_name, exception_payload);
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_non_terminated_string(char *source_name, Value *start, Value*end) 
+{
+    Value *exception_name = mkSymbol("NonTerminatedString");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":source-name"), mkString(source_name));
+    map_set_bang(exception_payload, mkKeyword(":start"), start);
+    map_set_bang(exception_payload, mkKeyword(":end"), end);
+
+    return mkException(mkPair(exception_name, exception_payload));
 }

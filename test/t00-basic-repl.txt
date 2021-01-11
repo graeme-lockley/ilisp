@@ -2,8 +2,6 @@
 "Hello World"
 > "Hello World"
 
-;; Some comment here that is ignored.... line starting with a single ';' before the input starts is the test scenario name
-;; If there is no test scenario name then the name is the line number
 ; Numeric - 123
 123
 > 123
@@ -34,7 +32,7 @@
 
 ; List of numbers, strings and keywords - (1 "two" :three 4 "five" :six)
 (1 "two" :three 4 "five" :six)
-> (ValueNotApplicable . {:arguments ("two" :three 4 "five" :six) :value 1})
+> (:exception (ValueNotApplicable . {:arguments ("two" :three 4 "five" :six) :value 1}))
 
 
 ; Quoted empty sequence - '[]

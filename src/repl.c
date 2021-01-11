@@ -120,8 +120,29 @@ Value *Main_eval(Value *v, Value *env)
         if (IS_SYMBOL(CAR(v)))
         {
             char *symbol_name = SYMBOL(CAR(v));
+            if (strcmp(symbol_name, "do") == 0)
+            {
+                Value *result = VNil;
+                Value *cursor = CDR(v);
+
+                while (1)
+                {
+                    if (IS_NIL(cursor))
+                        break;
+
+                    result = Main_eval(CAR(cursor), env);
+                    if (!IS_SUCCESSFUL(result))
+                        return result;
+
+                    cursor = CDR(cursor);
+                }
+
+                return result;
+            }
+            
             if (strcmp(symbol_name, "quote") == 0)
                 return CDR(v);
+
         }
 
         Value *ve = Main_evalValue(v, env);

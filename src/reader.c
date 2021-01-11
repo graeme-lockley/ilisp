@@ -72,9 +72,8 @@ static void advance_position(Lexer *lexer, Position *position)
             position->column = 1;
         }
         else
-        {
             position->column += 1;
-        }
+
         position->offset += 1;
     }
 }
@@ -240,6 +239,7 @@ static Value *parse(Lexer *lexer)
         Value *v = parse(lexer);
         return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quote"), v) : v;
     }
+
     case LITERAL_STRING:
     {
         lexer->content[lexer->end.offset] = 0;
@@ -286,36 +286,30 @@ static Value *parse(Lexer *lexer)
         }
 
         Value *car = parse(lexer);
-        if (IS_SUCCESSFUL(car))
-        {
-            Value *head = mkPair(car, VNil);
-            Value *cursor = head;
-
-            while (1)
-            {
-                if (lexer->token == EOS)
-                    return exceptions_unexpected_end_of_stream(")");
-
-                else if (lexer->token == RPAREN)
-                {
-                    next_token(lexer);
-                    return head;
-                }
-                else
-                {
-                    Value *next = parse(lexer);
-                    if (IS_SUCCESSFUL(next))
-                    {
-                        cursor->pairV.cdr = mkPair(next, VNil);
-                        cursor = CDR(cursor);
-                    }
-                    else
-                        return next;
-                }
-            }
-        }
-        else
+        if (!IS_SUCCESSFUL(car))
             return car;
+
+        Value *head = mkPair(car, VNil);
+        Value *cursor = head;
+
+        while (1)
+        {
+            if (lexer->token == EOS)
+                return exceptions_unexpected_end_of_stream(")");
+
+            if (lexer->token == RPAREN)
+            {
+                next_token(lexer);
+                return head;
+            }
+
+            Value *next = parse(lexer);
+            if (!IS_SUCCESSFUL(next))
+                return next;
+
+            cursor->pairV.cdr = mkPair(next, VNil);
+            cursor = CDR(cursor);
+        }
     }
 
     case LBRACKET:
@@ -328,53 +322,50 @@ static Value *parse(Lexer *lexer)
         }
 
         Value *v = parse(lexer);
-        if (IS_SUCCESSFUL(v))
-        {
-            Value **buffer = (Value **)malloc(BUFFER_TRANCHE * sizeof(Value *));
-            int buffer_length = BUFFER_TRANCHE;
-            int buffer_end = 1;
-            buffer[0] = v;
-
-            while (1)
-            {
-                if (lexer->token == EOS)
-                {
-                    free(buffer);
-                    return exceptions_unexpected_end_of_stream("]");
-                }
-
-                if (lexer->token == RBRACKET)
-                {
-                    next_token(lexer);
-                    Value *result = mkVector(buffer, buffer_end);
-                    free(buffer);
-                    return result;
-                }
-
-                Value *next = parse(lexer);
-                if (IS_SUCCESSFUL(next))
-                {
-                    if (buffer_end == buffer_length - 1)
-                    {
-                        int new_buffer_length = buffer_length + BUFFER_TRANCHE;
-                        Value **new_buffer = (Value **)malloc(new_buffer_length * sizeof(Value *));
-                        memcpy(new_buffer, buffer, buffer_end * sizeof(Value *));
-                        free(buffer);
-                        buffer_length = new_buffer_length;
-                        buffer = new_buffer;
-                    }
-                    buffer[buffer_end] = next;
-                    buffer_end += 1;
-                }
-                else
-                {
-                    free(buffer);
-                    return next;
-                }
-            }
-        }
-        else
+        if (!IS_SUCCESSFUL(v))
             return v;
+
+        Value **buffer = (Value **)malloc(BUFFER_TRANCHE * sizeof(Value *));
+        int buffer_length = BUFFER_TRANCHE;
+        int buffer_end = 1;
+        buffer[0] = v;
+
+        while (1)
+        {
+            if (lexer->token == EOS)
+            {
+                free(buffer);
+                return exceptions_unexpected_end_of_stream("]");
+            }
+
+            if (lexer->token == RBRACKET)
+            {
+                next_token(lexer);
+                Value *result = mkVector(buffer, buffer_end);
+                free(buffer);
+                return result;
+            }
+
+            Value *next = parse(lexer);
+            if (!IS_SUCCESSFUL(next))
+            {
+                free(buffer);
+                return next;
+            }
+
+            if (buffer_end == buffer_length - 1)
+            {
+                int new_buffer_length = buffer_length + BUFFER_TRANCHE;
+                Value **new_buffer = (Value **)malloc(new_buffer_length * sizeof(Value *));
+                memcpy(new_buffer, buffer, buffer_end * sizeof(Value *));
+                free(buffer);
+                buffer_length = new_buffer_length;
+                buffer = new_buffer;
+            }
+
+            buffer[buffer_end] = next;
+            buffer_end += 1;
+        }
     }
 
     case LCURLY:
@@ -388,50 +379,40 @@ static Value *parse(Lexer *lexer)
         }
 
         Value *m1_key = parse(lexer);
-        if (IS_SUCCESSFUL(m1_key))
-        {
-            Value *m1_value = parse(lexer);
-            if (IS_SUCCESSFUL(m1_value))
-            {
-                Value *head = mkPair(mkPair(m1_key, m1_value), VNil);
-                Value *cursor = head;
-
-                while (1)
-                {
-                    if (lexer->token == EOS)
-                        return exceptions_unexpected_end_of_stream("}");
-
-                    if (lexer->token == RCURLEY)
-                    {
-                        next_token(lexer);
-                        return mkMap(head);
-                    }
-                    else
-                    {
-                        Value *mi_key = parse(lexer);
-                        if (IS_SUCCESSFUL(mi_key))
-                        {
-                            Value *mi_value = parse(lexer);
-                            if (IS_SUCCESSFUL(mi_value))
-                            {
-                                Value *link = mkPair(mkPair(mi_key, mi_value), VNil);
-
-                                cursor->pairV.cdr = link;
-                                cursor = link;
-                            }
-                            else
-                                return mi_value;
-                        }
-                        else
-                            return mi_key;
-                    }
-                }
-            }
-            else
-                return m1_value;
-        }
-        else
+        if (!IS_SUCCESSFUL(m1_key))
             return m1_key;
+
+        Value *m1_value = parse(lexer);
+        if (!IS_SUCCESSFUL(m1_value))
+            return m1_value;
+
+        Value *head = mkPair(mkPair(m1_key, m1_value), VNil);
+        Value *cursor = head;
+
+        while (1)
+        {
+            if (lexer->token == EOS)
+                return exceptions_unexpected_end_of_stream("}");
+
+            if (lexer->token == RCURLEY)
+            {
+                next_token(lexer);
+                return mkMap(head);
+            }
+
+            Value *mi_key = parse(lexer);
+            if (!IS_SUCCESSFUL(mi_key))
+                return mi_key;
+
+            Value *mi_value = parse(lexer);
+            if (!IS_SUCCESSFUL(mi_value))
+                return mi_value;
+
+            Value *link = mkPair(mkPair(mi_key, mi_value), VNil);
+
+            cursor->pairV.cdr = link;
+            cursor = link;
+        }
     }
 
     case ERROR_UNENCLOSED_QUOTE:

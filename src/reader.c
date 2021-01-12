@@ -375,7 +375,7 @@ static Value *parse(Lexer *lexer)
         if (lexer->token == RCURLEY)
         {
             next_token(lexer);
-            return mkMap();
+            return mkMap(VNil);
         }
 
         Value *m1_key = parse(lexer);

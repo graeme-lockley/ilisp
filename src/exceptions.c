@@ -36,6 +36,27 @@ Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, V
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_incorrect_number_of_arguments(Value * parameters, Value* arguments)
+{
+    Value *exception_name = mkSymbol("IncorrectNumberOfArguments");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":parameters"), parameters);
+    map_set_bang(exception_payload, mkKeyword(":arguments"), arguments);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_invalid_procedure_parameter(int parameter_number, Value *parameter)
+{
+    Value *exception_name = mkSymbol("InvalidProcedureParameter");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":parameter-number"), mkNumber(parameter_number));
+    map_set_bang(exception_payload, mkKeyword(":expected-type"), mkSymbol("symbol"));
+    map_set_bang(exception_payload, mkKeyword(":received"), parameter);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_divide_by_zero(int argument_number)
 {
     Value *exception_name = mkSymbol("DivideByZero");

@@ -233,6 +233,10 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
         append(wb, "#NATIVE-PROCEDURE");
         break;
 
+    case VT_PROCEDURE:
+        append(wb, "#PROCEDURE");
+        break;
+
     case VT_EXCEPTION:
         append(wb, "(:exception ");
         pString(s, wb, v->exceptionV, readable);
@@ -242,7 +246,7 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
     default:
     {
         char buffer[20];
-        sprintf(buffer, "(TODO %d)", v->tag);
+        sprintf(buffer, "(#TODO %d)", v->tag);
         append(wb, buffer);
         break;
     }

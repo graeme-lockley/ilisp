@@ -53,9 +53,20 @@ Value *Main_evalValue(Value *v, Value *env)
 {
     if (IS_SYMBOL(v))
     {
-        Value *binding = map_find(CAR(env), v);
+        Value *binding = VNil;
+        Value *cursor = env;
+        while (1)
+        {
+            if (IS_NIL(cursor))
+                return exceptions_unknown_symbol(v);
 
-        return IS_NIL(binding) ? exceptions_unknown_symbol(v) : binding;
+            binding = map_find(CAR(cursor), v);
+
+            if (!IS_NIL(binding))
+                return binding;
+
+            cursor = CDR(cursor);
+        }
     }
 
     if (IS_PAIR(v))
@@ -140,6 +151,33 @@ Value *Main_eval(Value *v, Value *env)
                 return result;
             }
 
+            if (strcmp(symbol_name, "fn") == 0)
+            {
+                Value *arguments[2];
+                Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "fn");
+                if (error != NULL)
+                    return error;
+
+                Value *cursor = arguments[0];
+                int parameter_number = 0;
+                while (1)
+                {
+                    if (IS_NIL(cursor))
+                        break;
+
+                    if (!IS_PAIR(cursor))
+                        return exceptions_invalid_procedure_parameter(parameter_number, cursor);
+
+                    if (!IS_SYMBOL(CAR(cursor)))
+                        return exceptions_invalid_procedure_parameter(parameter_number, CAR(cursor));
+
+                    cursor = CDR(cursor);
+                    parameter_number += 1;
+                }
+
+                return mkProcedure(arguments[1], arguments[0], env);
+            }
+
             if (strcmp(symbol_name, "if") == 0)
             {
                 Value *arguments[3];
@@ -169,6 +207,30 @@ Value *Main_eval(Value *v, Value *env)
         {
             Value *f = CAR(ve);
             Value *args = CDR(ve);
+
+            if (IS_PROCEDURE(f))
+            {
+                Value *new_bindings = mkMap(VNil);
+                Value *new_env = mkPair(new_bindings, PROCEDURE(f).env);
+
+                int argument_index = 0;
+                Value *argument_cursor = args;
+                Value *parameter_cursor = PROCEDURE(f).parameters;
+
+                while (1)
+                {
+                    if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
+                        return Main_eval(PROCEDURE(f).body, new_env);
+
+                    if (IS_NIL(argument_cursor) || IS_NIL(parameter_cursor))
+                        return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+
+                    argument_index += 1;
+                    map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
+                    argument_cursor = CDR(argument_cursor);
+                    parameter_cursor = CDR(parameter_cursor);
+                }
+            }
 
             return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args) : exceptions_value_not_applicable(f, args);
         }

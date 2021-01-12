@@ -117,6 +117,15 @@ Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters))
     return value;
 }
 
+Value *mkProcedure(Value *body, Value *parameters, Value *env)
+{
+    Value *value = mkValue(VT_PROCEDURE);
+    value->procedure.body = body;
+    value->procedure.parameters = parameters;
+    value->procedure.env = env;
+    return value;
+}
+
 Value *mkException(Value *exception)
 {
     Value *value = mkValue(VT_EXCEPTION);

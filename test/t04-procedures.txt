@@ -1,0 +1,16 @@
+; identity
+((fn (x) x) 100)
+> 100
+
+; Increment
+(do (map-set! (car **root**) 'inc (fn (x) (+ x 1)))
+    (inc 100))
+> 101
+
+; Not enough arguments
+(inc)
+> (:exception (IncorrectNumberOfArguments . {:arguments () :parameters (x)}))
+
+; Too many arguments
+(inc 1 2)
+> (:exception (IncorrectNumberOfArguments . {:arguments (1 2) :parameters (x)}))

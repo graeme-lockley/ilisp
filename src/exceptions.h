@@ -6,7 +6,9 @@
 extern Value *exceptions_divide_by_zero(int argument_number);
 extern Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments);
 extern Value *exceptions_expected_range_argument_count(Value *procedure_name, int min_argument_count, int max_argument_count, Value *arguments);
+extern Value *exceptions_incorrect_number_of_arguments(Value * parameters, Value* arguments);
 extern Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *argument);
+extern Value *exceptions_invalid_procedure_parameter(int parameter_number, Value *parameter);
 extern Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *end);
 extern Value *exceptions_unexpected_end_of_stream(char *expected);
 extern Value *exceptions_unknown_symbol(Value *symbol);

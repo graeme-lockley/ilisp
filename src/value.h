@@ -52,6 +52,11 @@ struct ValueStruct
         } vectorV;
         struct ValueStruct *mapV;
         struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters);
+        struct {
+            struct ValueStruct *body;
+            struct ValueStruct *parameters;
+            struct ValueStruct *env;
+        } procedure;
         struct ValueStruct *exceptionV;
     };
 };
@@ -70,6 +75,7 @@ typedef struct ValueStruct Value;
 #define IS_VECTOR(v) ((TAG_TO_VT(v) == VT_VECTOR))
 #define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
 #define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
+#define IS_PROCEDURE(v) ((TAG_TO_VT(v) == VT_PROCEDURE))
 #define IS_EXCEPTION(v) ((TAG_TO_VT(v) == VT_EXCEPTION))
 
 extern int Value_truthy(Value *v);
@@ -103,12 +109,15 @@ extern Value *mkVector(Value **items, int length);
 extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 
-extern Value *mkMap();
+extern Value *mkMap(Value *items);
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
 extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters));
 #define NATIVE_PROCEDURE(v) ((v)->native_procedure)
+
+extern Value *mkProcedure(Value *body, Value *parameters, Value *env);
+#define PROCEDURE(v) ((v)->procedure)
 
 extern Value *mkException(Value *exception);
 #define EXCEPTION(v) ((v)->exceptionV)

@@ -396,11 +396,13 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
             return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
         }
 
-        if (IS_NIL(cursor) && index < min_number) 
+        if (IS_NIL(cursor) && index < min_number)
             return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
-        
-        if (IS_NIL(cursor)) {
-            while (index < max_number) {
+
+        if (IS_NIL(cursor))
+        {
+            while (index < max_number)
+            {
                 parameters[index] = NULL;
                 index += 1;
             }
@@ -426,4 +428,17 @@ Value *builtin_map_set_bang(Value *parameters)
         return exceptions_invalid_argument(mkSymbol("map-set!"), 0, mkString("map"), parameter[0]);
 
     return map_set_bang(parameter[0], parameter[1], parameter[2]);
+}
+
+Value *builtin_prn(Value *parameters)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "prn");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *result = Printer_prStr(parameter[0], 1);
+    puts(result->strV);
+    return VNil;
 }

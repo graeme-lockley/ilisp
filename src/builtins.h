@@ -15,6 +15,7 @@ extern Value *builtin_integer_plus(Value *parameters);
 extern Value *builtin_integer_minus(Value *parameters);
 extern Value *builtin_integer_multiply(Value *parameters);
 extern Value *builtin_integer_divide(Value *parameters);
+extern Value *builtin_listp(Value *parameters);
 extern Value *builtin_map_set_bang(Value *parameters);
 extern Value *builtin_prn(Value *parameters);
 

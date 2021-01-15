@@ -416,6 +416,17 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
+Value *builtin_listp(Value *parameters)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "list?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
+}
+
 Value *builtin_map_set_bang(Value *parameters)
 {
     Value *parameter[3];

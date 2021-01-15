@@ -283,24 +283,45 @@ Value *Repl_rep(char *content, Value *env)
     return readRV;
 }
 
+static int Repl_report_result(char *p, Value *env, int silent_on_success)
+{
+    Value *v = Repl_rep(p, env);
+    free(p);
+
+    if (IS_SUCCESSFUL(v))
+    {
+        if (!silent_on_success)
+            puts(v->strV);
+
+        return 1;
+    }
+    else
+    {
+        Value *e = Printer_prStr(v, 1);
+
+        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
+        return 0;
+    }
+}
+
+static int Repl_define(char *name, char *s, Value *env)
+{
+    char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
+    sprintf(p, "(map-set! (car **root**) '%s %s)", name, s);
+    return Repl_report_result(p, env, 1);
+}
+
 int Repl_repl()
 {
     Value *env = initialise_environment();
+
+    if (!Repl_define("list", "(fn x x)", env))
+        return -1;
+
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)
-    {
-        Value *v = Repl_rep(p, env);
-
-        if (IS_SUCCESSFUL(v))
-            puts(v->strV);
-        else
-        {
-            Value *e = Printer_prStr(v, 1);
-
-            printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
-        }
-    }
+        Repl_report_result(p, env, 0);
 
     return 0;
 }

@@ -14,3 +14,31 @@
 ; Too many arguments
 (inc 1 2)
 > (:exception (IncorrectNumberOfArguments . {:arguments (1 2) :parameters (x)}))
+
+; Arguments as a single parameters
+((fn a a) 1 2 3 4 5)
+> (1 2 3 4 5)
+
+; Arguments as a single parameters
+((fn a a) '(1 2 3 4 5))
+> ((1 2 3 4 5))
+
+; Variable arguments - just enough
+((fn (a . b) b) "hello")
+> ()
+
+; Variable arguments - single optional
+((fn (a . b) b) "hello" "world")
+> ("world")
+
+; Variable arguments - multiple optional
+((fn (a . b) b) "hello" "world's" "end")
+> ("world's" "end")
+
+; Variable arguments - period without parameter error
+(fn (a . ) a)
+> (:exception (InvalidFnForm . {:parameters (.)}))
+
+; Variable arguments - period with multiple parameters error
+(fn (a . b c) b)
+> (:exception (InvalidFnForm . {:parameters (. b c)}))

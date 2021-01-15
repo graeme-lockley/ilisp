@@ -36,7 +36,16 @@ Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, V
     return mkException(mkPair(exception_name, exception_payload));
 }
 
-Value *exceptions_incorrect_number_of_arguments(Value * parameters, Value* arguments)
+Value *exceptions_invalid_fn_form(Value *parameters)
+{
+    Value *exception_name = mkSymbol("InvalidFnForm");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":parameters"), parameters);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_incorrect_number_of_arguments(Value *parameters, Value *arguments)
 {
     Value *exception_name = mkSymbol("IncorrectNumberOfArguments");
     Value *exception_payload = map_create();

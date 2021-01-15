@@ -63,7 +63,7 @@ Value *Main_evalValue(Value *v, Value *env)
             binding = map_find(CAR(cursor), v);
 
             if (!IS_NIL(binding))
-                return binding;
+                return CDR(binding);
 
             cursor = CDR(cursor);
         }
@@ -159,22 +159,33 @@ Value *Main_eval(Value *v, Value *env)
                     return error;
 
                 Value *cursor = arguments[0];
-                int parameter_number = 0;
-                while (1)
+
+                if (!IS_SYMBOL(cursor))
                 {
-                    if (IS_NIL(cursor))
-                        break;
+                    int parameter_number = 0;
+                    while (1)
+                    {
+                        if (IS_NIL(cursor))
+                            break;
 
-                    if (!IS_PAIR(cursor))
-                        return exceptions_invalid_procedure_parameter(parameter_number, cursor);
+                        if (!IS_PAIR(cursor))
+                            return exceptions_invalid_procedure_parameter(parameter_number, cursor);
 
-                    if (!IS_SYMBOL(CAR(cursor)))
-                        return exceptions_invalid_procedure_parameter(parameter_number, CAR(cursor));
+                        if (!IS_SYMBOL(CAR(cursor)))
+                            return exceptions_invalid_procedure_parameter(parameter_number, CAR(cursor));
 
-                    cursor = CDR(cursor);
-                    parameter_number += 1;
+                        if (strcmp(SYMBOL(CAR(cursor)), ".") == 0)
+                        {
+                            Value *rest = CDR(cursor);
+
+                            if (!IS_PAIR(rest) || !IS_NIL(CDR(rest)))
+                                return exceptions_invalid_fn_form(cursor);
+                        }
+
+                        cursor = CDR(cursor);
+                        parameter_number += 1;
+                    }
                 }
-
                 return mkProcedure(arguments[1], arguments[0], env);
             }
 
@@ -213,22 +224,39 @@ Value *Main_eval(Value *v, Value *env)
                 Value *new_bindings = mkMap(VNil);
                 Value *new_env = mkPair(new_bindings, PROCEDURE(f).env);
 
-                int argument_index = 0;
-                Value *argument_cursor = args;
                 Value *parameter_cursor = PROCEDURE(f).parameters;
-
-                while (1)
+                if (IS_SYMBOL(parameter_cursor))
                 {
-                    if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
-                        return Main_eval(PROCEDURE(f).body, new_env);
+                    map_set_bang(new_bindings, parameter_cursor, args);
+                    return Main_eval(PROCEDURE(f).body, new_env);
+                }
+                else
+                {
+                    int argument_index = 0;
+                    Value *argument_cursor = args;
 
-                    if (IS_NIL(argument_cursor) || IS_NIL(parameter_cursor))
-                        return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+                    while (1)
+                    {
+                        if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
+                            return Main_eval(PROCEDURE(f).body, new_env);
 
-                    argument_index += 1;
-                    map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
-                    argument_cursor = CDR(argument_cursor);
-                    parameter_cursor = CDR(parameter_cursor);
+                        if (IS_NIL(parameter_cursor))
+                            return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+
+                        if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
+                        {
+                            map_set_bang(new_bindings, CAR(CDR(parameter_cursor)), argument_cursor);
+                            return Main_eval(PROCEDURE(f).body, new_env);
+                        }
+
+                        if (IS_NIL(argument_cursor))
+                            return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+
+                        argument_index += 1;
+                        map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
+                        argument_cursor = CDR(argument_cursor);
+                        parameter_cursor = CDR(parameter_cursor);
+                    }
                 }
             }
 

@@ -101,14 +101,14 @@ static char *test_map_find()
 
     // Single binding map scenario
     m = map_test_data_1();
-    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "1");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "(\"a\" . 1)");
     ASSERT_VALUE_STRING_EQUALS(map_find(m, k2), "()");
 
     // Multiple binding map scenario
     m = map_test_data_3();
-    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "1");
-    ASSERT_VALUE_STRING_EQUALS(map_find(m, k2), "2");
-    ASSERT_VALUE_STRING_EQUALS(map_find(m, k3), "3");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k1), "(\"a\" . 1)");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k2), "(\"b\" . 2)");
+    ASSERT_VALUE_STRING_EQUALS(map_find(m, k3), "(\"c\" . 3)");
     ASSERT_VALUE_STRING_EQUALS(map_find(m, k4), "()");
 
     return NULL;

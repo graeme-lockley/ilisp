@@ -124,7 +124,7 @@ Value *map_find(Value *map, Value *key)
             return VNil;
 
         if (is_equals(CAR(CAR(cursor)), key))
-            return CDR(CAR(cursor));
+            return CAR(cursor);
 
         cursor = CDR(cursor);
     }

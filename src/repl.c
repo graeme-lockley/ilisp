@@ -23,6 +23,8 @@ static void add_binding_into_environment(Value *env, char *name, Value *value)
     map_set_bang(env, key, value);
 }
 
+static int Repl_define(char *name, char *s, Value *env);
+
 Value *initialise_environment()
 {
     Value *root_bindings = map_create();
@@ -38,6 +40,8 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
+
+    Repl_define("list", "(fn x x)", root_scope);
 
     return root_scope;
 }
@@ -314,9 +318,6 @@ static int Repl_define(char *name, char *s, Value *env)
 int Repl_repl()
 {
     Value *env = initialise_environment();
-
-    if (!Repl_define("list", "(fn x x)", env))
-        return -1;
 
     char *p;
 

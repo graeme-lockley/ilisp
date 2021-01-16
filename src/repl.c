@@ -287,7 +287,7 @@ Value *Main_eval(Value *v, Value *env)
 
 static Value *Main_print(Value *content)
 {
-    return Printer_prStr(content, 1);
+    return Printer_prStr(content, 1, " ");
 }
 
 Value *Repl_rep(char *content, Value *env)
@@ -313,7 +313,7 @@ static int Repl_report_result(char *p, Value *env, int silent_on_success)
     }
     else
     {
-        Value *e = Printer_prStr(v, 1);
+        Value *e = Printer_prStr(v, 1, " ");
 
         printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
         return 0;

@@ -616,9 +616,9 @@ Value *builtin_map_set_bang(Value *parameters)
     return map_set_bang(parameter[0], parameter[1], parameter[2]);
 }
 
-Value *builtin_pr_str(Value *parameters)
+static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
-    Value *result = Printer_prStr(parameters, 1);
+    Value *result = Printer_prStr(parameters, readable, separator);
     char *t = strdup(result->strV);
 
     t[strlen(t) - 1] = '\0';
@@ -626,6 +626,11 @@ Value *builtin_pr_str(Value *parameters)
     free(t);
 
     return result;
+}
+
+Value *builtin_pr_str(Value *parameters)
+{
+    return value_to_str(parameters, 1, " ");
 }
 
 Value *builtin_prn(Value *parameters)
@@ -636,19 +641,12 @@ Value *builtin_prn(Value *parameters)
     if (extract_result != NULL)
         return extract_result;
 
-    Value *result = Printer_prStr(parameter[0], 1);
+    Value *result = Printer_prStr(parameter[0], 1, " ");
     puts(result->strV);
     return VNil;
 }
 
 Value *builtin_str(Value *parameters)
 {
-    Value *result = Printer_prStr(parameters, 0);
-    char *t = strdup(result->strV);
-
-    t[strlen(t) - 1] = '\0';
-    result = mkString(t + 1);
-    free(t);
-
-    return result;
+    return value_to_str(parameters, 0, "");
 }

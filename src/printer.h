@@ -3,6 +3,6 @@
 
 #include "value.h"
 
-extern Value *Printer_prStr(Value *v, int readable);
+extern Value *Printer_prStr(Value *v, int readable, char *separator);
 
 #endif

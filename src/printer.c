@@ -80,7 +80,7 @@ static void append_char(WriteBuffer *wb, char c)
     append(wb, s);
 }
 
-static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
+static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, char *separator)
 {
     int v_in_set = set_in(*s, v);
 
@@ -107,7 +107,7 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
             {
                 if (IS_PAIR(v))
                 {
-                    pString(s, wb, CAR(v), readable);
+                    pString(s, wb, CAR(v), readable, separator);
                     v = CDR(v);
                     if (IS_NIL(v))
                     {
@@ -116,20 +116,23 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
                     }
                     else if (IS_PAIR(v))
                     {
-                        if (readable)
-                            append(wb, " ");
+                        append(wb, separator);
                     }
                     else
                     {
                         if (readable)
-                            append(wb, " . ");
+                        {
+                            append(wb, separator);
+                            append(wb, ".");
+                            append(wb, separator);
+                        }
                         else
                             append(wb, ".");
                     }
                 }
                 else
                 {
-                    pString(s, wb, v, readable);
+                    pString(s, wb, v, readable, separator);
                     append(wb, ")");
                     break;
                 }
@@ -149,11 +152,9 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
             append(wb, "[");
             for (int lp = 0; lp < VECTOR(v).length; lp += 1)
             {
-                if (readable && lp > 0)
-                {
-                    append(wb, " ");
-                }
-                pString(s, wb, VECTOR(v).items[lp], readable);
+                if (lp > 0)
+                    append(wb, separator);
+                pString(s, wb, VECTOR(v).items[lp], readable, separator);
             }
             append(wb, "]");
         }
@@ -220,9 +221,9 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
             {
                 while (1)
                 {
-                    pString(s, wb, CAR(CAR(cursor)), readable);
+                    pString(s, wb, CAR(CAR(cursor)), readable, separator);
                     append(wb, " ");
-                    pString(s, wb, CDR(CAR(cursor)), readable);
+                    pString(s, wb, CDR(CAR(cursor)), readable, separator);
 
                     cursor = CDR(cursor);
                     if (IS_NIL(cursor))
@@ -247,7 +248,7 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
 
     case VT_EXCEPTION:
         append(wb, "(:exception ");
-        pString(s, wb, v->exceptionV, readable);
+        pString(s, wb, v->exceptionV, readable, separator);
         append(wb, ")");
         break;
 
@@ -261,14 +262,14 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
     }
 }
 
-Value *Printer_prStr(Value *v, int readable)
+Value *Printer_prStr(Value *v, int readable, char *separator)
 {
     WriteBuffer wb = {malloc(BUFFER_TRANCHE), BUFFER_TRANCHE, 0};
     wb.buffer[0] = (char)0;
 
     struct Set *values = NULL;
 
-    pString(&values, &wb, v, readable);
+    pString(&values, &wb, v, readable, separator);
 
     set_free(values);
 

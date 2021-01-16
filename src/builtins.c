@@ -398,6 +398,138 @@ Value *builtin_integer_divide(Value *parameters)
     }
 }
 
+extern Value *builtin_integer_less_than(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return VTrue;
+
+    if (!IS_NUMBER(CAR(parameters)))
+        return exceptions_invalid_argument(mkSymbol("integer-less-than"), 0, mkString("number"), CAR(parameters));
+
+    int operand = NUMBER(CAR(parameters));
+
+    parameters = CDR(parameters);
+    int argument_count = 1;
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return VTrue;
+
+        if (!IS_PAIR(parameters))
+            return VNil;
+
+        Value *car = CAR(parameters);
+        if (!IS_NUMBER(car))
+            return exceptions_invalid_argument(mkSymbol("integer-less-than"), argument_count, mkString("number"), CAR(parameters));
+
+        if (operand >= NUMBER(car))
+            return VNil;
+
+        operand = NUMBER(car);
+        argument_count += 1;
+        parameters = CDR(parameters);
+    }
+}
+
+extern Value *builtin_integer_less_equal(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return VTrue;
+
+    if (!IS_NUMBER(CAR(parameters)))
+        return exceptions_invalid_argument(mkSymbol("integer-less-equal"), 0, mkString("number"), CAR(parameters));
+
+    int operand = NUMBER(CAR(parameters));
+
+    parameters = CDR(parameters);
+    int argument_count = 1;
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return VTrue;
+
+        if (!IS_PAIR(parameters))
+            return VNil;
+
+        Value *car = CAR(parameters);
+        if (!IS_NUMBER(car))
+            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkString("number"), CAR(parameters));
+
+        if (operand > NUMBER(car))
+            return VNil;
+
+        operand = NUMBER(car);
+        argument_count += 1;
+        parameters = CDR(parameters);
+    }
+}
+
+extern Value *builtin_integer_greater_than(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return VTrue;
+
+    if (!IS_NUMBER(CAR(parameters)))
+        return exceptions_invalid_argument(mkSymbol("integer-greater-than"), 0, mkString("number"), CAR(parameters));
+
+    int operand = NUMBER(CAR(parameters));
+
+    parameters = CDR(parameters);
+    int argument_count = 1;
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return VTrue;
+
+        if (!IS_PAIR(parameters))
+            return VNil;
+
+        Value *car = CAR(parameters);
+        if (!IS_NUMBER(car))
+            return exceptions_invalid_argument(mkSymbol("integer-greather-than"), argument_count, mkString("number"), CAR(parameters));
+
+        if (operand <= NUMBER(car))
+            return VNil;
+
+        operand = NUMBER(car);
+        argument_count += 1;
+        parameters = CDR(parameters);
+    }
+}
+
+extern Value *builtin_integer_greater_equal(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return VTrue;
+
+    if (!IS_NUMBER(CAR(parameters)))
+        return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), 0, mkString("number"), CAR(parameters));
+
+    int operand = NUMBER(CAR(parameters));
+
+    parameters = CDR(parameters);
+    int argument_count = 1;
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return VTrue;
+
+        if (!IS_PAIR(parameters))
+            return VNil;
+
+        Value *car = CAR(parameters);
+        if (!IS_NUMBER(car))
+            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkString("number"), CAR(parameters));
+
+        if (operand < NUMBER(car))
+            return VNil;
+
+        operand = NUMBER(car);
+        argument_count += 1;
+        parameters = CDR(parameters);
+    }
+}
+
 Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
 {
     int index = 0;

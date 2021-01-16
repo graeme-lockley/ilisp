@@ -272,3 +272,87 @@ fred
 
 (= {} {})
 > t
+
+(<)
+> t
+
+(< 1)
+> t
+
+(< 1 2)
+> t
+
+(< 1 2 3)
+> t
+
+(< 1 1)
+> ()
+
+(< "hello" 1)
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-less-than}))
+
+(< 1 "hello")
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 1 :procedure integer-less-than}))
+
+(<=)
+> t
+
+(<= 1)
+> t
+
+(<= 1 2)
+> t
+
+(<= 1 2 3)
+> t
+
+(<= 1 1)
+> t
+
+(<= 1 0)
+> ()
+
+(<= "hello" 1)
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-less-equal}))
+
+(>)
+> t
+
+(> 1)
+> t
+
+(> 2 1)
+> t
+
+(> 3 2 1)
+> t
+
+(> 1 1)
+> ()
+
+(> "hello" 1)
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-greater-than}))
+
+(>=)
+> t
+
+(>= 1)
+> t
+
+(>= 2 1)
+> t
+
+(>= 3 2 1)
+> t
+
+(>= 1 1)
+> t
+
+(>= 0 1)
+> ()
+
+(>= "hello" 1)
+> (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-greater-equal}))
+
+
+

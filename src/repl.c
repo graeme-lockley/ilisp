@@ -38,6 +38,11 @@ Value *initialise_environment()
 
     add_binding_into_environment(root_bindings, "=", mkNativeProcedure(builtin_equal));
 
+    add_binding_into_environment(root_bindings, "<", mkNativeProcedure(builtin_integer_less_than));
+    add_binding_into_environment(root_bindings, "<=", mkNativeProcedure(builtin_integer_less_equal));
+    add_binding_into_environment(root_bindings, ">", mkNativeProcedure(builtin_integer_greater_than));
+    add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(builtin_integer_greater_equal));
+
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
@@ -213,9 +218,9 @@ Value *Main_eval(Value *v, Value *env)
 
                 return Value_truthy(e)
                            ? Main_eval(arguments[1], env)
-                           : arguments[2] == NULL
-                                 ? VNil
-                                 : Main_eval(arguments[2], env);
+                       : arguments[2] == NULL
+                           ? VNil
+                           : Main_eval(arguments[2], env);
             }
 
             if (strcmp(symbol_name, "quote") == 0)

@@ -197,6 +197,20 @@ Value *builtin_count(Value *parameters)
     }
 }
 
+Value *builtin_emptyp(Value *parameters)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "empty?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("empty?"), 0, mkPair(mkString("pair"), mkPair(mkString("()"), VNil)), parameter[0]);
+
+    return IS_NIL(parameter[0]) ? VTrue : VNil;
+}
+
 Value *builtin_integer_plus(Value *parameters)
 {
     int argument_number = 0;

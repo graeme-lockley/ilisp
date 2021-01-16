@@ -39,6 +39,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
+    add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));

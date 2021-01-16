@@ -151,3 +151,15 @@ fred
 ; (list? '(1 2) '(3 4))
 (list? '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure list?}))
+
+; (pr-str)
+(pr-str)
+> ""
+
+; (pr-str 1)
+(pr-str 1)
+> "1"
+
+; (pr-str "hello" 'fred :at [1] {:a 1} '() '(1 (a b c) 3))
+(pr-str "hello" 'fred :at [1] {:a 1} '() '(1 (a b c) 3))
+> "\"hello\" fred :at [1] {:a 1} () (1 (a b c) 3)"

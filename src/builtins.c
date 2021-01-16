@@ -4,6 +4,7 @@
 #include "builtins.h"
 #include "exceptions.h"
 #include "printer.h"
+#include <string.h>
 #include "value.h"
 
 #define ASSERT(e)                                                              \
@@ -439,6 +440,18 @@ Value *builtin_map_set_bang(Value *parameters)
         return exceptions_invalid_argument(mkSymbol("map-set!"), 0, mkString("map"), parameter[0]);
 
     return map_set_bang(parameter[0], parameter[1], parameter[2]);
+}
+
+Value *builtin_pr_str(Value *parameters)
+{
+    Value *result = Printer_prStr(parameters, 1);
+    char *t = strdup(result->strV);
+
+    t[strlen(t) - 1] = '\0';
+    result = mkString(t + 1);
+    free(t);
+
+    return result;
 }
 
 Value *builtin_prn(Value *parameters)

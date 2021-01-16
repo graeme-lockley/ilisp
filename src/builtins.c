@@ -211,6 +211,34 @@ Value *builtin_emptyp(Value *parameters)
     return IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
+Value *builtin_equal(Value *parameters)
+{
+    if (IS_NIL(parameters))
+        return VTrue;
+
+    Value *operand = CAR(parameters);
+    parameters = CDR(parameters);
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return VTrue;
+
+        if (IS_PAIR(parameters))
+        {
+            if (Value_truthy(Value_equals(operand, CAR(parameters))))
+            {
+                parameters = CDR(parameters);
+                continue;
+            }
+            else
+                return VNil;
+        }
+
+        return Value_truthy(Value_equals(operand, parameters)) ? VTrue : VNil;
+    }
+}
+
 Value *builtin_integer_plus(Value *parameters)
 {
     int argument_number = 0;

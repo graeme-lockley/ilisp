@@ -5,7 +5,7 @@
  * Based on: http://www.jera.com/techinfo/jtns/jtn002.html
  */
 
-#define VERBOSE_MINUNIT 0
+#define VERBOSE_MINUNIT 1
 
 #define mu_assert(test, message)         \
     do                                   \

@@ -101,9 +101,7 @@ static void validateTest(Value *env)
         tests_run += 1;
         if (VERBOSE_MINUNIT > 0)
         {
-            char buffer[20];
-            sprintf(buffer, "%d", __LINE__);
-            scenario_name = scenario_name == NULL ? strdup(buffer) : scenario_name;
+            scenario_name = scenario_name == NULL ? strdup(input) : scenario_name;
             printf("  Test: %s\n", scenario_name);
         }
 

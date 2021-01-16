@@ -1,177 +1,274 @@
-; (car)
 (car)
 > (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure car}))
 
-; (car 1)
 (car 1)
 > (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure car}))
 
-; (car '(1 2) '(3 4))
 (car '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure car}))
 
-; (car '())
 (car '())
 > (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure car}))
 
-; (car '(1 2 3 4 5))
 (car '(1 2 3 4 5))
 > 1
 
 
-; (cdr)
 (cdr)
 > (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure cdr}))
 
-; (cdr 1)
 (cdr 1)
 > (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure cdr}))
 
-; (cdr '(1 2) '(3 4))
 (cdr '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure cdr}))
 
-; (cdr '())
 (cdr '())
 > (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure cdr}))
 
-; (cdr '(1 2 3 4 5))
 (cdr '(1 2 3 4 5))
 > (2 3 4 5)
 
 
-; (count)
 (count)
 > (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure count}))
 
-; (count 1)
 (count 1)
 > (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure count}))
 
-; (count '(1 2) '(3 4))
 (count '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure count}))
 
-; (count '())
 (count '())
 > 0
 
-; (count '(1 2 3 4 5))
 (count '(1 2 3 4 5))
 > 5
 
-; (map-set! (car **root**) 'fred {})
 (map-set! (car **root**) 'fred {})
 > ()
 
-; fred
 fred
 > {}
 
-; (map-set! fred 'a 1)
 (map-set! fred 'a 1)
 > ()
 
-; fred
 fred
 > {a 1}
 
-; (map-set! fred 'b 2)
 (map-set! fred 'b 2)
 > ()
 
-; fred
 fred
 > {b 2 a 1}
 
-; (map-set! fred 'b 3)
 (map-set! fred 'b 3)
 > 2
 
-; fred
 fred
 > {b 3 a 1}
 
-; (map-set! fred :b 4)
 (map-set! fred :b 4)
 > ()
 
-; fred
 fred
 > {:b 4 b 3 a 1}
 
-; (map-set! fred a 1)
 (map-set! fred a 1)
 > (:exception (UnknownSymbol . {name a}))
 
-; (list 1 2 3)
 (list 1 2 3)
 > (1 2 3)
 
-; (list? 0)
 (list? 0)
 > ()
 
-; (list? "hello")
 (list? "hello")
 > ()
 
-; (list? 'fred)
 (list? 'fred)
 > ()
 
-; (list? :at)
 (list? :at)
 > ()
 
-; (list? [1])
 (list? [1])
 > ()
 
-; (list? {:a 1})
 (list? {:a 1})
 > ()
 
-; (list? list)
 (list? list)
 > ()
 
-; (list? list?)
 (list? list?)
 > ()
 
-; (list? ())
 (list? ())
 > t
 
-; (list? '(1 2 3))
 (list? '(1 2 3))
 > t
 
-; (list? '(1 2) '(3 4))
 (list? '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure list?}))
 
-; (pr-str)
 (pr-str)
 > ""
 
-; (pr-str 1)
 (pr-str 1)
 > "1"
 
-; (pr-str "hello" 'fred :at [1] {:a 1} '() '(1 (a b c) 3))
 (pr-str "hello" 'fred :at [1] {:a 1} '() '(1 (a b c) 3))
 > "\"hello\" fred :at [1] {:a 1} () (1 (a b c) 3)"
 
-; (empty? 1)
 (empty? 1)
 > (:exception (InvalidArgument . {:received 1 :expected-type ("pair" "()") :arg-number 0 :procedure empty?}))
 
-; (empty? '())
 (empty? '())
 > t
 
-; (empty? '(1 2 3))
 (empty? '(1 2 3))
 > ()
+
+(=)
+> t
+
+(= 1)
+> t
+
+(= 2 2)
+> t
+
+(= 2 1)
+> ()
+
+(= 2 (+ 1 1) (- 3 1))
+> t
+
+(= 2 (+ 1 1) (- 4 1))
+> ()
+
+(= 2 '())
+> ()
+
+(= 2 "hello")
+> ()
+
+(= 2 'fred)
+> ()
+
+(= 2 :key)
+> ()
+
+(= 2 [1 2])
+> ()
+
+(= 2 '(1 2))
+> ()
+
+(= 2 {:a 1 :b 2})
+> ()
+
+(= '() '())
+> t
+
+(= "hello" "world")
+> ()
+
+(= "hello" "hello")
+> t
+
+(= "hello" '())
+> ()
+
+(= "hello" 'fred)
+> ()
+
+(= "hello" :key)
+> ()
+
+(= "hello" [1 2])
+> ()
+
+(= "hello" '(1 2))
+> ()
+
+(= "hello" {:a 1 :b 2})
+> ()
+
+(= 'hello 'fred)
+> ()
+
+(= 'hello 'hello)
+> t
+
+(= 'hello :key)
+> ()
+
+(= 'hello [1 2])
+> ()
+
+(= 'hello '(1 2))
+> ()
+
+(= 'hello {:a 1 :b 2})
+> ()
+
+(= :hello :key)
+> ()
+
+(= :hello :hello)
+> t
+
+(= :hello [1 2])
+> ()
+
+(= :hello '(1 2))
+> ()
+
+(= :hello {:a 1 :b 2})
+> ()
+
+(= [1 2] [1 2])
+> t
+
+(= [1 2] [1 2 3])
+> ()
+
+(= [] [1 2])
+> ()
+
+(= [] [])
+> t
+
+(= [1 2] '(1 2))
+> ()
+
+(= [1 2] {:a 1 :b 2})
+> ()
+
+(= '(1 2) '(1 2))
+> t
+
+(= '(1 2 3) '(1 2))
+> ()
+
+(= '(1 2 3) '())
+> ()
+
+(= '(1 2) {:a 1 :b 2})
+> ()
+
+(= {:a 1 :b 2} {:a 1 :b 2})
+> t
+
+(= {:b 2 :a 1} {:a 1 :b 2})
+> t
+
+(= {:b 2 :a 1} {:a 1})
+> ()
+
+(= {} {})
+> t

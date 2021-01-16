@@ -12,6 +12,7 @@ extern Value *builtin_car(Value *parameters);
 extern Value *builtin_cdr(Value *parameters);
 extern Value *builtin_count(Value *parameters);
 extern Value *builtin_emptyp(Value *parameters);
+extern Value *builtin_equal(Value *parameters);
 extern Value *builtin_integer_plus(Value *parameters);
 extern Value *builtin_integer_minus(Value *parameters);
 extern Value *builtin_integer_multiply(Value *parameters);

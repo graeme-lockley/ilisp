@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "builtins.h"
+#include "printer.h"
 #include "value.h"
 
 static Value VNil_Value = {VP_IMMUTABLE, {0}};
@@ -138,6 +140,25 @@ int Value_truthy(Value *v)
     return (v == VFalse || v == VNil) ? 0 : 1;
 }
 
+static int list_length(Value *a)
+{
+    int count = 0;
+
+    while (1)
+    {
+        if (IS_NIL(a))
+            return count;
+
+        if (IS_PAIR(a))
+        {
+            count += 1;
+            a = CDR(a);
+        }
+        else
+            return count + 1;
+    }
+}
+
 Value *Value_equals(Value *a, Value *b)
 {
     if (a == b)
@@ -205,9 +226,7 @@ Value *Value_equals(Value *a, Value *b)
         {
             if (Value_truthy(Value_equals(CAR(a), CAR(b))))
             {
-                {
-                    return Value_equals(CDR(a), CDR(b));
-                }
+                return Value_equals(CDR(a), CDR(b));
             }
         }
         return VFalse;
@@ -235,6 +254,29 @@ Value *Value_equals(Value *a, Value *b)
         return VFalse;
 
     case VT_MAP:
+    {
+        if (!IS_MAP(b))
+            return VFalse;
+
+        int size_a = list_length(MAP(a));
+        int size_b = list_length(MAP(b));
+
+        if (size_a != size_b)
+            return VFalse;
+
+        Value *cursor_a = MAP(a);
+        while (1)
+        {
+            if (IS_NIL(cursor_a))
+                return VTrue;
+
+            if (!Value_truthy(Value_equals(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))))))
+                return VNil;
+
+            cursor_a = CDR(cursor_a);
+        }
+    }
+
     case VT_NATIVE_PROCEDURE:
     case VT_PROCEDURE:
         return VFalse;

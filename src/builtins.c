@@ -640,3 +640,15 @@ Value *builtin_prn(Value *parameters)
     puts(result->strV);
     return VNil;
 }
+
+Value *builtin_str(Value *parameters)
+{
+    Value *result = Printer_prStr(parameters, 0);
+    char *t = strdup(result->strV);
+
+    t[strlen(t) - 1] = '\0';
+    result = mkString(t + 1);
+    free(t);
+
+    return result;
+}

@@ -51,6 +51,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
+    add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
 
     Repl_define("list", "(fn x x)", root_scope);
 

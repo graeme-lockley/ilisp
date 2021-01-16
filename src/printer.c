@@ -115,9 +115,17 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
                         break;
                     }
                     else if (IS_PAIR(v))
-                        append(wb, " ");
+                    {
+                        if (readable)
+                            append(wb, " ");
+                    }
                     else
-                        append(wb, " . ");
+                    {
+                        if (readable)
+                            append(wb, " . ");
+                        else
+                            append(wb, ".");
+                    }
                 }
                 else
                 {
@@ -141,7 +149,7 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable)
             append(wb, "[");
             for (int lp = 0; lp < VECTOR(v).length; lp += 1)
             {
-                if (lp > 0)
+                if (readable && lp > 0)
                 {
                     append(wb, " ");
                 }

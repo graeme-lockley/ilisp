@@ -141,150 +141,171 @@ Value *Main_evalValue(Value *v, Value *env)
 
 Value *Main_eval(Value *v, Value *env)
 {
-    if (IS_NIL(v))
-        return v;
-
-    if (IS_PAIR(v))
+    while (1)
     {
-        if (IS_SYMBOL(CAR(v)))
+        if (IS_NIL(v))
+            return v;
+
+        if (IS_PAIR(v))
         {
-            char *symbol_name = SYMBOL(CAR(v));
-            if (strcmp(symbol_name, "do") == 0)
+            if (IS_SYMBOL(CAR(v)))
             {
-                Value *result = VNil;
-                Value *cursor = CDR(v);
-
-                while (1)
+                char *symbol_name = SYMBOL(CAR(v));
+                if (strcmp(symbol_name, "do") == 0)
                 {
-                    if (IS_NIL(cursor))
-                        break;
+                    Value *result = VNil;
+                    v = CDR(v);
 
-                    result = Main_eval(CAR(cursor), env);
-                    if (!IS_SUCCESSFUL(result))
-                        return result;
-
-                    cursor = CDR(cursor);
-                }
-
-                return result;
-            }
-
-            if (strcmp(symbol_name, "fn") == 0)
-            {
-                Value *arguments[2];
-                Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "fn");
-                if (error != NULL)
-                    return error;
-
-                Value *cursor = arguments[0];
-
-                if (!IS_SYMBOL(cursor))
-                {
-                    int parameter_number = 0;
+                    if (IS_NIL(v))
+                        return VNil;
                     while (1)
                     {
-                        if (IS_NIL(cursor))
+                        if (IS_NIL(CDR(v)))
+                        {
+                            v = CAR(v);
                             break;
-
-                        if (!IS_PAIR(cursor))
-                            return exceptions_invalid_procedure_parameter(parameter_number, cursor);
-
-                        if (!IS_SYMBOL(CAR(cursor)))
-                            return exceptions_invalid_procedure_parameter(parameter_number, CAR(cursor));
-
-                        if (strcmp(SYMBOL(CAR(cursor)), ".") == 0)
-                        {
-                            Value *rest = CDR(cursor);
-
-                            if (!IS_PAIR(rest) || !IS_NIL(CDR(rest)))
-                                return exceptions_invalid_fn_form(cursor);
                         }
 
-                        cursor = CDR(cursor);
-                        parameter_number += 1;
+                        result = Main_eval(CAR(v), env);
+                        if (!IS_SUCCESSFUL(result))
+                            return result;
+
+                        v = CDR(v);
                     }
+
+                    continue;
                 }
-                return mkProcedure(arguments[1], arguments[0], env);
-            }
-
-            if (strcmp(symbol_name, "if") == 0)
-            {
-                Value *arguments[3];
-
-                Value *error = extract_range_parameters(arguments, CDR(v), 2, 3, "if");
-                if (error != NULL)
-                    return error;
-
-                Value *e = Main_eval(arguments[0], env);
-                if (!IS_SUCCESSFUL(e))
-                    return e;
-
-                return Value_truthy(e)
-                           ? Main_eval(arguments[1], env)
-                       : arguments[2] == NULL
-                           ? VNil
-                           : Main_eval(arguments[2], env);
-            }
-
-            if (strcmp(symbol_name, "quote") == 0)
-                return CDR(v);
-        }
-
-        Value *ve = Main_evalValue(v, env);
-
-        if (IS_SUCCESSFUL(ve))
-        {
-            Value *f = CAR(ve);
-            Value *args = CDR(ve);
-
-            if (IS_PROCEDURE(f))
-            {
-                Value *new_bindings = mkMap(VNil);
-                Value *new_env = mkPair(new_bindings, PROCEDURE(f).env);
-
-                Value *parameter_cursor = PROCEDURE(f).parameters;
-                if (IS_SYMBOL(parameter_cursor))
+                else if (strcmp(symbol_name, "fn") == 0)
                 {
-                    map_set_bang(new_bindings, parameter_cursor, args);
-                    return Main_eval(PROCEDURE(f).body, new_env);
-                }
-                else
-                {
-                    int argument_index = 0;
-                    Value *argument_cursor = args;
+                    Value *arguments[2];
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "fn");
+                    if (error != NULL)
+                        return error;
 
-                    while (1)
+                    Value *cursor = arguments[0];
+
+                    if (!IS_SYMBOL(cursor))
                     {
-                        if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
-                            return Main_eval(PROCEDURE(f).body, new_env);
-
-                        if (IS_NIL(parameter_cursor))
-                            return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
-
-                        if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
+                        int parameter_number = 0;
+                        while (1)
                         {
-                            map_set_bang(new_bindings, CAR(CDR(parameter_cursor)), argument_cursor);
-                            return Main_eval(PROCEDURE(f).body, new_env);
+                            if (IS_NIL(cursor))
+                                break;
+
+                            if (!IS_PAIR(cursor))
+                                return exceptions_invalid_procedure_parameter(parameter_number, cursor);
+
+                            if (!IS_SYMBOL(CAR(cursor)))
+                                return exceptions_invalid_procedure_parameter(parameter_number, CAR(cursor));
+
+                            if (strcmp(SYMBOL(CAR(cursor)), ".") == 0)
+                            {
+                                Value *rest = CDR(cursor);
+
+                                if (!IS_PAIR(rest) || !IS_NIL(CDR(rest)))
+                                    return exceptions_invalid_fn_form(cursor);
+                            }
+
+                            cursor = CDR(cursor);
+                            parameter_number += 1;
                         }
+                    }
+                    return mkProcedure(arguments[1], arguments[0], env);
+                }
+                else if (strcmp(symbol_name, "if") == 0)
+                {
+                    Value *arguments[3];
 
-                        if (IS_NIL(argument_cursor))
-                            return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+                    Value *error = extract_range_parameters(arguments, CDR(v), 2, 3, "if");
+                    if (error != NULL)
+                        return error;
 
-                        argument_index += 1;
-                        map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
-                        argument_cursor = CDR(argument_cursor);
-                        parameter_cursor = CDR(parameter_cursor);
+                    Value *e = Main_eval(arguments[0], env);
+                    if (!IS_SUCCESSFUL(e))
+                        return e;
+
+                    if (Value_truthy(e))
+                    {
+                        v = arguments[1];
+                        continue;
+                    }
+                    else if (arguments[2] == NULL)
+                    {
+                        return VNil;
+                    }
+                    else
+                    {
+                        v = arguments[2];
+                        continue;
                     }
                 }
+                else if (strcmp(symbol_name, "quote") == 0)
+                    return CDR(v);
             }
 
-            return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args) : exceptions_value_not_applicable(f, args);
-        }
-        else
-            return ve;
-    }
+            Value *ve = Main_evalValue(v, env);
 
-    return Main_evalValue(v, env);
+            if (IS_SUCCESSFUL(ve))
+            {
+                Value *f = CAR(ve);
+                Value *args = CDR(ve);
+
+                if (IS_PROCEDURE(f))
+                {
+                    Value *new_bindings = mkMap(VNil);
+                    Value *new_env = mkPair(new_bindings, PROCEDURE(f).env);
+
+                    Value *parameter_cursor = PROCEDURE(f).parameters;
+                    if (IS_SYMBOL(parameter_cursor))
+                    {
+                        map_set_bang(new_bindings, parameter_cursor, args);
+                        return Main_eval(PROCEDURE(f).body, new_env);
+                    }
+                    else
+                    {
+                        int argument_index = 0;
+                        Value *argument_cursor = args;
+
+                        while (1)
+                        {
+                            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor)) {
+                                v = PROCEDURE(f).body;
+                                env = new_env;
+                                break;
+                            }
+
+                            if (IS_NIL(parameter_cursor))
+                                return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+
+                            if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
+                            {
+                                map_set_bang(new_bindings, CAR(CDR(parameter_cursor)), argument_cursor);
+                                v = PROCEDURE(f).body;
+                                env = new_env;
+                                break;
+                            }
+
+                            if (IS_NIL(argument_cursor))
+                                return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
+
+                            argument_index += 1;
+                            map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
+                            argument_cursor = CDR(argument_cursor);
+                            parameter_cursor = CDR(parameter_cursor);
+                        }
+
+                        continue;
+                    }
+                }
+
+                return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args) : exceptions_value_not_applicable(f, args);
+            }
+            else
+                return ve;
+        }
+
+        return Main_evalValue(v, env);
+    }
 }
 
 static Value *Main_print(Value *content)

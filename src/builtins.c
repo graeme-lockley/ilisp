@@ -633,16 +633,27 @@ Value *builtin_pr_str(Value *parameters)
     return value_to_str(parameters, 1, " ");
 }
 
+Value *builtin_print(Value *parameters)
+{
+    Value *s = value_to_str(parameters, 0, "");
+    if (IS_STRING(s))
+        printf("%s", s->strV);
+    return VNil;
+}
+
+Value *builtin_println(Value *parameters)
+{
+    Value *s = value_to_str(parameters, 0, "");
+    if (IS_STRING(s))
+        printf("%s\n", s->strV);
+    return VNil;
+}
+
 Value *builtin_prn(Value *parameters)
 {
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "prn");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *result = Printer_prStr(parameter[0], 1, " ");
-    puts(result->strV);
+    Value *s = builtin_pr_str(parameters);
+    if (IS_STRING(s))
+        printf("%s\n", s->strV);
     return VNil;
 }
 

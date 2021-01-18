@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "builtins.h"
 #include "exceptions.h"
 #include "printer.h"
-#include <string.h>
+#include "reader.h"
 #include "value.h"
 
 #define ASSERT(e)                                                              \
@@ -660,4 +661,18 @@ Value *builtin_prn(Value *parameters)
 Value *builtin_str(Value *parameters)
 {
     return value_to_str(parameters, 0, "");
+}
+
+Value *builtin_read_string(Value *parameters)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-string");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkString("string"), parameter[0]);
+
+    return Reader_read(STRING(parameter[0]));
 }

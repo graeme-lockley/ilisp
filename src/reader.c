@@ -191,6 +191,12 @@ static void next_token(Lexer *lexer)
                     set_token(lexer, ERROR_UNENCLOSED_QUOTE, &start, &cursor);
                     break;
                 }
+                else if (current == '\\')
+                {
+                    advance_position(lexer, &cursor);
+                    advance_position(lexer, &cursor);
+                    current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);
+                }
                 else if (current == '"')
                 {
                     advance_position(lexer, &cursor);
@@ -242,10 +248,22 @@ static Value *parse(Lexer *lexer)
 
     case LITERAL_STRING:
     {
-        lexer->content[lexer->end.offset] = 0;
-        Value *v = mkString((char *)(lexer->content + lexer->start.offset + 1));
-        lexer->content[lexer->end.offset] = '"';
+        char *to = (char *)malloc(lexer->end.offset - lexer->start.offset);
+        char *to_free = to;
+        char *from = lexer->content + lexer->start.offset + 1;
 
+        while (*from != '"')
+        {
+            if (*from == '\\')
+                from += 1;
+            *to = *from;
+            from += 1;
+            to += 1;
+        }
+        *to = '\0';
+
+        Value *v = mkString(to_free);
+        free(to_free);
         next_token(lexer);
 
         return v;

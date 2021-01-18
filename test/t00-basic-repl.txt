@@ -2,6 +2,9 @@
 "Hello World"
 > "Hello World"
 
+"\""
+> "\""
+
 ; Numeric - 123
 123
 > 123

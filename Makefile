@@ -12,6 +12,7 @@ SRC_OBJECTS=\
 	src/reader.o \
 	src/readline.o \
 	src/repl.o \
+	src/string_builder.o \
 	src/value.o
 
 SRC_TARGETS=\

@@ -1,16 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "string_builder.h"
 #include "value.h"
-
-#define BUFFER_TRANCHE 2
-
-typedef struct WriteBufferStruct
-{
-    char *buffer;
-    int buffer_size;
-    int end_of_writer;
-} WriteBuffer;
 
 struct Set
 {
@@ -53,34 +46,7 @@ static void set_free(struct Set *s)
     }
 }
 
-static void append(WriteBuffer *wb, char *v)
-{
-    int length_of_v = strlen(v);
-
-    if (wb->end_of_writer + length_of_v >= wb->buffer_size)
-    {
-        int new_buffer_size = wb->end_of_writer + length_of_v + wb->buffer_size;
-        char *new_buffer = (char *)malloc(new_buffer_size);
-        strcpy(new_buffer, wb->buffer);
-        free(wb->buffer);
-        wb->buffer = new_buffer;
-        wb->buffer_size = new_buffer_size;
-    }
-
-    strcat(wb->buffer, v);
-    wb->end_of_writer += length_of_v;
-}
-
-static void append_char(WriteBuffer *wb, char c)
-{
-    char s[2];
-
-    s[0] = c;
-    s[1] = '\0';
-    append(wb, s);
-}
-
-static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, char *separator)
+static void pString(struct Set **s, StringBuilder *wb, Value *v, int readable, char *separator)
 {
     int v_in_set = set_in(*s, v);
 
@@ -90,18 +56,18 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
     switch (TAG_TO_VT(v))
     {
     case VT_NIL:
-        append(wb, "()");
+        string_builder_append(wb, "()");
         break;
 
     case VT_PAIR:
     {
         if (IS_NIL(v))
-            append(wb, "()");
+            string_builder_append(wb, "()");
         else if (v_in_set)
-            append(wb, "(...)");
+            string_builder_append(wb, "(...)");
         else
         {
-            append(wb, "(");
+            string_builder_append(wb, "(");
 
             while (1)
             {
@@ -111,29 +77,29 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
                     v = CDR(v);
                     if (IS_NIL(v))
                     {
-                        append(wb, ")");
+                        string_builder_append(wb, ")");
                         break;
                     }
                     else if (IS_PAIR(v))
                     {
-                        append(wb, separator);
+                        string_builder_append(wb, separator);
                     }
                     else
                     {
                         if (readable)
                         {
-                            append(wb, separator);
-                            append(wb, ".");
-                            append(wb, separator);
+                            string_builder_append(wb, separator);
+                            string_builder_append(wb, ".");
+                            string_builder_append(wb, separator);
                         }
                         else
-                            append(wb, ".");
+                            string_builder_append(wb, ".");
                     }
                 }
                 else
                 {
                     pString(s, wb, v, readable, separator);
-                    append(wb, ")");
+                    string_builder_append(wb, ")");
                     break;
                 }
             }
@@ -144,32 +110,32 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
     case VT_VECTOR:
     {
         if (VECTOR(v).length == 0)
-            append(wb, "[]");
+            string_builder_append(wb, "[]");
         else if (v_in_set)
-            append(wb, "[...]");
+            string_builder_append(wb, "[...]");
         else
         {
-            append(wb, "[");
+            string_builder_append(wb, "[");
             for (int lp = 0; lp < VECTOR(v).length; lp += 1)
             {
                 if (lp > 0)
-                    append(wb, separator);
+                    string_builder_append(wb, separator);
                 pString(s, wb, VECTOR(v).items[lp], readable, separator);
             }
-            append(wb, "]");
+            string_builder_append(wb, "]");
         }
         break;
     }
 
     case VT_SYMBOL:
     {
-        append(wb, SYMBOL(v));
+        string_builder_append(wb, SYMBOL(v));
         break;
     }
 
     case VT_KEYWORD:
     {
-        append(wb, SYMBOL(v));
+        string_builder_append(wb, SYMBOL(v));
         break;
     }
 
@@ -177,14 +143,14 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
     {
         char buffer[20];
         sprintf(buffer, "%d", NUMBER(v));
-        append(wb, buffer);
+        string_builder_append(wb, buffer);
         break;
     }
 
     case VT_STRING:
         if (readable)
         {
-            append(wb, "\"");
+            string_builder_append(wb, "\"");
 
             char *s = STRING(v);
             int s_length = strlen(s);
@@ -194,27 +160,27 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
 
                 if (c == '"')
                 {
-                    append(wb, "\\\"");
+                    string_builder_append(wb, "\\\"");
                 }
                 else
-                    append_char(wb, c);
+                    string_builder_append_char(wb, c);
             }
 
-            append(wb, "\"");
+            string_builder_append(wb, "\"");
         }
         else
-            append(wb, STRING(v));
+            string_builder_append(wb, STRING(v));
         break;
 
     case VT_MAP:
     {
         if (IS_NIL(MAP(v)))
-            append(wb, "{}");
+            string_builder_append(wb, "{}");
         else if (v_in_set)
-            append(wb, "{...}");
+            string_builder_append(wb, "{...}");
         else
         {
-            append(wb, "{");
+            string_builder_append(wb, "{");
 
             Value *cursor = MAP(v);
             if (!IS_NIL(cursor))
@@ -222,41 +188,41 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
                 while (1)
                 {
                     pString(s, wb, CAR(CAR(cursor)), readable, separator);
-                    append(wb, " ");
+                    string_builder_append(wb, " ");
                     pString(s, wb, CDR(CAR(cursor)), readable, separator);
 
                     cursor = CDR(cursor);
                     if (IS_NIL(cursor))
                         break;
                     else
-                        append(wb, " ");
+                        string_builder_append(wb, " ");
                 }
             }
 
-            append(wb, "}");
+            string_builder_append(wb, "}");
         }
         break;
     }
 
     case VT_NATIVE_PROCEDURE:
-        append(wb, "#NATIVE-PROCEDURE");
+        string_builder_append(wb, "#NATIVE-PROCEDURE");
         break;
 
     case VT_PROCEDURE:
-        append(wb, "#PROCEDURE");
+        string_builder_append(wb, "#PROCEDURE");
         break;
 
     case VT_EXCEPTION:
-        append(wb, "(:exception ");
+        string_builder_append(wb, "(:exception ");
         pString(s, wb, v->exceptionV, readable, separator);
-        append(wb, ")");
+        string_builder_append(wb, ")");
         break;
 
     default:
     {
         char buffer[20];
         sprintf(buffer, "(#TODO %d)", v->tag);
-        append(wb, buffer);
+        string_builder_append(wb, buffer);
         break;
     }
     }
@@ -264,14 +230,15 @@ static void pString(struct Set **s, WriteBuffer *wb, Value *v, int readable, cha
 
 Value *Printer_prStr(Value *v, int readable, char *separator)
 {
-    WriteBuffer wb = {malloc(BUFFER_TRANCHE), BUFFER_TRANCHE, 0};
-    wb.buffer[0] = (char)0;
+    StringBuilder *wb = string_builder_init();
 
     struct Set *values = NULL;
 
-    pString(&values, &wb, v, readable, separator);
+    pString(&values, wb, v, readable, separator);
 
     set_free(values);
 
-    return mkString(wb.buffer);
+    Value *result = mkString(string_builder_to_string(wb));
+    string_builder_free(wb);
+    return result;
 }

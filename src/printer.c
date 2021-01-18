@@ -238,7 +238,5 @@ Value *Printer_prStr(Value *v, int readable, char *separator)
 
     set_free(values);
 
-    Value *result = mkString(string_builder_to_string(sb));
-    string_builder_free(sb);
-    return result;
+    return mkStringUse(string_builder_free_use(sb));
 }

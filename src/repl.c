@@ -54,6 +54,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(builtin_println));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
+    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
 
     Repl_define("list", "(fn x x)", root_scope);

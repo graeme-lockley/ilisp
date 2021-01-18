@@ -11,7 +11,8 @@ typedef struct StringBuilderStruct
 } StringBuilder;
 
 extern StringBuilder *string_builder_init();
-extern void *string_builder_free(StringBuilder *wb);
+extern void string_builder_free(StringBuilder *wb);
+extern char *string_builder_free_use(StringBuilder *wb);
 extern char *string_builder_to_string(StringBuilder *wb);
 extern void string_builder_append(StringBuilder *wb, char *v);
 extern void string_builder_append_char(StringBuilder *wb, char c);

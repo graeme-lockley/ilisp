@@ -29,6 +29,7 @@ extern Value *builtin_println(Value *parameters);
 extern Value *builtin_prn(Value *parameters);
 extern Value *builtin_pr_str(Value *parameters);
 extern Value *builtin_read_string(Value *parameters);
+extern Value *builtin_slurp(Value *parameters);
 extern Value *builtin_str(Value *parameters);
 
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);

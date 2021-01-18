@@ -99,6 +99,7 @@ extern Value *mkNumber(int number);
 #define NUMBER(v) ((v)->intV)
 
 extern Value *mkString(char *string);
+extern Value *mkStringUse(char *string);
 #define STRING(v) ((v)->strV)
 
 extern Value *mkPair(Value *car, Value *cdr);

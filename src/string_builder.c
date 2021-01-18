@@ -14,10 +14,17 @@ StringBuilder *string_builder_init()
     return sb;
 }
 
-void *string_builder_free(StringBuilder *sb)
+void string_builder_free(StringBuilder *sb)
 {
     free(sb->buffer);
     free(sb);
+}
+
+char *string_builder_free_use(StringBuilder *sb)
+{
+    char *buffer = sb->buffer;
+    free(sb);
+    return buffer;
 }
 
 char *string_builder_to_string(StringBuilder *sb)

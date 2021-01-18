@@ -262,11 +262,8 @@ static Value *parse(Lexer *lexer)
         }
         *to = '\0';
 
-        Value *v = mkString(to_free);
-        free(to_free);
         next_token(lexer);
-
-        return v;
+        return mkStringUse(to_free);
     }
 
     case LITERAL_NUMBER:

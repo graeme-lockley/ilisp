@@ -676,3 +676,45 @@ Value *builtin_read_string(Value *parameters)
 
     return Reader_read(STRING(parameter[0]));
 }
+
+Value *builtin_slurp(Value *parameters)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "slurp");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+
+    FILE *f = fopen(STRING(parameter[0]), "rb");
+
+    if (!f)
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+
+    if (fseek(f, 0, SEEK_END) != 0)
+    {
+        fclose(f);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+    }
+
+    long length = ftell(f);
+    if (fseek(f, 0, SEEK_SET) != 0)
+    {
+        fclose(f);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+    }
+
+    char *buffer = (char *)malloc(length + 1);
+    if (buffer == NULL)
+    {
+        fclose(f);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+    }
+
+    fread(buffer, 1, length, f);
+    buffer[length] = '\0';
+    fclose(f);
+    return mkStringUse(buffer);
+}

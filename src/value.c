@@ -64,8 +64,13 @@ Value *mkNumber(int number)
 
 Value *mkString(char *string)
 {
+    return mkStringUse(strdup(string));
+}
+
+Value *mkStringUse(char *string)
+{
     Value *value = mkValue(VT_STRING);
-    value->strV = strdup(string);
+    value->strV = string;
     return value;
 }
 

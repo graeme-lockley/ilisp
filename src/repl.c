@@ -17,7 +17,7 @@
  * environment will be directly accessible and amendable from iLisp.
  */
 
-static void add_binding_into_environment(Value *env, char *name, Value *value)
+void add_binding_into_environment(Value *env, char *name, Value *value)
 {
     Value *key = mkSymbol(name);
     map_set_bang(env, key, value);

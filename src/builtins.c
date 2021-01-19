@@ -6,6 +6,7 @@
 #include "exceptions.h"
 #include "printer.h"
 #include "reader.h"
+#include "repl.h"
 #include "value.h"
 
 #define ASSERT(e)                                                              \
@@ -132,7 +133,7 @@ Value *map_find(Value *map, Value *key)
     }
 }
 
-Value *builtin_car(Value *parameters)
+Value *builtin_car(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return exceptions_expected_argument_count(mkSymbol("car"), 1, parameters);
@@ -151,7 +152,7 @@ Value *builtin_car(Value *parameters)
     return CAR(first_parameter);
 }
 
-Value *builtin_cdr(Value *parameters)
+Value *builtin_cdr(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return exceptions_expected_argument_count(mkSymbol("cdr"), 1, parameters);
@@ -170,7 +171,7 @@ Value *builtin_cdr(Value *parameters)
     return CDR(first_parameter);
 }
 
-Value *builtin_count(Value *parameters)
+Value *builtin_count(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return exceptions_expected_argument_count(mkSymbol("count"), 1, parameters);
@@ -198,7 +199,7 @@ Value *builtin_count(Value *parameters)
     }
 }
 
-Value *builtin_emptyp(Value *parameters)
+Value *builtin_emptyp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -212,7 +213,7 @@ Value *builtin_emptyp(Value *parameters)
     return IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
-Value *builtin_equal(Value *parameters)
+Value *builtin_equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -240,7 +241,18 @@ Value *builtin_equal(Value *parameters)
     }
 }
 
-Value *builtin_integer_plus(Value *parameters)
+Value *builtin_eval(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "eval");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return Repl_eval(parameter[0], env);
+}
+
+Value *builtin_integer_plus(Value *parameters, Value *env)
 {
     int argument_number = 0;
     int result = 0;
@@ -269,7 +281,7 @@ Value *builtin_integer_plus(Value *parameters)
     }
 }
 
-Value *builtin_integer_multiply(Value *parameters)
+Value *builtin_integer_multiply(Value *parameters, Value *env)
 {
     int argument_number = 0;
     int result = 1;
@@ -298,7 +310,7 @@ Value *builtin_integer_multiply(Value *parameters)
     }
 }
 
-Value *builtin_integer_minus(Value *parameters)
+Value *builtin_integer_minus(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return mkNumber(0);
@@ -342,7 +354,7 @@ Value *builtin_integer_minus(Value *parameters)
     }
 }
 
-Value *builtin_integer_divide(Value *parameters)
+Value *builtin_integer_divide(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return mkNumber(1);
@@ -399,7 +411,7 @@ Value *builtin_integer_divide(Value *parameters)
     }
 }
 
-extern Value *builtin_integer_less_than(Value *parameters)
+extern Value *builtin_integer_less_than(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -432,7 +444,7 @@ extern Value *builtin_integer_less_than(Value *parameters)
     }
 }
 
-extern Value *builtin_integer_less_equal(Value *parameters)
+extern Value *builtin_integer_less_equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -465,7 +477,7 @@ extern Value *builtin_integer_less_equal(Value *parameters)
     }
 }
 
-extern Value *builtin_integer_greater_than(Value *parameters)
+extern Value *builtin_integer_greater_than(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -498,7 +510,7 @@ extern Value *builtin_integer_greater_than(Value *parameters)
     }
 }
 
-extern Value *builtin_integer_greater_equal(Value *parameters)
+extern Value *builtin_integer_greater_equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -592,7 +604,7 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-Value *builtin_listp(Value *parameters)
+Value *builtin_listp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -603,7 +615,7 @@ Value *builtin_listp(Value *parameters)
     return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
-Value *builtin_map_set_bang(Value *parameters)
+Value *builtin_map_set_bang(Value *parameters, Value *env)
 {
     Value *parameter[3];
 
@@ -629,12 +641,12 @@ static Value *value_to_str(Value *parameters, int readable, char *separator)
     return result;
 }
 
-Value *builtin_pr_str(Value *parameters)
+Value *builtin_pr_str(Value *parameters, Value *env)
 {
     return value_to_str(parameters, 1, " ");
 }
 
-Value *builtin_print(Value *parameters)
+Value *builtin_print(Value *parameters, Value *env)
 {
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
@@ -642,7 +654,7 @@ Value *builtin_print(Value *parameters)
     return VNil;
 }
 
-Value *builtin_println(Value *parameters)
+Value *builtin_println(Value *parameters, Value *env)
 {
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
@@ -650,20 +662,20 @@ Value *builtin_println(Value *parameters)
     return VNil;
 }
 
-Value *builtin_prn(Value *parameters)
+Value *builtin_prn(Value *parameters, Value *env)
 {
-    Value *s = builtin_pr_str(parameters);
+    Value *s = builtin_pr_str(parameters, env);
     if (IS_STRING(s))
         printf("%s\n", s->strV);
     return VNil;
 }
 
-Value *builtin_str(Value *parameters)
+Value *builtin_str(Value *parameters, Value *env)
 {
     return value_to_str(parameters, 0, "");
 }
 
-Value *builtin_read_string(Value *parameters)
+Value *builtin_read_string(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -677,7 +689,7 @@ Value *builtin_read_string(Value *parameters)
     return Reader_read(STRING(parameter[0]));
 }
 
-Value *builtin_slurp(Value *parameters)
+Value *builtin_slurp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 

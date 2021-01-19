@@ -24,6 +24,7 @@ static void add_binding_into_environment(Value *env, char *name, Value *value)
 }
 
 static int Repl_define(char *name, char *s, Value *env);
+Value *Repl_evalValue(Value *v, Value *env);
 
 Value *initialise_environment()
 {
@@ -47,6 +48,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
+    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
@@ -67,9 +69,7 @@ static Value *Main_read(char *content)
     return Reader_read(content);
 }
 
-extern Value *Main_eval(Value *content, Value *env);
-
-Value *Main_evalValue(Value *v, Value *env)
+Value *Repl_evalValue(Value *v, Value *env)
 {
     if (IS_SYMBOL(v))
     {
@@ -78,7 +78,12 @@ Value *Main_evalValue(Value *v, Value *env)
         while (1)
         {
             if (IS_NIL(cursor))
+            {
+                if (strcmp(SYMBOL(v), "**scope**") == 0)
+                    return env;
+
                 return exceptions_unknown_symbol(v);
+            }
 
             binding = map_find(CAR(cursor), v);
 
@@ -91,7 +96,7 @@ Value *Main_evalValue(Value *v, Value *env)
 
     if (IS_PAIR(v))
     {
-        Value *car = Main_eval(CAR(v), env);
+        Value *car = Repl_eval(CAR(v), env);
 
         if (IS_SUCCESSFUL(car))
         {
@@ -105,7 +110,7 @@ Value *Main_evalValue(Value *v, Value *env)
                     return root;
                 else if (IS_PAIR(srcCursor))
                 {
-                    Value *cdr = Main_eval(CAR(srcCursor), env);
+                    Value *cdr = Repl_eval(CAR(srcCursor), env);
 
                     if (IS_SUCCESSFUL(cdr))
                     {
@@ -120,7 +125,7 @@ Value *Main_evalValue(Value *v, Value *env)
                 }
                 else
                 {
-                    Value *cdr = Main_eval(srcCursor, env);
+                    Value *cdr = Repl_eval(srcCursor, env);
 
                     if (IS_SUCCESSFUL(cdr))
                     {
@@ -141,7 +146,7 @@ Value *Main_evalValue(Value *v, Value *env)
     return v;
 }
 
-Value *Main_eval(Value *v, Value *env)
+Value *Repl_eval(Value *v, Value *env)
 {
     while (1)
     {
@@ -168,7 +173,7 @@ Value *Main_eval(Value *v, Value *env)
                             break;
                         }
 
-                        result = Main_eval(CAR(v), env);
+                        result = Repl_eval(CAR(v), env);
                         if (!IS_SUCCESSFUL(result))
                             return result;
 
@@ -222,7 +227,7 @@ Value *Main_eval(Value *v, Value *env)
                     if (error != NULL)
                         return error;
 
-                    Value *e = Main_eval(arguments[0], env);
+                    Value *e = Repl_eval(arguments[0], env);
                     if (!IS_SUCCESSFUL(e))
                         return e;
 
@@ -245,7 +250,7 @@ Value *Main_eval(Value *v, Value *env)
                     return CDR(v);
             }
 
-            Value *ve = Main_evalValue(v, env);
+            Value *ve = Repl_evalValue(v, env);
 
             if (IS_SUCCESSFUL(ve))
             {
@@ -261,7 +266,7 @@ Value *Main_eval(Value *v, Value *env)
                     if (IS_SYMBOL(parameter_cursor))
                     {
                         map_set_bang(new_bindings, parameter_cursor, args);
-                        return Main_eval(PROCEDURE(f).body, new_env);
+                        return Repl_eval(PROCEDURE(f).body, new_env);
                     }
                     else
                     {
@@ -270,7 +275,8 @@ Value *Main_eval(Value *v, Value *env)
 
                         while (1)
                         {
-                            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor)) {
+                            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
+                            {
                                 v = PROCEDURE(f).body;
                                 env = new_env;
                                 break;
@@ -300,13 +306,13 @@ Value *Main_eval(Value *v, Value *env)
                     }
                 }
 
-                return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args) : exceptions_value_not_applicable(f, args);
+                return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);
             }
             else
                 return ve;
         }
 
-        return Main_evalValue(v, env);
+        return Repl_evalValue(v, env);
     }
 }
 
@@ -319,7 +325,7 @@ Value *Repl_rep(char *content, Value *env)
 {
     Value *readRV = Main_read(content);
     if (IS_SUCCESSFUL(readRV))
-        return Main_print(Main_eval(readRV, env));
+        return Main_print(Repl_eval(readRV, env));
 
     return readRV;
 }

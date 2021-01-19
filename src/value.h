@@ -51,7 +51,7 @@ struct ValueStruct
             struct ValueStruct **items;
         } vectorV;
         struct ValueStruct *mapV;
-        struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters);
+        struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters, struct ValueStruct *env);
         struct {
             struct ValueStruct *body;
             struct ValueStruct *parameters;
@@ -114,7 +114,7 @@ extern Value *mkMap(Value *items);
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
-extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters));
+extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *env));
 #define NATIVE_PROCEDURE(v) ((v)->native_procedure)
 
 extern Value *mkProcedure(Value *body, Value *parameters, Value *env);

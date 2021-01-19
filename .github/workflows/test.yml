@@ -24,4 +24,4 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install libedit-dev
       - name: Build and test
-        run: make test
+        run: make

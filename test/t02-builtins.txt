@@ -386,3 +386,9 @@ fred
 
 (eval (read-string "(cdr '(1 2 3 4 5))"))
 > (2 3 4 5)
+
+(do (load-file "./test/basic.sc") (caar '((1 2) (3 4))))
+> 1
+
+(do (load-file "./test/basic.sc") (cadr '((1 2) (3 4))))
+> (3 4)

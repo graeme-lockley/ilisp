@@ -255,8 +255,15 @@ static Value *parse(Lexer *lexer)
         while (*from != '"')
         {
             if (*from == '\\')
+            {
                 from += 1;
-            *to = *from;
+                if (*from == 'n')
+                    *to = '\n';
+                else
+                    *to = *from;
+            }
+            else
+                *to = *from;
             from += 1;
             to += 1;
         }

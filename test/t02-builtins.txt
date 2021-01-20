@@ -401,3 +401,21 @@ fred
 
 (cons 1 '(2 3 4))
 > (1 2 3 4)
+
+(concat)
+> ()
+
+(concat () () ())
+> ()
+
+(concat 1 2 3)
+> (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure concat}))
+
+(concat '(1 2 3) (cons 1 9))
+> (:exception (InvalidArgument . {:received (1 . 9) :expected-type "pair" :arg-number 1 :procedure concat}))
+
+(concat '(1) '(2) '(3))
+> (1 2 3)
+
+(concat '(1 2 3) '(4 5 6) '(7 8 9))
+> (1 2 3 4 5 6 7 8 9)

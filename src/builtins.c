@@ -232,6 +232,40 @@ Value *builtin_cdr(Value *parameters, Value *env)
     return CDR(first_parameter);
 }
 
+Value *builtin_concat(Value *parameters, Value *env)
+{
+    Value *result = VNil;
+    Value **result_cursor = &result;
+    int argument_number = 0;
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return result;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), parameters);
+
+        Value *car = CAR(parameters);
+        while (1)
+        {
+            if (IS_NIL(car))
+                break;
+
+            if (!IS_PAIR(car))
+                return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), CAR(parameters));
+
+            Value *v = mkPair(CAR(car), VNil);
+            *result_cursor = v;
+            result_cursor = &CDR(v);
+            car = CDR(car);
+        }
+
+        argument_number += 1;
+        parameters = CDR(parameters);
+    }
+}
+
 Value *builtin_cons(Value *parameters, Value *env)
 {
     Value *parameter[2];

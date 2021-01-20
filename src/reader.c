@@ -100,7 +100,7 @@ static void next_token(Lexer *lexer)
         {
             advance_position(lexer, &cursor);
             current = CHARACTER_AT_POSITION(lexer, &cursor);
-            while (current != 0 && current != 13)
+            while (current != 0 && current != 13 && current != 10)
             {
                 advance_position(lexer, &cursor);
                 current = CHARACTER_AT_POSITION(lexer, &cursor);

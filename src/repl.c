@@ -62,7 +62,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
 
     Repl_define("list", "(fn x x)", root_scope);
-    Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \")\"))))", root_scope);
+    Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);
 
     return root_scope;
 }

@@ -770,5 +770,6 @@ Value *builtin_slurp(Value *parameters, Value *env)
     fread(buffer, 1, length, f);
     buffer[length] = '\0';
     fclose(f);
+
     return mkStringUse(buffer);
 }

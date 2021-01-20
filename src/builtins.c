@@ -279,14 +279,11 @@ Value *builtin_cons(Value *parameters, Value *env)
 
 Value *builtin_count(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
-        return exceptions_expected_argument_count(mkSymbol("count"), 1, parameters);
+    Value *parameter[1];
 
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), parameters);
-
-    if (!IS_NIL(CDR(parameters)))
-        return exceptions_expected_argument_count(mkSymbol("count"), 1, parameters);
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "count");
+    if (extract_result != NULL)
+        return extract_result;
 
     Value *list = CAR(parameters);
 

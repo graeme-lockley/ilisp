@@ -362,6 +362,7 @@ static int Repl_define(char *name, char *s, Value *env)
 int Repl_repl()
 {
     Value *env = initialise_environment();
+    add_binding_into_environment(CAR(env), "*args*", VNil);
 
     char *p;
 

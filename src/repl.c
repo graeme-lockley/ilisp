@@ -46,6 +46,7 @@ Value *initialise_environment()
 
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
+    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));

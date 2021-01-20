@@ -10,6 +10,7 @@ extern Value *map_remove_bang(Value *map, Value *key);
 
 extern Value *builtin_car(Value *parameters, Value *env);
 extern Value *builtin_cdr(Value *parameters, Value *env);
+extern Value *builtin_cons(Value *parameters, Value *env);
 extern Value *builtin_count(Value *parameters, Value *env);
 extern Value *builtin_emptyp(Value *parameters, Value *env);
 extern Value *builtin_equal(Value *parameters, Value *env);

@@ -49,6 +49,67 @@ static void ASSERT_IS_VALID_MAP(Value *map)
     }
 }
 
+Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
+{
+    int index = 0;
+
+    Value *cursor = arguments;
+
+    while (1)
+    {
+        if (index == number)
+        {
+            if (IS_NIL(cursor))
+                return NULL;
+
+            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
+        }
+
+        if (!IS_PAIR(cursor))
+            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
+
+        parameters[index] = CAR(cursor);
+        index += 1;
+        cursor = CDR(cursor);
+    }
+}
+
+Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name)
+{
+    int index = 0;
+
+    Value *cursor = arguments;
+
+    while (1)
+    {
+        if (index == max_number)
+        {
+            if (IS_NIL(cursor))
+                return NULL;
+
+            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
+        }
+
+        if (IS_NIL(cursor) && index < min_number)
+            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
+
+        if (IS_NIL(cursor))
+        {
+            while (index < max_number)
+            {
+                parameters[index] = NULL;
+                index += 1;
+            }
+
+            return NULL;
+        }
+
+        parameters[index] = CAR(cursor);
+        index += 1;
+        cursor = CDR(cursor);
+    }
+}
+
 static int is_equals(Value *a, Value *b)
 {
     return Value_truthy(Value_equals(a, b));
@@ -169,6 +230,17 @@ Value *builtin_cdr(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), first_parameter);
 
     return CDR(first_parameter);
+}
+
+Value *builtin_cons(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "cons");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return mkPair(parameter[0], parameter[1]);
 }
 
 Value *builtin_count(Value *parameters, Value *env)
@@ -540,67 +612,6 @@ extern Value *builtin_integer_greater_equal(Value *parameters, Value *env)
         operand = NUMBER(car);
         argument_count += 1;
         parameters = CDR(parameters);
-    }
-}
-
-Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
-{
-    int index = 0;
-
-    Value *cursor = arguments;
-
-    while (1)
-    {
-        if (index == number)
-        {
-            if (IS_NIL(cursor))
-                return NULL;
-
-            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
-        }
-
-        if (!IS_PAIR(cursor))
-            return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
-
-        parameters[index] = CAR(cursor);
-        index += 1;
-        cursor = CDR(cursor);
-    }
-}
-
-Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name)
-{
-    int index = 0;
-
-    Value *cursor = arguments;
-
-    while (1)
-    {
-        if (index == max_number)
-        {
-            if (IS_NIL(cursor))
-                return NULL;
-
-            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
-        }
-
-        if (IS_NIL(cursor) && index < min_number)
-            return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
-
-        if (IS_NIL(cursor))
-        {
-            while (index < max_number)
-            {
-                parameters[index] = NULL;
-                index += 1;
-            }
-
-            return NULL;
-        }
-
-        parameters[index] = CAR(cursor);
-        index += 1;
-        cursor = CDR(cursor);
     }
 }
 

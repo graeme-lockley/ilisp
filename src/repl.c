@@ -218,10 +218,73 @@ static Value *eval_quasiquote(Value *v, Value *env)
     return v;
 }
 
+static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_env)
+{
+    Value *new_bindings = mkMap(VNil);
+    Value *new_env = mkPair(new_bindings, enclosing_env);
+
+    Value *parameter_cursor = params;
+    if (IS_SYMBOL(parameter_cursor))
+    {
+        map_set_bang(new_bindings, parameter_cursor, args);
+        return new_env;
+    }
+    else
+    {
+        int argument_index = 0;
+        Value *argument_cursor = args;
+
+        while (1)
+        {
+            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
+                return new_env;
+
+            if (IS_NIL(parameter_cursor))
+                return exceptions_incorrect_number_of_arguments(params, args);
+
+            if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
+            {
+                map_set_bang(new_bindings, CAR(CDR(parameter_cursor)), argument_cursor);
+                return new_env;
+            }
+
+            if (IS_NIL(argument_cursor))
+                return exceptions_incorrect_number_of_arguments(params, args);
+
+            argument_index += 1;
+            map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
+            argument_cursor = CDR(argument_cursor);
+            parameter_cursor = CDR(parameter_cursor);
+        }
+    }
+}
+
+static Value *find_macro_binding_from_apply(Value *v, Value *env)
+{
+    return NULL;
+}
+
+static Value *Repl_macro_expand(Value *v, Value *env)
+{
+    while (1)
+    {
+        Value *macro = find_macro_binding_from_apply(v, env);
+
+        if (macro == NULL)
+            return v;
+
+        v = Repl_eval(MACRO(v).body, env);
+    }
+
+    return v;
+}
+
 Value *Repl_eval(Value *v, Value *env)
 {
     while (1)
     {
+        v = Repl_macro_expand(v, env);
+
         if (IS_NIL(v))
             return v;
 
@@ -289,7 +352,7 @@ Value *Repl_eval(Value *v, Value *env)
                             parameter_number += 1;
                         }
                     }
-                    
+
                     return strcmp(symbol_name, "fn") == 0
                                ? mkProcedure(arguments[1], arguments[0], env)
                                : mkMacro(arguments[1], arguments[0], env);
@@ -363,51 +426,13 @@ Value *Repl_eval(Value *v, Value *env)
 
                 if (IS_PROCEDURE(f))
                 {
-                    Value *new_bindings = mkMap(VNil);
-                    Value *new_env = mkPair(new_bindings, PROCEDURE(f).env);
+                    Value *new_env = mk_new_env_for_apply(PROCEDURE(f).parameters, args, PROCEDURE(f).env);
+                    if (IS_EXCEPTION(new_env))
+                        return new_env;
 
-                    Value *parameter_cursor = PROCEDURE(f).parameters;
-                    if (IS_SYMBOL(parameter_cursor))
-                    {
-                        map_set_bang(new_bindings, parameter_cursor, args);
-                        return Repl_eval(PROCEDURE(f).body, new_env);
-                    }
-                    else
-                    {
-                        int argument_index = 0;
-                        Value *argument_cursor = args;
-
-                        while (1)
-                        {
-                            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
-                            {
-                                v = PROCEDURE(f).body;
-                                env = new_env;
-                                break;
-                            }
-
-                            if (IS_NIL(parameter_cursor))
-                                return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
-
-                            if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
-                            {
-                                map_set_bang(new_bindings, CAR(CDR(parameter_cursor)), argument_cursor);
-                                v = PROCEDURE(f).body;
-                                env = new_env;
-                                break;
-                            }
-
-                            if (IS_NIL(argument_cursor))
-                                return exceptions_incorrect_number_of_arguments(PROCEDURE(f).parameters, args);
-
-                            argument_index += 1;
-                            map_set_bang(new_bindings, CAR(parameter_cursor), CAR(argument_cursor));
-                            argument_cursor = CDR(argument_cursor);
-                            parameter_cursor = CDR(parameter_cursor);
-                        }
-
-                        continue;
-                    }
+                    v = PROCEDURE(f).body;
+                    env = new_env;
+                    continue;
                 }
 
                 return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);

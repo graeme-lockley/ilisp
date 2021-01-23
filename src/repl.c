@@ -254,10 +254,10 @@ Value *Repl_eval(Value *v, Value *env)
 
                     continue;
                 }
-                else if (strcmp(symbol_name, "fn") == 0)
+                else if (strcmp(symbol_name, "fn") == 0 || strcmp(symbol_name, "mo") == 0)
                 {
                     Value *arguments[2];
-                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "fn");
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, symbol_name);
                     if (error != NULL)
                         return error;
 
@@ -289,7 +289,10 @@ Value *Repl_eval(Value *v, Value *env)
                             parameter_number += 1;
                         }
                     }
-                    return mkProcedure(arguments[1], arguments[0], env);
+                    
+                    return strcmp(symbol_name, "fn") == 0
+                               ? mkProcedure(arguments[1], arguments[0], env)
+                               : mkMacro(arguments[1], arguments[0], env);
                 }
                 else if (strcmp(symbol_name, "if") == 0)
                 {

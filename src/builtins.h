@@ -7,6 +7,7 @@ extern Value *map_create();
 extern Value *map_find(Value *map, Value *key);
 extern Value *map_set_bang(Value *map, Value *key, Value *value);
 extern Value *map_remove_bang(Value *map, Value *key);
+extern Value *vector_to_list(Value *v);
 
 extern Value *builtin_car(Value *parameters, Value *env);
 extern Value *builtin_cdr(Value *parameters, Value *env);
@@ -34,6 +35,7 @@ extern Value *builtin_pr_str(Value *parameters, Value *env);
 extern Value *builtin_read_string(Value *parameters, Value *env);
 extern Value *builtin_slurp(Value *parameters, Value *env);
 extern Value *builtin_str(Value *parameters, Value *env);
+extern Value *builtin_vec(Value *parameters, Value *env);
 
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
 extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name);

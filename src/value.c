@@ -95,6 +95,16 @@ Value *mkVector(Value *items[], int length)
     return value;
 }
 
+Value *mkVectorUse(Value *items[], int length)
+{
+    Value *value = mkValue(VT_VECTOR);
+    
+    value->vectorV.length = length;
+    value->vectorV.items = items;
+
+    return value;
+}
+
 static Value *validateMap(Value *value)
 {
     if (IS_PAIR(value))

@@ -110,6 +110,49 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
+Value *vector_to_list(Value *v)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    for (int l = 0; l < VECTOR(v).length; l += 1)
+    {
+        Value *i = VECTOR(v).items[l];
+
+        Value *v = mkPair(i, VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    return root;
+}
+
+static Value *list_to_vector(Value *v)
+{
+    Value *cursor = v;
+
+    int list_length = 0;
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            break;
+
+        if (IS_PAIR(cursor))
+            cursor = CDR(cursor);
+        else
+            return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), v);
+
+        list_length += 1;
+    }
+
+    Value **items = (Value **)malloc(sizeof(Value *) * list_length);
+    cursor = v;
+    for (int lp = 0; lp < list_length; lp += 1, cursor = CDR(cursor))
+    {
+        items[lp] = CAR(cursor);
+    }
+
+    return mkVector(items, list_length);
+}
+
 static int is_equals(Value *a, Value *b)
 {
     return Value_truthy(Value_equals(a, b));
@@ -247,19 +290,31 @@ Value *builtin_concat(Value *parameters, Value *env)
             return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), parameters);
 
         Value *car = CAR(parameters);
-        while (1)
+        if (IS_VECTOR(car))
         {
-            if (IS_NIL(car))
-                break;
-
-            if (!IS_PAIR(car))
-                return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), CAR(parameters));
-
-            Value *v = mkPair(CAR(car), VNil);
-            *result_cursor = v;
-            result_cursor = &CDR(v);
-            car = CDR(car);
+            int length = VECTOR(car).length;
+            for (int l = 0; l < length; l += 1)
+            {
+                Value *i = VECTOR(car).items[l];
+                Value *v = mkPair(i, VNil);
+                *result_cursor = v;
+                result_cursor = &CDR(v);
+            }
         }
+        else
+            while (1)
+            {
+                if (IS_NIL(car))
+                    break;
+
+                if (!IS_PAIR(car))
+                    return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), CAR(parameters));
+
+                Value *v = mkPair(CAR(car), VNil);
+                *result_cursor = v;
+                result_cursor = &CDR(v);
+                car = CDR(car);
+            }
 
         argument_number += 1;
         parameters = CDR(parameters);
@@ -274,7 +329,7 @@ Value *builtin_cons(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return mkPair(parameter[0], parameter[1]);
+    return mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
 }
 
 Value *builtin_count(Value *parameters, Value *env)
@@ -772,4 +827,24 @@ Value *builtin_slurp(Value *parameters, Value *env)
     fclose(f);
 
     return mkStringUse(buffer);
+}
+
+Value *builtin_vec(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vec");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (IS_NIL(parameter[0]))
+        return VEmptyVector;
+
+    if (IS_VECTOR(parameter[0]))
+        return parameter[0];
+
+    if (!IS_PAIR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("pair"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
+
+    return list_to_vector(parameter[0]);
 }

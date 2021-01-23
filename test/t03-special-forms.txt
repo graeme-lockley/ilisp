@@ -36,8 +36,8 @@
 
 ; if without then or else 
 (if '())
-> (:exception (ExpectedArgumentCount . {:arguments ((quote)) :max-arg-count 3 :min-arg-count 2 :procedure if}))
+> (:exception (ExpectedArgumentCount . {:arguments ((quote ())) :max-arg-count 3 :min-arg-count 2 :procedure if}))
 
 ; if with too many
 (if '() 1 2 3)
-> (:exception (ExpectedArgumentCount . {:arguments ((quote) 1 2 3) :max-arg-count 3 :min-arg-count 2 :procedure if}))
+> (:exception (ExpectedArgumentCount . {:arguments ((quote ()) 1 2 3) :max-arg-count 3 :min-arg-count 2 :procedure if}))

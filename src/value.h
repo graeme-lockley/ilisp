@@ -107,6 +107,7 @@ extern Value *mkPair(Value *car, Value *cdr);
 #define CDR(v) ((v)->pairV.cdr)
 
 extern Value *mkVector(Value **items, int length);
+extern Value *mkVectorUse(Value **items, int length);
 extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 

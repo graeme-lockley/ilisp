@@ -60,6 +60,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
+    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);
@@ -145,6 +146,76 @@ Value *Repl_evalValue(Value *v, Value *env)
         else
             return car;
     }
+
+    return v;
+}
+
+int startsWith(Value *v, char *symbol_name)
+{
+    return IS_PAIR(v) && IS_SYMBOL(CAR(v)) && strcmp(SYMBOL(CAR(v)), symbol_name) == 0;
+}
+
+static Value *eval_quasiquote(Value *v, Value *env);
+
+Value *quasiquote_loop(Value *v, Value *env)
+{
+    Value *result = VNil;
+    Value **result_cursor = &result;
+
+    while (1)
+    {
+        if (IS_NIL(v))
+        {
+            *result_cursor = VNil;
+
+            // builtin_prn(result, env);
+
+            return result;
+        }
+
+        if (!IS_PAIR(v))
+            return exceptions_invalid_argument(mkSymbol("quasiquote"), 0, mkSymbol("pair"), v);
+
+        if (startsWith(CAR(v), "splice-unquote"))
+        {
+            Value *item = mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNil, VNil)));
+            *result_cursor = item;
+            result_cursor = &CAR(CDR(CDR(item)));
+            v = CDR(v);
+        }
+        else
+        {
+            Value *item = mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNil, VNil)));
+            *result_cursor = item;
+            result_cursor = &CAR(CDR(CDR(item)));
+            v = CDR(v);
+        }
+    }
+}
+
+static Value *eval_quasiquote(Value *v, Value *env)
+{
+    if (IS_SYMBOL(v) || IS_MAP(v))
+        return mkPair(mkSymbol("quote"), mkPair(v, VNil));
+
+    if (IS_PAIR(v))
+    {
+        if (startsWith(v, "unquote"))
+        {
+            Value *unquote_arguments[1];
+
+            Value *error = extract_fixed_parameters(unquote_arguments, CDR(v), 1, "unquote");
+            if (error != NULL)
+                return error;
+
+            return unquote_arguments[0];
+        }
+        else
+            return quasiquote_loop(v, env);
+    }
+
+    if (IS_VECTOR(v))
+        return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNil));
 
     return v;
 }
@@ -249,8 +320,37 @@ Value *Repl_eval(Value *v, Value *env)
                         continue;
                     }
                 }
+                else if (strcmp(symbol_name, "quasiquote") == 0)
+                {
+                    Value *arguments[1];
+
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 1, "quasiquote");
+                    if (error != NULL)
+                        return error;
+
+                    v = eval_quasiquote(arguments[0], env);
+                    continue;
+                }
+                else if (strcmp(symbol_name, "quasiquoteexpand") == 0)
+                {
+                    Value *arguments[1];
+
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 1, "quasiquote");
+                    if (error != NULL)
+                        return error;
+
+                    return eval_quasiquote(arguments[0], env);
+                }
                 else if (strcmp(symbol_name, "quote") == 0)
-                    return CDR(v);
+                {
+                    Value *arguments[1];
+
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 1, "quote");
+                    if (error != NULL)
+                        return error;
+
+                    return arguments[0];
+                }
             }
 
             Value *ve = Repl_evalValue(v, env);

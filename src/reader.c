@@ -154,9 +154,11 @@ static void next_token(Lexer *lexer)
 
         advance_position(lexer, &cursor);
         if (CHARACTER_AT_POSITION(lexer, &cursor) == '@')
+        {
             set_token(lexer, TILDE_AMPERSAND, &start, &cursor);
+        }
         else
-            set_token(lexer, TILDE, &cursor, &cursor);
+            set_token(lexer, TILDE, &start, &start);
         break;
     }
 
@@ -243,7 +245,28 @@ static Value *parse(Lexer *lexer)
     {
         next_token(lexer);
         Value *v = parse(lexer);
-        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quote"), v) : v;
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quote"), mkPair(v, VNil)) : v;
+    }
+
+    case BACKQUOTE:
+    {
+        next_token(lexer);
+        Value *v = parse(lexer);
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quasiquote"), mkPair(v, VNil)) : v;
+    }
+
+    case TILDE:
+    {
+        next_token(lexer);
+        Value *v = parse(lexer);
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("unquote"), mkPair(v, VNil)) : v;
+    }
+
+    case TILDE_AMPERSAND:
+    {
+        next_token(lexer);
+        Value *v = parse(lexer);
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("splice-unquote"), mkPair(v, VNil)) : v;
     }
 
     case LITERAL_STRING:

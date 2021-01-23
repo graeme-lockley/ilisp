@@ -212,6 +212,10 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
         string_builder_append(sb, "#PROCEDURE");
         break;
 
+    case VT_MACRO:
+        string_builder_append(sb, "#MACRO");
+        break;
+
     case VT_EXCEPTION:
         string_builder_append(sb, "(:exception ");
         pString(s, sb, v->exceptionV, readable, separator);

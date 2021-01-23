@@ -18,7 +18,8 @@ static char *test_ordinal_values()
     mu_assert_label(VT_MAP == 8);
     mu_assert_label(VT_NATIVE_PROCEDURE == 9);
     mu_assert_label(VT_PROCEDURE == 10);
-    mu_assert_label(VT_EXCEPTION == 11);
+    mu_assert_label(VT_MACRO == 11);
+    mu_assert_label(VT_EXCEPTION == 12);
 
     return NULL;
 }

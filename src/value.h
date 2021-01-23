@@ -25,6 +25,7 @@ enum ValueType
     VT_MAP,
     VT_NATIVE_PROCEDURE,
     VT_PROCEDURE, // == 10
+    VT_MACRO, 
     VT_EXCEPTION
 };
 
@@ -120,6 +121,9 @@ extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Va
 
 extern Value *mkProcedure(Value *body, Value *parameters, Value *env);
 #define PROCEDURE(v) ((v)->procedure)
+
+extern Value *mkMacro(Value *body, Value *parameters, Value *env);
+#define MACRO(v) ((v)->procedure)
 
 extern Value *mkException(Value *exception);
 #define EXCEPTION(v) ((v)->exceptionV)

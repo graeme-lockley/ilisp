@@ -98,7 +98,7 @@ Value *mkVector(Value *items[], int length)
 Value *mkVectorUse(Value *items[], int length)
 {
     Value *value = mkValue(VT_VECTOR);
-    
+
     value->vectorV.length = length;
     value->vectorV.items = items;
 
@@ -137,6 +137,15 @@ Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *en
 Value *mkProcedure(Value *body, Value *parameters, Value *env)
 {
     Value *value = mkValue(VT_PROCEDURE);
+    value->procedure.body = body;
+    value->procedure.parameters = parameters;
+    value->procedure.env = env;
+    return value;
+}
+
+Value *mkMacro(Value *body, Value *parameters, Value *env)
+{
+    Value *value = mkValue(VT_MACRO);
     value->procedure.body = body;
     value->procedure.parameters = parameters;
     value->procedure.env = env;

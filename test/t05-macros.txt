@@ -323,3 +323,9 @@ a
 >(vec (cons 1 (cons (quote a) (cons 3 ()))))
 (quasiquoteexpand [a [] b [c] d [e f] g])
 >(vec (cons (quote a) (cons (vec ()) (cons (quote b) (cons (vec (cons (quote c) ())) (cons (quote d) (cons (vec (cons (quote e) (cons (quote f) ()))) (cons (quote g) ()))))))))
+
+;; Testing trivial macros
+(do (map-set! (car **root**) 'one (mo () 1)) (one))
+>1
+(do (map-set! (car **root**) 'two (mo () 2)) (two))
+>2

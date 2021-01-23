@@ -25,7 +25,7 @@ enum ValueType
     VT_MAP,
     VT_NATIVE_PROCEDURE,
     VT_PROCEDURE, // == 10
-    VT_MACRO, 
+    VT_MACRO,
     VT_EXCEPTION
 };
 
@@ -53,7 +53,8 @@ struct ValueStruct
         } vectorV;
         struct ValueStruct *mapV;
         struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters, struct ValueStruct *env);
-        struct {
+        struct
+        {
             struct ValueStruct *body;
             struct ValueStruct *parameters;
             struct ValueStruct *env;
@@ -77,6 +78,7 @@ typedef struct ValueStruct Value;
 #define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
 #define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
 #define IS_PROCEDURE(v) ((TAG_TO_VT(v) == VT_PROCEDURE))
+#define IS_MACRO(v) ((TAG_TO_VT(v) == VT_MACRO))
 #define IS_EXCEPTION(v) ((TAG_TO_VT(v) == VT_EXCEPTION))
 
 extern int Value_truthy(Value *v);

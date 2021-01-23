@@ -209,11 +209,29 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
         break;
 
     case VT_PROCEDURE:
-        string_builder_append(sb, "#PROCEDURE");
+        if (readable)
+        {
+            string_builder_append(sb, "(#PROCEDURE ");
+            pString(s, sb, MACRO(v).parameters, readable, separator);
+            string_builder_append(sb, " ");
+            pString(s, sb, MACRO(v).body, readable, separator);
+            string_builder_append(sb, ")");
+        }
+        else
+            string_builder_append(sb, "#PROCEDURE");
         break;
 
     case VT_MACRO:
-        string_builder_append(sb, "#MACRO");
+        if (readable)
+        {
+            string_builder_append(sb, "(#MACRO ");
+            pString(s, sb, MACRO(v).parameters, readable, separator);
+            string_builder_append(sb, " ");
+            pString(s, sb, MACRO(v).body, readable, separator);
+            string_builder_append(sb, ")");
+        }
+        else
+            string_builder_append(sb, "#MACRO");
         break;
 
     case VT_EXCEPTION:

@@ -261,7 +261,29 @@ static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_
 
 static Value *find_macro_binding_from_apply(Value *v, Value *env)
 {
-    return NULL;
+    if (!IS_PAIR(v))
+        return NULL;
+
+    Value *n = CAR(v);
+    if (!IS_SYMBOL(n))
+        return NULL;
+
+    Value *cursor = env;
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            return NULL;
+
+        Value *binding = map_find(CAR(cursor), n);
+        if (!IS_NIL(binding))
+        {
+            Value *value = CDR(binding);
+
+            return IS_MACRO(value) ? value : NULL;
+        }
+
+        cursor = CDR(cursor);
+    }
 }
 
 static Value *Repl_macro_expand(Value *v, Value *env)
@@ -269,14 +291,15 @@ static Value *Repl_macro_expand(Value *v, Value *env)
     while (1)
     {
         Value *macro = find_macro_binding_from_apply(v, env);
-
         if (macro == NULL)
             return v;
 
-        v = Repl_eval(MACRO(v).body, env);
-    }
+        Value *new_env = mk_new_env_for_apply(MACRO(macro).parameters, CDR(v), MACRO(macro).env);
+        if (IS_EXCEPTION(new_env))
+            return new_env;
 
-    return v;
+        v = Repl_eval(MACRO(macro).body, new_env);
+    }
 }
 
 Value *Repl_eval(Value *v, Value *env)

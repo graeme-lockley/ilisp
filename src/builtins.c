@@ -761,7 +761,7 @@ Value *builtin_println(Value *parameters, Value *env)
 
 Value *builtin_prn(Value *parameters, Value *env)
 {
-    Value *s = builtin_pr_str(parameters, env);
+    Value *s = Printer_prStr(parameters, 1, " ");
     if (IS_STRING(s))
         printf("%s\n", s->strV);
     return VNil;

@@ -64,6 +64,7 @@ Value *initialise_environment()
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);
+    Repl_define("not", "(fn (p) (if p () 1))", root_scope);
 
     return root_scope;
 }
@@ -174,20 +175,14 @@ Value *quasiquote_loop(Value *v, Value *env)
         if (!IS_PAIR(v))
             return exceptions_invalid_argument(mkSymbol("quasiquote"), 0, mkSymbol("pair"), v);
 
-        if (startsWith(CAR(v), "splice-unquote"))
-        {
-            Value *item = mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNil, VNil)));
-            *result_cursor = item;
-            result_cursor = &CAR(CDR(CDR(item)));
-            v = CDR(v);
-        }
-        else
-        {
-            Value *item = mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNil, VNil)));
-            *result_cursor = item;
-            result_cursor = &CAR(CDR(CDR(item)));
-            v = CDR(v);
-        }
+        Value *item =
+            startsWith(CAR(v), "splice-unquote")
+                ? mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNil, VNil)))
+                : mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNil, VNil)));
+
+        *result_cursor = item;
+        result_cursor = &CAR(CDR(CDR(item)));
+        v = CDR(v);
     }
 }
 

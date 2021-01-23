@@ -168,8 +168,6 @@ Value *quasiquote_loop(Value *v, Value *env)
         {
             *result_cursor = VNil;
 
-            // builtin_prn(result, env);
-
             return result;
         }
 

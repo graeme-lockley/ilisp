@@ -166,11 +166,7 @@ Value *quasiquote_loop(Value *v, Value *env)
     while (1)
     {
         if (IS_NIL(v))
-        {
-            *result_cursor = VNil;
-
             return result;
-        }
 
         if (!IS_PAIR(v))
             return exceptions_invalid_argument(mkSymbol("quasiquote"), 0, mkSymbol("pair"), v);

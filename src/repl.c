@@ -51,8 +51,11 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
+    add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
+    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
+    add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(builtin_nth));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(builtin_print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(builtin_println));
@@ -64,7 +67,7 @@ Value *initialise_environment()
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);
-    Repl_define("not", "(fn (p) (if p () 1))", root_scope);
+    Repl_define("not", "(fn (p) (if p () (=)))", root_scope);
 
     return root_scope;
 }
@@ -397,6 +400,16 @@ Value *Repl_eval(Value *v, Value *env)
                         v = arguments[2];
                         continue;
                     }
+                }
+                else if (strcmp(symbol_name, "macroexpand") == 0)
+                {
+                    Value *arguments[1];
+
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 1, "macroexpand");
+                    if (error != NULL)
+                        return error;
+
+                    return Repl_macro_expand(arguments[0], env);
                 }
                 else if (strcmp(symbol_name, "quasiquote") == 0)
                 {

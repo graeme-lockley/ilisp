@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
         if (IS_EXCEPTION(result))
         {
             printf("Exception: ");
-            builtin_println(result, env);
         }
+        builtin_println(result, env);
     }
     else
         return Repl_repl();

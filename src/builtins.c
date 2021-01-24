@@ -239,40 +239,30 @@ Value *map_find(Value *map, Value *key)
 
 Value *builtin_car(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
-        return exceptions_expected_argument_count(mkSymbol("car"), 1, parameters);
+    Value *parameter[1];
 
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameters);
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "car");
+    if (extract_result != NULL)
+        return extract_result;
 
-    if (!IS_NIL(CDR(parameters)))
-        return exceptions_expected_argument_count(mkSymbol("car"), 1, parameters);
+    if (!IS_PAIR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameter[0]);
 
-    Value *first_parameter = CAR(parameters);
-
-    if (!IS_PAIR(first_parameter))
-        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), first_parameter);
-
-    return CAR(first_parameter);
+    return CAR(parameter[0]);
 }
 
 Value *builtin_cdr(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
-        return exceptions_expected_argument_count(mkSymbol("cdr"), 1, parameters);
+    Value *parameter[1];
 
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), parameters);
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "cdr");
+    if (extract_result != NULL)
+        return extract_result;
 
-    if (!IS_NIL(CDR(parameters)))
-        return exceptions_expected_argument_count(mkSymbol("cdr"), 1, parameters);
+    if (!IS_PAIR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), parameter[0]);
 
-    Value *first_parameter = CAR(parameters);
-
-    if (!IS_PAIR(first_parameter))
-        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), first_parameter);
-
-    return CDR(first_parameter);
+    return CDR(parameter[0]);
 }
 
 Value *builtin_concat(Value *parameters, Value *env)
@@ -408,6 +398,17 @@ Value *builtin_eval(Value *parameters, Value *env)
         return extract_result;
 
     return Repl_eval(parameter[0], env);
+}
+
+Value *builtin_first(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "first");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
 Value *builtin_integer_plus(Value *parameters, Value *env)
@@ -726,6 +727,35 @@ Value *builtin_map_set_bang(Value *parameters, Value *env)
     return map_set_bang(parameter[0], parameter[1], parameter[2]);
 }
 
+Value *builtin_nth(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "nth");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair("()", VNil)), parameter[0]);
+
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkString("number"), parameter[1]);
+
+    int nth = NUMBER(parameter[1]);
+    Value *cursor = parameter[0];
+    while (1)
+    {
+        if (IS_NIL(cursor) || !IS_PAIR(cursor))
+            return VNil;
+
+        if (nth == 0)
+            return CAR(cursor);
+
+        nth -= 1;
+        cursor = CDR(cursor);
+    }
+}
+
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -784,6 +814,17 @@ Value *builtin_read_string(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkString("string"), parameter[0]);
 
     return Reader_read(STRING(parameter[0]));
+}
+
+Value *builtin_rest(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "rest");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
 }
 
 Value *builtin_slurp(Value *parameters, Value *env)

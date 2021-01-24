@@ -408,7 +408,10 @@ Value *builtin_first(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
+    if (IS_VECTOR(parameter[0]))
+        return VECTOR(parameter[0]).length > 0 ? VECTOR(parameter[0]).items[0] : VNil;
+    else
+        return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
 Value *builtin_integer_plus(Value *parameters, Value *env)
@@ -735,25 +738,35 @@ Value *builtin_nth(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair("()", VNil)), parameter[0]);
-
     if (!IS_NUMBER(parameter[1]))
         return exceptions_invalid_argument(mkSymbol("nth"), 1, mkString("number"), parameter[1]);
 
     int nth = NUMBER(parameter[1]);
-    Value *cursor = parameter[0];
-    while (1)
+    if (IS_PAIR(parameter[0]) || IS_NIL(parameter[0]))
     {
-        if (IS_NIL(cursor) || !IS_PAIR(cursor))
+        Value *cursor = parameter[0];
+        while (1)
+        {
+            if (IS_NIL(cursor) || !IS_PAIR(cursor))
+                return VNil;
+
+            if (nth == 0)
+                return CAR(cursor);
+
+            nth -= 1;
+            cursor = CDR(cursor);
+        }
+    }
+
+    if (IS_VECTOR(parameter[0]))
+    {
+        if (nth > VECTOR(parameter[0]).length)
             return VNil;
 
-        if (nth == 0)
-            return CAR(cursor);
-
-        nth -= 1;
-        cursor = CDR(cursor);
+        return VECTOR(parameter[0]).items[nth];
     }
+
+    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair("()", VNil)), parameter[0]);
 }
 
 static Value *value_to_str(Value *parameters, int readable, char *separator)
@@ -824,7 +837,20 @@ Value *builtin_rest(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
+    if (IS_VECTOR(parameter[0]))
+    {
+        if (VECTOR(parameter[0]).length <= 1)
+            return VNil;
+
+        Value fudge = *parameter[0];
+
+        fudge.vectorV.length -= 1;
+        fudge.vectorV.items = fudge.vectorV.items + 1;
+
+        return vector_to_list(&fudge);
+    }
+    else
+        return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
 }
 
 Value *builtin_slurp(Value *parameters, Value *env)

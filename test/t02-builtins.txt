@@ -420,7 +420,7 @@ fred
 (concat '(1 2 3) '(4 5 6) '(7 8 9))
 > (1 2 3 4 5 6 7 8 9)
 
-;; Testing nth, first and rest functions
+;; Testing nth, first and rest functions with lists
 (nth (list 1) 0)
 >1
 (nth (list 1 2) 1)
@@ -447,3 +447,27 @@ fred
 (rest (list 7 8 9))
 >(8 9)
 
+;; Testing nth, first, rest with vectors
+(nth [1] 0)
+>1
+(nth [1 2] 1)
+>2
+(nth [1 2 ()] 2)
+>()
+
+(first [])
+>()
+(first [10])
+>10
+(first [10 11 12])
+>10
+(rest [])
+>()
+(rest ())
+>()
+(rest [10])
+>()
+(rest [10 11 12])
+>(11 12)
+(rest (cons 10 [11 12]))
+>(11 12)

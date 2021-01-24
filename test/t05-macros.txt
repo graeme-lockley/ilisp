@@ -349,33 +349,6 @@ a
 (not (= 1 2))
 >t
 
-;; Testing nth, first and rest functions
-(nth (list 1) 0)
->1
-(nth (list 1 2) 1)
->2
-(nth (list 1 2 ()) 2)
->()
-(do 
-  (map-set! (car **root**) 'x "x") 
-  (map-set! (car **root**) 'x (nth (list 1 2) 2)) 
-  x)
->()
-
-(first (list))
->()
-(first (list 6))
->6
-(first (list 7 8 9))
->7
-
-(rest (list))
->()
-(rest (list 6))
->()
-(rest (list 7 8 9))
->(8 9)
-
 ;; Testing cond macro
 (macroexpand (cond))
 >()

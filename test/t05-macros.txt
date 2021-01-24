@@ -376,3 +376,26 @@ a
 (rest (list 7 8 9))
 >(8 9)
 
+;; Testing cond macro
+(macroexpand (cond))
+>()
+(cond)
+>()
+(macroexpand (cond X Y))
+>(if X Y (cond))
+(cond :t 7)
+>7
+(cond () 7)
+>()
+(macroexpand (cond X Y Z T))
+>(if X Y (cond Z T))
+(cond :t 7 :t 8)
+>7
+(cond () 7 :t 8)
+>8
+(cond () 7 () 8 :else 9)
+>9
+(cond () 7 (= 2 2) 8 :else 9)
+>8
+(cond () 7 () 8 () 9)
+>()

@@ -152,6 +152,55 @@ Value *Repl_evalValue(Value *v, Value *env)
             return car;
     }
 
+    if (IS_VECTOR(v))
+    {
+        int length = VECTOR(v).length;
+        Value **items = (Value **)malloc(sizeof(Value *) * VECTOR(v).length);
+
+        for (int lp = 0; lp < length; lp += 1)
+        {
+            Value *item = Repl_eval(VECTOR(v).items[lp], env);
+
+            if (IS_EXCEPTION(item))
+            {
+                free(items);
+                return item;
+            }
+
+            items[lp] = item;
+        }
+
+        return mkVector(items, length);
+    }
+
+    if (IS_MAP(v))
+    {
+        Value *root = VNil;
+        Value **root_cursor = &root;
+
+        Value *cursor = MAP(v);
+
+        while (1)
+        {
+            if (IS_NIL(cursor))
+                return mkMap(root);
+
+            Value *key = Repl_eval(CAR(CAR(cursor)), env);
+            if (IS_EXCEPTION(key))
+                return key;
+            Value *value = Repl_eval(CDR(CAR(cursor)), env);
+            if (IS_EXCEPTION(value))
+                return value;
+
+            Value *item = mkPair(mkPair(key, value), VNil);
+
+            *root_cursor = item;
+            root_cursor = &CDR(item);
+
+            cursor = CDR(cursor);
+        }
+    }
+
     return v;
 }
 
@@ -442,6 +491,29 @@ Value *Repl_eval(Value *v, Value *env)
                         return error;
 
                     return arguments[0];
+                }
+                else if (strcmp(symbol_name, "raise") == 0)
+                {
+                    Value *arguments[2];
+
+                    Value *error = extract_range_parameters(arguments, CDR(v), 1, 2, "raise");
+                    if (error != NULL)
+                        return error;
+
+                    Value *e = Repl_eval(arguments[0], env);
+                    if (!IS_SUCCESSFUL(e))
+                        return e;
+
+                    if (arguments[1] == NULL)
+                        return mkException(e);
+                    else
+                    {
+                        Value *c = Repl_eval(arguments[1], env);
+                        if (!IS_SUCCESSFUL(c))
+                            return c;
+                            
+                        return mkException(mkPair(e, c));
+                    }
                 }
             }
 

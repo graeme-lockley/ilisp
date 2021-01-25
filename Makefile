@@ -32,7 +32,8 @@ TEST_INPUT=\
 	test/t02-builtins.txt \
 	test/t03-special-forms.txt \
 	test/t04-procedures.txt \
-	test/t05-macros.txt
+	test/t05-macros.txt \
+	test/t06-try-catch.txt
 
 TEST_FLAG=test/flag
 
@@ -60,6 +61,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT)
 	./test/repl_test ./test/t03-special-forms.txt
 	./test/repl_test ./test/t04-procedures.txt
 	./test/repl_test ./test/t05-macros.txt
+	./test/repl_test ./test/t06-try-catch.txt
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h

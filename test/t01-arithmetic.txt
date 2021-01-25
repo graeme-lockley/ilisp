@@ -119,3 +119,9 @@
 ; (/ 10 0)
 (/ 10 0)
 > (:exception (DivideByZero . {:arg-number 1 :procedure integer-divide}))
+
+[(+ 1 1) (+ 1 2) (+ 1 3)]
+> [2 3 4]
+
+{:a (+ 1 1) :b (+ 1 2)}
+> {:a 2 :b 3}

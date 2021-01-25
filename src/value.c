@@ -113,9 +113,7 @@ static Value *validateMap(Value *value)
         Value *cdr = CDR(value);
 
         if (IS_PAIR(car) && validateMap(cdr) == cdr)
-        {
             return value;
-        }
     }
     return VNil;
 }

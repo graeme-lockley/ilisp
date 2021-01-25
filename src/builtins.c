@@ -815,6 +815,22 @@ Value *builtin_str(Value *parameters, Value *env)
     return value_to_str(parameters, 0, "");
 }
 
+Value *builtin_raise(Value *parameters, Value *env)
+{
+    Value *arguments[2];
+
+    Value *error = extract_range_parameters(arguments, parameters, 1, 2, "raise");
+    if (error != NULL)
+        return error;
+
+    if (!IS_SUCCESSFUL(arguments[0]))
+        return arguments[0];
+
+    return arguments[1] == NULL
+               ? mkException(arguments[0])
+               : mkException(mkPair(arguments[0], arguments[1]));
+}
+
 Value *builtin_read_string(Value *parameters, Value *env)
 {
     Value *parameter[1];

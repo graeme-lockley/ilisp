@@ -60,6 +60,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(builtin_print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(builtin_println));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
+    add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(builtin_raise));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
@@ -492,28 +493,39 @@ Value *Repl_eval(Value *v, Value *env)
 
                     return arguments[0];
                 }
-                else if (strcmp(symbol_name, "raise") == 0)
+                else if (strcmp(symbol_name, "try") == 0)
                 {
                     Value *arguments[2];
 
-                    Value *error = extract_range_parameters(arguments, CDR(v), 1, 2, "raise");
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "try");
                     if (error != NULL)
                         return error;
 
                     Value *e = Repl_eval(arguments[0], env);
-                    if (!IS_SUCCESSFUL(e))
-                        return e;
-
-                    if (arguments[1] == NULL)
-                        return mkException(e);
-                    else
+                    if (IS_SUCCESSFUL(e))
                     {
-                        Value *c = Repl_eval(arguments[1], env);
-                        if (!IS_SUCCESSFUL(c))
-                            return c;
-                            
-                        return mkException(mkPair(e, c));
+                        v = e;
+                        continue;
                     }
+
+                    Value *f = Repl_eval(arguments[1], env);
+                    if (!IS_SUCCESSFUL(f))
+                        return f;
+
+                    Value *args = mkPair(EXCEPTION(e), VNil);
+
+                    if (IS_PROCEDURE(f))
+                    {
+                        Value *new_env = mk_new_env_for_apply(PROCEDURE(f).parameters, args, PROCEDURE(f).env);
+                        if (IS_EXCEPTION(new_env))
+                            return new_env;
+
+                        v = PROCEDURE(f).body;
+                        env = new_env;
+                        continue;
+                    }
+
+                    return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);
                 }
             }
 

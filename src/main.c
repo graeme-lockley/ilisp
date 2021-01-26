@@ -29,9 +29,7 @@ int main(int argc, char *argv[])
         Value *result = Repl_rep(content, env);
 
         if (IS_EXCEPTION(result))
-        {
             printf("Exception: ");
-        }
         builtin_println(result, env);
     }
     else

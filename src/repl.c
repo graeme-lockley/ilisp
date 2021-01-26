@@ -69,7 +69,7 @@ Value *initialise_environment()
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);
     Repl_define("not", "(fn (p) (if p () (=)))", root_scope);
-    Repl_define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", root_scope);
+    Repl_define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (raise \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", root_scope);
 
     return root_scope;
 }
@@ -238,7 +238,7 @@ Value *quasiquote_loop(Value *v, Value *env)
 
 static Value *eval_quasiquote(Value *v, Value *env)
 {
-    if (IS_SYMBOL(v) || IS_MAP(v))
+    if (IS_SYMBOL(v))
         return mkPair(mkSymbol("quote"), mkPair(v, VNil));
 
     if (IS_PAIR(v))
@@ -259,6 +259,31 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
     if (IS_VECTOR(v))
         return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNil));
+
+    if (IS_MAP(v)) {
+        Value *root = VNil;
+        Value **root_cursor = &root;
+
+        Value *cursor = MAP(v);
+
+        while (1)
+        {
+            if (IS_NIL(cursor))
+                return mkMap(root);
+
+            Value *key = eval_quasiquote(CAR(CAR(cursor)), env);
+            Value *value = eval_quasiquote(CDR(CAR(cursor)), env);
+
+            Value *item = mkPair(mkPair(key, value), VNil);
+
+            *root_cursor = item;
+            root_cursor = &CDR(item);
+
+            cursor = CDR(cursor);
+        }
+
+        return mkMap(root);
+    }
 
     return v;
 }

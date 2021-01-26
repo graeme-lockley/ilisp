@@ -245,6 +245,17 @@ a
 `[(1 ~@c 3)]
 >[(1 1 "b" "d" 3)]
 
+;; Testing quasiquote with map
+`{:a 1 :b 2 :c 3}
+>{:a 1 :b 2 :c 3}
+`{}
+>{}
+`{:a 1 :b (+ 2 1) :c 3}
+>{:a 1 :b (+ 2 1) :c 3}
+`{:a 1 :b ~(+ 2 1) :c 3}
+>{:a 1 :b 3 :c 3}
+
+
 ;; Misplaced unquote or splice-unquote
 `(0 unquote)
 >(0 unquote)
@@ -262,7 +273,7 @@ a
 (quasiquoteexpand a)
 >(quote a)
 (quasiquoteexpand {"a" b})
->(quote {"a" b})
+>{"a" (quote b)}
 (quasiquoteexpand ())
 >()
 (quasiquoteexpand (1 2 3))

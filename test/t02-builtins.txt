@@ -504,3 +504,24 @@ fred
 
 (apply + 1 2 3 [])
 > 6
+
+(map)
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 2 :procedure map}))
+
+(map not)
+> (:exception (ExpectedArgumentCount . {:arguments ((#PROCEDURE (p) (if p () (=)))) :arg-count 2 :procedure map}))
+
+(map (fn (n) (+ n 1)) 1)
+> (:exception (InvalidArgument . {:received 1 :expected-type (pair vector ()) :arg-number 1 :procedure map}))
+
+(map (fn (n) (+ n 1)) '())
+> ()
+
+(map (fn (n) (+ n 1)) '(1 2 3 4))
+> (2 3 4 5)
+
+(map (fn (n) (+ n 1)) [])
+> ()
+
+(map (fn (n) (+ n 1)) [1 2 3 4])
+> (2 3 4 5)

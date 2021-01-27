@@ -771,6 +771,41 @@ Value *builtin_listp(Value *parameters, Value *env)
     return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
+Value *builtin_map(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "map");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *f = parameter[0];
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("map"), 0, mkSymbol("procedure"), f);
+
+    Value *args = IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1];
+    if (!IS_NIL(args) && !IS_PAIR(args))
+        return exceptions_invalid_argument(mkSymbol("map"), 1, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), VNil))), parameter[1]);
+
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    while (1)
+    {
+        if (IS_NIL(args) || !IS_PAIR(args))
+            return root;
+
+        Value *v = Repl_eval(mkPair(f, mkPair(CAR(args), VNil)), env);
+        if (IS_EXCEPTION(v))
+            return v;
+
+        Value *r = mkPair(v, VNil);
+        *root_cursor = r;
+        root_cursor = &CDR(r);
+
+        args = CDR(args);
+    }
+}
+
 Value *builtin_map_set_bang(Value *parameters, Value *env)
 {
     Value *parameter[3];

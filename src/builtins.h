@@ -28,6 +28,7 @@ extern Value *builtin_integer_less_equal(Value *parameters, Value *env);
 extern Value *builtin_integer_greater_than(Value *parameters, Value *env);
 extern Value *builtin_integer_greater_equal(Value *parameters, Value *env);
 extern Value *builtin_listp(Value *parameters, Value *env);
+extern Value *builtin_map(Value *parameters, Value *env);
 extern Value *builtin_map_set_bang(Value *parameters, Value *env);
 extern Value *builtin_nth(Value *parameters, Value *env);
 extern Value *builtin_pr_str(Value *parameters, Value *env);

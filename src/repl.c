@@ -57,6 +57,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(builtin_map));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
+    add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(builtin_nilp));
     add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(builtin_nth));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(builtin_print));

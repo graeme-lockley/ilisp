@@ -527,3 +527,33 @@ fred
 
 (map (fn (n) (+ n 1)) [1 2 3 4])
 > (2 3 4 5)
+
+(nil? ())
+> t
+
+(nil? 1)
+> f
+
+(nil? "hello")
+> f
+
+(nil? 'hello)
+> f
+
+(nil? :hello)
+> f
+
+(nil? '(1 2 3))
+> f
+
+(nil? [])
+> f
+
+(nil? [1 2 3])
+> f
+
+(nil? {})
+> f
+
+(nil? {:a 1 :b 2})
+> f

@@ -820,6 +820,17 @@ Value *builtin_map_set_bang(Value *parameters, Value *env)
     return map_set_bang(parameter[0], parameter[1], parameter[2]);
 }
 
+Value *builtin_nilp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "nil?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_NIL(parameter[0]) ? VTrue : VFalse;
+}
+
 Value *builtin_nth(Value *parameters, Value *env)
 {
     Value *parameter[2];

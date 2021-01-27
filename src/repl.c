@@ -44,6 +44,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, ">", mkNativeProcedure(builtin_integer_greater_than));
     add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(builtin_integer_greater_equal));
 
+    add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(builtin_apply));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(builtin_concat));

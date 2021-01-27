@@ -237,6 +237,61 @@ Value *map_find(Value *map, Value *key)
     }
 }
 
+Value *builtin_apply(Value *parameters, Value *env)
+{
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkString("pair"), parameters);
+
+    if (!IS_PROCEDURE(CAR(parameters)) && !IS_NATIVE_PROCEDURE(CAR(parameters)))
+        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkString("procedure"), CAR(parameters));
+
+    Value *f = CAR(parameters);
+
+    parameters = CDR(parameters);
+
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("apply"), 1, mkString("pair"), parameters);
+
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    int parameter_count = 1;
+
+    while (1)
+    {
+        if (IS_NIL(CDR(parameters)))
+        {
+            parameters = CAR(parameters);
+
+            if (IS_VECTOR(parameters))
+                parameters = vector_to_list(parameters);
+
+            if (!IS_PAIR(parameters) && !IS_NIL(parameters))
+                return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkString("pair"), parameters);
+
+            while (1)
+            {
+                if (IS_NIL(parameters))
+                    return Repl_eval(mkPair(f, root), env);
+
+                Value *v = mkPair(CAR(parameters), VNil);
+                *root_cursor = v;
+                root_cursor = &CDR(v);
+
+                parameters = CDR(parameters);
+            }
+        }
+
+        Value *v = mkPair(CAR(parameters), VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+
+        parameters = CDR(parameters);
+        parameter_count += 1;
+    }
+
+    return VNil;
+}
+
 Value *builtin_car(Value *parameters, Value *env)
 {
     Value *parameter[1];

@@ -471,3 +471,36 @@ fred
 >(11 12)
 (rest (cons 10 [11 12]))
 >(11 12)
+
+(apply)
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure apply}))
+
+(apply 1)
+> (:exception (InvalidArgument . {:received 1 :expected-type "procedure" :arg-number 0 :procedure apply}))
+
+(apply +)
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 1 :procedure apply}))
+
+(apply + '(1 2 3))
+> 6
+
+(apply + 1 2 '(3 4))
+> 10
+
+(apply + 1 2 3)
+> (:exception (InvalidArgument . {:received 3 :expected-type "pair" :arg-number 3 :procedure apply}))
+
+(apply + 1 2 3 '())
+> 6
+
+(apply + [1 2 3])
+> 6
+
+(apply + 1 2 [3 4])
+> 10
+
+(apply + 1 2 3 [])
+> 6
+
+(apply + 1 2 3 [])
+> 6

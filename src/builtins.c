@@ -850,7 +850,7 @@ Value *builtin_nth(Value *parameters, Value *env)
 
     if (IS_VECTOR(parameter[0]))
     {
-        if (nth > VECTOR(parameter[0]).length)
+        if (nth >= VECTOR(parameter[0]).length)
             return VNil;
 
         return VECTOR(parameter[0]).items[nth];

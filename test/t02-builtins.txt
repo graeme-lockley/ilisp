@@ -611,3 +611,51 @@ fred
 
 (symbol? (symbol "hello"))
 > t
+
+(keyword? ())
+> f
+
+(keyword? 1)
+> f
+
+(keyword? "hello")
+> f
+
+(keyword? 'hello)
+> f
+
+(keyword? :hello)
+> t
+
+(keyword? '(1 2 3))
+> f
+
+(keyword? [])
+> f
+
+(keyword? [1 2 3])
+> f
+
+(keyword? {})
+> f
+
+(keyword? {:a 1 :b 2})
+> f
+
+(keyword? (fn (x) (+ x 1)))
+> f
+
+(keyword? car)
+> f
+
+(keyword? cond)
+> f
+
+(keyword "hello")
+> :hello
+
+(keyword :hello)
+> :hello
+
+(keyword? (keyword "hello"))
+> t

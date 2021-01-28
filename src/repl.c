@@ -53,7 +53,8 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
-    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
+    add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(builtin_keyword));
+    add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(builtin_keywordp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(builtin_map));
     add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
@@ -65,6 +66,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(builtin_raise));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
+    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));

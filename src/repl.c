@@ -67,6 +67,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(builtin_raise));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
     add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
+    add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(builtin_sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));

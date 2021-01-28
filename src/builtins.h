@@ -42,6 +42,7 @@ extern Value *builtin_pr_str(Value *parameters, Value *env);
 extern Value *builtin_raise(Value *parameters, Value *env);
 extern Value *builtin_read_string(Value *parameters, Value *env);
 extern Value *builtin_rest(Value *parameters, Value *env);
+extern Value *builtin_sequentialp(Value *parameters, Value *env);
 extern Value *builtin_slurp(Value *parameters, Value *env);
 extern Value *builtin_str(Value *parameters, Value *env);
 extern Value *builtin_symbol(Value *parameters, Value *env);

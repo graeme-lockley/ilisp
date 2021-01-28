@@ -699,7 +699,6 @@ fred
 (vector? cond)
 > f
 
-
 (vector)
 > []
 
@@ -711,3 +710,42 @@ fred
 
 (vector? (vector 1 "hello" 3))
 > t
+
+(sequential? ())
+> t
+
+(sequential? 1)
+> f
+
+(sequential? "hello")
+> f
+
+(sequential? 'hello)
+> f
+
+(sequential? :hello)
+> f
+
+(sequential? '(1 2 3))
+> t
+
+(sequential? [])
+> t
+
+(sequential? [1 2 3])
+> t
+
+(sequential? {})
+> f
+
+(sequential? {:a 1 :b 2})
+> f
+
+(sequential? (fn (x) (+ x 1)))
+> f
+
+(sequential? car)
+> f
+
+(sequential? cond)
+> f

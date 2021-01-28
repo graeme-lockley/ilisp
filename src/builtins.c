@@ -1002,6 +1002,17 @@ Value *builtin_rest(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
 }
 
+Value *builtin_sequentialp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "sequential?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_NIL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
+}
+
 Value *builtin_slurp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1088,4 +1099,20 @@ Value *builtin_vec(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("pair"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
 
     return list_to_vector(parameter[0]);
+}
+
+Value *builtin_vector(Value *parameters, Value *env)
+{
+    return list_to_vector(parameters);
+}
+
+Value *builtin_vectorp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }

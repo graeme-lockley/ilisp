@@ -292,6 +292,60 @@ Value *builtin_apply(Value *parameters, Value *env)
     return VNil;
 }
 
+Value *builtin_assoc(Value *parameters, Value *env)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+
+    int parameter_count = 0;
+
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+
+    Value *assoc = CAR(parameters);
+    if (!IS_MAP(assoc))
+        return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("map"), parameters);
+
+    Value *src_cursor = MAP(assoc);
+    while (1)
+    {
+        if (IS_NIL(src_cursor))
+            break;
+
+        Value *link = mkPair(CAR(src_cursor), VNil);
+        *root_cursor = link;
+        root_cursor = &CDR(link);
+        src_cursor = CDR(src_cursor);
+    }
+
+    parameter_count += 1;
+    parameters = CDR(parameters);
+
+    Value *result = mkMap(root);
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return result;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_key = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_value = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        map_set_bang(result, mi_key, mi_value);
+    }
+}
+
 Value *builtin_car(Value *parameters, Value *env)
 {
     Value *parameter[1];

@@ -803,3 +803,12 @@ fred
 
 (hash-map :a 1 :b 2 :c)
 > (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 5 :procedure hash-map}))
+
+(assoc {})
+> {}
+
+(assoc {} :a 1 :b 2 :c 3)
+> {:c 3 :b 2 :a 1}
+
+(do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (assoc a :a 2 :b 3) a))
+> ({:b 3 :a 2 :c 3} {:a 1 :b 2 :c 3})

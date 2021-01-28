@@ -10,6 +10,7 @@ extern Value *map_remove_bang(Value *map, Value *key);
 extern Value *vector_to_list(Value *v);
 
 extern Value *builtin_apply(Value *parameters, Value *env);
+extern Value *builtin_assoc(Value *parameters, Value *env);
 extern Value *builtin_car(Value *parameters, Value *env);
 extern Value *builtin_cdr(Value *parameters, Value *env);
 extern Value *builtin_concat(Value *parameters, Value *env);

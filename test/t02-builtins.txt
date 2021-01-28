@@ -659,3 +659,55 @@ fred
 
 (keyword? (keyword "hello"))
 > t
+
+(vector? ())
+> f
+
+(vector? 1)
+> f
+
+(vector? "hello")
+> f
+
+(vector? 'hello)
+> f
+
+(vector? :hello)
+> f
+
+(vector? '(1 2 3))
+> f
+
+(vector? [])
+> t
+
+(vector? [1 2 3])
+> t
+
+(vector? {})
+> f
+
+(vector? {:a 1 :b 2})
+> f
+
+(vector? (fn (x) (+ x 1)))
+> f
+
+(vector? car)
+> f
+
+(vector? cond)
+> f
+
+
+(vector)
+> []
+
+(vector? (vector))
+> t
+
+(vector 1 "hello" 3)
+> [1 "hello" 3]
+
+(vector? (vector 1 "hello" 3))
+> t

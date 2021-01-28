@@ -72,6 +72,8 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(builtin_symbolp));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
+    add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(builtin_vector));
+    add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(builtin_vectorp));
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\"))))", root_scope);

@@ -47,6 +47,8 @@ extern Value *builtin_str(Value *parameters, Value *env);
 extern Value *builtin_symbol(Value *parameters, Value *env);
 extern Value *builtin_symbolp(Value *parameters, Value *env);
 extern Value *builtin_vec(Value *parameters, Value *env);
+extern Value *builtin_vector(Value *parameters, Value *env);
+extern Value *builtin_vectorp(Value *parameters, Value *env);
 
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
 extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name);

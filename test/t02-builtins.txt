@@ -749,3 +749,57 @@ fred
 
 (sequential? cond)
 > f
+
+(map? ())
+> f
+
+(map? 1)
+> f
+
+(map? "hello")
+> f
+
+(map? 'hello)
+> f
+
+(map? :hello)
+> f
+
+(map? '(1 2 3))
+> f
+
+(map? [])
+> f
+
+(map? [1 2 3])
+> f
+
+(map? {})
+> t
+
+(map? {:a 1 :b 2})
+> t
+
+(map? (fn (x) (+ x 1)))
+> f
+
+(map? car)
+> f
+
+(map? cond)
+> f
+
+(hash-map)
+> {}
+
+(map? (hash-map))
+> t
+
+(hash-map :a 1 :b 2 :c 3)
+> {:a 1 :b 2 :c 3}
+
+(map? (hash-map :a 1 :b 2 :c 3))
+> t
+
+(hash-map :a 1 :b 2 :c)
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 5 :procedure hash-map}))

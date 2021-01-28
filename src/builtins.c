@@ -469,6 +469,38 @@ Value *builtin_first(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
+Value *builtin_hash_map(Value *parameters, Value *env)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+
+    int parameter_count = 0;
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return mkMap(root);
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_key = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_value = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        Value *link = mkPair(mkPair(mi_key, mi_value), VNil);
+        *root_cursor = link;
+        root_cursor = &CDR(link);
+    }
+}
+
 Value *builtin_integer_plus(Value *parameters, Value *env)
 {
     int argument_number = 0;
@@ -836,6 +868,17 @@ Value *builtin_map(Value *parameters, Value *env)
 
         args = CDR(args);
     }
+}
+
+Value *builtin_mapp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "map?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_MAP(parameter[0]) ? VTrue : VFalse;
 }
 
 Value *builtin_map_set_bang(Value *parameters, Value *env)

@@ -605,3 +605,9 @@ fred
 
 (symbol? cond)
 > f
+
+(symbol "hello")
+> hello
+
+(symbol? (symbol "hello"))
+> t

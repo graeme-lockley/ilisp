@@ -67,6 +67,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
+    add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(builtin_symbolp));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
 

@@ -812,3 +812,12 @@ fred
 
 (do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (assoc a :a 2 :b 3) a))
 > ({:b 3 :a 2 :c 3} {:a 1 :b 2 :c 3})
+
+(dissoc {:a 1 :b 2 :c 3} :a :b)
+> {:c 3}
+
+(dissoc {:a 1 :b 2 :c 3} :a :b :d)
+> {:c 3}
+
+(do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (dissoc a :a :b) a))
+> ({:c 3} {:a 1 :b 2 :c 3})

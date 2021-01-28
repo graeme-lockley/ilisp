@@ -51,6 +51,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(builtin_concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
+    add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(builtin_dissoc));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
@@ -273,7 +274,8 @@ static Value *eval_quasiquote(Value *v, Value *env)
     if (IS_VECTOR(v))
         return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNil));
 
-    if (IS_MAP(v)) {
+    if (IS_MAP(v))
+    {
         Value *root = VNil;
         Value **root_cursor = &root;
 

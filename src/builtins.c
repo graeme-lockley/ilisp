@@ -219,6 +219,26 @@ Value *map_remove_bang(Value *map, Value *key)
     }
 }
 
+static Value *map_clone(Value *map)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+
+    Value *src_cursor = MAP(map);
+    while (1)
+    {
+        if (IS_NIL(src_cursor))
+            break;
+
+        Value *link = mkPair(CAR(src_cursor), VNil);
+        *root_cursor = link;
+        root_cursor = &CDR(link);
+        src_cursor = CDR(src_cursor);
+    }
+
+    return mkMap(root);
+}
+
 Value *map_find(Value *map, Value *key)
 {
     ASSERT_IS_VALID_MAP(map);
@@ -294,34 +314,17 @@ Value *builtin_apply(Value *parameters, Value *env)
 
 Value *builtin_assoc(Value *parameters, Value *env)
 {
-    Value *root = VNil;
-    Value **root_cursor = &root;
-
-    int parameter_count = 0;
-
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkString("pair"), parameters);
 
     Value *assoc = CAR(parameters);
     if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("map"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkString("map"), parameters);
 
-    Value *src_cursor = MAP(assoc);
-    while (1)
-    {
-        if (IS_NIL(src_cursor))
-            break;
+    Value *result = map_clone(assoc);
 
-        Value *link = mkPair(CAR(src_cursor), VNil);
-        *root_cursor = link;
-        root_cursor = &CDR(link);
-        src_cursor = CDR(src_cursor);
-    }
-
-    parameter_count += 1;
+    int parameter_count = 1;
     parameters = CDR(parameters);
-
-    Value *result = mkMap(root);
 
     while (1)
     {
@@ -453,6 +456,36 @@ Value *builtin_count(Value *parameters, Value *env)
             return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), list);
 
         list_length += 1;
+    }
+}
+
+Value *builtin_dissoc(Value *parameters, Value *env)
+{
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkString("pair"), parameters);
+
+    Value *assoc = CAR(parameters);
+    if (!IS_MAP(assoc))
+        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkString("map"), parameters);
+
+    int parameter_count = 1;
+    parameters = CDR(parameters);
+
+    Value *result = map_clone(assoc);
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return result;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("dissoc"), parameter_count, mkString("pair"), parameters);
+
+        Value *key = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        map_remove_bang(result, key);
     }
 }
 

@@ -1013,6 +1013,17 @@ Value *builtin_slurp(Value *parameters, Value *env)
     return mkStringUse(buffer);
 }
 
+Value *builtin_symbolp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "symbol?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
+}
+
 Value *builtin_vec(Value *parameters, Value *env)
 {
     Value *parameter[1];

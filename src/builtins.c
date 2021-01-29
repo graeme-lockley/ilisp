@@ -930,7 +930,7 @@ Value *builtin_nth(Value *parameters, Value *env)
         return VECTOR(parameter[0]).items[nth];
     }
 
-    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair("()", VNil)), parameter[0]);
+    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair(mkString("()"), VNil)), parameter[0]);
 }
 
 static Value *value_to_str(Value *parameters, int readable, char *separator)

@@ -8,6 +8,7 @@ RM=rm
 SRC_OBJECTS=\
 	src/builtins.o \
 	src/exceptions.o \
+	src/map.o \
 	src/printer.o \
 	src/reader.o \
 	src/readline.o \

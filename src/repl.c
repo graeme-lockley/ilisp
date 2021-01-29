@@ -58,6 +58,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
     add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(builtin_hash_map));
+    add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(builtin_keys));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(builtin_keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(builtin_keywordp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
@@ -78,6 +79,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(builtin_symbolp));
+    add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(builtin_vals));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
     add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(builtin_vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(builtin_vectorp));

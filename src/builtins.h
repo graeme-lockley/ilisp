@@ -21,6 +21,7 @@ extern Value *builtin_emptyp(Value *parameters, Value *env);
 extern Value *builtin_equal(Value *parameters, Value *env);
 extern Value *builtin_eval(Value *parameters, Value *env);
 extern Value *builtin_first(Value *parameters, Value *env);
+extern Value *builtin_get(Value *parameters, Value *env);
 extern Value *builtin_hash_map(Value *parameters, Value *env);
 extern Value *builtin_integer_plus(Value *parameters, Value *env);
 extern Value *builtin_integer_minus(Value *parameters, Value *env);

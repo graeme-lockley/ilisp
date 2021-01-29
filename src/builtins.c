@@ -556,6 +556,22 @@ Value *builtin_first(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
+Value *builtin_get(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "get");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_MAP(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("map"), parameters);
+
+    Value *v = map_find(parameter[0], parameter[1]);
+
+    return IS_NIL(v) ? v : CDR(v);
+}
+
 Value *builtin_hash_map(Value *parameters, Value *env)
 {
     Value *root = VNil;

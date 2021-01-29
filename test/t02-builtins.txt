@@ -821,3 +821,24 @@ fred
 
 (do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (dissoc a :a :b) a))
 > ({:c 3} {:a 1 :b 2 :c 3})
+
+(get)
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 2 :procedure get}))
+
+(get {})
+> (:exception (ExpectedArgumentCount . {:arguments ({}) :arg-count 2 :procedure get}))
+
+(get [] :a)
+> (:exception (InvalidArgument . {:received ([] :a) :expected-type map :arg-number 0 :procedure get}))
+
+(get {} :a)
+> ()
+
+(get {:a 1 :b 2 :c 3} :a)
+> 1
+
+(get {:a 1 :b 2 :c 3} :c)
+> 3
+
+(get {:a 1 :b 2 :c 3} :d)
+> ()

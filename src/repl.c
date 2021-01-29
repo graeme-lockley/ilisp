@@ -55,6 +55,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
+    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(builtin_hash_map));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(builtin_keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(builtin_keywordp));

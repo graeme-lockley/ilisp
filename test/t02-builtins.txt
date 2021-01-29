@@ -842,3 +842,30 @@ fred
 
 (get {:a 1 :b 2 :c 3} :d)
 > ()
+
+(get {:a 1 :b () :c 3} :b)
+> ()
+
+(contains?)
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 2 :procedure contains?}))
+
+(contains? {})
+> (:exception (ExpectedArgumentCount . {:arguments ({}) :arg-count 2 :procedure contains?}))
+
+(contains? [] :a)
+> (:exception (InvalidArgument . {:received ([] :a) :expected-type map :arg-number 0 :procedure contains?}))
+
+(contains? {} :a)
+> f
+
+(contains? {:a 1 :b 2 :c 3} :a)
+> t
+
+(contains? {:a 1 :b 2 :c 3} :c)
+> t
+
+(contains? {:a 1 :b 2 :c 3} :d)
+> f
+
+(contains? {:a 1 :b () :c 3} :b)
+> t

@@ -15,6 +15,7 @@ extern Value *builtin_car(Value *parameters, Value *env);
 extern Value *builtin_cdr(Value *parameters, Value *env);
 extern Value *builtin_concat(Value *parameters, Value *env);
 extern Value *builtin_cons(Value *parameters, Value *env);
+extern Value *builtin_containsp(Value *parameters, Value *env);
 extern Value *builtin_count(Value *parameters, Value *env);
 extern Value *builtin_dissoc(Value *parameters, Value *env);
 extern Value *builtin_emptyp(Value *parameters, Value *env);

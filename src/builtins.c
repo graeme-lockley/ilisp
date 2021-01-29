@@ -257,6 +257,24 @@ Value *map_find(Value *map, Value *key)
     }
 }
 
+Value *map_containsp(Value *map, Value *key)
+{
+    ASSERT_IS_VALID_MAP(map);
+
+    Value *cursor = MAP(map);
+
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            return VFalse;
+
+        if (is_equals(CAR(CAR(cursor)), key))
+            return VTrue;
+
+        cursor = CDR(cursor);
+    }
+}
+
 Value *builtin_apply(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
@@ -432,6 +450,20 @@ Value *builtin_cons(Value *parameters, Value *env)
         return extract_result;
 
     return mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
+}
+
+Value *builtin_containsp(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "contains?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_MAP(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("contains?"), 0, mkSymbol("map"), parameters);
+
+    return map_containsp(parameter[0], parameter[1]);
 }
 
 Value *builtin_count(Value *parameters, Value *env)

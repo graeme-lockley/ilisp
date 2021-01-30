@@ -19,6 +19,7 @@ extern Value *builtin_cons(Value *parameters, Value *env);
 extern Value *builtin_containsp(Value *parameters, Value *env);
 extern Value *builtin_count(Value *parameters, Value *env);
 extern Value *builtin_dissoc(Value *parameters, Value *env);
+extern Value *builtin_dissoc_bang(Value *parameters, Value *env);
 extern Value *builtin_emptyp(Value *parameters, Value *env);
 extern Value *builtin_equal(Value *parameters, Value *env);
 extern Value *builtin_eval(Value *parameters, Value *env);

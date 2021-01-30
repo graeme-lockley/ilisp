@@ -60,6 +60,9 @@ fred
 fred
 > {b 2 a 1}
 
+(assoc! fred)
+> {b 2 a 1}
+
 (assoc! fred 'b 3)
 > {b 3 a 1}
 
@@ -74,6 +77,15 @@ fred
 
 (assoc! fred a 1)
 > (:exception (UnknownSymbol . {name a}))
+
+(dissoc! fred)
+> {:b 4 b 3 a 1}
+
+(dissoc! fred 'a)
+> {:b 4 b 3}
+
+fred
+> {:b 4 b 3}
 
 (list 1 2 3)
 > (1 2 3)

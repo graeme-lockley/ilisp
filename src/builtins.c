@@ -395,6 +395,34 @@ Value *builtin_dissoc(Value *parameters, Value *env)
     }
 }
 
+Value *builtin_dissoc_bang(Value *parameters, Value *env)
+{
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkString("pair"), parameters);
+
+    Value *assoc = CAR(parameters);
+    if (!IS_MAP(assoc))
+        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkString("map"), parameters);
+
+    int parameter_count = 1;
+    parameters = CDR(parameters);
+
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return assoc;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("dissoc!"), parameter_count, mkString("pair"), parameters);
+
+        Value *key = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        map_remove_bang(assoc, key);
+    }
+}
+
 Value *builtin_emptyp(Value *parameters, Value *env)
 {
     Value *parameter[1];

@@ -54,6 +54,7 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(builtin_containsp));
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(builtin_dissoc));
+    add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(builtin_dissoc_bang));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));

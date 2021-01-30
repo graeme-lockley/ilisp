@@ -208,16 +208,37 @@ Value *builtin_assoc(Value *parameters, Value *env)
 
 Value *builtin_assoc_bang(Value *parameters, Value *env)
 {
-    Value *parameter[3];
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("pair"), parameters);
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "§");
-    if (extract_result != NULL)
-        return extract_result;
+    Value *assoc = CAR(parameters);
+    if (!IS_MAP(assoc))
+        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("map"), parameters);
 
-    if (!IS_MAP(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("map"), parameter[0]);
+    int parameter_count = 1;
+    parameters = CDR(parameters);
 
-    return map_set_bang(parameter[0], parameter[1], parameter[2]);
+    while (1)
+    {
+        if (IS_NIL(parameters))
+            return assoc;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_key = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        if (!IS_PAIR(parameters))
+            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkString("pair"), parameters);
+
+        Value *mi_value = CAR(parameters);
+        parameters = CDR(parameters);
+        parameter_count += 1;
+
+        map_set_bang(assoc, mi_key, mi_value);
+    }
 }
 
 Value *builtin_car(Value *parameters, Value *env)

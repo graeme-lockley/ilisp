@@ -45,32 +45,29 @@
 (count '(1 2 3 4 5))
 > 5
 
-(assoc! (car **root**) 'fred {})
-> ()
-
-fred
+(do (assoc! (car **root**) 'fred {}) fred)
 > {}
 
 (assoc! fred 'a 1)
-> ()
+> {a 1}
 
 fred
 > {a 1}
 
 (assoc! fred 'b 2)
-> ()
+> {b 2 a 1}
 
 fred
 > {b 2 a 1}
 
 (assoc! fred 'b 3)
-> 2
+> {b 3 a 1}
 
 fred
 > {b 3 a 1}
 
 (assoc! fred :b 4)
-> ()
+> {:b 4 b 3 a 1}
 
 fred
 > {:b 4 b 3 a 1}

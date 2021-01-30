@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         char *content = (char *)malloc(strlen(script_name) + 20);
         sprintf(content, "(load-file \"%s\")", script_name);
 
-        Value *result = Repl_rep(content, env);
+        Value *result = Repl_rep(script_name, content, env);
 
         if (IS_EXCEPTION(result))
             printf("Exception: ");

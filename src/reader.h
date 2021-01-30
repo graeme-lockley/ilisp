@@ -3,6 +3,6 @@
 
 #include "value.h"
 
-Value *Reader_read(char *content);
+Value *Reader_read(char *source_name, char *content);
 
 #endif

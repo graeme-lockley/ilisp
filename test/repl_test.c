@@ -105,7 +105,7 @@ static void validateTest(Value *env)
             printf("  Test: %s\n", scenario_name);
         }
 
-        Value *rv = Repl_rep(input, env);
+        Value *rv = Repl_rep("**test**", input, env);
         char *repl_result = (IS_SUCCESSFUL(rv)) ? rv->strV : Printer_prStr(rv, 1, " ")->strV;
         if (strcmp(repl_result, output) == 0)
         {

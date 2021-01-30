@@ -1006,7 +1006,7 @@ Value *builtin_read_string(Value *parameters, Value *env)
     if (!IS_STRING(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkString("string"), parameter[0]);
 
-    return Reader_read(STRING(parameter[0]));
+    return Reader_read("**string**", STRING(parameter[0]));
 }
 
 Value *builtin_rest(Value *parameters, Value *env)

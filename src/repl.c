@@ -92,9 +92,9 @@ Value *initialise_environment()
     return root_scope;
 }
 
-static Value *Main_read(char *content)
+static Value *Main_read(char *source_name, char *content)
 {
-    return Reader_read(content);
+    return Reader_read(source_name, content);
 }
 
 Value *Repl_evalValue(Value *v, Value *env)
@@ -606,18 +606,18 @@ static Value *Main_print(Value *content)
     return Printer_prStr(content, 1, " ");
 }
 
-Value *Repl_rep(char *content, Value *env)
+Value *Repl_rep(char *source_name, char *content, Value *env)
 {
-    Value *readRV = Main_read(content);
+    Value *readRV = Main_read(source_name, content);
     if (IS_SUCCESSFUL(readRV))
         return Main_print(Repl_eval(readRV, env));
 
     return readRV;
 }
 
-static int Repl_report_result(char *p, Value *env, int silent_on_success)
+static int Repl_report_result(char *source_name, char *p, Value *env, int silent_on_success)
 {
-    Value *v = Repl_rep(p, env);
+    Value *v = Repl_rep(source_name, p, env);
     free(p);
 
     if (IS_SUCCESSFUL(v))
@@ -640,7 +640,7 @@ static int Repl_define(char *name, char *s, Value *env)
 {
     char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
     sprintf(p, "(map-set! (car **root**) '%s %s)", name, s);
-    return Repl_report_result(p, env, 1);
+    return Repl_report_result("**string**", p, env, 1);
 }
 
 int Repl_repl()
@@ -651,7 +651,7 @@ int Repl_repl()
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)
-        Repl_report_result(p, env, 0);
+        Repl_report_result("**cli**", p, env, 0);
 
     return 0;
 }

@@ -38,6 +38,7 @@ typedef struct PositionStruct
 
 typedef struct LexerState
 {
+    char *source_name;
     char *content;
     int content_length;
     Position start;
@@ -51,7 +52,7 @@ typedef struct LexerState
 static struct Exception_Position *mkExceptionPosition(struct LexerState *lexer)
 {
     struct Exception_Position *position = (struct Exception_Position *)malloc(sizeof(struct Exception_Position));
-    position->source_name = strdup("**reader**");
+    position->source_name = strdup(lexer->source_name);
     position->startOffset = lexer->start.offset;
     position->startColumn = lexer->start.column;
     position->startLine = lexer->start.line;
@@ -241,11 +242,11 @@ static void next_token(Lexer *lexer)
     }
 }
 
-static Lexer initialise_lexer(char *content)
+static Lexer initialise_lexer(char *source_name, char *content)
 {
     Position position = {-1, 1, 0};
 
-    Lexer lexer = {content, strlen(content), position, EOS, position};
+    Lexer lexer = {source_name, content, strlen(content), position, EOS, position};
     next_token(&lexer);
 
     return lexer;
@@ -513,9 +514,9 @@ static Value *parse(Lexer *lexer)
     }
 }
 
-Value *Reader_read(char *content)
+Value *Reader_read(char *source_name, char *content)
 {
-    struct LexerState lexer = initialise_lexer(content);
+    struct LexerState lexer = initialise_lexer(source_name, content);
 
     Value *result = parse(&lexer);
 

@@ -6,7 +6,7 @@
 #include "printer.h"
 #include "value.h"
 
-#define BUFFER_TRANCHE 2
+#define BUFFER_TRANCHE 32
 
 enum Token
 {
@@ -48,17 +48,31 @@ typedef struct LexerState
 #define CHARACTER_AT_POSITION(lexer, position) ((lexer)->content[(position)->offset])
 #define CHARACTER_AT_NEXT_POSITION(lexer, position) ((position)->offset < (lexer)->content_length ? (lexer)->content[(position)->offset + 1] : 0)
 
-// static void printer_lexer(char *msg, Lexer *lexer)
-// {
-//     printf("ls: %s: {., %d, {%d, %d, %d}, %d, (%d, %d, %d)\n", msg, lexer->content_length, lexer->start.offset, lexer->start.column, lexer->start.line, lexer->token, lexer->end.offset, lexer->end.column, lexer->end.line);
-// }
+static struct Exception_Position *mkExceptionPosition(struct LexerState *lexer)
+{
+    struct Exception_Position *position = (struct Exception_Position *)malloc(sizeof(struct Exception_Position));
+    position->source_name = strdup("**reader**");
+    position->startOffset = lexer->start.offset;
+    position->startColumn = lexer->start.column;
+    position->startLine = lexer->start.line;
+    position->endOffset = lexer->end.offset;
+    position->endColumn = lexer->end.column;
+    position->endLine = lexer->end.line;
 
-// static void dumpValue(char *msg, Value *value)
-// {
-//     ReturnValue r = Printer_prStr(value, 1);
+    int c = lexer->content[lexer->end.offset + 1];
+    lexer->content[lexer->end.offset + 1] = 0;
+    position->content = strdup((char *)(lexer->content + lexer->start.offset));
+    lexer->content[lexer->end.offset + 1] = c;
 
-//     printf("** %s: %d: %s\n", msg, r.isValue, IS_STRING(r.value) ? STRING(r.value) : "error");
-// }
+    return position;
+}
+
+static void freeExceptionPosition(struct Exception_Position *position)
+{
+    free(position->source_name);
+    free(position->content);
+    free(position);
+}
 
 static void advance_position(Lexer *lexer, Position *position)
 {
@@ -184,8 +198,8 @@ static void next_token(Lexer *lexer)
         }
         else if (current == '"')
         {
-            advance_position(lexer, &cursor);
             current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);
+
             while (1)
             {
                 if (current == 0)
@@ -340,7 +354,12 @@ static Value *parse(Lexer *lexer)
         while (1)
         {
             if (lexer->token == EOS)
-                return exceptions_unexpected_end_of_stream(")");
+            {
+                struct Exception_Position *position = mkExceptionPosition(lexer);
+                Value *e = exceptions_unexpected_end_of_stream(")", position);
+                freeExceptionPosition(position);
+                return e;
+            }
 
             if (lexer->token == RPAREN)
             {
@@ -380,7 +399,10 @@ static Value *parse(Lexer *lexer)
             if (lexer->token == EOS)
             {
                 free(buffer);
-                return exceptions_unexpected_end_of_stream("]");
+                struct Exception_Position *position = mkExceptionPosition(lexer);
+                Value *e = exceptions_unexpected_end_of_stream("]", position);
+                freeExceptionPosition(position);
+                return e;
             }
 
             if (lexer->token == RBRACKET)
@@ -437,7 +459,12 @@ static Value *parse(Lexer *lexer)
         while (1)
         {
             if (lexer->token == EOS)
-                return exceptions_unexpected_end_of_stream("}");
+            {
+                struct Exception_Position *position = mkExceptionPosition(lexer);
+                Value *e = exceptions_unexpected_end_of_stream("}", position);
+                freeExceptionPosition(position);
+                return e;
+            }
 
             if (lexer->token == RCURLEY)
             {
@@ -461,7 +488,22 @@ static Value *parse(Lexer *lexer)
     }
 
     case ERROR_UNENCLOSED_QUOTE:
-        return exceptions_unexpected_end_of_stream("\"");
+    {
+        struct Exception_Position *position = mkExceptionPosition(lexer);
+        Value *e = exceptions_unexpected_end_of_stream("\"", position);
+        freeExceptionPosition(position);
+        return e;
+    }
+
+    case RPAREN:
+    case RBRACKET:
+    case RCURLEY:
+    {
+        struct Exception_Position *position = mkExceptionPosition(lexer);
+        Value *e = exceptions_unexpected_token(position);
+        freeExceptionPosition(position);
+        return e;
+    }
 
     default:
     {
@@ -475,7 +517,15 @@ Value *Reader_read(char *content)
 {
     struct LexerState lexer = initialise_lexer(content);
 
-    // printer_lexer("initial", &lexer);
+    Value *result = parse(&lexer);
 
-    return parse(&lexer);
+    if (IS_EXCEPTION(result) || lexer.token == EOS)
+        return result;
+    else
+    {
+        struct Exception_Position *position = mkExceptionPosition(&lexer);
+        Value *e = exceptions_expected_token("EOS", position);
+        freeExceptionPosition(position);
+        return e;
+    }
 }

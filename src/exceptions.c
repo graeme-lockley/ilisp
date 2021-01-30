@@ -1,6 +1,24 @@
 #include "builtins.h"
 #include "exceptions.h"
 
+static void include_exception_position(Value *exception_payload, struct Exception_Position *position)
+{
+
+    Value *start = map_create();
+    map_set_bang(start, mkKeyword(":offset"), mkNumber(position->startOffset));
+    map_set_bang(start, mkKeyword(":column"), mkNumber(position->startColumn));
+    map_set_bang(start, mkKeyword(":line"), mkNumber(position->startLine));
+    Value *end = map_create();
+    map_set_bang(end, mkKeyword(":offset"), mkNumber(position->endOffset));
+    map_set_bang(end, mkKeyword(":column"), mkNumber(position->endColumn));
+    map_set_bang(end, mkKeyword(":line"), mkNumber(position->endLine));
+
+    map_set_bang(exception_payload, mkKeyword(":end"), end);
+    map_set_bang(exception_payload, mkKeyword(":start"), start);
+    map_set_bang(exception_payload, mkKeyword(":content"), mkString(position->content));
+    map_set_bang(exception_payload, mkKeyword(":source-name"), mkString(position->source_name));
+}
+
 Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments)
 {
     Value *exception_name = mkSymbol("ExpectedArgumentCount");
@@ -20,6 +38,17 @@ Value *exceptions_expected_range_argument_count(Value *procedure_name, int min_a
     map_set_bang(exception_payload, mkKeyword(":min-arg-count"), mkNumber(min_argument_count));
     map_set_bang(exception_payload, mkKeyword(":max-arg-count"), mkNumber(max_argument_count));
     map_set_bang(exception_payload, mkKeyword(":arguments"), arguments);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_expected_token(char *found, struct Exception_Position *position)
+{
+    Value *exception_name = mkSymbol("ExpectedToken");
+    Value *exception_payload = map_create();
+
+    map_set_bang(exception_payload, mkKeyword(":expected"), mkString(found));
+    include_exception_position(exception_payload, position);
 
     return mkException(mkPair(exception_name, exception_payload));
 }
@@ -87,11 +116,21 @@ Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *
     return mkException(mkPair(exception_name, exception_payload));
 }
 
-Value *exceptions_unexpected_end_of_stream(char *expected)
+Value *exceptions_unexpected_end_of_stream(char *expected, struct Exception_Position *position)
 {
     Value *exception_name = mkSymbol("UnexpectedEndOfStream");
     Value *exception_payload = map_create();
     map_set_bang(exception_payload, mkKeyword("expected"), mkString(expected));
+    include_exception_position(exception_payload, position);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
+Value *exceptions_unexpected_token(struct Exception_Position *position)
+{
+    Value *exception_name = mkSymbol("UnexpectedToken");
+    Value *exception_payload = map_create();
+    include_exception_position(exception_payload, position);
 
     return mkException(mkPair(exception_name, exception_payload));
 }

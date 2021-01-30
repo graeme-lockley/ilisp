@@ -74,48 +74,48 @@
 
 ; Unexpected EOS - unclosed paren
 (
-> (:exception (UnexpectedEndOfStream . {expected ")"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 2 :offset 1} :end {:line 1 :column 2 :offset 1} expected ")"}))
 
 ; Unexpected EOS - unclosed paren
 (1
-> (:exception (UnexpectedEndOfStream . {expected ")"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 3 :offset 2} :end {:line 1 :column 3 :offset 2} expected ")"}))
 
 ; Unexpected EOS - unclosed paren
 (1 2 3
-> (:exception (UnexpectedEndOfStream . {expected ")"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 7 :offset 6} :end {:line 1 :column 7 :offset 6} expected ")"}))
 
 ; Unexpected EOS - unclosed bracket
 [
-> (:exception (UnexpectedEndOfStream . {expected "]"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 2 :offset 1} :end {:line 1 :column 2 :offset 1} expected "]"}))
 
 ; Unexpected EOS - unclosed paren
 [1
-> (:exception (UnexpectedEndOfStream . {expected "]"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 3 :offset 2} :end {:line 1 :column 3 :offset 2} expected "]"}))
 
 ; Unexpected EOS - unclosed paren
 [1 2 3
-> (:exception (UnexpectedEndOfStream . {expected "]"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 7 :offset 6} :end {:line 1 :column 7 :offset 6} expected "]"}))
 
 ; Unexpected EOS - unclosed curley
 {
-> (:exception (UnexpectedEndOfStream . {expected "}"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 2 :offset 1} :end {:line 1 :column 2 :offset 1} expected "}"}))
 
 ; Unexpected EOS - unclosed curley
 {:a 1
-> (:exception (UnexpectedEndOfStream . {expected "}"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 6 :offset 5} :end {:line 1 :column 6 :offset 5} expected "}"}))
 
 ; Unexpected EOS - unclosed curley
 {:a 1 :b
-> (:exception (UnexpectedEndOfStream . {expected "}"}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "" :start {:line 1 :column 9 :offset 8} :end {:line 1 :column 9 :offset 8} expected "}"}))
 
 ; Unexpected EOS - unclosed quote
 "
-> (:exception (UnexpectedEndOfStream . {expected "\""}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "\"" :start {:line 1 :column 1 :offset 0} :end {:line 1 :column 1 :offset 0} expected "\""}))
 
 ; Unexpected EOS - unclosed quote
 "h
-> (:exception (UnexpectedEndOfStream . {expected "\""}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "\"h" :start {:line 1 :column 1 :offset 0} :end {:line 1 :column 2 :offset 1} expected "\""}))
 
 ; Unexpected EOS - unclosed quote
 "hello
-> (:exception (UnexpectedEndOfStream . {expected "\""}))
+> (:exception (UnexpectedEndOfStream . {:source-name "**reader**" :content "\"hello" :start {:line 1 :column 1 :offset 0} :end {:line 1 :column 6 :offset 5} expected "\""}))

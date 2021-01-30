@@ -11,6 +11,7 @@ extern Value *vector_to_list(Value *v);
 
 extern Value *builtin_apply(Value *parameters, Value *env);
 extern Value *builtin_assoc(Value *parameters, Value *env);
+extern Value *builtin_assoc_bang(Value *parameters, Value *env);
 extern Value *builtin_car(Value *parameters, Value *env);
 extern Value *builtin_cdr(Value *parameters, Value *env);
 extern Value *builtin_concat(Value *parameters, Value *env);
@@ -38,7 +39,6 @@ extern Value *builtin_keywordp(Value *parameters, Value *env);
 extern Value *builtin_listp(Value *parameters, Value *env);
 extern Value *builtin_map(Value *parameters, Value *env);
 extern Value *builtin_mapp(Value *parameters, Value *env);
-extern Value *builtin_map_set_bang(Value *parameters, Value *env);
 extern Value *builtin_nilp(Value *parameters, Value *env);
 extern Value *builtin_nth(Value *parameters, Value *env);
 extern Value *builtin_pr_str(Value *parameters, Value *env);

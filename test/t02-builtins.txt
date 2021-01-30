@@ -45,37 +45,37 @@
 (count '(1 2 3 4 5))
 > 5
 
-(map-set! (car **root**) 'fred {})
+(assoc! (car **root**) 'fred {})
 > ()
 
 fred
 > {}
 
-(map-set! fred 'a 1)
+(assoc! fred 'a 1)
 > ()
 
 fred
 > {a 1}
 
-(map-set! fred 'b 2)
+(assoc! fred 'b 2)
 > ()
 
 fred
 > {b 2 a 1}
 
-(map-set! fred 'b 3)
+(assoc! fred 'b 3)
 > 2
 
 fred
 > {b 3 a 1}
 
-(map-set! fred :b 4)
+(assoc! fred :b 4)
 > ()
 
 fred
 > {:b 4 b 3 a 1}
 
-(map-set! fred a 1)
+(assoc! fred a 1)
 > (:exception (UnknownSymbol . {name a}))
 
 (list 1 2 3)
@@ -428,8 +428,8 @@ fred
 (nth (list 1 2 ()) 2)
 >()
 (do 
-  (map-set! (car **root**) 'x "x") 
-  (map-set! (car **root**) 'x (nth (list 1 2) 2)) 
+  (assoc! (car **root**) 'x "x") 
+  (assoc! (car **root**) 'x (nth (list 1 2) 2)) 
   x)
 >()
 
@@ -810,7 +810,7 @@ fred
 (assoc {} :a 1 :b 2 :c 3)
 > {:c 3 :b 2 :a 1}
 
-(do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (assoc a :a 2 :b 3) a))
+(do (assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (assoc a :a 2 :b 3) a))
 > ({:b 3 :a 2 :c 3} {:a 1 :b 2 :c 3})
 
 (dissoc {:a 1 :b 2 :c 3} :a :b)
@@ -819,7 +819,7 @@ fred
 (dissoc {:a 1 :b 2 :c 3} :a :b :d)
 > {:c 3}
 
-(do (map-set! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (dissoc a :a :b) a))
+(do (assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (dissoc a :a :b) a))
 > ({:c 3} {:a 1 :b 2 :c 3})
 
 (get)

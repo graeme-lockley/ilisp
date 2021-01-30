@@ -46,6 +46,7 @@ Value *initialise_environment()
 
     add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(builtin_apply));
     add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(builtin_assoc));
+    add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(builtin_assoc_bang));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(builtin_concat));
@@ -64,7 +65,6 @@ Value *initialise_environment()
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(builtin_map));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(builtin_mapp));
-    add_binding_into_environment(root_bindings, "map-set!", mkNativeProcedure(builtin_map_set_bang));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(builtin_nilp));
     add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(builtin_nth));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
@@ -639,7 +639,7 @@ static int Repl_report_result(char *source_name, char *p, Value *env, int silent
 static int Repl_define(char *name, char *s, Value *env)
 {
     char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
-    sprintf(p, "(map-set! (car **root**) '%s %s)", name, s);
+    sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
     return Repl_report_result("**string**", p, env, 1);
 }
 

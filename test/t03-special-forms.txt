@@ -8,8 +8,8 @@
 
 ; do with many
 (do 
-  (map-set! (car **root**) 'x 10) 
-  (map-set! (car **root**) 'x (+ x 1)) 
+  (assoc! (car **root**) 'x 10) 
+  (assoc! (car **root**) 'x (+ x 1)) 
   x)
 > 11
 

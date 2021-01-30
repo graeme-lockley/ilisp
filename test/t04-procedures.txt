@@ -3,7 +3,7 @@
 > 100
 
 ; Increment
-(do (map-set! (car **root**) 'inc (fn (x) (+ x 1)))
+(do (assoc! (car **root**) 'inc (fn (x) (+ x 1)))
     (inc 100))
 > 101
 

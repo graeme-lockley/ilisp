@@ -373,7 +373,7 @@ fred
 > (:exception (InvalidArgument . {:received "hello" :expected-type "number" :arg-number 0 :procedure integer-greater-equal}))
 
 (read-string)
-> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure read-string}))
+> (:exception (ExpectedArgumentCount . {:arguments () :max-arg-count 2 :min-arg-count 1 :procedure read-string}))
 
 (read-string 1)
 > (:exception (InvalidArgument . {:received 1 :expected-type "string" :arg-number 0 :procedure read-string}))

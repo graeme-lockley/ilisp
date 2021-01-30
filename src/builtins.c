@@ -1046,16 +1046,19 @@ Value *builtin_raise(Value *parameters, Value *env)
 
 Value *builtin_read_string(Value *parameters, Value *env)
 {
-    Value *parameter[1];
+    Value *parameter[2];
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-string");
+    Value *extract_result = extract_range_parameters(parameter, parameters, 1, 2, "read-string");
     if (extract_result != NULL)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkString("string"), parameter[0]);
 
-    return Reader_read("**string**", STRING(parameter[0]));
+    if (parameter[1] != NULL && !IS_STRING(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("read-string"), 1, mkString("string"), parameter[1]);
+
+    return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
 
 Value *builtin_rest(Value *parameters, Value *env)

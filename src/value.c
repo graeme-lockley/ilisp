@@ -36,8 +36,13 @@ Value *mkSymbol(char *string)
     if (strcmp(string, "f") == 0)
         return VFalse;
 
+    return mkSymbolUse(strdup(string));
+}
+
+Value *mkSymbolUse(char *string)
+{
     Value *value = mkValue(VT_SYMBOL);
-    value->strV = strdup(string);
+    value->strV = string;
     return value;
 }
 
@@ -88,9 +93,7 @@ Value *mkVector(Value *items[], int length)
     value->vectorV.length = length;
     value->vectorV.items = malloc(sizeof(Value *) * length);
     for (int lp = 0; lp < length; lp += 1)
-    {
         value->vectorV.items[lp] = items[lp];
-    }
 
     return value;
 }
@@ -184,9 +187,7 @@ static int list_length(Value *a)
 Value *Value_equals(Value *a, Value *b)
 {
     if (a == b)
-    {
         return VTrue;
-    }
 
     switch (TAG_TO_VT(a))
     {
@@ -197,9 +198,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_SYMBOL(b))
         {
             if (strcmp(STRING(a), STRING(b)) == 0)
-            {
                 return VTrue;
-            }
         }
         return VFalse;
 
@@ -207,9 +206,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_KEYWORD(b))
         {
             if (strcmp(STRING(a), STRING(b)) == 0)
-            {
                 return VTrue;
-            }
         }
         return VFalse;
 
@@ -217,9 +214,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_CHARACTER(b))
         {
             if (CHARACTER(a) == CHARACTER(b))
-            {
                 return VTrue;
-            }
         }
         return VFalse;
 
@@ -227,9 +222,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_NUMBER(b))
         {
             if (NUMBER(a) == NUMBER(b))
-            {
                 return VTrue;
-            }
         }
         return VFalse;
 
@@ -237,9 +230,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_STRING(b))
         {
             if (strcmp(STRING(a), STRING(b)) == 0)
-            {
                 return VTrue;
-            }
         }
         return VFalse;
 
@@ -247,9 +238,7 @@ Value *Value_equals(Value *a, Value *b)
         if (IS_PAIR(b))
         {
             if (Value_truthy(Value_equals(CAR(a), CAR(b))))
-            {
                 return Value_equals(CDR(a), CDR(b));
-            }
         }
         return VFalse;
 
@@ -265,9 +254,7 @@ Value *Value_equals(Value *a, Value *b)
                 for (int loop = 0; loop < length; loop += 1)
                 {
                     if (!Value_truthy(Value_equals(as[loop], bs[loop])))
-                    {
                         return VFalse;
-                    }
                 }
 
                 return VTrue;

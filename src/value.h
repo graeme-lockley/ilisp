@@ -90,6 +90,7 @@ extern Value *mkNil();
 extern Value *VTrue;
 extern Value *VFalse;
 extern Value *mkSymbol(char *string);
+extern Value *mkSymbolUse(char *string);
 #define SYMBOL(v) (((v)->strV))
 
 extern Value *mkKeyword(char *string);

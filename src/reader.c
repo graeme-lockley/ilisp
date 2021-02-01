@@ -327,13 +327,23 @@ static Value *parse(Lexer *lexer)
     {
         int c = lexer->content[lexer->end.offset + 1];
         lexer->content[lexer->end.offset + 1] = 0;
-        Value *v = (lexer->content[lexer->start.offset] == ':')
-                       ? mkKeyword((char *)(lexer->content + lexer->start.offset))
-                       : mkSymbol((char *)(lexer->content + lexer->start.offset));
-        lexer->content[lexer->end.offset + 1] = c;
 
-        next_token(lexer);
-        return v;
+        if (lexer->content[lexer->start.offset] == ':')
+        {
+            Value *v = mkKeyword((char *)(lexer->content + lexer->start.offset));
+            lexer->content[lexer->end.offset + 1] = c;
+
+            next_token(lexer);
+            return v;
+        }
+        else
+        {
+            char *s = strdup((char *)(lexer->content + lexer->start.offset));
+            lexer->content[lexer->end.offset + 1] = c;
+            next_token(lexer);
+
+            return mkSymbolUse(s);
+        }
     }
 
     case LPAREN:

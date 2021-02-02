@@ -22,13 +22,6 @@
   )
 )
 
-; (Unit.assert-equals (and) 1)
-; (Unit.assert-equals (and 1) 1)
-; (Unit.assert-equals (and 0) 0)
-; (Unit.assert-equals (and 1 1) 1)
-; (Unit.assert-equals (and 1 0) 0)
-; (Unit.assert-equals (and 0 (/ 1 0)) 0)
-
 (export-macro (or . terms)
   `(if (nil? '~terms) 
     () 
@@ -39,20 +32,26 @@
   )
 )
 
-; (Unit.assert-equals (or) 0)
-; (Unit.assert-equals (or 1) 1)
-; (Unit.assert-equals (or 0) 0)
-; (Unit.assert-equals (or 1 (/ 1 0)) 1)
-; (Unit.assert-equals (or 0 1) 1)
-; (Unit.assert-equals (or 0 0) 0)
-
+; By loading package.scm into this file, the public procedures and macros are
+; exported as a result of the package mechanism.  Note that this is an anomoly
+; and is only used in this case in order to bootstrap the package mechanism.
 (load-file "./lib/package.scm");
 
-; (define Package (library-import "./lib/package.scm"))
+(import "./lib/unit.scm" :as Unit)
 
-(import "./lib/package.scm" :as Package)
+(define assert-equals (library-use Unit 'assert-equals))
 
-(export library-import (library-use Package 'library-import))
-(export library-use (library-use Package 'library-use))
+(assert-equals (and) 1)
+(assert-equals (and 1) 1)
+(assert-equals (and ()) ())
+(assert-equals (and 1 1) 1)
+(assert-equals (and 1 ()) ())
+(assert-equals (and () (/ 1 0)) ())
 
+(assert-equals (or) ())
+(assert-equals (or 1) 1)
+(assert-equals (or ()) ())
+(assert-equals (or 1 (/ 1 0)) 1)
+(assert-equals (or () 1) 1)
+(assert-equals (or () ()) ())
 

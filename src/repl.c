@@ -376,6 +376,15 @@ static Value *find_macro_binding_from_apply(Value *v, Value *env)
     }
 }
 
+static Value *macro_value_expand(Value *macro, Value *args)
+{
+    Value *new_env = mk_new_env_for_apply(MACRO(macro).parameters, args, MACRO(macro).env);
+    if (IS_EXCEPTION(new_env))
+        return new_env;
+
+    return Repl_eval(MACRO(macro).body, new_env);
+}
+
 static Value *Repl_macro_expand(Value *v, Value *env)
 {
     while (1)
@@ -388,7 +397,9 @@ static Value *Repl_macro_expand(Value *v, Value *env)
         if (IS_EXCEPTION(new_env))
             return new_env;
 
-        v = Repl_eval(MACRO(macro).body, new_env);
+        v = macro_value_expand(macro, CDR(v));
+        if (IS_EXCEPTION(v))
+            return v;
     }
 }
 
@@ -574,28 +585,40 @@ Value *Repl_eval(Value *v, Value *env)
                 }
             }
 
-            Value *ve = Repl_evalValue(v, env);
+            Value *f = Repl_eval(CAR(v), env);
+            if (IS_EXCEPTION(f))
+                return f;
 
-            if (IS_SUCCESSFUL(ve))
+            if (IS_MACRO(f))
             {
-                Value *f = CAR(ve);
-                Value *args = CDR(ve);
+                v = macro_value_expand(f, CDR(v));
+                if (IS_EXCEPTION(v))
+                    return v;
 
-                if (IS_PROCEDURE(f))
-                {
-                    Value *new_env = mk_new_env_for_apply(PROCEDURE(f).parameters, args, PROCEDURE(f).env);
-                    if (IS_EXCEPTION(new_env))
-                        return new_env;
-
-                    v = PROCEDURE(f).body;
-                    env = new_env;
-                    continue;
-                }
-
-                return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);
+                continue;
             }
             else
-                return ve;
+            {
+                Value *args = Repl_evalValue(CDR(v), env);
+
+                if (IS_SUCCESSFUL(args))
+                {
+                    if (IS_PROCEDURE(f))
+                    {
+                        Value *new_env = mk_new_env_for_apply(PROCEDURE(f).parameters, args, PROCEDURE(f).env);
+                        if (IS_EXCEPTION(new_env))
+                            return new_env;
+
+                        v = PROCEDURE(f).body;
+                        env = new_env;
+                        continue;
+                    }
+
+                    return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);
+                }
+                else
+                    return args;
+            }
         }
 
         return Repl_evalValue(v, env);

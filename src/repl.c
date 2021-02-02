@@ -407,8 +407,6 @@ Value *Repl_eval(Value *v, Value *env)
 {
     while (1)
     {
-        v = Repl_macro_expand(v, env);
-
         if (IS_NIL(v))
             return v;
 

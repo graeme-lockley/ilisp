@@ -492,18 +492,32 @@ Value *builtin_first(Value *parameters, Value *env)
 
 Value *builtin_get(Value *parameters, Value *env)
 {
-    Value *parameter[2];
+    if (!IS_PAIR(parameters))
+        return exceptions_invalid_argument(mkSymbol("get"), 0, mkString("pair"), parameters);
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "get");
-    if (extract_result != NULL)
-        return extract_result;
+    Value *cursor = CAR(parameters);
+    Value *keys = CDR(parameters);
+    int parameter_count = 1;
 
-    if (!IS_MAP(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("map"), parameters);
+    while (1)
+    {
+        if (IS_NIL(keys))
+            return cursor;
 
-    Value *v = map_find(parameter[0], parameter[1]);
+        if (!IS_PAIR(keys))
+            return exceptions_invalid_argument(mkSymbol("get"), parameter_count, mkSymbol("pair"), keys);
 
-    return IS_NIL(v) ? v : CDR(v);
+        Value *key = CAR(keys);
+        if (!IS_MAP(cursor))
+            return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("map"), cursor);
+
+        cursor = map_find(cursor, key);
+        if (!IS_NIL(cursor))
+            cursor = CDR(cursor);
+
+        keys = CDR(keys);
+        parameter_count += 1;
+    }
 }
 
 Value *builtin_hash_map(Value *parameters, Value *env)

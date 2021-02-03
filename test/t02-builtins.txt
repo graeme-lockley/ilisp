@@ -832,13 +832,13 @@ fred
 > ({:c 3} {:a 1 :b 2 :c 3})
 
 (get)
-> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 2 :procedure get}))
+> (:exception (InvalidArgument . {:received () :expected-type "pair" :arg-number 0 :procedure get}))
 
 (get {})
-> (:exception (ExpectedArgumentCount . {:arguments ({}) :arg-count 2 :procedure get}))
+> {}
 
 (get [] :a)
-> (:exception (InvalidArgument . {:received ([] :a) :expected-type map :arg-number 0 :procedure get}))
+> (:exception (InvalidArgument . {:received [] :expected-type map :arg-number 0 :procedure get}))
 
 (get {} :a)
 > ()
@@ -854,6 +854,12 @@ fred
 
 (get {:a 1 :b () :c 3} :b)
 > ()
+
+(get {:a 1 :b {"a" 1 "b" 2} :c 3} :b "b")
+> 2
+
+(get {:a 1 :b {"a" 1 "b" 2} :c 3} :a "a")
+> (:exception (InvalidArgument . {:received 1 :expected-type map :arg-number 0 :procedure get}))
 
 (contains?)
 > (:exception (ExpectedArgumentCount . {:arguments () :arg-count 2 :procedure contains?}))

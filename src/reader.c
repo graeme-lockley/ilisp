@@ -252,6 +252,13 @@ static Lexer initialise_lexer(char *source_name, char *content)
     return lexer;
 }
 
+static void append_to_list(Value *item, Value ***cursor)
+{
+    Value *cons = mkPair(item, VNil);
+    **cursor = cons;
+    *cursor = &CDR(cons);
+}
+
 static Value *parse(Lexer *lexer)
 {
     switch (lexer->token)
@@ -342,7 +349,38 @@ static Value *parse(Lexer *lexer)
             lexer->content[lexer->end.offset + 1] = c;
             next_token(lexer);
 
-            return mkSymbolUse(s);
+            if (strcmp(s, ".") != 0 && strchr(s, '.') != NULL)
+            {
+                Value *root = VNil;
+                Value **root_cursor = &root;
+
+                append_to_list(mkSymbol("library-use"), &root_cursor);
+
+                int is_first = 1;
+                char *s_cursor = s;
+                char *rest = strchr(s_cursor, '.');
+                while (rest != NULL)
+                {
+                    *rest = '\0';
+                    if (strcmp(s_cursor, "") != 0)
+                    {
+                        append_to_list(
+                            is_first ? mkSymbol(s_cursor) : mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
+                            &root_cursor);
+                        is_first = 0;
+                    }
+                    s_cursor = rest + 1;
+                    rest = strchr(s_cursor, '.');
+                }
+                if (strcmp(s_cursor, "") != 0)
+                    append_to_list(
+                        mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
+                        &root_cursor);
+                free(s);
+                return root;
+            }
+            else
+                return mkSymbolUse(s);
         }
     }
 

@@ -34,7 +34,7 @@
 
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly
-; and is only used in this case in order to bootstrap the package mechanism.
+; and is used to bootstrap the package mechanism.
 (load-file "./lib/package.scm");
 
 (import "./lib/unit.scm" :as Unit)
@@ -54,4 +54,3 @@
 (assert-equals (or 1 (/ 1 0)) 1)
 (assert-equals (or () 1) 1)
 (assert-equals (or () ()) ())
-

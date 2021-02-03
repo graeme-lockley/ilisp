@@ -39,7 +39,7 @@
 
 (import "./lib/unit.scm" :as Unit)
 
-(define assert-equals (library-use Unit 'assert-equals))
+(define assert-equals Unit.assert-equals)
 
 (assert-equals (and) 1)
 (assert-equals (and 1) 1)

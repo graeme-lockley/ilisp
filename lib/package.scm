@@ -6,45 +6,54 @@
 )
 
 (export (library-import name)
-    (do
-        (define (load-library-file name)
-            ((fn () 
-                (do 
-                    (define nested-nested-scope
-                        ((fn () 
-                            (do 
-                                (eval (read-string (str "(do " (slurp name) "\n)") name))
-                                (cdr **scope**)
-                            )
-                        ))
+    (try
+        (do
+            (define (load-library-file name)
+                ((fn () 
+                    (do 
+                        (define nested-nested-scope
+                            ((fn () 
+                                (do 
+                                    (eval (read-string (str "(do " (slurp name) "\n)") name))
+                                    (cdr **scope**)
+                                )
+                            ))
+                        )
+                        (dissoc (car nested-nested-scope) 'nested-nested-scope)
                     )
-                    (dissoc (car nested-nested-scope) 'nested-nested-scope)
+                ))
+            )
+
+            (define root-scope (car **root**))
+
+            (define imports-list
+                (do
+                    (if (not (contains? root-scope :imports))
+                        (assoc! root-scope :imports {}))
+                    (get root-scope :imports)
                 )
-            ))
+            )
+
+            (if (not (map? (get imports-list name)))
+                (do
+                    (println "Loading " name)
+                    (assoc! imports-list name ())
+                    (define bindings (load-library-file name))
+                    (if (map? (get imports-list name))
+                        (raise 'CyclicPackageDependency {:name name})
+                    )
+                    (assoc! imports-list name bindings)
+                )
+            )
+        
+            (get imports-list name)
         )
-
-        (define root-scope (car **root**))
-
-        (define imports-list
+        (fn (e)
             (do
-                (if (not (contains? root-scope :imports))
-                    (assoc! root-scope :imports {}))
-                (get root-scope :imports)
+                (println "error loading " name ": " e)
+                (raise e)
             )
         )
-
-        (if (not (contains? imports-list name)) 
-            (do
-                (assoc! imports-list name ())
-                (define bindings (load-library-file name))
-                (if (not (nil? (get imports-list name)))
-                    (raise 'CyclicPackageDependency {:name name})
-                )
-                (assoc! imports-list name bindings)
-            )
-        )
-    
-        (get imports-list name)
     )
 )
 

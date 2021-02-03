@@ -557,10 +557,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     Value *e = Repl_eval(arguments[0], env);
                     if (IS_SUCCESSFUL(e))
-                    {
-                        v = e;
-                        continue;
-                    }
+                        return e;
 
                     Value *f = Repl_eval(arguments[1], env);
                     if (!IS_SUCCESSFUL(f))

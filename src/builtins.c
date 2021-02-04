@@ -1106,7 +1106,13 @@ Value *builtin_readdir(Value *parameters, Value *env)
         if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
             continue;
 
-        Value *v = mkPair(mkString(de->d_name), VNil);
+        Value *h = map_create();
+        map_set_bang(h, mkKeyword(":sym-link?"), (de->d_type & DT_LNK) ? VTrue : VFalse);
+        map_set_bang(h, mkKeyword(":dir?"), (de->d_type & DT_DIR) ? VTrue : VFalse);
+        map_set_bang(h, mkKeyword(":file?"), (de->d_type & DT_REG) ? VTrue : VFalse);
+        map_set_bang(h, mkKeyword(":name"), mkString(de->d_name));
+
+        Value *v = mkPair(h, VNil);
         *root_cursor = v;
         root_cursor = &CDR(v);
     }

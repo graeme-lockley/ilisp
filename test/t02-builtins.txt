@@ -908,3 +908,9 @@ fred
 
 (vals {:a 1 :b 2 :c 3})
 > (1 2 3)
+
+(readdir "./test/my_dir_that_does_not_exist")
+> (:exception (SystemError . {:error "No such file or directory" :code 2 :parameters "./test/my_dir_that_does_not_exist" :procedure readdir}))
+
+(readdir "./test/my_dir")
+> ("dir1" "file1.txt" "file2.md")

@@ -1,3 +1,4 @@
+#include <errno.h>
 #include "builtins.h"
 #include "exceptions.h"
 
@@ -115,6 +116,17 @@ Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *
 
     return mkException(mkPair(exception_name, exception_payload));
 }
+
+Value *exceptions_system_error(Value *procedure, Value *parameters) {
+    Value *exception_name = mkSymbol("SystemError");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure);
+    map_set_bang(exception_payload, mkKeyword(":parameters"), parameters);
+    map_set_bang(exception_payload, mkKeyword(":code"), mkNumber(errno));
+    map_set_bang(exception_payload, mkKeyword(":error"), mkString(strerror(errno)));
+
+    return mkException(mkPair(exception_name, exception_payload));
+ }
 
 Value *exceptions_unexpected_end_of_stream(char *expected, struct Exception_Position *position)
 {

@@ -1,3 +1,5 @@
+#include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1073,6 +1075,46 @@ Value *builtin_read_string(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("read-string"), 1, mkString("string"), parameter[1]);
 
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
+}
+
+Value *builtin_readdir(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "readdir");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("readdir"), 0, mkSymbol("string"), parameter[0]);
+
+    errno = 0;
+    DIR *dir = opendir(STRING(parameter[0]));
+    if (dir == NULL)
+        return exceptions_system_error(mkSymbol("readdir"), parameter[0]);
+
+    struct dirent *de;
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    while (1)
+    {
+        errno = 0;
+        de = readdir(dir);
+        if (de == NULL)
+            break;
+
+        if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
+            continue;
+
+        Value *v = mkPair(mkString(de->d_name), VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    if (errno != 0)
+        root = exceptions_system_error(mkSymbol("readdir"), parameter[0]);
+    closedir(dir);
+
+    return root;
 }
 
 Value *builtin_rest(Value *parameters, Value *env)

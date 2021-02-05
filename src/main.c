@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "builtins.h"
+#include "map.h"
 #include "repl.h"
 #include "value.h"
 
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
 
         Value *env = builtins_initialise_environment();
 
-        add_binding_into_environment(CAR(env), "*args*", args);
+        map_set_bang(CAR(env), mkString("*args*"), args);
         char *content = (char *)malloc(strlen(script_name) + 20);
         sprintf(content, "(load-file \"%s\")", script_name);
 

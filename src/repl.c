@@ -4,32 +4,12 @@
 
 #include "builtins.h"
 #include "exceptions.h"
+#include "map.h"
 #include "printer.h"
 #include "reader.h"
 #include "readline.h"
 #include "repl.h"
 #include "value.h"
-
-/* The environment is a pair where the car is a collection of bindings and the
- * cdr links to the enclosing scope.
- * 
- * So for practical purposes the environment is a Value - in this way the 
- * environment will be directly accessible and amendable from iLisp.
- */
-
-void add_binding_into_environment(Value *env, char *name, Value *value)
-{
-    Value *key = mkSymbol(name);
-    map_set_bang(env, key, value);
-}
-
-static int Repl_define(char *name, char *s, Value *env);
-Value *Repl_evalValue(Value *v, Value *env);
-
-static Value *Main_read(char *source_name, char *content)
-{
-    return Reader_read(source_name, content);
-}
 
 Value *Repl_evalValue(Value *v, Value *env)
 {
@@ -567,57 +547,35 @@ Value *Repl_eval(Value *v, Value *env)
     }
 }
 
-static Value *Main_print(Value *content)
-{
-    return Printer_prStr(content, 1, " ");
-}
-
 Value *Repl_rep(char *source_name, char *content, Value *env)
 {
-    Value *readRV = Main_read(source_name, content);
-    if (IS_SUCCESSFUL(readRV))
-        return Main_print(Repl_eval(readRV, env));
-
-    return readRV;
-}
-
-static int Repl_report_result(char *source_name, char *p, Value *env, int silent_on_success)
-{
-    Value *v = Repl_rep(source_name, p, env);
-    free(p);
-
-    if (IS_SUCCESSFUL(v))
-    {
-        if (!silent_on_success)
-            puts(v->strV);
-
-        return 1;
-    }
-    else
-    {
-        Value *e = Printer_prStr(v, 1, " ");
-
-        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
-        return 0;
-    }
-}
-
-static int Repl_define(char *name, char *s, Value *env)
-{
-    char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
-    sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
-    return Repl_report_result("**string**", p, env, 1);
+    Value *readRV = Reader_read(source_name, content);
+    return IS_SUCCESSFUL(readRV)
+               ? Printer_prStr(Repl_eval(readRV, env), 1, " ")
+               : readRV;
 }
 
 int Repl_repl()
 {
     Value *env = builtins_initialise_environment();
-    add_binding_into_environment(CAR(env), "*args*", VNil);
+    map_set_bang(CAR(env), mkString("*args*"), VNil);
 
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)
-        Repl_report_result("**cli**", p, env, 0);
+    {
+        free(p);
+        Value *v = Repl_rep("**cli**", p, env);
+
+        if (IS_SUCCESSFUL(v))
+            puts(v->strV);
+        else
+        {
+            Value *e = Printer_prStr(v, 1, " ");
+
+            printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
+        }
+    }
 
     return 0;
 }

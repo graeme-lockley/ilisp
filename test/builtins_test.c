@@ -4,6 +4,7 @@
 
 #include "minunit.h"
 #include "../src/builtins.h"
+#include "../src/map.h"
 #include "../src/printer.h"
 #include "../src/value.h"
 

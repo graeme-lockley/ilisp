@@ -1276,18 +1276,6 @@ Value *builtin_vectorp(Value *parameters, Value *env)
     return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static void Repl_report_result(char *source_name, char *p, Value *env)
-{
-    Value *v = Repl_rep(source_name, p, env);
-    
-    if (!IS_SUCCESSFUL(v))
-    {
-        Value *e = Printer_prStr(v, 1, " ");
-
-        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
-    }
-}
-
 static void Repl_define(char *name, char *s, Value *env)
 {
     char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
@@ -1301,6 +1289,12 @@ static void Repl_define(char *name, char *s, Value *env)
 
         printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
     }
+}
+
+static void add_binding_into_environment(Value *env, char *name, Value *value)
+{
+    Value *key = mkSymbol(name);
+    map_set_bang(env, key, value);
 }
 
 Value *builtins_initialise_environment()

@@ -64,4 +64,6 @@ extern Value *builtin_vectorp(Value *parameters, Value *env);
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
 extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name);
 
+extern Value *builtins_initialise_environment();
+
 #endif

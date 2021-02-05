@@ -1275,3 +1275,102 @@ Value *builtin_vectorp(Value *parameters, Value *env)
 
     return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
+
+static void Repl_report_result(char *source_name, char *p, Value *env)
+{
+    Value *v = Repl_rep(source_name, p, env);
+    
+    if (!IS_SUCCESSFUL(v))
+    {
+        Value *e = Printer_prStr(v, 1, " ");
+
+        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
+    }
+}
+
+static void Repl_define(char *name, char *s, Value *env)
+{
+    char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
+    sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
+    Value *v = Repl_rep("**string**", p, env);
+    free(p);
+    
+    if (!IS_SUCCESSFUL(v))
+    {
+        Value *e = Printer_prStr(v, 1, " ");
+
+        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
+    }
+}
+
+Value *builtins_initialise_environment()
+{
+    Value *root_bindings = map_create();
+    Value *root_scope = mkPair(root_bindings, VNil);
+    Value *builtin_bindings = map_create();
+
+    add_binding_into_environment(root_bindings, "**root**", root_scope);
+    add_binding_into_environment(root_bindings, "+", mkNativeProcedure(builtin_integer_plus));
+    add_binding_into_environment(root_bindings, "-", mkNativeProcedure(builtin_integer_minus));
+    add_binding_into_environment(root_bindings, "*", mkNativeProcedure(builtin_integer_multiply));
+    add_binding_into_environment(root_bindings, "/", mkNativeProcedure(builtin_integer_divide));
+
+    add_binding_into_environment(root_bindings, "=", mkNativeProcedure(builtin_equal));
+
+    add_binding_into_environment(root_bindings, "<", mkNativeProcedure(builtin_integer_less_than));
+    add_binding_into_environment(root_bindings, "<=", mkNativeProcedure(builtin_integer_less_equal));
+    add_binding_into_environment(root_bindings, ">", mkNativeProcedure(builtin_integer_greater_than));
+    add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(builtin_integer_greater_equal));
+
+    add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(builtin_apply));
+    add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(builtin_assoc));
+    add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(builtin_assoc_bang));
+    add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
+    add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
+    add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(builtin_concat));
+    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons));
+    add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(builtin_containsp));
+    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
+    add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(builtin_dissoc));
+    add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(builtin_dissoc_bang));
+    add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
+    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
+    add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
+    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get));
+    add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(builtin_hash_map));
+    add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(builtin_keys));
+    add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(builtin_keyword));
+    add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(builtin_keywordp));
+    add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
+    add_binding_into_environment(root_bindings, "map", mkNativeProcedure(builtin_map));
+    add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(builtin_mapp));
+    add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(builtin_nilp));
+    add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(builtin_nth));
+    add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
+    add_binding_into_environment(root_bindings, "print", mkNativeProcedure(builtin_print));
+    add_binding_into_environment(root_bindings, "println", mkNativeProcedure(builtin_println));
+    add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
+    add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(builtin_raise));
+    add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
+    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
+    add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(builtin_sequentialp));
+    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
+    add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
+    add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));
+    add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(builtin_symbolp));
+    add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(builtin_vals));
+    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
+    add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(builtin_vector));
+    add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(builtin_vectorp));
+
+    map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
+
+    add_binding_into_environment(builtin_bindings, "readdir", mkNativeProcedure(builtin_readdir));
+
+    Repl_define("list", "(fn x x)", root_scope);
+    Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\") f)))", root_scope);
+    Repl_define("not", "(fn (p) (if p () (=)))", root_scope);
+    Repl_define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (raise \"odd number of forms to cond\")) (cons 'cond (rest (rest xs))))))", root_scope);
+
+    return root_scope;
+}

@@ -564,8 +564,8 @@ int Repl_repl()
 
     while ((p = Readline_readline("CLI> ")) != NULL)
     {
-        free(p);
         Value *v = Repl_rep("**cli**", p, env);
+        free(p);
 
         if (IS_SUCCESSFUL(v))
             puts(v->strV);

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
             args_cursor = &CDR(a);
         }
 
-        Value *env = initialise_environment();
+        Value *env = builtins_initialise_environment();
 
         add_binding_into_environment(CAR(env), "*args*", args);
         char *content = (char *)malloc(strlen(script_name) + 20);

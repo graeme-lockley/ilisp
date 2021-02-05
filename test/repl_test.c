@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "minunit.h"
+#include "../src/builtins.h"
 #include "../src/printer.h"
 #include "../src/repl.h"
 
@@ -147,7 +148,7 @@ int main(int argc, char *argv[])
 
     printf("| %s\n", argv[1]);
 
-    Value *env = initialise_environment();
+    Value *env = builtins_initialise_environment();
 
     while (1)
     {

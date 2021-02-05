@@ -1,1 +1,0 @@
-Makes sure the directory isn't empty

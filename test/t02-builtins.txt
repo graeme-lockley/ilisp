@@ -912,8 +912,8 @@ fred
 (readdir "./test/my_dir_that_does_not_exist")
 > (:exception (SystemError . {:error "No such file or directory" :code 2 :parameters "./test/my_dir_that_does_not_exist" :procedure readdir}))
 
-(readdir "./test/my_dir")
+(readdir "./test/my_test_dir")
 > ({:name "dir1" :file? f :dir? t :sym-link? f} {:name "file1.txt" :file? t :dir? f :sym-link? t} {:name "file2.md" :file? t :dir? f :sym-link? t})
 
-(map (fn (n) (get n :name)) (readdir "./test/my_dir"))
+(map (fn (n) (get n :name)) (readdir "./test/my_test_dir"))
 > ("dir1" "file1.txt" "file2.md")

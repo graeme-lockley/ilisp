@@ -914,3 +914,6 @@ fred
 
 (readdir "./test/my_dir")
 > ({:name "dir1" :file? f :dir? t :sym-link? f} {:name "file1.txt" :file? t :dir? f :sym-link? t} {:name "file2.md" :file? t :dir? f :sym-link? t})
+
+(map (fn (n) (get n :name)) (readdir "./test/my_dir"))
+> ("dir1" "file1.txt" "file2.md")

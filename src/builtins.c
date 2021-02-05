@@ -925,7 +925,9 @@ Value *builtin_map(Value *parameters, Value *env)
         if (IS_NIL(args) || !IS_PAIR(args))
             return root;
 
-        Value *v = Repl_eval(mkPair(f, mkPair(CAR(args), VNil)), env);
+        builtin_prn(mkPair(f, mkPair(CAR(args), VNil)), env);
+
+        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNil), env);
         if (IS_EXCEPTION(v))
             return v;
 

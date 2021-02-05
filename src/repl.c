@@ -404,6 +404,20 @@ static Value *Repl_macro_expand(Value *v, Value *env)
     }
 }
 
+Value *Repl_eval_procedure(Value *p, Value *args, Value *env)
+{
+    if (IS_PROCEDURE(p))
+    {
+        Value *new_env = mk_new_env_for_apply(PROCEDURE(p).parameters, args, PROCEDURE(p).env);
+        if (IS_EXCEPTION(new_env))
+            return new_env;
+
+        return Repl_eval(PROCEDURE(p).body, new_env);
+    }
+
+    return IS_NATIVE_PROCEDURE(p) ? p->native_procedure(args, env) : exceptions_value_not_applicable(p, args);
+}
+
 Value *Repl_eval(Value *v, Value *env)
 {
     while (1)

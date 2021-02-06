@@ -34,7 +34,6 @@ int main(int argc, char *argv[], char *envp[])
 
     if (argc > 1)
     {
-        char *script_name = argv[1];
         Value *args = VNil;
         Value **args_cursor = &args;
         for (int lp = 2; lp < argc; lp += 1)
@@ -46,10 +45,17 @@ int main(int argc, char *argv[], char *envp[])
 
         map_set_bang(CAR(env), mkString("*args*"), args);
 
+        char *script_name = realpath(argv[1], NULL);
+        if (script_name == NULL) {
+            printf("File %s does not exists\n", argv[1]);
+            exit(-1);
+        }
+        
         char *content = (char *)malloc(strlen(script_name) + 20);
         sprintf(content, "(load-file \"%s\")", script_name);
 
         Value *result = Repl_rep(script_name, content, env);
+        free(script_name);
 
         if (IS_EXCEPTION(result))
             printf("Exception: ");

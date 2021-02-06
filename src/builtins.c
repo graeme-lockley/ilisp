@@ -1123,6 +1123,81 @@ Value *builtin_readdir(Value *parameters, Value *env)
     return root;
 }
 
+static int starts_with(const char *restrict string, const char *restrict prefix)
+{
+    while (*prefix)
+    {
+        if (*prefix++ != *string++)
+            return 0;
+    }
+
+    return 1;
+}
+
+static char *remove_file_name_from_path(char *file_name)
+{
+    int index = strlen(file_name) - 1;
+
+    while (1)
+    {
+        if (index == -1)
+            return strdup("");
+
+        if (file_name[index] == '/')
+        {
+            char *result = (char *)malloc(index + 1);
+            strncpy(result, file_name, index);
+            result[index] = '\0';
+            return result;
+        }
+
+        index -= 1;
+    }
+}
+
+Value *buildin_file_name_relative_to_file_name(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "file-name-relative-to-file-name");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("file-name-relative-to-file-name"), 0, mkSymbol("string"), parameter[0]);
+    if (!IS_STRING(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("file-name-relative-to-file-name"), 1, mkSymbol("string"), parameter[1]);
+
+    char *base_file_name = STRING(parameter[0]);
+    char *file_name = STRING(parameter[1]);
+
+    if (starts_with(file_name, "/"))
+        return parameter[1];
+
+    char *base_base = remove_file_name_from_path(base_file_name);
+    while (1)
+    {
+        if (starts_with(file_name, "./"))
+        {
+            file_name = file_name + 2;
+            continue;
+        }
+
+        if (starts_with(file_name, "../"))
+        {
+            file_name = file_name + 3;
+            char *b = remove_file_name_from_path(base_base);
+            free(base_base);
+            base_base = b;
+            continue;
+        }
+
+        char *buffer = (char *)malloc(strlen(base_base) + 1 + strlen(file_name) + 1);
+        sprintf(buffer, "%s/%s", base_base, file_name);
+        return mkStringUse(buffer);
+    }
+}
+
 Value *builtin_rest(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1282,7 +1357,7 @@ static void Repl_define(char *name, char *s, Value *env)
     sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
     Value *v = Repl_rep("**string**", p, env);
     free(p);
-    
+
     if (!IS_SUCCESSFUL(v))
     {
         Value *e = Printer_prStr(v, 1, " ");
@@ -1359,6 +1434,7 @@ Value *builtins_initialise_environment()
 
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
+    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(buildin_file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "readdir", mkNativeProcedure(builtin_readdir));
 
     Repl_define("list", "(fn x x)", root_scope);

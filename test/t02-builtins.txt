@@ -917,3 +917,24 @@ fred
 
 (count (map (fn (n) (get n :name)) ((get (car **root**) :builtins 'readdir) "./test/my_test_dir")))
 > 3
+
+(do (assoc! (car **root**) 'file-name-relative-to-file-name (get (car **root**) :builtins 'file-name-relative-to-file-name)) ())
+> ()
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "/dir/bob.scm")
+> "/dir/bob.scm"
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "./dir/bob.scm")
+> "/home/ilisp/dir/bob.scm"
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "../dir/bob.scm")
+> "/home/dir/bob.scm"
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "./.././dir/bob.scm")
+> "/home/dir/bob.scm"
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "./.././.././dir/bob.scm")
+> "/dir/bob.scm"
+
+(file-name-relative-to-file-name "/home/ilisp/prelude.scm" "./.././.././.././dir/bob.scm")
+> "/dir/bob.scm"

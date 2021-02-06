@@ -25,6 +25,5 @@ jobs:
           sudo apt-get -y install libedit-dev
       - name: Build and test
         run: |
-          pwd
           export ILISP_PRELUDE=/home/runner/work/ilisp/ilisp/lib/prelude.scm
           make

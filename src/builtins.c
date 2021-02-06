@@ -1438,7 +1438,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "readdir", mkNativeProcedure(builtin_readdir));
 
     Repl_define("list", "(fn x x)", root_scope);
-    Repl_define("load-file", "(fn (f) (eval (read-string (str \"(do \" (slurp f) \"\n)\") f)))", root_scope);
+    Repl_define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
     Repl_define("not", "(fn (p) (if p () (=)))", root_scope);
     Repl_define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (raise \"odd number of forms to cond\")) (cons 'cond (rest (rest xs))))))", root_scope);
 

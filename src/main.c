@@ -126,8 +126,10 @@ int main(int argc, char *argv[], char *envp[])
         free(script_name);
 
         if (IS_EXCEPTION(result))
+        {
             printf("Exception: ");
-        builtin_println(result, env);
+            builtin_println(result, env);
+        }
 
         exit(IS_EXCEPTION(result) ? -1 : 0);
     }

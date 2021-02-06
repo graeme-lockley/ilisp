@@ -1315,6 +1315,31 @@ Value *builtin_slurp(Value *parameters, Value *env)
     return mkStringUse(buffer);
 }
 
+Value *string_ends_with(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-ends-with");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-ends-with"), 0, mkSymbol("string"), parameter[0]);
+    if (!IS_STRING(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("string-ends-with"), 1, mkSymbol("string"), parameter[1]);
+
+    char *haystack = STRING(parameter[0]);
+    char *needle = STRING(parameter[1]);
+
+    int haystack_length = strlen(haystack);
+    int needle_length = strlen(needle);
+
+    if (haystack_length < needle_length)
+        return VNil;
+
+    return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VNil;
+}
+
 Value *builtin_symbol(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1476,6 +1501,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir));
+    add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

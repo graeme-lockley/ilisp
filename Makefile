@@ -63,7 +63,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm
 	./test/repl_test ./test/t04-procedures.txt
 	./test/repl_test ./test/t05-macros.txt
 	./test/repl_test ./test/t06-try-catch.txt
-	./src/main ./lib/list-test.scm
+	./src/main ./test/test-runner.scm
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h

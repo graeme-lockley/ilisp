@@ -8,13 +8,11 @@
     )
 )
 
-(define (process-file name)
+(for-each test-files (fn (name)
     (do 
         (define qualified-name (str "../lib/" name))
 
         (println "Running tests: " name)
         (package-import qualified-name)
     )
-)
-
-(map process-file test-files)
+))

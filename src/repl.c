@@ -406,6 +406,41 @@ Value *Repl_eval(Value *v, Value *env)
                                ? mkProcedure(arguments[1], arguments[0], env)
                                : mkMacro(arguments[1], arguments[0], env);
                 }
+                else if (strcmp(symbol_name, "for-each") == 0)
+                {
+                    Value *arguments[2];
+
+                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, "for-each");
+                    if (error != NULL)
+                        return error;
+
+                    Value *cursor = Repl_eval(arguments[0], env);
+                    if (IS_EXCEPTION(cursor))
+                        return cursor;
+                    if (!IS_PAIR(cursor) && !IS_NIL(cursor))
+                        return exceptions_invalid_argument(mkSymbol("for-each"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), cursor);
+
+                    Value *proc = Repl_eval(arguments[1], env);
+                    if (IS_EXCEPTION(proc))
+                        return proc;
+                    if (!IS_PROCEDURE(proc) && !IS_NATIVE_PROCEDURE(proc))
+                        return exceptions_invalid_argument(mkSymbol("for-each"), 1, mkSymbol("procedure"), proc);
+
+                    while (1)
+                    {
+                        if (IS_NIL(cursor))
+                            return VNil;
+
+                        if (!IS_PAIR(cursor))
+                            cursor = mkPair(cursor, VNil);
+
+                        Value *v = Repl_eval_procedure(proc, mkPair(CAR(cursor), VNil), env);
+                        if (IS_EXCEPTION(v))
+                            return v;
+
+                        cursor = CDR(cursor);
+                    }
+                }
                 else if (strcmp(symbol_name, "if") == 0)
                 {
                     Value *arguments[3];

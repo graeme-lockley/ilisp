@@ -1,20 +1,22 @@
-(export (library-use library name)
-    (if (contains? library name) 
-        (get library name)
-        (raise 'UnknownSymbolInLibrary {:name name})
+(export (package-use package name)
+    (if (contains? package name) 
+        (get package name)
+        (raise 'UnknownSymbolInPackage {:name name})
     )
 )
 
-(export (library-import name)
+(export (package-import-with-context name *source-name*)
     (try
         (do
-            (define (load-library-file name)
+            (define *source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* name))
+
+            (define (load-package-file)
                 ((fn () 
                     (do 
                         (define nested-nested-scope
                             ((fn () 
                                 (do 
-                                    (eval (read-string (str "(do " (slurp name) "\n)") name))
+                                    (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
                                     (cdr **scope**)
                                 )
                             ))
@@ -34,23 +36,23 @@
                 )
             )
 
-            (if (not (map? (get imports-list name)))
+            (if (not (map? (get imports-list *source-name*)))
                 (do
-                    (println "Loading " name)
-                    (assoc! imports-list name ())
-                    (define bindings (load-library-file name))
-                    (if (map? (get imports-list name))
-                        (raise 'CyclicPackageDependency {:name name})
+                    (println "Loading " *source-name*)
+                    (assoc! imports-list *source-name* ())
+                    (define bindings (load-package-file))
+                    (if (map? (get imports-list *source-name*))
+                        (raise 'CyclicPackageDependency {:name *source-name*})
                     )
-                    (assoc! imports-list name bindings)
+                    (assoc! imports-list *source-name* bindings)
                 )
             )
         
-            (get imports-list name)
-        )
+            (get imports-list *source-name*)
+        ) 
         (fn (e)
             (do
-                (println "error loading " name ": " e)
+                (println "error loading " *source-name* ": " e)
                 (raise e)
             )
         )
@@ -58,9 +60,13 @@
 )
 
 
+(export-macro (package-import name)
+    `(package-import-with-context ~name *source-name*)
+)
+
 (export-macro (import name . options) 
     `(if (and (= ~(first options) :as) (not (nil? '~(nth options 1))))
-        (define ~(nth options 1) (library-import ~name))
+        (define ~(nth options 1) (package-import ~name))
         (raise 'IllegalImportSyntax {:expected ":as symbol"})
     )
 )

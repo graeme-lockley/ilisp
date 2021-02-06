@@ -32,12 +32,24 @@
   )
 )
 
+(export *source-name* (str (get **env** 'PWD) "/home"))
+
+; Replace the builtin load-file with a macro which uses the surrounding context 
+; to access *source-name*.  This value is used to capture relative library 
+; names. 
+(export-macro (load-file f)
+  `(do
+    (assoc! (car **scope**) '*source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* ~f))
+    (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
+  )
+)
+
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly
 ; and is used to bootstrap the package mechanism.
-(load-file "./lib/package.scm");
+(load-file "./package.scm")
 
-(import "./lib/unit.scm" :as Unit)
+(import "./unit.scm" :as Unit)
 
 (define assert-equals Unit.assert-equals)
 

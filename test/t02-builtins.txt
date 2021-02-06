@@ -909,13 +909,13 @@ fred
 (vals {:a 1 :b 2 :c 3})
 > (1 2 3)
 
-((get (car **root**) :builtins 'readdir) "./test/my_dir_that_does_not_exist")
-> (:exception (SystemError . {:error "No such file or directory" :code 2 :parameters "./test/my_dir_that_does_not_exist" :procedure readdir}))
+((get (car **root**) :builtins 'read-dir) "./test/my_dir_that_does_not_exist")
+> (:exception (SystemError . {:error "No such file or directory" :code 2 :parameters "./test/my_dir_that_does_not_exist" :procedure read-dir}))
 
-(count ((get (car **root**) :builtins 'readdir) "./test/my_test_dir"))
+(count ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir"))
 > 3
 
-(count (map (fn (n) (get n :name)) ((get (car **root**) :builtins 'readdir) "./test/my_test_dir")))
+(count (map (fn (n) (get n :name)) ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir")))
 > 3
 
 (do (assoc! (car **root**) 'file-name-relative-to-file-name (get (car **root**) :builtins 'file-name-relative-to-file-name)) ())

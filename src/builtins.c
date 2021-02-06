@@ -1077,21 +1077,21 @@ Value *builtin_read_string(Value *parameters, Value *env)
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
 
-Value *builtin_readdir(Value *parameters, Value *env)
+Value *builtin_read_dir(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "readdir");
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-dir");
     if (extract_result != NULL)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("readdir"), 0, mkSymbol("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("read-dir"), 0, mkSymbol("string"), parameter[0]);
 
     errno = 0;
     DIR *dir = opendir(STRING(parameter[0]));
     if (dir == NULL)
-        return exceptions_system_error(mkSymbol("readdir"), parameter[0]);
+        return exceptions_system_error(mkSymbol("read-dir"), parameter[0]);
 
     struct dirent *de;
     Value *root = VNil;
@@ -1117,7 +1117,7 @@ Value *builtin_readdir(Value *parameters, Value *env)
         root_cursor = &CDR(v);
     }
     if (errno != 0)
-        root = exceptions_system_error(mkSymbol("readdir"), parameter[0]);
+        root = exceptions_system_error(mkSymbol("read-dir"), parameter[0]);
     closedir(dir);
 
     return root;
@@ -1435,7 +1435,7 @@ Value *builtins_initialise_environment()
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(buildin_file_name_relative_to_file_name));
-    add_binding_into_environment(builtin_bindings, "readdir", mkNativeProcedure(builtin_readdir));
+    add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir));
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

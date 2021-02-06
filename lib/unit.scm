@@ -11,3 +11,21 @@
         )
     )
 )
+
+(export-macro (assert-signal e p)
+    `(do
+        (define signal-raised ())
+        (try
+            ~e
+            (fn (signal)
+                (do
+                    (assoc! (car (cdr **scope**)) 'signal-raised (=))
+                    (~p signal)
+                )
+            )
+        )
+        (if (not signal-raised)
+            (raise 'SignalExpected {:src *source-name* :e ~e})
+        )
+    )
+)

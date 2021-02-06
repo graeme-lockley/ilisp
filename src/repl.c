@@ -555,11 +555,8 @@ Value *Repl_rep(char *source_name, char *content, Value *env)
                : readRV;
 }
 
-int Repl_repl()
+int Repl_repl(Value *env)
 {
-    Value *env = builtins_initialise_environment();
-    map_set_bang(CAR(env), mkString("*args*"), VNil);
-
     char *p;
 
     while ((p = Readline_readline("CLI> ")) != NULL)

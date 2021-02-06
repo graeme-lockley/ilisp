@@ -7,8 +7,31 @@
 #include "repl.h"
 #include "value.h"
 
-int main(int argc, char *argv[])
+Value *runtime_env(char *envp[])
 {
+    Value *e = map_create();
+
+    int i;
+    for (i = 0; envp[i] != NULL; i++)
+    {
+        char *indexOfPeriod = strchr(envp[i], '=');
+
+        if (indexOfPeriod != NULL)
+        {
+            *indexOfPeriod = '\0';
+            map_set_bang(e, mkSymbol(envp[i]), mkString(indexOfPeriod + 1));
+            *indexOfPeriod = '.';
+        }
+    }
+
+    return e;
+}
+
+int main(int argc, char *argv[], char *envp[])
+{
+    Value *env = builtins_initialise_environment();
+    map_set_bang(CAR(env), mkSymbol("**env**"), runtime_env(envp));
+
     if (argc > 1)
     {
         char *script_name = argv[1];
@@ -21,9 +44,8 @@ int main(int argc, char *argv[])
             args_cursor = &CDR(a);
         }
 
-        Value *env = builtins_initialise_environment();
-
         map_set_bang(CAR(env), mkString("*args*"), args);
+
         char *content = (char *)malloc(strlen(script_name) + 20);
         sprintf(content, "(load-file \"%s\")", script_name);
 
@@ -34,5 +56,8 @@ int main(int argc, char *argv[])
         builtin_println(result, env);
     }
     else
-        return Repl_repl();
+    {
+        map_set_bang(CAR(env), mkString("*args*"), VNil);
+        return Repl_repl(env);
+    }
 }

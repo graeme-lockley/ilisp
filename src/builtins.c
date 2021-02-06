@@ -891,6 +891,45 @@ Value *builtin_keywordp(Value *parameters, Value *env)
     return IS_KEYWORD(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *list_filter(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-filter");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *f = parameter[0];
+    Value *args = parameter[1];
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkSymbol("procedure"), f);
+
+    if (!IS_PAIR(args) && !IS_NIL(args))
+        return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), f);
+
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    while (1)
+    {
+        if (IS_NIL(args) || !IS_PAIR(args))
+            return root;
+
+        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNil), env);
+        if (IS_EXCEPTION(v))
+            return v;
+
+        if (Value_truthy(v))
+        {
+            Value *r = mkPair(CAR(args), VNil);
+            *root_cursor = r;
+            root_cursor = &CDR(r);
+        }
+
+        args = CDR(args);
+    }
+}
+
 Value *builtin_listp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1155,7 +1194,7 @@ static char *remove_file_name_from_path(char *file_name)
     }
 }
 
-Value *buildin_file_name_relative_to_file_name(Value *parameters, Value *env)
+Value *builtin_file_name_relative_to_file_name(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1434,7 +1473,8 @@ Value *builtins_initialise_environment()
 
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
-    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(buildin_file_name_relative_to_file_name));
+    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name));
+    add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir));
 
     Repl_define("list", "(fn x x)", root_scope);

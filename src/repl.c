@@ -550,9 +550,14 @@ Value *Repl_eval(Value *v, Value *env)
 Value *Repl_rep(char *source_name, char *content, Value *env)
 {
     Value *readRV = Reader_read(source_name, content);
-    return IS_SUCCESSFUL(readRV)
-               ? Printer_prStr(Repl_eval(readRV, env), 1, " ")
-               : readRV;
+    if (IS_EXCEPTION(readRV))
+        return readRV;
+
+    Value *result = Repl_eval(readRV, env);
+    if (IS_EXCEPTION(result))
+        return result;
+
+    return Printer_prStr(result, 1, " ");
 }
 
 int Repl_repl(Value *env)

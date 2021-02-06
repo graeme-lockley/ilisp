@@ -129,6 +129,6 @@ int main(int argc, char *argv[], char *envp[])
             printf("Exception: ");
         builtin_println(result, env);
 
-        return IS_EXCEPTION(result) ? -1 : 0;
+        exit(IS_EXCEPTION(result) ? -1 : 0);
     }
 }

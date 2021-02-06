@@ -53,7 +53,7 @@ all: $(SRC_TARGETS) $(TEST_TARGETS) $(TEST_FLAG)
 ./test/value_test: $(SRC_OBJECTS) $(TEST_OBJECTS) ./test/value_test.o
 	$(CC) $(LDFLAGS) ./test/value_test.o $(SRC_OBJECTS) $(TEST_OBJECTS) $(LDLIBS) -o ./test/value_test
 
-$(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT)
+$(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm
 	./test/value_test
 	./test/builtins_test
 	./test/repl_test ./test/t00-basic-repl.txt
@@ -63,6 +63,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT)
 	./test/repl_test ./test/t04-procedures.txt
 	./test/repl_test ./test/t05-macros.txt
 	./test/repl_test ./test/t06-try-catch.txt
+	./src/main ./lib/list-test.scm
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h

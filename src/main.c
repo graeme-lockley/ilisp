@@ -43,14 +43,14 @@ int main(int argc, char *argv[], char *envp[])
             args_cursor = &CDR(a);
         }
 
-        map_set_bang(CAR(env), mkString("*args*"), args);
+        map_set_bang(CAR(env), mkSymbol("*args*"), args);
 
         char *script_name = realpath(argv[1], NULL);
         if (script_name == NULL) {
             printf("File %s does not exists\n", argv[1]);
             exit(-1);
         }
-        
+
         char *content = (char *)malloc(strlen(script_name) + 20);
         sprintf(content, "(load-file \"%s\")", script_name);
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[], char *envp[])
     }
     else
     {
-        map_set_bang(CAR(env), mkString("*args*"), VNil);
+        map_set_bang(CAR(env), mkSymbol("*args*"), VNil);
         return Repl_repl(env);
     }
 }

@@ -26,5 +26,5 @@ jobs:
       - name: Build and test
         run: |
           pwd
-          export ILISP_PRELUDE=/workspaces/ilisp/lib/prelude.scm
+          export ILISP_PRELUDE=/home/runner/work/ilisp/ilisp/lib/prelude.scm
           make

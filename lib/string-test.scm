@@ -11,3 +11,13 @@
 
 (Unit.assert-equals (S.ends-with "hello" "Lo") ())
 (Unit.assert-equals (S.ends-with "hello" "ohello") ())
+
+
+(Unit.assert-equals (S.starts-with "" "") t)
+(Unit.assert-equals (S.starts-with "hello world" "") t)
+(Unit.assert-equals (S.starts-with "hello world" "hello") t)
+(Unit.assert-equals (S.starts-with "hello world" "hello world") t)
+
+(Unit.assert-equals (S.starts-with "hello world" "Hello") ())
+(Unit.assert-equals (S.starts-with "hello world" "hello worlds") ())
+(Unit.assert-equals (S.starts-with "" "h") ())

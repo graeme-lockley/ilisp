@@ -48,8 +48,13 @@ Value *mkSymbolUse(char *string)
 
 Value *mkKeyword(char *string)
 {
+    return mkKeywordUse(strdup(string));
+}
+
+Value *mkKeywordUse(char *string)
+{
     Value *value = mkValue(VT_KEYWORD);
-    value->strV = strdup(string);
+    value->strV = string;
     return value;
 }
 

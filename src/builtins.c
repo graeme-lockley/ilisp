@@ -875,9 +875,7 @@ Value *builtin_keyword(Value *parameters, Value *env)
 
     char *keyword = (char *)malloc(strlen(STRING(parameter[0]) + 2));
     sprintf(keyword, ":%s", STRING(parameter[0]));
-    Value *result = mkKeyword(keyword);
-    free(keyword);
-    return result;
+    return mkKeywordUse(keyword);
 }
 
 Value *builtin_keywordp(Value *parameters, Value *env)
@@ -1340,6 +1338,25 @@ Value *string_ends_with(Value *parameters, Value *env)
     return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VNil;
 }
 
+Value *string_starts_with(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-starts-with");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-starts-with"), 0, mkSymbol("string"), parameter[0]);
+    if (!IS_STRING(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("string-starts-with"), 1, mkSymbol("string"), parameter[1]);
+
+    char *haystack = STRING(parameter[0]);
+    char *needle = STRING(parameter[1]);
+
+    return starts_with(haystack, needle) ? VTrue : VNil;
+}
+
 Value *builtin_symbol(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1502,6 +1519,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
+    add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
 
     Repl_define("list", "(fn x x)", root_scope);
     Repl_define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

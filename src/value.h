@@ -94,6 +94,7 @@ extern Value *mkSymbolUse(char *string);
 #define SYMBOL(v) (((v)->strV))
 
 extern Value *mkKeyword(char *string);
+extern Value *mkKeywordUse(char *string);
 #define KEYWORD(v) (((v)->strV))
 
 extern Value *mkCharacter(char character);

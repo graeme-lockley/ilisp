@@ -1525,12 +1525,9 @@ static Value *vector_filter(Value *parameters, Value *env)
             return v;
 
         if (Value_truthy(v))
-        {
-            buffer_append(buffer, &element);
-        }
+            buffer_append(buffer, &element, 1);
     }
-    Value *result = mkVectorUse((Value **)buffer->buffer, buffer->items_count / buffer->item_size);
-
+    Value *result = mkVectorUse((Value **)buffer->buffer, buffer->items_count);
     buffer_free_use(buffer);
 
     return result;

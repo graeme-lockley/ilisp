@@ -5,9 +5,9 @@
 
 typedef struct BufferStruct
 {
-    void *buffer;
+    char *buffer;
     int item_size;
-    int buffer_size;
+    int buffer_count;
     int items_count;
 } Buffer;
 
@@ -15,7 +15,6 @@ extern Buffer *buffer_init(int item_size);
 extern void buffer_free(Buffer *b);
 extern void *buffer_free_use(Buffer *b);
 extern void *buffer_content(Buffer *b);
-extern void buffer_append_many(Buffer *b, void *v, int count);
-extern void buffer_append(Buffer *wb, void *c);
+extern void buffer_append(Buffer *b, void *v, int count);
 
 #endif

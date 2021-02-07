@@ -55,7 +55,7 @@ static void run_prelude(char *prelude_file_name, Value *env)
     if (IS_EXCEPTION(result))
     {
         printf("Exception executing %s: ", prelude_file_name);
-        builtin_println(result, env);
+        prn(result, env);
         exit(-1);
     }
 }
@@ -128,7 +128,7 @@ int main(int argc, char *argv[], char *envp[])
         if (IS_EXCEPTION(result))
         {
             printf("Exception: ");
-            builtin_println(result, env);
+            prn(result, env);
         }
 
         exit(IS_EXCEPTION(result) ? -1 : 0);

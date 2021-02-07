@@ -3,7 +3,8 @@
 
 #include "value.h"
 
-extern Value *builtin_println(Value *parameters, Value *env);
+extern Value *println(Value *parameters, Value *env);
+extern Value *prn(Value *parameters, Value *env);
 
 extern Value *vector_to_list(Value *v);
 

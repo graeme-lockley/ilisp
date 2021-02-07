@@ -73,21 +73,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-Value *vector_to_list(Value *v)
-{
-    Value *root = VNil;
-    Value **root_cursor = &root;
-    for (int l = 0; l < VECTOR(v).length; l += 1)
-    {
-        Value *i = VECTOR(v).items[l];
-
-        Value *v = mkPair(i, VNil);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
-    }
-    return root;
-}
-
 static Value *list_to_vector(Value *v)
 {
     Value *cursor = v;
@@ -116,7 +101,33 @@ static Value *list_to_vector(Value *v)
     return mkVector(items, list_length);
 }
 
-Value *builtin_apply(Value *parameters, Value *env)
+static int starts_with(const char *restrict string, const char *restrict prefix)
+{
+    while (*prefix)
+    {
+        if (*prefix++ != *string++)
+            return 0;
+    }
+
+    return 1;
+}
+
+Value *vector_to_list(Value *v)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    for (int l = 0; l < VECTOR(v).length; l += 1)
+    {
+        Value *i = VECTOR(v).items[l];
+
+        Value *v = mkPair(i, VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    return root;
+}
+
+static Value *apply(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("apply"), 0, mkString("pair"), parameters);
@@ -171,7 +182,7 @@ Value *builtin_apply(Value *parameters, Value *env)
     return VNil;
 }
 
-Value *builtin_assoc(Value *parameters, Value *env)
+static Value *assoc(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkString("pair"), parameters);
@@ -208,7 +219,7 @@ Value *builtin_assoc(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_assoc_bang(Value *parameters, Value *env)
+static Value *assoc_bang(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("pair"), parameters);
@@ -243,7 +254,7 @@ Value *builtin_assoc_bang(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_car(Value *parameters, Value *env)
+static Value *car(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -257,7 +268,7 @@ Value *builtin_car(Value *parameters, Value *env)
     return CAR(parameter[0]);
 }
 
-Value *builtin_cdr(Value *parameters, Value *env)
+Value *cdr(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -271,7 +282,7 @@ Value *builtin_cdr(Value *parameters, Value *env)
     return CDR(parameter[0]);
 }
 
-Value *builtin_concat(Value *parameters, Value *env)
+static Value *concat(Value *parameters, Value *env)
 {
     Value *result = VNil;
     Value **result_cursor = &result;
@@ -317,7 +328,7 @@ Value *builtin_concat(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_cons(Value *parameters, Value *env)
+static Value *cons(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -328,7 +339,7 @@ Value *builtin_cons(Value *parameters, Value *env)
     return mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
 }
 
-Value *builtin_containsp(Value *parameters, Value *env)
+static Value *containp(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -342,7 +353,7 @@ Value *builtin_containsp(Value *parameters, Value *env)
     return map_containsp(parameter[0], parameter[1]);
 }
 
-Value *builtin_count(Value *parameters, Value *env)
+static Value *count(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -367,7 +378,7 @@ Value *builtin_count(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_dissoc(Value *parameters, Value *env)
+static Value *dissoc(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkString("pair"), parameters);
@@ -397,7 +408,7 @@ Value *builtin_dissoc(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_dissoc_bang(Value *parameters, Value *env)
+static Value *dissoc_bang(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkString("pair"), parameters);
@@ -425,7 +436,7 @@ Value *builtin_dissoc_bang(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_emptyp(Value *parameters, Value *env)
+static Value *emptyp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -439,7 +450,7 @@ Value *builtin_emptyp(Value *parameters, Value *env)
     return IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
-Value *builtin_equal(Value *parameters, Value *env)
+static Value *equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -467,7 +478,7 @@ Value *builtin_equal(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_eval(Value *parameters, Value *env)
+static Value *eval(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -478,7 +489,7 @@ Value *builtin_eval(Value *parameters, Value *env)
     return Repl_eval(parameter[0], env);
 }
 
-Value *builtin_first(Value *parameters, Value *env)
+static Value *first(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -492,7 +503,7 @@ Value *builtin_first(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
-Value *builtin_get(Value *parameters, Value *env)
+static Value *get(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("get"), 0, mkString("pair"), parameters);
@@ -522,7 +533,7 @@ Value *builtin_get(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_hash_map(Value *parameters, Value *env)
+static Value *hash_map(Value *parameters, Value *env)
 {
     Value *root = VNil;
     Value **root_cursor = &root;
@@ -554,7 +565,7 @@ Value *builtin_hash_map(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_integer_plus(Value *parameters, Value *env)
+static Value *integer_plus(Value *parameters, Value *env)
 {
     int argument_number = 0;
     int result = 0;
@@ -583,7 +594,7 @@ Value *builtin_integer_plus(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_integer_multiply(Value *parameters, Value *env)
+Value *integer_multiply(Value *parameters, Value *env)
 {
     int argument_number = 0;
     int result = 1;
@@ -612,7 +623,7 @@ Value *builtin_integer_multiply(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_integer_minus(Value *parameters, Value *env)
+static Value *integer_minus(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return mkNumber(0);
@@ -656,7 +667,7 @@ Value *builtin_integer_minus(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_integer_divide(Value *parameters, Value *env)
+static Value *integer_divide(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return mkNumber(1);
@@ -713,7 +724,7 @@ Value *builtin_integer_divide(Value *parameters, Value *env)
     }
 }
 
-extern Value *builtin_integer_less_than(Value *parameters, Value *env)
+static Value *integer_less_than(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -746,7 +757,7 @@ extern Value *builtin_integer_less_than(Value *parameters, Value *env)
     }
 }
 
-extern Value *builtin_integer_less_equal(Value *parameters, Value *env)
+static Value *integer_less_equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -779,7 +790,7 @@ extern Value *builtin_integer_less_equal(Value *parameters, Value *env)
     }
 }
 
-extern Value *builtin_integer_greater_than(Value *parameters, Value *env)
+static Value *integer_greater_than(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -812,7 +823,7 @@ extern Value *builtin_integer_greater_than(Value *parameters, Value *env)
     }
 }
 
-extern Value *builtin_integer_greater_equal(Value *parameters, Value *env)
+static Value *integer_greater_equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
         return VTrue;
@@ -845,7 +856,7 @@ extern Value *builtin_integer_greater_equal(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_keys(Value *parameters, Value *env)
+static Value *keys(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -859,7 +870,7 @@ Value *builtin_keys(Value *parameters, Value *env)
     return map_keys(parameter[0]);
 }
 
-Value *builtin_keyword(Value *parameters, Value *env)
+static Value *keyword(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -878,7 +889,7 @@ Value *builtin_keyword(Value *parameters, Value *env)
     return mkKeywordUse(keyword);
 }
 
-Value *builtin_keywordp(Value *parameters, Value *env)
+static Value *keywordp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -928,7 +939,7 @@ static Value *list_filter(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_listp(Value *parameters, Value *env)
+static Value *listp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -939,7 +950,7 @@ Value *builtin_listp(Value *parameters, Value *env)
     return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
-Value *builtin_map(Value *parameters, Value *env)
+static Value *map(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -974,7 +985,7 @@ Value *builtin_map(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_mapp(Value *parameters, Value *env)
+static Value *mapp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -985,7 +996,7 @@ Value *builtin_mapp(Value *parameters, Value *env)
     return IS_MAP(parameter[0]) ? VTrue : VFalse;
 }
 
-Value *builtin_nilp(Value *parameters, Value *env)
+static Value *nilp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -996,7 +1007,7 @@ Value *builtin_nilp(Value *parameters, Value *env)
     return IS_NIL(parameter[0]) ? VTrue : VFalse;
 }
 
-Value *builtin_nth(Value *parameters, Value *env)
+static Value *nth(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1047,12 +1058,12 @@ static Value *value_to_str(Value *parameters, int readable, char *separator)
     return result;
 }
 
-Value *builtin_pr_str(Value *parameters, Value *env)
+static Value *pr_str(Value *parameters, Value *env)
 {
     return value_to_str(parameters, 1, " ");
 }
 
-Value *builtin_print(Value *parameters, Value *env)
+static Value *print(Value *parameters, Value *env)
 {
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
@@ -1060,7 +1071,7 @@ Value *builtin_print(Value *parameters, Value *env)
     return VNil;
 }
 
-Value *builtin_println(Value *parameters, Value *env)
+Value *println(Value *parameters, Value *env)
 {
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
@@ -1068,7 +1079,7 @@ Value *builtin_println(Value *parameters, Value *env)
     return VNil;
 }
 
-Value *builtin_prn(Value *parameters, Value *env)
+Value *prn(Value *parameters, Value *env)
 {
     Value *s = Printer_prStr(parameters, 1, " ");
     if (IS_STRING(s))
@@ -1076,12 +1087,12 @@ Value *builtin_prn(Value *parameters, Value *env)
     return VNil;
 }
 
-Value *builtin_str(Value *parameters, Value *env)
+static Value *builtin_str(Value *parameters, Value *env)
 {
     return value_to_str(parameters, 0, "");
 }
 
-Value *builtin_raise(Value *parameters, Value *env)
+static Value *raise(Value *parameters, Value *env)
 {
     Value *arguments[2];
 
@@ -1097,7 +1108,7 @@ Value *builtin_raise(Value *parameters, Value *env)
                : mkException(mkPair(arguments[0], arguments[1]));
 }
 
-Value *builtin_read_string(Value *parameters, Value *env)
+static Value *read_string(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1114,7 +1125,7 @@ Value *builtin_read_string(Value *parameters, Value *env)
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
 
-Value *builtin_read_dir(Value *parameters, Value *env)
+static Value *read_dir(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1160,17 +1171,6 @@ Value *builtin_read_dir(Value *parameters, Value *env)
     return root;
 }
 
-static int starts_with(const char *restrict string, const char *restrict prefix)
-{
-    while (*prefix)
-    {
-        if (*prefix++ != *string++)
-            return 0;
-    }
-
-    return 1;
-}
-
 static char *remove_file_name_from_path(char *file_name)
 {
     int index = strlen(file_name) - 1;
@@ -1192,7 +1192,7 @@ static char *remove_file_name_from_path(char *file_name)
     }
 }
 
-Value *builtin_file_name_relative_to_file_name(Value *parameters, Value *env)
+static Value *file_name_relative_to_file_name(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1235,7 +1235,7 @@ Value *builtin_file_name_relative_to_file_name(Value *parameters, Value *env)
     }
 }
 
-Value *builtin_rest(Value *parameters, Value *env)
+static Value *rest(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1259,7 +1259,7 @@ Value *builtin_rest(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
 }
 
-Value *builtin_sequentialp(Value *parameters, Value *env)
+static Value *sequentialp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1270,7 +1270,7 @@ Value *builtin_sequentialp(Value *parameters, Value *env)
     return IS_NIL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-Value *builtin_slurp(Value *parameters, Value *env)
+static Value *slurp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1313,7 +1313,7 @@ Value *builtin_slurp(Value *parameters, Value *env)
     return mkStringUse(buffer);
 }
 
-Value *string_ends_with(Value *parameters, Value *env)
+static Value *string_ends_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1338,7 +1338,7 @@ Value *string_ends_with(Value *parameters, Value *env)
     return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VNil;
 }
 
-Value *string_starts_with(Value *parameters, Value *env)
+static Value *string_starts_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
@@ -1357,7 +1357,7 @@ Value *string_starts_with(Value *parameters, Value *env)
     return starts_with(haystack, needle) ? VTrue : VNil;
 }
 
-Value *builtin_symbol(Value *parameters, Value *env)
+static Value *symbol(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1371,7 +1371,7 @@ Value *builtin_symbol(Value *parameters, Value *env)
     return mkSymbol(STRING(parameter[0]));
 }
 
-Value *builtin_symbolp(Value *parameters, Value *env)
+static Value *symbolp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1382,7 +1382,7 @@ Value *builtin_symbolp(Value *parameters, Value *env)
     return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
 }
 
-Value *builtin_vals(Value *parameters, Value *env)
+static Value *vals(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1396,7 +1396,7 @@ Value *builtin_vals(Value *parameters, Value *env)
     return map_vals(parameter[0]);
 }
 
-Value *builtin_vec(Value *parameters, Value *env)
+static Value *vec(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1416,12 +1416,12 @@ Value *builtin_vec(Value *parameters, Value *env)
     return list_to_vector(parameter[0]);
 }
 
-Value *builtin_vector(Value *parameters, Value *env)
+static Value *vector(Value *parameters, Value *env)
 {
     return list_to_vector(parameters);
 }
 
-Value *builtin_vectorp(Value *parameters, Value *env)
+static Value *vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
@@ -1432,7 +1432,7 @@ Value *builtin_vectorp(Value *parameters, Value *env)
     return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static void Repl_define(char *name, char *s, Value *env)
+static void define(char *name, char *s, Value *env)
 {
     char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
     sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
@@ -1460,71 +1460,71 @@ Value *builtins_initialise_environment()
     Value *builtin_bindings = map_create();
 
     add_binding_into_environment(root_bindings, "**root**", root_scope);
-    add_binding_into_environment(root_bindings, "+", mkNativeProcedure(builtin_integer_plus));
-    add_binding_into_environment(root_bindings, "-", mkNativeProcedure(builtin_integer_minus));
-    add_binding_into_environment(root_bindings, "*", mkNativeProcedure(builtin_integer_multiply));
-    add_binding_into_environment(root_bindings, "/", mkNativeProcedure(builtin_integer_divide));
+    add_binding_into_environment(root_bindings, "+", mkNativeProcedure(integer_plus));
+    add_binding_into_environment(root_bindings, "-", mkNativeProcedure(integer_minus));
+    add_binding_into_environment(root_bindings, "*", mkNativeProcedure(integer_multiply));
+    add_binding_into_environment(root_bindings, "/", mkNativeProcedure(integer_divide));
 
-    add_binding_into_environment(root_bindings, "=", mkNativeProcedure(builtin_equal));
+    add_binding_into_environment(root_bindings, "=", mkNativeProcedure(equal));
 
-    add_binding_into_environment(root_bindings, "<", mkNativeProcedure(builtin_integer_less_than));
-    add_binding_into_environment(root_bindings, "<=", mkNativeProcedure(builtin_integer_less_equal));
-    add_binding_into_environment(root_bindings, ">", mkNativeProcedure(builtin_integer_greater_than));
-    add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(builtin_integer_greater_equal));
+    add_binding_into_environment(root_bindings, "<", mkNativeProcedure(integer_less_than));
+    add_binding_into_environment(root_bindings, "<=", mkNativeProcedure(integer_less_equal));
+    add_binding_into_environment(root_bindings, ">", mkNativeProcedure(integer_greater_than));
+    add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(integer_greater_equal));
 
-    add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(builtin_apply));
-    add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(builtin_assoc));
-    add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(builtin_assoc_bang));
-    add_binding_into_environment(root_bindings, "car", mkNativeProcedure(builtin_car));
-    add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(builtin_cdr));
-    add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(builtin_concat));
-    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons));
-    add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(builtin_containsp));
-    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(builtin_count));
-    add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(builtin_dissoc));
-    add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(builtin_dissoc_bang));
-    add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(builtin_emptyp));
-    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval));
-    add_binding_into_environment(root_bindings, "first", mkNativeProcedure(builtin_first));
-    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get));
-    add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(builtin_hash_map));
-    add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(builtin_keys));
-    add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(builtin_keyword));
-    add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(builtin_keywordp));
-    add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(builtin_listp));
-    add_binding_into_environment(root_bindings, "map", mkNativeProcedure(builtin_map));
-    add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(builtin_mapp));
-    add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(builtin_nilp));
-    add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(builtin_nth));
-    add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(builtin_pr_str));
-    add_binding_into_environment(root_bindings, "print", mkNativeProcedure(builtin_print));
-    add_binding_into_environment(root_bindings, "println", mkNativeProcedure(builtin_println));
-    add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(builtin_prn));
-    add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(builtin_raise));
-    add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(builtin_read_string));
-    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(builtin_rest));
-    add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(builtin_sequentialp));
-    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp));
+    add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
+    add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(assoc));
+    add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(assoc_bang));
+    add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
+    add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
+    add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
+    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
+    add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
+    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(count));
+    add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
+    add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
+    add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(emptyp));
+    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(eval));
+    add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
+    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(get));
+    add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
+    add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(keys));
+    add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
+    add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
+    add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
+    add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
+    add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
+    add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
+    add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(nth));
+    add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
+    add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
+    add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
+    add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(prn));
+    add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
+    add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
+    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(rest));
+    add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
+    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
-    add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(builtin_symbol));
-    add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(builtin_symbolp));
-    add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(builtin_vals));
-    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_vec));
-    add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(builtin_vector));
-    add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(builtin_vectorp));
+    add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
+    add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
+    add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(vals));
+    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(vec));
+    add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
+    add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));
 
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
-    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name));
+    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
-    add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir));
+    add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
 
-    Repl_define("list", "(fn x x)", root_scope);
-    Repl_define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
-    Repl_define("not", "(fn (p) (if p () (=)))", root_scope);
-    Repl_define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (raise \"odd number of forms to cond\")) (cons 'cond (rest (rest xs))))))", root_scope);
+    define("list", "(fn x x)", root_scope);
+    define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
+    define("not", "(fn (p) (if p () (=)))", root_scope);
+    define("cond", "(mo xs (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (raise \"odd number of forms to cond\")) (cons 'cond (rest (rest xs))))))", root_scope);
 
     return root_scope;
 }

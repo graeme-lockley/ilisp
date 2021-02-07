@@ -32,6 +32,12 @@
   )
 )
 
+; A wrapper macro that uses the builtin set! quoting the first parameter in so
+; that is appears as a symbol.
+(export-macro (set! name value)
+  `((get (car **root**) :builtins 'set!) '~name ~value)
+)
+
 (export *source-name* (str (get **env** 'PWD) "/home"))
 
 ; Replace the builtin load-file with a macro which uses the surrounding context 
@@ -43,6 +49,9 @@
     (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
   )
 )
+
+(export t (=))
+(export f ())
 
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly

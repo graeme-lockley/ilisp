@@ -14,12 +14,12 @@
 
 (export-macro (assert-signal e p)
     `(do
-        (define signal-raised ())
+        (define signal-raised f)
         (try
             ~e
             (fn (signal)
                 (do
-                    (assoc! (car (cdr **scope**)) 'signal-raised (=))
+                    (set! signal-raised t)
                     (~p signal)
                 )
             )

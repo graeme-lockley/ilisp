@@ -1270,6 +1270,34 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NIL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *set_bang(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "set!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *name = parameter[0];
+    Value *value = parameter[1];
+
+    if (!IS_SYMBOL(name))
+        return exceptions_invalid_argument(mkSymbol("set!"), 0, mkSymbol("symbol"), name);
+
+    while(1) {
+        if (IS_NIL(env))
+            return exceptions_unknown_symbol(name);
+
+        Value *scope = CAR(env);
+        if (Value_truthy(map_containsp(scope, name))) {
+            map_set_bang(scope, name, value);
+            return value;
+        }
+
+        env = CDR(env);
+    }
+}
+
 static Value *slurp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1518,6 +1546,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
+    add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
 

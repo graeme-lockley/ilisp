@@ -1087,7 +1087,7 @@ Value *prn(Value *parameters, Value *env)
     return VNil;
 }
 
-static Value *builtin_str(Value *parameters, Value *env)
+static Value *str(Value *parameters, Value *env)
 {
     return value_to_str(parameters, 0, "");
 }
@@ -1505,7 +1505,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(rest));
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(slurp));
-    add_binding_into_environment(root_bindings, "str", mkNativeProcedure(builtin_str));
+    add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
     add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(vals));

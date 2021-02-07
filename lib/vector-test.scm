@@ -38,6 +38,13 @@
     (Unit.assert-equals (Vector.drop [0 1 2] 10) [])
 )
 
+(Unit.test "drop-right"
+    (Unit.assert-equals (Vector.drop-right [] 2) [])
+    (Unit.assert-equals (Vector.drop-right [0 1 2 3 4 5 6 7] 2) [0 1 2 3 4 5])
+    (Unit.assert-equals (Vector.drop-right [0 1 2 3 4 5 6 7] (- 3)) [0 1 2 3 4 5 6 7])
+    (Unit.assert-equals (Vector.drop-right [0 1 2] 10) [])
+)
+
 (Unit.test "ends-with"
     (Unit.assert-truthy (Vector.ends-with [1 2 3] []))
     (Unit.assert-truthy (Vector.ends-with [1 2 3] [2 3]))

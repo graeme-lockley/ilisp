@@ -1496,6 +1496,20 @@ static Value *vector(Value *parameters, Value *env)
     return list_to_vector(parameters);
 }
 
+static Value *vector_count(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "count");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-count"), 0, mkSymbol("vector"), parameter[0]);
+
+    return mkNumber(VECTOR(parameter[0]).length);
+}
+
 static Value *vector_filter(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1659,6 +1673,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
+    add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
 

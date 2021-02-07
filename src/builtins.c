@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "builtins.h"
+#include "buffer.h"
 #include "exceptions.h"
 #include "map.h"
 #include "printer.h"
@@ -1495,6 +1496,46 @@ static Value *vector(Value *parameters, Value *env)
     return list_to_vector(parameters);
 }
 
+static Value *vector_filter(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "vector-filter");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *args = parameter[0];
+    Value *f = parameter[1];
+
+    if (!IS_VECTOR(args))
+        return exceptions_invalid_argument(mkSymbol("vector-filter"), 0, mkSymbol("vector"), args);
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("vector-filter"), 1, mkSymbol("procedure"), f);
+
+    Buffer *buffer = buffer_init(sizeof(Value *));
+
+    int number_of_items = VECTOR(args).length;
+    Value **items = VECTOR(args).items;
+    for (int lp = 0; lp < number_of_items; lp += 1)
+    {
+        Value *element = items[lp];
+        Value *v = Repl_eval_procedure(f, mkPair(element, VNil), env);
+        if (IS_EXCEPTION(v))
+            return v;
+
+        if (Value_truthy(v))
+        {
+            buffer_append(buffer, &element);
+        }
+    }
+    Value *result = mkVectorUse((Value **)buffer->buffer, buffer->items_count / buffer->item_size);
+
+    buffer_free_use(buffer);
+
+    return result;
+}
+
 static Value *vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1599,6 +1640,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
+    add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
 
     define("list", "(fn x x)", root_scope);
     define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

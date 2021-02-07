@@ -6,6 +6,7 @@ LDLIBS=-ledit
 RM=rm
 
 SRC_OBJECTS=\
+	src/buffer.o \
 	src/builtins.o \
 	src/exceptions.o \
 	src/map.o \

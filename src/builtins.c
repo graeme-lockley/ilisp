@@ -263,7 +263,8 @@ static Value *car(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    if (IS_VECTOR(parameter[0])) {
+    if (IS_VECTOR(parameter[0]))
+    {
         if (VECTOR(parameter[0]).length == 0)
             return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("vector"), parameter[0]);
 
@@ -283,6 +284,21 @@ Value *cdr(Value *parameters, Value *env)
     Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "cdr");
     if (extract_result != NULL)
         return extract_result;
+
+    if (IS_VECTOR(parameter[0]))
+    {
+        if (VECTOR(parameter[0]).length == 0)
+            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("vector"), parameter[0]);
+
+        if (VECTOR(parameter[0]).length == 1)
+            return VEmptyVector;
+
+        int result_size = VECTOR(parameter[0]).length - 1;
+        Value **result = malloc(result_size * sizeof(Value *));
+        memcpy(result, VECTOR(parameter[0]).items + 1, result_size * sizeof(Value *));
+
+        return mkVectorUse(result, result_size);
+    }
 
     if (!IS_PAIR(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), parameter[0]);
@@ -1611,8 +1627,7 @@ static Value *vector_slice(Value *parameters, Value *env)
     int result_size = end - start + 1;
     Value **result = malloc(result_size * sizeof(Value *));
 
-    for (int lp = 0; start <= end; lp += 1, start += 1)
-        result[lp] = items[start];
+    memcpy(result, items + start, result_size * sizeof(Value *));
 
     return mkVectorUse(result, result_size);
 }

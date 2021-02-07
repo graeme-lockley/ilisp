@@ -14,6 +14,17 @@
     )))
 )
 
+(Unit.test "cdr"
+    (Unit.assert-equals (cdr [1]) [])
+    (Unit.assert-equals (cdr [1 2 3]) [2 3])
+
+    (Unit.assert-signal (cdr []) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'InvalidArgument)
+        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
+    )))
+)
+
 (Unit.test "count"
     (Unit.assert-equals (Vector.count []) 0)
     (Unit.assert-equals (Vector.count [1]) 1)

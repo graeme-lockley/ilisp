@@ -503,6 +503,17 @@ static Value *first(Value *parameters, Value *env)
         return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
 
+static Value *fnp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "fn?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_PROCEDURE(parameter[0]) || IS_NATIVE_PROCEDURE(parameter[0]) ? VTrue : VNil;
+}
+
 static Value *get(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
@@ -1295,12 +1306,14 @@ static Value *set_bang(Value *parameters, Value *env)
     if (!IS_SYMBOL(name))
         return exceptions_invalid_argument(mkSymbol("set!"), 0, mkSymbol("symbol"), name);
 
-    while(1) {
+    while (1)
+    {
         if (IS_NIL(env))
             return exceptions_unknown_symbol(name);
 
         Value *scope = CAR(env);
-        if (Value_truthy(map_containsp(scope, name))) {
+        if (Value_truthy(map_containsp(scope, name)))
+        {
             map_set_bang(scope, name, value);
             return value;
         }
@@ -1536,6 +1549,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
+    add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
     add_binding_into_environment(root_bindings, "get", mkNativeProcedure(get));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(keys));

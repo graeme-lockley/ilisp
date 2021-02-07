@@ -1302,15 +1302,17 @@ static Value *rest(Value *parameters, Value *env)
 
     if (IS_VECTOR(parameter[0]))
     {
-        if (VECTOR(parameter[0]).length <= 1)
+        if (VECTOR(parameter[0]).length == 0)
             return VNil;
 
-        Value fudge = *parameter[0];
+        if (VECTOR(parameter[0]).length == 1)
+            return VEmptyVector;
 
-        fudge.vectorV.length -= 1;
-        fudge.vectorV.items = fudge.vectorV.items + 1;
+        int result_size = VECTOR(parameter[0]).length - 1;
+        Value **result = malloc(result_size * sizeof(Value *));
+        memcpy(result, VECTOR(parameter[0]).items + 1, result_size * sizeof(Value *));
 
-        return vector_to_list(&fudge);
+        return mkVectorUse(result, result_size);
     }
     else
         return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;

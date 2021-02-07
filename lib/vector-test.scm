@@ -48,12 +48,25 @@
     (Unit.assert-equals (Vector.filter [2 4 6 8 10 12] even?) [2 4 6 8 10 12])
 )
 
+
+(Unit.test "first"
+    (Unit.assert-equals (first [1]) 1)
+    (Unit.assert-equals (first [1 2 3]) 1)
+    (Unit.assert-equals (first []) ())
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (Vector.nth [] 5) ())
     (Unit.assert-equals (Vector.nth [1] 0) 1)
     (Unit.assert-equals (Vector.nth [1 2] 1) 2)
     (Unit.assert-equals (Vector.nth [1 2] 2) ())
     (Unit.assert-equals (Vector.nth [1 2 () 4 5] 2) ())
+)
+
+(Unit.test "rest"
+    (Unit.assert-equals (rest [1]) [])
+    (Unit.assert-equals (rest [1 2 3]) [2 3])
+    (Unit.assert-equals (rest []) ())
 )
 
 (Unit.test "slice"

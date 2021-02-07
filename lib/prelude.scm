@@ -57,21 +57,3 @@
 ; exported as a result of the package mechanism.  Note that this is an anomoly
 ; and is used to bootstrap the package mechanism.
 (load-file "./package.scm")
-
-(import "./unit.scm" :as Unit)
-
-(define assert-equals Unit.assert-equals)
-
-(assert-equals (and) 1)
-(assert-equals (and 1) 1)
-(assert-equals (and ()) ())
-(assert-equals (and 1 1) 1)
-(assert-equals (and 1 ()) ())
-(assert-equals (and () (/ 1 0)) ())
-
-(assert-equals (or) ())
-(assert-equals (or 1) 1)
-(assert-equals (or ()) ())
-(assert-equals (or 1 (/ 1 0)) 1)
-(assert-equals (or () 1) 1)
-(assert-equals (or () ()) ())

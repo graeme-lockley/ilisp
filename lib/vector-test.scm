@@ -31,6 +31,13 @@
     (Unit.assert-equals (Vector.count [1 1 1 1 1 1]) 6)
 )
 
+(Unit.test "drop"
+    (Unit.assert-equals (Vector.drop [] 2) [])
+    (Unit.assert-equals (Vector.drop [0 1 2 3 4 5 6 7] 2) [2 3 4 5 6 7])
+    (Unit.assert-equals (Vector.drop [0 1 2 3 4 5 6 7] (- 3)) [0 1 2 3 4 5 6 7])
+    (Unit.assert-equals (Vector.drop [0 1 2] 10) [])
+)
+
 (Unit.test "ends-with"
     (Unit.assert-truthy (Vector.ends-with [1 2 3] []))
     (Unit.assert-truthy (Vector.ends-with [1 2 3] [2 3]))
@@ -47,7 +54,6 @@
     (Unit.assert-equals (Vector.filter [1 2 3 4 5] even?) [2 4])
     (Unit.assert-equals (Vector.filter [2 4 6 8 10 12] even?) [2 4 6 8 10 12])
 )
-
 
 (Unit.test "first"
     (Unit.assert-equals (first [1]) 1)
@@ -84,4 +90,11 @@
 
     (Unit.assert-falsy (Vector.starts-with [1 2 3] [3]))
     (Unit.assert-falsy (Vector.starts-with [1 2] [1 2 3]))
+)
+
+(Unit.test "take"
+    (Unit.assert-equals (Vector.take [] 2) [])
+    (Unit.assert-equals (Vector.take [0 1 2 3 4 5 6 7] 2) [0 1])
+    (Unit.assert-equals (Vector.take [0 1 2 3 4 5 6 7] (- 3)) [])
+    (Unit.assert-equals (Vector.take [0 1 2] 10) [0 1 2])
 )

@@ -1,5 +1,9 @@
 (export count (get (car **root**) :builtins 'vector-count))
 
+(export (drop v n)
+    (slice v n (count v))
+)
+
 (export (ends-with v prefix)
   (do
     (define (dec n) (- n 1))
@@ -58,4 +62,8 @@
             (iter 0 (count prefix))
     )
   )  
+)
+
+(export (take v n)
+    (slice v 0 (- n 1))
 )

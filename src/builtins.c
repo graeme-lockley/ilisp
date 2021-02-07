@@ -1046,6 +1046,17 @@ static Value *nth(Value *parameters, Value *env)
     return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair(mkString("()"), VNil)), parameter[0]);
 }
 
+static Value *numberp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "number?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_NUMBER(parameter[0]) ? VTrue : VNil;
+}
+
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -1535,6 +1546,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
     add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(nth));
+    add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));

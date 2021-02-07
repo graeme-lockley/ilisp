@@ -1,5 +1,21 @@
 (import "./unit.scm" :as Unit)
 
+(Unit.test "number?"
+    (Unit.assert-falsy (number? ()))
+    (Unit.assert-truthy (number? 1))
+    (Unit.assert-falsy (number? "name"))
+    (Unit.assert-falsy (number? 'name))
+    (Unit.assert-falsy (number? :name))
+    (Unit.assert-falsy (number? '(1 2 3)))
+    (Unit.assert-falsy (number? []))
+    (Unit.assert-falsy (number? [1 2 3]))
+    (Unit.assert-falsy (number? {}))
+    (Unit.assert-falsy (number? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (number? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (number? car))
+    (Unit.assert-falsy (number? cond))
+)
+
 (Unit.test "string?"
     (Unit.assert-falsy (string? ()))
     (Unit.assert-falsy (string? 1))

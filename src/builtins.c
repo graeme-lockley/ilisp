@@ -1341,6 +1341,17 @@ static Value *slurp(Value *parameters, Value *env)
     return mkStringUse(buffer);
 }
 
+static Value *stringp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_STRING(parameter[0]) ? VTrue : VNil;
+}
+
 static Value *string_ends_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1534,6 +1545,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(slurp));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
+    add_binding_into_environment(root_bindings, "string?", mkNativeProcedure(stringp));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
     add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(vals));

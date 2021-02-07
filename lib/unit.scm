@@ -32,6 +32,28 @@
     )
 )
 
+(export-macro (assert-truthy v)
+    `(do 
+        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        (define __v ~v) 
+        (if __v 
+            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+            (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
+        )
+    )
+)
+
+(export-macro (assert-falsy v)
+    `(do 
+        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        (define __v ~v) 
+        (if __v 
+            (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
+            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+        )
+    )
+)
+
 (export-macro (assert-signal e p)
     `(do
         ((get (package-import "./unit.scm") 'inc-asserts-total))
@@ -56,6 +78,7 @@
     `(do
         (try
             (do 
+                (println "- " ~name)
                 ((get (package-import "./unit.scm") 'inc-tests-total))
                 ~@tests
                 ((get (package-import "./unit.scm") 'inc-tests-passed))

@@ -67,3 +67,7 @@
 (export (take v n)
     (slice v 0 (- n 1))
 )
+
+(export (take-right v n)
+    (slice v (- (count v) n) (count v))
+)

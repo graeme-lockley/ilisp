@@ -98,3 +98,10 @@
     (Unit.assert-equals (Vector.take [0 1 2 3 4 5 6 7] (- 3)) [])
     (Unit.assert-equals (Vector.take [0 1 2] 10) [0 1 2])
 )
+
+(Unit.test "take-right"
+    (Unit.assert-equals (Vector.take-right [] 2) [])
+    (Unit.assert-equals (Vector.take-right [0 1 2 3 4 5 6 7] 2) [6 7])
+    (Unit.assert-equals (Vector.take-right [0 1 2 3 4 5 6 7] (- 3)) [])
+    (Unit.assert-equals (Vector.take-right [0 1 2] 10) [0 1 2])
+)

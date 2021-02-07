@@ -1,0 +1,17 @@
+(import "./unit.scm" :as Unit)
+
+(Unit.test "symbol?"
+    (Unit.assert-equals (symbol? ()) f)
+    (Unit.assert-equals (symbol? 1) f)
+    (Unit.assert-equals (symbol? "name") f)
+    (Unit.assert-equals (symbol? 'name) t)
+    (Unit.assert-equals (symbol? :name) f)
+    (Unit.assert-equals (symbol? '(1 2 3)) f)
+    (Unit.assert-equals (symbol? []) f)
+    (Unit.assert-equals (symbol? [1 2 3]) f)
+    (Unit.assert-equals (symbol? {}) f)
+    (Unit.assert-equals (symbol? {:a 1 :b 2 :c 3}) f)
+    (Unit.assert-equals (symbol? (fn (n) (+ n 1))) f)
+    (Unit.assert-equals (symbol? car) f)
+    (Unit.assert-equals (symbol? cond) f)
+)

@@ -576,48 +576,6 @@ fred
 (nil? cond)
 > f
 
-(symbol? ())
-> f
-
-(symbol? 1)
-> f
-
-(symbol? "hello")
-> f
-
-(symbol? 'hello)
-> t
-
-(symbol? :hello)
-> f
-
-(symbol? '(1 2 3))
-> f
-
-(symbol? [])
-> f
-
-(symbol? [1 2 3])
-> f
-
-(symbol? {})
-> f
-
-(symbol? {:a 1 :b 2})
-> f
-
-(symbol? (fn (x) (+ x 1)))
-> f
-
-(symbol? car)
-> f
-
-(symbol? cond)
-> f
-
-(symbol "hello")
-> hello
-
 (symbol? (symbol "hello"))
 > t
 

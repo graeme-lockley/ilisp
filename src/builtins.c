@@ -1407,7 +1407,7 @@ static Value *symbolp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
+    return IS_SYMBOL(parameter[0]) ? VTrue : VNil;
 }
 
 static Value *vals(Value *parameters, Value *env)

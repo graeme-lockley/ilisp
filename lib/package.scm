@@ -58,7 +58,7 @@
         )
         (fn (e)
             (do
-                (println "error loading " *source-name* ": " e)
+                (if *verbose* (println "error loading " *source-name* ": " e))
                 (raise e)
             )
         )

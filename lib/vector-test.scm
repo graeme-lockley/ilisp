@@ -23,3 +23,12 @@
     (Unit.assert-equals (Vector.nth [1 2] 2) ())
     (Unit.assert-equals (Vector.nth [1 2 () 4 5] 2) ())
 )
+
+(Unit.test "starts-with"
+    (Unit.assert-truthy (Vector.starts-with [1 2 3] []))
+    (Unit.assert-truthy (Vector.starts-with [1 2 3] [1 2]))
+    (Unit.assert-truthy (Vector.starts-with [1 2 3] [1 2 3]))
+
+    (Unit.assert-falsy (Vector.starts-with [1 2 3] [3]))
+    (Unit.assert-falsy (Vector.starts-with [1 2] [1 2 3]))
+)

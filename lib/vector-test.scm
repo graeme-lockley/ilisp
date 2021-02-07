@@ -9,6 +9,16 @@
     (Unit.assert-equals (Vector.count [1 1 1 1 1 1]) 6)
 )
 
+(Unit.test "ends-with"
+    (Unit.assert-truthy (Vector.ends-with [1 2 3] []))
+    (Unit.assert-truthy (Vector.ends-with [1 2 3] [2 3]))
+    (Unit.assert-truthy (Vector.ends-with [1 2 3] [1 2 3]))
+
+    (Unit.assert-falsy (Vector.ends-with [1 2 3] [1]))
+    (Unit.assert-falsy (Vector.ends-with [1 2 3] [3 3]))
+    (Unit.assert-falsy (Vector.ends-with [1 2] [0 1 2]))
+)
+
 (Unit.test "filter"
     (Unit.assert-equals (Vector.filter [] even?) [])
     (Unit.assert-equals (Vector.filter [1 3 5 7 9 11] even?) [])

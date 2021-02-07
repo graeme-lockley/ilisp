@@ -1,3 +1,9 @@
+(define *verbose* f)
+
+(export (verbose?) *verbose*)
+
+(export (verbose v) (set! *verbose* v))
+
 (export (package-use package name)
     (if (contains? package name) 
         (get package name)
@@ -38,7 +44,7 @@
 
             (if (not (map? (get imports-list *source-name*)))
                 (do
-                    (println "Loading " *source-name*)
+                    (if *verbose* (println "Loading " *source-name*))
                     (assoc! imports-list *source-name* ())
                     (define bindings (load-package-file))
                     (if (map? (get imports-list *source-name*))
@@ -49,7 +55,7 @@
             )
         
             (get imports-list *source-name*)
-        ) 
+        )
         (fn (e)
             (do
                 (println "error loading " *source-name* ": " e)
@@ -58,7 +64,6 @@
         )
     )
 )
-
 
 (export-macro (package-import name)
     `(package-import-with-context ~name *source-name*)

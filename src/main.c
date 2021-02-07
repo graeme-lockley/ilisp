@@ -48,8 +48,6 @@ static void run_prelude(char *prelude_file_name, Value *env)
     char *content = (char *)malloc(strlen(prelude_file_name) + 20);
     sprintf(content, "(load-file \"%s\")", prelude_file_name);
 
-    printf("Loading %s\n", prelude_file_name);
-
     Value *result = Repl_rep(prelude_file_name, content, env);
 
     if (IS_EXCEPTION(result))

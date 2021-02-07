@@ -2,11 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "buffer.h"
 #include "exceptions.h"
 #include "printer.h"
 #include "value.h"
-
-#define BUFFER_TRANCHE 32
 
 enum Token
 {
@@ -438,16 +437,14 @@ static Value *parse(Lexer *lexer)
         if (!IS_SUCCESSFUL(v))
             return v;
 
-        Value **buffer = (Value **)malloc(BUFFER_TRANCHE * sizeof(Value *));
-        int buffer_length = BUFFER_TRANCHE;
-        int buffer_end = 1;
-        buffer[0] = v;
+        Buffer *buffer = buffer_init(sizeof(Value *));
+        buffer_append(buffer, &v, 1);
 
         while (1)
         {
             if (lexer->token == EOS)
             {
-                free(buffer);
+                buffer_free(buffer);
                 struct Exception_Position *position = mkExceptionPosition(lexer);
                 Value *e = exceptions_unexpected_end_of_stream("]", position);
                 freeExceptionPosition(position);
@@ -457,30 +454,19 @@ static Value *parse(Lexer *lexer)
             if (lexer->token == RBRACKET)
             {
                 next_token(lexer);
-                Value *result = mkVector(buffer, buffer_end);
-                free(buffer);
+                Value *result = mkVectorUse((Value **) buffer->buffer, buffer->items_count);
+                buffer_free_use(buffer);
                 return result;
             }
 
             Value *next = parse(lexer);
             if (!IS_SUCCESSFUL(next))
             {
-                free(buffer);
+                buffer_free(buffer);
                 return next;
             }
 
-            if (buffer_end == buffer_length - 1)
-            {
-                int new_buffer_length = buffer_length + BUFFER_TRANCHE;
-                Value **new_buffer = (Value **)malloc(new_buffer_length * sizeof(Value *));
-                memcpy(new_buffer, buffer, buffer_end * sizeof(Value *));
-                free(buffer);
-                buffer_length = new_buffer_length;
-                buffer = new_buffer;
-            }
-
-            buffer[buffer_end] = next;
-            buffer_end += 1;
+            buffer_append(buffer, &next, 1);
         }
     }
 

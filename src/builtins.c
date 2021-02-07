@@ -1533,6 +1533,28 @@ static Value *vector_filter(Value *parameters, Value *env)
     return result;
 }
 
+static Value *vector_nth(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "nth");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkString("number"), parameter[1]);
+
+    int nth = NUMBER(parameter[1]);
+
+    if (!IS_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-nth"), 0, mkSymbol("vector"), parameter[0]);
+
+    if (nth >= VECTOR(parameter[0]).length)
+        return VNil;
+
+    return VECTOR(parameter[0]).items[nth];
+}
+
 static Value *vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1638,6 +1660,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
+    add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
 
     define("list", "(fn x x)", root_scope);
     define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

@@ -9,3 +9,10 @@
     (Unit.assert-equals (Vector.filter [1 2 3 4 5] even?) [2 4])
     (Unit.assert-equals (Vector.filter [2 4 6 8 10 12] even?) [2 4 6 8 10 12])
 )
+
+(Unit.test "nth"
+    (Unit.assert-equals (Vector.nth [1] 0) 1)
+    (Unit.assert-equals (Vector.nth [1 2] 1) 2)
+    (Unit.assert-equals (Vector.nth [1 2] 2) ())
+    (Unit.assert-equals (Vector.nth [1 2 ()] 2) ())
+)

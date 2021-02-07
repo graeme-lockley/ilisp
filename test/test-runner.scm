@@ -4,7 +4,10 @@
 
 (define test-files
     (map
-        (List.filter (fn (t) (and (get t :file?) (S.ends-with (get t :name) "-test.scm"))) (FS.read-dir (FS.absolute-name-relative-to *source-name* "../lib")))
+        (List.filter  
+          (FS.read-dir (FS.absolute-name-relative-to *source-name* "../lib"))
+          (fn (t) (and (get t :file?) (S.ends-with (get t :name) "-test.scm")))
+        )
         (fn (t) (get t :name))
     )
 )

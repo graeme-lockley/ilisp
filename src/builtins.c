@@ -908,14 +908,14 @@ static Value *list_filter(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    Value *f = parameter[0];
-    Value *args = parameter[1];
-
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkSymbol("procedure"), f);
+    Value *args = parameter[0];
+    Value *f = parameter[1];
 
     if (!IS_PAIR(args) && !IS_NIL(args))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), f);
+        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), f);
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkSymbol("procedure"), f);
 
     Value *root = VNil;
     Value **root_cursor = &root;

@@ -34,6 +34,14 @@
     (Unit.assert-equals (Vector.nth [1 2 () 4 5] 2) ())
 )
 
+(Unit.test "slice"
+    (Unit.assert-equals (Vector.slice [] 0 10) [])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 2 5) [2 3 4 5])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 6 10) [6 7])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] (- 10) 2) [0 1 2])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 5 2) [])
+)
+
 (Unit.test "starts-with"
     (Unit.assert-truthy (Vector.starts-with [1 2 3] []))
     (Unit.assert-truthy (Vector.starts-with [1 2 3] [1 2]))

@@ -26,9 +26,10 @@
         (println "Running tests: " name)
         (try
             (package-import qualified-name)
-            (fn (s) 
+            (fn (s)
                 (do
-                    (println "Test failed: " s)
+                    (print "Test failed: ")
+                    (prn s)
                     (set! *signal* s)
                 )
             )

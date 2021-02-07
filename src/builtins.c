@@ -1569,6 +1569,47 @@ static Value *vector_nth(Value *parameters, Value *env)
     return VECTOR(parameter[0]).items[nth];
 }
 
+static Value *vector_slice(Value *parameters, Value *env)
+{
+    Value *parameter[3];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "vector-slice");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-slice"), 0, mkSymbol("vector"), parameter[0]);
+
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("vector-slice"), 1, mkSymbol("vector"), parameter[1]);
+
+    if (!IS_NUMBER(parameter[2]))
+        return exceptions_invalid_argument(mkSymbol("vector-slice"), 2, mkSymbol("vector"), parameter[2]);
+
+    Value **items = VECTOR(parameter[0]).items;
+    int vector_size = VECTOR(parameter[0]).length;
+
+    int start = NUMBER(parameter[1]);
+    int end = NUMBER(parameter[2]);
+
+    if (start < 0)
+        start = 0;
+
+    if (end >= vector_size)
+        end = vector_size - 1;
+
+    if (start > end)
+        return VEmptyVector;
+
+    int result_size = end - start + 1;
+    Value **result = malloc(result_size * sizeof(Value *));
+
+    for (int lp = 0; start <= end; lp += 1, start += 1)
+        result[lp] = items[start];
+
+    return mkVectorUse(result, result_size);
+}
+
 static Value *vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1676,6 +1717,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
+    add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
 
     define("list", "(fn x x)", root_scope);
     define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

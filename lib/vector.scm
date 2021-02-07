@@ -31,6 +31,8 @@
 
 (export nth (get (car **root**) :builtins 'vector-nth))
 
+(export slice (get (car **root**) :builtins 'vector-slice))
+
 (export (starts-with v prefix)
   (do
     (define (inc n) (+ n 1))

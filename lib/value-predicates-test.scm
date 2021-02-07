@@ -16,6 +16,22 @@
     (Unit.assert-falsy (fn? cond))
 )
 
+(Unit.test "macro?"
+    (Unit.assert-falsy (macro? ()))
+    (Unit.assert-falsy (macro? 1))
+    (Unit.assert-falsy (macro? "name"))
+    (Unit.assert-falsy (macro? 'name))
+    (Unit.assert-falsy (macro? :name))
+    (Unit.assert-falsy (macro? '(1 2 3)))
+    (Unit.assert-falsy (macro? []))
+    (Unit.assert-falsy (macro? [1 2 3]))
+    (Unit.assert-falsy (macro? {}))
+    (Unit.assert-falsy (macro? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (macro? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (macro? car))
+    (Unit.assert-truthy (macro? cond))
+)
+
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))

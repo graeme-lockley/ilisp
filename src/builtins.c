@@ -961,6 +961,17 @@ static Value *listp(Value *parameters, Value *env)
     return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
 }
 
+static Value *macrop(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "macro?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_MACRO(parameter[0]) ? VTrue : VNil;
+}
+
 static Value *map(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1556,6 +1567,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
+    add_binding_into_environment(root_bindings, "macro?", mkNativeProcedure(macrop));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));

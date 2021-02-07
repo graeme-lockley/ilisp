@@ -3,8 +3,9 @@
 (import "../lib/string.scm" :as S)
 
 (define test-files
-    (map (fn (t) (get t :name))
+    (map
         (List.filter (fn (t) (and (get t :file?) (S.ends-with (get t :name) "-test.scm"))) (FS.read-dir (FS.absolute-name-relative-to *source-name* "../lib")))
+        (fn (t) (get t :name))
     )
 )
 

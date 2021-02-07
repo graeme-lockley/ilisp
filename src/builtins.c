@@ -958,13 +958,13 @@ static Value *map(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    Value *f = parameter[0];
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("map"), 0, mkSymbol("procedure"), f);
-
-    Value *args = IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1];
+    Value *args = IS_VECTOR(parameter[0]) ? vector_to_list(parameter[0]) : parameter[0];
     if (!IS_NIL(args) && !IS_PAIR(args))
-        return exceptions_invalid_argument(mkSymbol("map"), 1, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), VNil))), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), VNil))), parameter[0]);
+
+    Value *f = parameter[1];
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("map"), 1, mkSymbol("procedure"), f);
 
     Value *root = VNil;
     Value **root_cursor = &root;

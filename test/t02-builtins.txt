@@ -522,19 +522,19 @@ fred
 (map not)
 > (:exception (ExpectedArgumentCount . {:arguments ((#PROCEDURE (p) (if p () (=)))) :arg-count 2 :procedure map}))
 
-(map (fn (n) (+ n 1)) 1)
-> (:exception (InvalidArgument . {:received 1 :expected-type (pair vector ()) :arg-number 1 :procedure map}))
+(map 1 (fn (n) (+ n 1)))
+> (:exception (InvalidArgument . {:received 1 :expected-type (pair vector ()) :arg-number 0 :procedure map}))
 
-(map (fn (n) (+ n 1)) '())
+(map '() (fn (n) (+ n 1)))
 > ()
 
-(map (fn (n) (+ n 1)) '(1 2 3 4))
+(map '(1 2 3 4) (fn (n) (+ n 1)))
 > (2 3 4 5)
 
-(map (fn (n) (+ n 1)) [])
+(map [] (fn (n) (+ n 1)))
 > ()
 
-(map (fn (n) (+ n 1)) [1 2 3 4])
+(map [1 2 3 4] (fn (n) (+ n 1)))
 > (2 3 4 5)
 
 (nil? ())
@@ -915,7 +915,7 @@ fred
 (count ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir"))
 > 3
 
-(count (map (fn (n) (get n :name)) ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir")))
+(count (map ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir") (fn (n) (get n :name))))
 > 3
 
 (do (assoc! (car **root**) 'file-name-relative-to-file-name (get (car **root**) :builtins 'file-name-relative-to-file-name)) ())

@@ -3,6 +3,17 @@
 
 (define (even? n) (= (* (/ n 2) 2) n))
 
+(Unit.test "car"
+    (Unit.assert-equals (car [1]) 1)
+    (Unit.assert-equals (car [1 2 3]) 1)
+
+    (Unit.assert-signal (car []) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'InvalidArgument)
+        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (get (cdr signal) :procedure) 'car)
+    )))
+)
+
 (Unit.test "count"
     (Unit.assert-equals (Vector.count []) 0)
     (Unit.assert-equals (Vector.count [1]) 1)

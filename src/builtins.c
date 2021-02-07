@@ -263,6 +263,13 @@ static Value *car(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
+    if (IS_VECTOR(parameter[0])) {
+        if (VECTOR(parameter[0]).length == 0)
+            return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("vector"), parameter[0]);
+
+        return VECTOR(parameter[0]).items[0];
+    }
+
     if (!IS_PAIR(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameter[0]);
 

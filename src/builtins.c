@@ -1588,7 +1588,7 @@ static Value *vector_nth(Value *parameters, Value *env)
     if (!IS_VECTOR(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("vector-nth"), 0, mkSymbol("vector"), parameter[0]);
 
-    if (nth >= VECTOR(parameter[0]).length)
+    if (nth < 0 || nth >= VECTOR(parameter[0]).length)
         return VNil;
 
     return VECTOR(parameter[0]).items[nth];

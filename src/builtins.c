@@ -1605,7 +1605,7 @@ static Value *vector_range(Value *parameters, Value *env)
     if (!IS_NUMBER(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("vector-range"), 0, mkSymbol("number"), parameter[0]);
     if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-range"), 1, mkString("number"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("vector-range"), 1, mkSymbol("number"), parameter[1]);
 
     int start = NUMBER(parameter[0]);
     int end = NUMBER(parameter[1]);
@@ -1619,6 +1619,29 @@ static Value *vector_range(Value *parameters, Value *env)
         buffer[l] = mkNumber(start);
 
     return mkVectorUse(buffer, length);
+}
+
+static Value *vector_reverse(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-reverse");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-reverse"), 0, mkSymbol("vector"), parameter[0]);
+
+    int length = VECTOR(parameter[0]).length;
+    if (length <= 1)
+        return parameter[0];
+
+    Value **src_items = VECTOR(parameter[0]).items;
+    Value **target_items = (Value **)malloc(length * sizeof(Value *));
+    for (int l = 0; l < length; l += 1) 
+        target_items[l] = src_items[length - l - 1];
+
+    return mkVectorUse(target_items, length);
 }
 
 static Value *vector_slice(Value *parameters, Value *env)
@@ -1769,6 +1792,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
+    add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
 
     define("list", "(fn x x)", root_scope);

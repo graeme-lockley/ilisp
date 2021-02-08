@@ -76,6 +76,8 @@
 
 (export range (get (car **root**) :builtins 'vector-range))
 
+(export reverse (get (car **root**) :builtins 'vector-reverse))
+
 (export slice (get (car **root**) :builtins 'vector-slice))
 
 (export (starts-with v prefix)

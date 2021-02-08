@@ -107,6 +107,11 @@
     (Unit.assert-equals (rest []) ())
 )
 
+(Unit.test "reverse"
+    (Unit.assert-equals (Vector.reverse []) [])
+    (Unit.assert-equals (Vector.reverse [1 2 3 4 5]) [5 4 3 2 1])
+)
+
 (Unit.test "slice"
     (Unit.assert-equals (Vector.slice [] 0 10) [])
     (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 2 5) [2 3 4 5])

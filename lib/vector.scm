@@ -37,6 +37,41 @@
 
 (export filter (get (car **root**) :builtins 'vector-filter))
 
+(export (fold v z p)
+    (do
+        (define (fold-idx idx z)
+            (cond
+                (= idx (count v))
+                    z
+
+                :else
+                    (fold-idx (+ idx 1) (p z (nth v idx)))
+            )
+        )
+
+        (fold-idx 0 z)
+    )
+)
+
+(export (fold-right v z p)
+    (do
+        (define (iter idx z) 
+            (cond 
+                (= idx 0) 
+                    z 
+                    
+                :else
+                    (do
+                        (define idxp (- idx 1))
+                        (iter idxp (p (nth v idxp) z))
+                    )
+            )
+        )
+        
+        (iter (count v) z)
+    )
+)
+
 (export nth (get (car **root**) :builtins 'vector-nth))
 
 (export slice (get (car **root**) :builtins 'vector-slice))

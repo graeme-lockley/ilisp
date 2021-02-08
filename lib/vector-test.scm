@@ -68,8 +68,27 @@
     (Unit.assert-equals (first []) ())
 )
 
+(Unit.test "fold"
+    (define (icons a b) (cons b a))
+
+    (Unit.assert-equals (Vector.fold [] () icons) '())
+    (Unit.assert-equals (Vector.fold [1] () icons) '(1))
+    (Unit.assert-equals (Vector.fold [1 2 3 4 5] () icons) '(5 4 3 2 1))
+
+   (Unit.assert-equals (Vector.fold [1 2 3 4 5] "0" (fn (a v) (str "(" a " + " v ")"))) "(((((0 + 1) + 2) + 3) + 4) + 5)")
+)
+
+(Unit.test "fold-right"
+   (Unit.assert-equals (Vector.fold-right [] () cons) '())
+   (Unit.assert-equals (Vector.fold-right [1] () cons) '(1))
+   (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] () cons) '(1 2 3 4 5))
+
+   (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] "0" (fn (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (Vector.nth [] 5) ())
+    (Unit.assert-equals (Vector.nth [1 2 3] (- 1)) ())
     (Unit.assert-equals (Vector.nth [1] 0) 1)
     (Unit.assert-equals (Vector.nth [1 2] 1) 2)
     (Unit.assert-equals (Vector.nth [1 2] 2) ())

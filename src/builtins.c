@@ -1610,12 +1610,20 @@ static Value *vector_range(Value *parameters, Value *env)
     int start = NUMBER(parameter[0]);
     int end = NUMBER(parameter[1]);
 
+    int length, step;
     if (start > end)
-        return VEmptyVector;
+    {
+        length = start - end + 1;
+        step = -1;
+    }
+    else
+    {
+        length = end - start + 1;
+        step = 1;
+    }
 
-    int length = end - start + 1;
     Value **buffer = (Value **)malloc(length * sizeof(Value *));
-    for (int l = 0; start <= end; l += 1, start += 1) 
+    for (int l = 0; l < length; l += 1, start += step)
         buffer[l] = mkNumber(start);
 
     return mkVectorUse(buffer, length);
@@ -1638,7 +1646,7 @@ static Value *vector_reverse(Value *parameters, Value *env)
 
     Value **src_items = VECTOR(parameter[0]).items;
     Value **target_items = (Value **)malloc(length * sizeof(Value *));
-    for (int l = 0; l < length; l += 1) 
+    for (int l = 0; l < length; l += 1)
         target_items[l] = src_items[length - l - 1];
 
     return mkVectorUse(target_items, length);

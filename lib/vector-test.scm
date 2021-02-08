@@ -98,7 +98,7 @@
 (Unit.test "range"
     (Unit.assert-equals (Vector.range 2 2) [2])
     (Unit.assert-equals (Vector.range 0 10) [0 1 2 3 4 5 6 7 8 9 10])
-    (Unit.assert-equals (Vector.range 3 2) [])
+    (Unit.assert-equals (Vector.range 5 2) [5 4 3 2])
 )
 
 (Unit.test "rest"

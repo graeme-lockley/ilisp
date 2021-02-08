@@ -74,6 +74,8 @@
 
 (export nth (get (car **root**) :builtins 'vector-nth))
 
+(export range (get (car **root**) :builtins 'vector-range))
+
 (export slice (get (car **root**) :builtins 'vector-slice))
 
 (export (starts-with v prefix)

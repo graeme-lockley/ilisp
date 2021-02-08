@@ -1594,6 +1594,33 @@ static Value *vector_nth(Value *parameters, Value *env)
     return VECTOR(parameter[0]).items[nth];
 }
 
+static Value *vector_range(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "vector-range");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_NUMBER(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-range"), 0, mkSymbol("number"), parameter[0]);
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("vector-range"), 1, mkString("number"), parameter[1]);
+
+    int start = NUMBER(parameter[0]);
+    int end = NUMBER(parameter[1]);
+
+    if (start > end)
+        return VEmptyVector;
+
+    int length = end - start + 1;
+    Value **buffer = (Value **)malloc(length * sizeof(Value *));
+    for (int l = 0; start <= end; l += 1, start += 1) 
+        buffer[l] = mkNumber(start);
+
+    return mkVectorUse(buffer, length);
+}
+
 static Value *vector_slice(Value *parameters, Value *env)
 {
     Value *parameter[3];
@@ -1741,6 +1768,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
+    add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
 
     define("list", "(fn x x)", root_scope);

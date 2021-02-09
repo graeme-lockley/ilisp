@@ -86,6 +86,11 @@
    (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] "0" (fn (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
+(Unit.test "mutable"
+    (Unit.assert-equals (Vector.mutable []) [])
+    (Unit.assert-truthy (mutable? (Vector.mutable [])))
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (Vector.nth [] 5) ())
     (Unit.assert-equals (Vector.nth [1 2 3] (- 1)) ())

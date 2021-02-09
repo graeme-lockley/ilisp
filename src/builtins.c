@@ -1583,6 +1583,27 @@ static Value *vector_filter(Value *parameters, Value *env)
     return result;
 }
 
+static Value *vector_mutable(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-mutable");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *args = parameter[0];
+    if (!IS_VECTOR(args))
+        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkSymbol("vector"), args);
+
+    int number_of_items = VECTOR(args).length;
+    Value **items = VECTOR(args).items;
+    Value **buffer =  (Value **) malloc (number_of_items * sizeof(Value *));
+    memcpy(buffer, items, number_of_items * sizeof(Value *));
+    Value *result = mkVectorUse(buffer, number_of_items);
+    result->tag &= ~VP_IMMUTABLE; 
+    return result;
+}
+
 static Value *vector_nth(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1810,6 +1831,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
+    add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));

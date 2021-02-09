@@ -11,6 +11,7 @@
 #include "printer.h"
 #include "reader.h"
 #include "repl.h"
+#include "string_builder.h"
 #include "value.h"
 
 Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name)
@@ -1449,6 +1450,40 @@ static Value *string_ends_with(Value *parameters, Value *env)
     return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VNil;
 }
 
+static Value *string_filter(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-filter");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *f = parameter[1];
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-filter"), 0, mkSymbol("string"), parameter[0]);
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("string-filter"), 1, mkSymbol("procedure"), f);
+
+    StringBuilder *buffer = string_builder_init();
+
+    char *str = STRING(parameter[0]);
+    int length = strlen(str);
+    for (int lp = 0; lp < length; lp += 1)
+    {
+        int c = str[lp];
+        Value *v = Repl_eval_procedure(f, mkPair(mkNumber(c), VNil), env);
+        if (IS_EXCEPTION(v))
+            return v;
+
+        if (Value_truthy(v))
+            string_builder_append_char(buffer, (char)c);
+    }
+
+    return mkStringUse(string_builder_free_use(buffer));
+}
+
 static Value *string_starts_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1597,10 +1632,10 @@ static Value *vector_mutable(Value *parameters, Value *env)
 
     int number_of_items = VECTOR(args).length;
     Value **items = VECTOR(args).items;
-    Value **buffer =  (Value **) malloc (number_of_items * sizeof(Value *));
+    Value **buffer = (Value **)malloc(number_of_items * sizeof(Value *));
     memcpy(buffer, items, number_of_items * sizeof(Value *));
     Value *result = mkVectorUse(buffer, number_of_items);
-    result->tag &= ~VP_IMMUTABLE; 
+    result->tag &= ~VP_IMMUTABLE;
     return result;
 }
 
@@ -1854,6 +1889,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
+    add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));

@@ -118,6 +118,16 @@ Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_out_of_range(Value *procedure_name, Value *operand, Value *index) {
+    Value *exception_name = mkSymbol("OutOfRange");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure_name);
+    map_set_bang(exception_payload, mkKeyword(":operand"), operand);
+    map_set_bang(exception_payload, mkKeyword(":index"), index);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_system_error(Value *procedure, Value *parameters) {
     Value *exception_name = mkSymbol("SystemError");
     Value *exception_payload = map_create();
@@ -166,3 +176,13 @@ Value *exceptions_value_not_applicable(Value *value, Value *arguments)
 
     return mkException(mkPair(exception_name, exception_payload));
 }
+
+Value *exceptions_vector_is_immutable(Value *procedure_name, Value *operand) {
+    Value *exception_name = mkSymbol("VectorIsImmutable");
+    Value *exception_payload = map_create();
+    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure_name);
+    map_set_bang(exception_payload, mkKeyword(":operand"), operand);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+

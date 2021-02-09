@@ -24,10 +24,12 @@ extern Value *exceptions_invalid_argument(Value *procedure_name, int argument_nu
 extern Value *exceptions_invalid_fn_form(Value *parameters);
 extern Value *exceptions_invalid_procedure_parameter(int parameter_number, Value *parameter);
 extern Value *exceptions_non_terminated_string(char *source_name, Value *start, Value *end);
+extern Value *exceptions_out_of_range(Value *procedure_name, Value *operand, Value *index);
 extern Value *exceptions_system_error(Value *procedure, Value *parameters);
 extern Value *exceptions_unexpected_end_of_stream(char *expected, struct Exception_Position *position);
 extern Value *exceptions_unexpected_token(struct Exception_Position *position);
 extern Value *exceptions_unknown_symbol(Value *symbol);
 extern Value *exceptions_value_not_applicable(Value *value, Value *arguments);
+extern Value *exceptions_vector_is_immutable(Value *procedure_name, Value *operand);
 
 #endif

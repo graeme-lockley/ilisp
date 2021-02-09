@@ -100,6 +100,33 @@
     (Unit.assert-equals (Vector.nth [1 2 () 4 5] 2) ())
 )
 
+(Unit.test "nth!"
+    (Unit.assert-equals (Vector.nth! (Vector.mutable [1]) 0 2) [2])
+    (Unit.assert-equals (Vector.nth! (Vector.mutable [1 2]) 1 5) [1 5])
+    (Unit.assert-equals (Vector.nth! (Vector.mutable [1 2 () 4 5]) 2 3) [1 2 3 4 5])
+
+    (Unit.assert-truthy (mutable? (Vector.nth! (Vector.mutable [1 2 () 4 5]) 2 3)))
+
+    (Unit.assert-signal (Vector.nth! (Vector.mutable [1]) 2 0) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'OutOfRange)
+        (Unit.assert-equals (get (cdr signal) :index) 2)
+        (Unit.assert-equals (get (cdr signal) :operand) [1])
+    )))
+
+    (Unit.assert-signal (Vector.nth! (Vector.mutable [1]) (- 3) 0) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'OutOfRange)
+        (Unit.assert-equals (get (cdr signal) :index) (- 3))
+        (Unit.assert-equals (get (cdr signal) :operand) [1])
+        (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
+    )))
+
+    (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'VectorIsImmutable)
+        (Unit.assert-equals (get (cdr signal) :operand) [1 2 3])
+        (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
+    )))
+)
+
 (Unit.test "range"
     (Unit.assert-equals (Vector.range 2 2) [2])
     (Unit.assert-equals (Vector.range 0 10) [0 1 2 3 4 5 6 7 8 9 10])

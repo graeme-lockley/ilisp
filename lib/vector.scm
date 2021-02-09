@@ -76,6 +76,8 @@
 
 (export nth (get (car **root**) :builtins 'vector-nth))
 
+(export nth! (get (car **root**) :builtins 'vector-nth!))
+
 (export range (get (car **root**) :builtins 'vector-range))
 
 (export reverse (get (car **root**) :builtins 'vector-reverse))

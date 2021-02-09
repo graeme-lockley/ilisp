@@ -1042,6 +1042,17 @@ static Value *mapp(Value *parameters, Value *env)
     return IS_MAP(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *mutablep(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "mutable?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_IMMUTABLE(parameter[0]) ? VNil : VTrue;
+}
+
 static Value *nilp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1767,6 +1778,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "macro?", mkNativeProcedure(macrop));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
+    add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
     add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(nth));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));

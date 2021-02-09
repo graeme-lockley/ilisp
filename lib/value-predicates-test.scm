@@ -32,6 +32,22 @@
     (Unit.assert-truthy (macro? cond))
 )
 
+(Unit.test "mutable?"
+    (Unit.assert-falsy (mutable? ()))
+    (Unit.assert-falsy (mutable? 1))
+    (Unit.assert-falsy (mutable? "name"))
+    (Unit.assert-falsy (mutable? 'name))
+    (Unit.assert-falsy (mutable? :name))
+    (Unit.assert-falsy (mutable? '(1 2 3)))
+    (Unit.assert-falsy (mutable? []))
+    (Unit.assert-falsy (mutable? [1 2 3]))
+    (Unit.assert-falsy (mutable? {}))
+    (Unit.assert-falsy (mutable? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (mutable? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (mutable? car))
+    (Unit.assert-falsy (mutable? cond))
+)
+
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))

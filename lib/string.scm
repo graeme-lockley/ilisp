@@ -9,3 +9,7 @@
 (export slice (get (car **root**) :builtins 'string-slice))
 
 (export starts-with (get (car **root**) :builtins 'string-starts-with))
+
+(export (take s n)
+    (slice s 0 (- n 1))
+)

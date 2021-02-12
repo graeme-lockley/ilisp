@@ -108,3 +108,10 @@
         (Unit.assert-equals (get (cdr signal) :procedure) 'string-starts-with)
     )))
 )
+
+(Unit.test "take"
+    (Unit.assert-equals (S.take "hello" (- 3)) "")
+    (Unit.assert-equals (S.take "hello" 0) "")
+    (Unit.assert-equals (S.take "hello" 2) "he")
+    (Unit.assert-equals (S.take "hello" 10) "hello")
+)

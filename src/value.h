@@ -103,6 +103,7 @@ extern Value *mkCharacter(char character);
 extern Value *mkNumber(int number);
 #define NUMBER(v) ((v)->intV)
 
+extern Value *VEmptyString;
 extern Value *mkString(char *string);
 extern Value *mkStringUse(char *string);
 #define STRING(v) ((v)->strV)

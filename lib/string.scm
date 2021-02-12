@@ -6,4 +6,6 @@
 
 (export nth (get (car **root**) :builtins 'string-nth))
 
+(export slice (get (car **root**) :builtins 'string-slice))
+
 (export starts-with (get (car **root**) :builtins 'string-starts-with))

@@ -44,6 +44,14 @@
     (Unit.assert-equals (S.nth "" 0) ())
 )
 
+(Unit.test "slice"
+    (Unit.assert-equals (S.slice "hello" 1 1) "e")
+    (Unit.assert-equals (S.slice "hello" 1 3) "ell")
+    (Unit.assert-equals (S.slice "hello" 1 10) "ello")
+    (Unit.assert-equals (S.slice "hello" 0 2) "hel")
+    (Unit.assert-equals (S.slice "hello" (- 10) 2) "hel")
+)
+
 (Unit.test "starts-with"
     (Unit.assert-equals (S.starts-with "" "") t)
     (Unit.assert-equals (S.starts-with "hello world" "") t)

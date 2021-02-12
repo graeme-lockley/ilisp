@@ -272,6 +272,14 @@ static Value *car(Value *parameters, Value *env)
         return VECTOR(parameter[0]).items[0];
     }
 
+    if (IS_STRING(parameter[0]))
+    {
+        if (strlen(STRING(parameter[0])) == 0)
+            return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("string"), parameter[0]);
+
+        return mkNumber(STRING(parameter[0])[0]);
+    }
+
     if (!IS_PAIR(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameter[0]);
 
@@ -299,6 +307,14 @@ Value *cdr(Value *parameters, Value *env)
         memcpy(result, VECTOR(parameter[0]).items + 1, result_size * sizeof(Value *));
 
         return mkVectorUse(result, result_size);
+    }
+
+    if (IS_STRING(parameter[0]))
+    {
+        if (strlen(STRING(parameter[0])) == 0)
+            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("string"), parameter[0]);
+
+        return mkStringUse(strdup(STRING(parameter[0]) + 1));
     }
 
     if (!IS_PAIR(parameter[0]))
@@ -1830,10 +1846,10 @@ static Value *vector_slice(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("vector-slice"), 0, mkSymbol("vector"), parameter[0]);
 
     if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-slice"), 1, mkSymbol("vector"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("vector-slice"), 1, mkSymbol("number"), parameter[1]);
 
     if (!IS_NUMBER(parameter[2]))
-        return exceptions_invalid_argument(mkSymbol("vector-slice"), 2, mkSymbol("vector"), parameter[2]);
+        return exceptions_invalid_argument(mkSymbol("vector-slice"), 2, mkSymbol("number"), parameter[2]);
 
     Value **items = VECTOR(parameter[0]).items;
     int vector_size = VECTOR(parameter[0]).length;

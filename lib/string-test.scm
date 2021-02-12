@@ -2,6 +2,29 @@
 
 (import "./unit.scm" :as Unit)
 
+(Unit.test "car"
+    (Unit.assert-equals (car "h") 104)
+    (Unit.assert-equals (car "hello") 104)
+
+    (Unit.assert-signal (car []) (fn (signal) (do
+        (Unit.assert-equals (car signal) 'InvalidArgument)
+        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (get (cdr signal) :procedure) 'car)
+    )))
+)
+
+(Unit.test "cdr"
+    (Unit.assert-equals (cdr "h") "")
+    (Unit.assert-equals (cdr "hello") "ello")
+
+    (Unit.assert-signal (cdr "") (fn (signal) (do
+        (Unit.assert-equals (car signal) 'InvalidArgument)
+        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
+    )))
+)
+
+
 (Unit.test "count"
     (Unit.assert-equals (S.count "") 0)
     (Unit.assert-equals (S.count "hello") 5)

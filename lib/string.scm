@@ -1,5 +1,9 @@
 (export count (get (car **root**) :builtins 'string-count))
 
+(export (drop v n)
+    (slice v n (count v))
+)
+
 (export ends-with (get (car **root**) :builtins 'string-ends-with))
 
 (export filter (get (car **root**) :builtins 'string-filter))

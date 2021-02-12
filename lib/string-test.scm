@@ -29,6 +29,13 @@
     (Unit.assert-equals (S.count "hello") 5)
 )
 
+(Unit.test "drop"
+    (Unit.assert-equals (S.drop "" 2) "")
+    (Unit.assert-equals (S.drop "hello" 2) "llo")
+    (Unit.assert-equals (S.drop "hello" (- 3)) "hello")
+    (Unit.assert-equals (S.drop "hello" 20) "")
+)
+
 (Unit.test "ends-with"
     (Unit.assert-equals (S.ends-with "" "") t)
     (Unit.assert-equals (S.ends-with "hello" "") t)

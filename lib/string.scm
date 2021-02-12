@@ -13,3 +13,7 @@
 (export (take s n)
     (slice s 0 (- n 1))
 )
+
+(export (take-right s n)
+    (slice s (- (count s) n) (count s))
+)

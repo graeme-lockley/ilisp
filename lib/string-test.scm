@@ -115,3 +115,10 @@
     (Unit.assert-equals (S.take "hello" 2) "he")
     (Unit.assert-equals (S.take "hello" 10) "hello")
 )
+
+(Unit.test "take-right"
+    (Unit.assert-equals (S.take-right "hello" (- 3)) "")
+    (Unit.assert-equals (S.take-right "hello" 0) "")
+    (Unit.assert-equals (S.take-right "hello" 2) "lo")
+    (Unit.assert-equals (S.take-right "hello" 10) "hello")
+)

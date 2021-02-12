@@ -4,6 +4,10 @@
     (slice v n (count v))
 )
 
+(export (drop-right v n)
+    (slice v 0 (- (count v) n 1))
+)
+
 (export ends-with (get (car **root**) :builtins 'string-ends-with))
 
 (export filter (get (car **root**) :builtins 'string-filter))

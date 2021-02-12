@@ -36,6 +36,13 @@
     (Unit.assert-equals (S.drop "hello" 20) "")
 )
 
+(Unit.test "drop-right"
+    (Unit.assert-equals (S.drop-right "" 2) "")
+    (Unit.assert-equals (S.drop-right "hello" 2) "hel")
+    (Unit.assert-equals (S.drop-right "hello" (- 3)) "hello")
+    (Unit.assert-equals (S.drop-right "hello" 20) "")
+)
+
 (Unit.test "ends-with"
     (Unit.assert-equals (S.ends-with "" "") t)
     (Unit.assert-equals (S.ends-with "hello" "") t)

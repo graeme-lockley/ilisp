@@ -2,6 +2,11 @@
 
 (import "./unit.scm" :as Unit)
 
+(Unit.test "count"
+    (Unit.assert-equals (S.count "") 0)
+    (Unit.assert-equals (S.count "hello") 5)
+)
+
 (Unit.test "ends-with"
     (Unit.assert-equals (S.ends-with "" "") t)
     (Unit.assert-equals (S.ends-with "hello" "") t)

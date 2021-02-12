@@ -1425,6 +1425,20 @@ static Value *stringp(Value *parameters, Value *env)
     return IS_STRING(parameter[0]) ? VTrue : VNil;
 }
 
+static Value *string_count(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string-count");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-count"), 0, mkSymbol("string"), parameter[0]);
+
+    return mkNumber(strlen(STRING(parameter[0])));
+}
+
 static Value *string_ends_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1907,6 +1921,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
+    add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));
     add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(string_nth));

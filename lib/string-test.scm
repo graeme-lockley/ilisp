@@ -6,7 +6,7 @@
     (Unit.assert-equals (car "h") 104)
     (Unit.assert-equals (car "hello") 104)
 
-    (Unit.assert-signal (car []) (fn (signal) (do
+    (Unit.assert-signal (car "") (fn (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'car)
@@ -23,7 +23,6 @@
         (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
     )))
 )
-
 
 (Unit.test "count"
     (Unit.assert-equals (S.count "") 0)
@@ -59,12 +58,24 @@
     (Unit.assert-equals (S.filter "hello to the world" (fn (c) (> c 255))) "")
 )
 
+(Unit.test "first"
+    (Unit.assert-equals (first "") ())
+    (Unit.assert-equals (first "h") 104)
+    (Unit.assert-equals (first "hello") 104)
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (S.nth "hello" 1) 101)
     (Unit.assert-equals (S.nth "hello" 2) 108)
     (Unit.assert-equals (S.nth "hello" (- 1)) ())
     (Unit.assert-equals (S.nth "hello" 10) ())
     (Unit.assert-equals (S.nth "" 0) ())
+)
+
+(Unit.test "rest"
+    (Unit.assert-equals (rest "") ())
+    (Unit.assert-equals (rest "h") "")
+    (Unit.assert-equals (rest "hello") "ello")
 )
 
 (Unit.test "slice"

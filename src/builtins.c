@@ -540,6 +540,8 @@ static Value *first(Value *parameters, Value *env)
 
     if (IS_VECTOR(parameter[0]))
         return VECTOR(parameter[0]).length > 0 ? VECTOR(parameter[0]).items[0] : VNil;
+    else if (IS_STRING(parameter[0]))
+        return strlen(STRING(parameter[0])) > 0 ? mkNumber(STRING(parameter[0])[0]) : VNil;
     else
         return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
 }
@@ -1342,6 +1344,8 @@ static Value *rest(Value *parameters, Value *env)
 
         return mkVectorUse(result, result_size);
     }
+    else if (IS_STRING(parameter[0]))
+        return strlen(STRING(parameter[0])) > 0 ? mkStringUse(strdup(STRING(parameter[0]) + 1)) : VNil;
     else
         return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
 }
@@ -1528,9 +1532,10 @@ static Value *string_nth(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("string-nth"), 1, mkSymbol("number"), parameter[1]);
 
     char *string = STRING(parameter[0]);
+    int string_length = strlen(string);
     int n = NUMBER(parameter[1]);
 
-    return (n < 0 || n >= strlen(string)) ? VNil : mkNumber(string[n]);
+    return (n < 0) || (n >= string_length) ? VNil : mkNumber(string[n]);
 }
 
 static Value *string_slice(Value *parameters, Value *env)

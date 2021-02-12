@@ -1484,6 +1484,25 @@ static Value *string_filter(Value *parameters, Value *env)
     return mkStringUse(string_builder_free_use(buffer));
 }
 
+static Value *string_nth(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-nth");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-nth"), 0, mkSymbol("string"), parameter[0]);
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("string-nth"), 1, mkSymbol("number"), parameter[1]);
+
+    char *string = STRING(parameter[0]);
+    int n = NUMBER(parameter[1]);
+
+    return (n < 0 || n >= strlen(string)) ? VNil : mkNumber(string[n]);
+}
+
 static Value *string_starts_with(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1890,6 +1909,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));
+    add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(string_nth));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));

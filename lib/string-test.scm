@@ -110,6 +110,12 @@
     (Unit.assert-equals (rest "hello") "ello")
 )
 
+(Unit.test "reverse"
+    (Unit.assert-equals (S.reverse "") "")
+    (Unit.assert-equals (S.reverse "h") "h")
+    (Unit.assert-equals (S.reverse "hello") "olleh")
+)
+
 (Unit.test "slice"
     (Unit.assert-equals (S.slice "hello" 1 1) "e")
     (Unit.assert-equals (S.slice "hello" 1 3) "ell")

@@ -1538,6 +1538,31 @@ static Value *string_nth(Value *parameters, Value *env)
     return (n < 0) || (n >= string_length) ? VNil : mkNumber(string[n]);
 }
 
+static Value *string_reverse(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string-reverse");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("string-reverse"), 0, mkSymbol("string"), parameter[0]);
+
+    char *string = STRING(parameter[0]);
+    int string_length = strlen(STRING(parameter[0]));
+    if (string_length <= 1)
+        return parameter[0];
+
+    char *result = (char *) malloc(string_length + 1);
+    for (int i = 0, reverse_i = string_length - 1; i <= reverse_i; i += 1, reverse_i -= 1) {
+        result[i] = string[reverse_i];
+        result[reverse_i] = string[i];
+    }
+    result[string_length] = 0;
+    return mkStringUse(result);
+}
+
 static Value *string_slice(Value *parameters, Value *env)
 {
     Value *parameter[3];
@@ -1986,6 +2011,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));
     add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(string_nth));
+    add_binding_into_environment(builtin_bindings, "string-reverse", mkNativeProcedure(string_reverse));
     add_binding_into_environment(builtin_bindings, "string-slice", mkNativeProcedure(string_slice));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));

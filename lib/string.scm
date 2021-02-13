@@ -49,6 +49,8 @@
 
 (export nth (get (car **root**) :builtins 'string-nth))
 
+(export reverse (get (car **root**) :builtins 'string-reverse))
+
 (export slice (get (car **root**) :builtins 'string-slice))
 
 (export starts-with (get (car **root**) :builtins 'string-starts-with))

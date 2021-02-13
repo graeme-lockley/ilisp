@@ -323,6 +323,22 @@ Value *cdr(Value *parameters, Value *env)
     return CDR(parameter[0]);
 }
 
+Value *char_to_string(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "char->string");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_NUMBER(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("char-string"), 0, mkSymbol("number"), parameter[0]);
+
+    char result[] = {'X', '\0'};
+    result[0] = (char) NUMBER(parameter[0]);
+    return mkString(result);
+}
+
 static Value *concat(Value *parameters, Value *env)
 {
     Value *result = VNil;
@@ -1960,6 +1976,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(assoc_bang));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
+    add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));

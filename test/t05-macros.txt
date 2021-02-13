@@ -347,7 +347,11 @@ a
 (unless 1 7 8)
 >8
 
-(do (assoc! (car **root**) 'unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) (unless2 () 7 8))
+(do 
+    (assoc! (car **root**) 'not (fn (x) (if x () (=))))
+    (assoc! (car **root**) 'unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) 
+    (unless2 () 7 8)
+)
 >7
 (unless2 1 7 8)
 >8

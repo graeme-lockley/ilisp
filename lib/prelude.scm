@@ -71,6 +71,8 @@
 (export t (=))
 (export f ())
 
+(export (not x) (if x f t))
+
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly
 ; and is used to bootstrap the package mechanism.

@@ -28,6 +28,14 @@
   (Unit.assert-equals (cond f 7 f 8 f 9) ())
 )
 
+(Unit.test "not"
+  (Unit.assert-truthy (not f))
+  (Unit.assert-truthy (not (= 1 2)))
+
+  (Unit.assert-falsy (not t))
+  (Unit.assert-falsy (not (= 1 1)))
+)
+
 (Unit.test "or"
   (Unit.assert-equals (macroexpand (or)) ())
   (Unit.assert-equals (macroexpand (or A)) 'A)

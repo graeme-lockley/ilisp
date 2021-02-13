@@ -2042,7 +2042,6 @@ Value *builtins_initialise_environment()
 
     define("list", "(fn x x)", root_scope);
     define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
-    define("not", "(fn (p) (if p () (=)))", root_scope);
 
     return root_scope;
 }

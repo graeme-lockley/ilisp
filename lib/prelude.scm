@@ -16,10 +16,7 @@
   (if (nil? terms) 
     t
     (if (= (count terms) 1)
-      `(if ~(first terms) 
-        t
-        ()
-      )
+      (first terms) 
       `(if ~(first terms) 
         (and ~@(rest terms)) 
         ()
@@ -32,10 +29,7 @@
   (if (nil? terms) 
     () 
     (if (= (count terms) 1)
-      `(if ~(first terms) 
-        t
-        ()
-      )
+      (first terms)
       `(if ~(first terms) 
         t
         (or ~@(rest terms)) 

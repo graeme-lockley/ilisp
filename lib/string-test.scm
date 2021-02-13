@@ -78,6 +78,24 @@
     (Unit.assert-equals (first "hello") 104)
 )
 
+(Unit.test "fold"
+    (define (icons a b) (cons b a))
+
+    (Unit.assert-equals (S.fold "" () icons) '())
+    (Unit.assert-equals (S.fold "h" () icons) '(104))
+    (Unit.assert-equals (S.fold "hello" () icons) '(111 108 108 101 104))
+
+   (Unit.assert-equals (S.fold "hello" "0" (fn (a v) (str "(" a " + " v ")"))) "(((((0 + 104) + 101) + 108) + 108) + 111)")
+)
+
+(Unit.test "fold-right"
+   (Unit.assert-equals (S.fold-right "" () cons) '())
+   (Unit.assert-equals (S.fold-right "h" () cons) '(104))
+   (Unit.assert-equals (S.fold-right "hello" () cons) '(104 101 108 108 111))
+
+   (Unit.assert-equals (S.fold-right "hello" "0" (fn (v a) (str "(" v " + " a ")"))) "(104 + (101 + (108 + (108 + (111 + 0)))))")
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (S.nth "hello" 1) 101)
     (Unit.assert-equals (S.nth "hello" 2) 108)

@@ -335,7 +335,7 @@ Value *char_to_string(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("char-string"), 0, mkSymbol("number"), parameter[0]);
 
     char result[] = {'X', '\0'};
-    result[0] = (char) NUMBER(parameter[0]);
+    result[0] = (char)NUMBER(parameter[0]);
     return mkString(result);
 }
 
@@ -1009,6 +1009,35 @@ static Value *list_filter(Value *parameters, Value *env)
     }
 }
 
+static Value *list_nth(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-nth");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("list-nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("list-nth"), 1, mkSymbol("number"), parameter[1]);
+
+    int nth = NUMBER(parameter[1]);
+
+    Value *cursor = parameter[0];
+    while (1)
+    {
+        if (IS_NIL(cursor) || !IS_PAIR(cursor))
+            return VNil;
+
+        if (nth == 0)
+            return CAR(cursor);
+
+        nth -= 1;
+        cursor = CDR(cursor);
+    }
+}
+
 static Value *listp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1570,8 +1599,9 @@ static Value *string_reverse(Value *parameters, Value *env)
     if (string_length <= 1)
         return parameter[0];
 
-    char *result = (char *) malloc(string_length + 1);
-    for (int i = 0, reverse_i = string_length - 1; i <= reverse_i; i += 1, reverse_i -= 1) {
+    char *result = (char *)malloc(string_length + 1);
+    for (int i = 0, reverse_i = string_length - 1; i <= reverse_i; i += 1, reverse_i -= 1)
+    {
         result[i] = string[reverse_i];
         result[reverse_i] = string[i];
     }
@@ -2022,6 +2052,7 @@ Value *builtins_initialise_environment()
 
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
+    add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));

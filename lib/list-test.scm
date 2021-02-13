@@ -17,4 +17,10 @@
 )
 
 (Unit.test "nth"
+    (Unit.assert-equals (List.nth () 5) ())
+    (Unit.assert-equals (List.nth (list 1 2 3) (- 1)) ())
+    (Unit.assert-equals (List.nth (list 1) 0) 1)
+    (Unit.assert-equals (List.nth (list 1 2) 1) 2)
+    (Unit.assert-equals (List.nth (list 1 2) 2) ())
+    (Unit.assert-equals (List.nth (list 1 2 () 4 5) 2) ())
 )

@@ -1,10 +1,15 @@
 (import "./unit.scm" :as Unit)
 
 (Unit.test "and"
-  (Unit.assert-equals (and) 1)
-  (Unit.assert-equals (and 1) 1)
+  (Unit.assert-equals (macroexpand (and)) t)
+  (Unit.assert-equals (macroexpand (and A)) (list 'if 'A t ()))
+  (Unit.assert-equals (macroexpand (and A B)) (list 'if 'A (list 'and 'B) ()))
+  (Unit.assert-equals (macroexpand (and A B C)) (list 'if 'A (list 'and 'B 'C) ()))
+
+  (Unit.assert-equals (and) t)
+  (Unit.assert-equals (and 1) t)
   (Unit.assert-equals (and ()) ())
-  (Unit.assert-equals (and 1 1) 1)
+  (Unit.assert-equals (and 1 1) t)
   (Unit.assert-equals (and 1 ()) ())
   (Unit.assert-equals (and () (/ 1 0)) ())
 )

@@ -16,6 +16,22 @@
     (Unit.assert-falsy (fn? cond))
 )
 
+(Unit.test "keyword?"
+    (Unit.assert-falsy (keyword? ()))
+    (Unit.assert-falsy (keyword? 1))
+    (Unit.assert-falsy (keyword? "name"))
+    (Unit.assert-falsy (keyword? 'name))
+    (Unit.assert-truthy (keyword? :name))
+    (Unit.assert-falsy (keyword? '(1 2 3)))
+    (Unit.assert-falsy (keyword? []))
+    (Unit.assert-falsy (keyword? [1 2 3]))
+    (Unit.assert-falsy (keyword? {}))
+    (Unit.assert-falsy (keyword? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (keyword? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (keyword? car))
+    (Unit.assert-falsy (keyword? cond))
+)
+
 (Unit.test "macro?"
     (Unit.assert-falsy (macro? ()))
     (Unit.assert-falsy (macro? 1))
@@ -30,6 +46,22 @@
     (Unit.assert-falsy (macro? (fn (n) (+ n 1))))
     (Unit.assert-falsy (macro? car))
     (Unit.assert-truthy (macro? cond))
+)
+
+(Unit.test "map?"
+    (Unit.assert-falsy (map? ()))
+    (Unit.assert-falsy (map? 1))
+    (Unit.assert-falsy (map? "name"))
+    (Unit.assert-falsy (map? 'name))
+    (Unit.assert-falsy (map? :name))
+    (Unit.assert-falsy (map? '(1 2 3)))
+    (Unit.assert-falsy (map? []))
+    (Unit.assert-falsy (map? [1 2 3]))
+    (Unit.assert-truthy (map? {}))
+    (Unit.assert-truthy (map? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (map? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (map? car))
+    (Unit.assert-falsy (map? cond))
 )
 
 (Unit.test "mutable?"
@@ -48,6 +80,22 @@
     (Unit.assert-falsy (mutable? cond))
 )
 
+(Unit.test "nil?"
+    (Unit.assert-truthy (nil? ()))
+    (Unit.assert-falsy (nil? 1))
+    (Unit.assert-falsy (nil? "name"))
+    (Unit.assert-falsy (nil? 'name))
+    (Unit.assert-falsy (nil? :name))
+    (Unit.assert-falsy (nil? '(1 2 3)))
+    (Unit.assert-falsy (nil? []))
+    (Unit.assert-falsy (nil? [1 2 3]))
+    (Unit.assert-falsy (nil? {}))
+    (Unit.assert-falsy (nil? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (nil? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (nil? car))
+    (Unit.assert-falsy (nil? cond))
+)
+
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))
@@ -62,6 +110,22 @@
     (Unit.assert-falsy (number? (fn (n) (+ n 1))))
     (Unit.assert-falsy (number? car))
     (Unit.assert-falsy (number? cond))
+)
+
+(Unit.test "sequential?"
+    (Unit.assert-truthy (sequential? ()))
+    (Unit.assert-falsy (sequential? 1))
+    (Unit.assert-falsy (sequential? "name"))
+    (Unit.assert-falsy (sequential? 'name))
+    (Unit.assert-falsy (sequential? :name))
+    (Unit.assert-truthy (sequential? '(1 2 3)))
+    (Unit.assert-truthy (sequential? []))
+    (Unit.assert-truthy (sequential? [1 2 3]))
+    (Unit.assert-falsy (sequential? {}))
+    (Unit.assert-falsy (sequential? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (sequential? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (sequential? car))
+    (Unit.assert-falsy (sequential? cond))
 )
 
 (Unit.test "string?"
@@ -94,4 +158,20 @@
     (Unit.assert-falsy (symbol? (fn (n) (+ n 1))))
     (Unit.assert-falsy (symbol? car))
     (Unit.assert-falsy (symbol? cond))
+)
+
+(Unit.test "vector?"
+    (Unit.assert-falsy (vector? ()))
+    (Unit.assert-falsy (vector? 1))
+    (Unit.assert-falsy (vector? "name"))
+    (Unit.assert-falsy (vector? 'name))
+    (Unit.assert-falsy (vector? :name))
+    (Unit.assert-falsy (vector? '(1 2 3)))
+    (Unit.assert-truthy (vector? []))
+    (Unit.assert-truthy (vector? [1 2 3]))
+    (Unit.assert-falsy (vector? {}))
+    (Unit.assert-falsy (vector? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (vector? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (vector? car))
+    (Unit.assert-falsy (vector? cond))
 )

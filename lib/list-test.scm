@@ -8,6 +8,15 @@
     (Unit.assert-equals (List.count '(1 1 1 1 1 1)) 6)
 )
 
+(Unit.test "ends-with"
+    (Unit.assert-truthy (List.ends-with '(1 2 3) ()))
+    (Unit.assert-truthy (List.ends-with '(1 2 3) '(2 3)))
+    (Unit.assert-truthy (List.ends-with '(1 2 3) '(1 2 3)))
+
+    (Unit.assert-falsy (List.ends-with '(1 2 3) '(1)))
+    (Unit.assert-falsy (List.ends-with '(1 2) '(0 1 2)))
+)
+
 (Unit.test "filter"
     (define (even? n) (= (* (/ n 2) 2) n))
     (Unit.assert-equals (List.filter '() even?) '())
@@ -29,6 +38,11 @@
     (Unit.assert-equals (List.nth (list 1 2) 1) 2)
     (Unit.assert-equals (List.nth (list 1 2) 2) ())
     (Unit.assert-equals (List.nth (list 1 2 () 4 5) 2) ())
+)
+
+(Unit.test "reverse"
+    (Unit.assert-equals (List.reverse ()) ())
+    (Unit.assert-equals (List.reverse '(1 2 3 4 5)) '(5 4 3 2 1))
 )
 
 (Unit.test "starts-with"

@@ -29,11 +29,17 @@
 )
 
 (export-macro (or . terms)
-  `(if (nil? '~terms) 
+  (if (nil? terms) 
     () 
-    (if ~(first terms) 
-      1
-      (or ~@(rest terms)) 
+    (if (= (count terms) 1)
+      `(if ~(first terms) 
+        t
+        ()
+      )
+      `(if ~(first terms) 
+        t
+        (or ~@(rest terms)) 
+      )
     )
   )
 )

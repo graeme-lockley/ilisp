@@ -114,6 +114,21 @@ static int starts_with(const char *restrict string, const char *restrict prefix)
     return 1;
 }
 
+Value *string_to_list(Value *v)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    char *string = STRING(v);
+    int string_length = strlen(string);
+    for (int l = 0; l < string_length; l += 1)
+    {
+        Value *v = mkPair(mkNumber(string[l]), VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    return root;
+}
+
 Value *vector_to_list(Value *v)
 {
     Value *root = VNil;
@@ -1068,9 +1083,13 @@ static Value *map(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    Value *args = IS_VECTOR(parameter[0]) ? vector_to_list(parameter[0]) : parameter[0];
+    Value *args =
+        IS_VECTOR(parameter[0])   ? vector_to_list(parameter[0])
+        : IS_STRING(parameter[0]) ? string_to_list(parameter[0])
+                                  : parameter[0];
+
     if (!IS_NIL(args) && !IS_PAIR(args))
-        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), VNil))), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), mkPair(mkSymbol("string"), VNil)))), parameter[0]);
 
     Value *f = parameter[1];
     if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))

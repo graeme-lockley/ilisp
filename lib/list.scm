@@ -11,7 +11,7 @@
 (export nth (get (car **root**) :builtins 'list-nth))
 
 (export (reverse lst)
-    (map (Vector.reverse (vec lst)) (fn (n) n))
+    (to-list (Vector.reverse (vec lst)))
 )
 
 (export (starts-with lst prefix)
@@ -24,5 +24,21 @@
 
         :else
             (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
+    )
+)
+
+(export (to-list s)
+    (cond
+        (nil? s)
+            s
+
+        (list? s)
+            s
+
+        (or (vector? s) (string? s))
+            (map s (fn (n) n))
+
+        :else
+            (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure 'to-list})
     )
 )

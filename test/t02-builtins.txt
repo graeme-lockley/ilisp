@@ -523,7 +523,7 @@ fred
 > (:exception (ExpectedArgumentCount . {:arguments ((#PROCEDURE (n) (+ n 1))) :arg-count 2 :procedure map}))
 
 (map 1 (fn (n) (+ n 1)))
-> (:exception (InvalidArgument . {:received 1 :expected-type (pair vector ()) :arg-number 0 :procedure map}))
+> (:exception (InvalidArgument . {:received 1 :expected-type (pair vector () string) :arg-number 0 :procedure map}))
 
 (map '() (fn (n) (+ n 1)))
 > ()

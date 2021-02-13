@@ -2,6 +2,12 @@
 
 (import "./unit.scm" :as Unit)
 
+(Unit.test "count"
+    (Unit.assert-equals (List.count ()) 0)
+    (Unit.assert-equals (List.count '(1)) 1)
+    (Unit.assert-equals (List.count '(1 1 1 1 1 1)) 6)
+)
+
 (Unit.test "filter"
     (define (even? n) (= (* (/ n 2) 2) n))
     (Unit.assert-equals (List.filter '() even?) '())

@@ -31,13 +31,13 @@
 
 
 (count)
-> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure count}))
+> (:exception (ExpectedArgumentCount . {:arguments () :arg-count 1 :procedure list-count}))
 
 (count 1)
-> (:exception (InvalidArgument . {:received 1 :expected-type "pair" :arg-number 0 :procedure count}))
+> (:exception (InvalidArgument . {:received 1 :expected-type pair :arg-number 0 :procedure list-count}))
 
 (count '(1 2) '(3 4))
-> (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure count}))
+> (:exception (ExpectedArgumentCount . {:arguments ((1 2) (3 4)) :arg-count 1 :procedure list-count}))
 
 (count '())
 > 0

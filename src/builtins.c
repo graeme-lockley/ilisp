@@ -410,31 +410,6 @@ static Value *containp(Value *parameters, Value *env)
     return map_containsp(parameter[0], parameter[1]);
 }
 
-static Value *count(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "count");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *list = CAR(parameters);
-
-    int list_length = 0;
-    while (1)
-    {
-        if (IS_NIL(list))
-            return mkNumber(list_length);
-
-        if (IS_PAIR(list))
-            list = CDR(list);
-        else
-            return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), list);
-
-        list_length += 1;
-    }
-}
-
 static Value *dissoc(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
@@ -968,6 +943,31 @@ static Value *keywordp(Value *parameters, Value *env)
         return extract_result;
 
     return IS_KEYWORD(parameter[0]) ? VTrue : VFalse;
+}
+
+static Value *list_count(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "list-count");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *list = CAR(parameters);
+
+    int list_length = 0;
+    while (1)
+    {
+        if (IS_NIL(list))
+            return mkNumber(list_length);
+
+        if (IS_PAIR(list))
+            list = CDR(list);
+        else
+            return exceptions_invalid_argument(mkSymbol("list-count"), 0, mkSymbol("pair"), list);
+
+        list_length += 1;
+    }
 }
 
 static Value *list_filter(Value *parameters, Value *env)
@@ -2010,7 +2010,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
-    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(count));
+    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(list_count));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
     add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
     add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(emptyp));
@@ -2051,6 +2051,7 @@ Value *builtins_initialise_environment()
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
+    add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(list_count));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));

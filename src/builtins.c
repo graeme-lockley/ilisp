@@ -985,6 +985,34 @@ static Value *list_count(Value *parameters, Value *env)
     }
 }
 
+static Value *list_drop(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-drop");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *lst = parameter[0];
+    if (!IS_PAIR(lst) && !IS_NIL(lst))
+        return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("list-drop"), 1, mkSymbol("number"), parameter[1]);
+
+    int drop_count = NUMBER(parameter[1]);
+    while (1)
+    {
+        if (drop_count <= 0 || IS_NIL(lst))
+            return lst;
+
+        if (!IS_PAIR(lst))
+            return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+
+        lst = CDR(lst);
+        drop_count -= 1;
+    }
+}
+
 static Value *list_filter(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1050,6 +1078,41 @@ static Value *list_nth(Value *parameters, Value *env)
 
         nth -= 1;
         cursor = CDR(cursor);
+    }
+}
+
+static Value *list_take(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-take");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *lst = parameter[0];
+    if (!IS_PAIR(lst) && !IS_NIL(lst))
+        return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("list-take"), 1, mkSymbol("number"), parameter[1]);
+
+    int take_count = NUMBER(parameter[1]);
+    Value *root = VNil;
+    Value **root_cursor = &root;
+
+    while (1)
+    {
+        if (take_count <= 0 || IS_NIL(lst))
+            return root;
+
+        if (!IS_PAIR(lst))
+            return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+
+        Value *item = mkPair(CAR(lst), VNil);
+        *root_cursor = item;
+        root_cursor = &CDR(item);
+
+        lst = CDR(lst);
+        take_count -= 1;
     }
 }
 
@@ -2071,8 +2134,10 @@ Value *builtins_initialise_environment()
 
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(list_count));
+    add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
+    add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(list_take));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));

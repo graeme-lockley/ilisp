@@ -8,6 +8,13 @@
     (Unit.assert-equals (List.count '(1 1 1 1 1 1)) 6)
 )
 
+(Unit.test "drop"
+    (Unit.assert-equals (List.drop () 2) '())
+    (Unit.assert-equals (List.drop '(0 1 2 3 4 5 6 7) 2) '(2 3 4 5 6 7))
+    (Unit.assert-equals (List.drop '(0 1 2 3 4 5 6 7) (- 3)) '(0 1 2 3 4 5 6 7))
+    (Unit.assert-equals (List.drop '(0 1 2) 10) ())
+)
+
 (Unit.test "ends-with"
     (Unit.assert-truthy (List.ends-with '(1 2 3) ()))
     (Unit.assert-truthy (List.ends-with '(1 2 3) '(2 3)))
@@ -45,6 +52,14 @@
     (Unit.assert-equals (List.reverse '(1 2 3 4 5)) '(5 4 3 2 1))
 )
 
+(Unit.test "slice"
+    (Unit.assert-equals (List.slice () 2 3) ())
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 2 5) '(2 3 4 5))
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 6 10) '(6 7))
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) (- 10) 2) '(0 1 2))
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 5 2) ())
+)
+
 (Unit.test "starts-with"
     (Unit.assert-truthy (List.starts-with '(1 2 3) ()))
     (Unit.assert-truthy (List.starts-with '(1 2 3) '(1 2)))
@@ -53,3 +68,11 @@
     (Unit.assert-falsy (List.starts-with '(1 2 3) '(3)))
     (Unit.assert-falsy (List.starts-with '(1 2) '(1 2 3)))
 )
+
+(Unit.test "take"
+    (Unit.assert-equals (List.take () 2) ())
+    (Unit.assert-equals (List.take '(0 1 2 3 4 5 6 7) 2) '(0 1))
+    (Unit.assert-equals (List.take '(0 1 2 3 4 5 6 7) (- 3)) ())
+    (Unit.assert-equals (List.take '(0 1 2) 10) '(0 1 2))
+)
+

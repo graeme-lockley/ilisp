@@ -14,6 +14,20 @@
 
 (export filter (get (car **root**) :builtins 'list-filter))
 
+ (export (fold xs z f)
+    (if (nil? xs)
+        z
+        (fold (cdr xs) (f z (car xs)) f)
+    )
+)
+
+(export (fold-right xs z f)
+    (if (nil? xs)
+        z
+        (f (car xs) (fold-right (cdr xs) z f))
+    )
+)
+
 (export nth (get (car **root**) :builtins 'list-nth))
 
 (export (reverse lst)

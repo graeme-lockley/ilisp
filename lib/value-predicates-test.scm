@@ -32,6 +32,22 @@
     (Unit.assert-falsy (keyword? cond))
 )
 
+(Unit.test "list?"
+    (Unit.assert-truthy (list? ()))
+    (Unit.assert-falsy (list? 1))
+    (Unit.assert-falsy (list? "name"))
+    (Unit.assert-falsy (list? 'name))
+    (Unit.assert-falsy (list? :name))
+    (Unit.assert-truthy (list? '(1 2 3)))
+    (Unit.assert-falsy (list? []))
+    (Unit.assert-falsy (list? [1 2 3]))
+    (Unit.assert-falsy (list? {}))
+    (Unit.assert-falsy (list? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (list? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (list? car))
+    (Unit.assert-falsy (list? cond))
+)
+
 (Unit.test "macro?"
     (Unit.assert-falsy (macro? ()))
     (Unit.assert-falsy (macro? 1))
@@ -110,6 +126,22 @@
     (Unit.assert-falsy (number? (fn (n) (+ n 1))))
     (Unit.assert-falsy (number? car))
     (Unit.assert-falsy (number? cond))
+)
+
+(Unit.test "pair?"
+    (Unit.assert-falsy (pair? ()))
+    (Unit.assert-falsy (pair? 1))
+    (Unit.assert-falsy (pair? "name"))
+    (Unit.assert-falsy (pair? 'name))
+    (Unit.assert-falsy (pair? :name))
+    (Unit.assert-truthy (pair? '(1 2 3)))
+    (Unit.assert-falsy (pair? []))
+    (Unit.assert-falsy (pair? [1 2 3]))
+    (Unit.assert-falsy (pair? {}))
+    (Unit.assert-falsy (pair? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (pair? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (pair? car))
+    (Unit.assert-falsy (pair? cond))
 )
 
 (Unit.test "sequential?"

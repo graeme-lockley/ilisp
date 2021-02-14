@@ -141,15 +141,6 @@ fred
 (str "hello" 'fred :at [1] {:a 1} '() '(1 (a b c) 3))
 > "hellofred:at[1]{:a 1}()(1(abc)3)"
 
-(empty? 1)
-> (:exception (InvalidArgument . {:received 1 :expected-type ("pair" "()") :arg-number 0 :procedure empty?}))
-
-(empty? '())
-> t
-
-(empty? '(1 2 3))
-> ()
-
 (=)
 > t
 

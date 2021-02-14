@@ -77,3 +77,26 @@
 ; exported as a result of the package mechanism.  Note that this is an anomoly
 ; and is used to bootstrap the package mechanism.
 (load-file "./package.scm")
+
+(import "./list.scm" :as List)
+(import "./string.scm" :as String)
+(import "./vector.scm" :as Vector)
+
+(export (empty? seq)
+  (cond
+    (nil? seq)
+      t
+
+    (pair? seq)
+      f
+
+    (vector? seq)
+      (= (Vector.count seq) 0)
+
+    (string? seq)
+      (= seq "")
+
+    :else
+      (raise 'InvalidArgument {:procedure 'empty? :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)

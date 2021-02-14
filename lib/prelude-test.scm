@@ -28,6 +28,23 @@
   (Unit.assert-equals (cond f 7 f 8 f 9) ())
 )
 
+(Unit.test "empty?"
+  (Unit.assert-truthy (empty? ()))
+  (Unit.assert-falsy (empty? '(1)))
+
+  (Unit.assert-truthy (empty? []))
+  (Unit.assert-falsy (empty? [1 2 3]))
+
+  (Unit.assert-truthy (empty? ""))
+  (Unit.assert-falsy (empty? "hello"))
+
+  (Unit.assert-signal (empty? 123) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'empty?)
+  )))
+)
+
 (Unit.test "not"
   (Unit.assert-truthy (not f))
   (Unit.assert-truthy (not (= 1 2)))

@@ -483,20 +483,6 @@ static Value *dissoc_bang(Value *parameters, Value *env)
     }
 }
 
-static Value *emptyp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "empty?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("empty?"), 0, mkPair(mkString("pair"), mkPair(mkString("()"), VNil)), parameter[0]);
-
-    return IS_NIL(parameter[0]) ? VTrue : VNil;
-}
-
 static Value *equal(Value *parameters, Value *env)
 {
     if (IS_NIL(parameters))
@@ -2106,7 +2092,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "count", mkNativeProcedure(list_count));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
     add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
-    add_binding_into_environment(root_bindings, "empty?", mkNativeProcedure(emptyp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(eval));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));

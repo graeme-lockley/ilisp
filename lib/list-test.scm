@@ -38,6 +38,12 @@
     )))
 )
 
+(Unit.test "first"
+    (Unit.assert-equals (first '(1)) 1)
+    (Unit.assert-equals (first '(1 2 3)) 1)
+    (Unit.assert-equals (first ()) ())
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (List.nth () 5) ())
     (Unit.assert-equals (List.nth (list 1 2 3) (- 1)) ())
@@ -45,6 +51,12 @@
     (Unit.assert-equals (List.nth (list 1 2) 1) 2)
     (Unit.assert-equals (List.nth (list 1 2) 2) ())
     (Unit.assert-equals (List.nth (list 1 2 () 4 5) 2) ())
+)
+
+(Unit.test "rest"
+    (Unit.assert-equals (rest '(1)) ())
+    (Unit.assert-equals (rest '(1 2 3)) '(2 3))
+    (Unit.assert-equals (rest ()) ())
 )
 
 (Unit.test "reverse"

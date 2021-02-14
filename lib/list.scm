@@ -4,6 +4,10 @@
 
 (export drop (get (car **root**) :builtins 'list-drop))
 
+(export (drop-right lst n)
+    (to-list (Vector.drop-right (vec lst) n))
+)
+
 (export (ends-with lst suffix)
     (starts-with (reverse lst) (reverse suffix))
 )
@@ -40,6 +44,10 @@
 )
 
 (export take (get (car **root**) :builtins 'list-take))
+
+(export (take-right lst n)
+    (to-list (Vector.take-right (vec lst) n))
+)
 
 (export (to-list s)
     (cond

@@ -15,6 +15,13 @@
     (Unit.assert-equals (List.drop '(0 1 2) 10) ())
 )
 
+(Unit.test "drop-right"
+    (Unit.assert-equals (List.drop-right () 2) ())
+    (Unit.assert-equals (List.drop-right '(0 1 2 3 4 5 6 7) 2) '(0 1 2 3 4 5))
+    (Unit.assert-equals (List.drop-right '(0 1 2 3 4 5 6 7) (- 3)) '(0 1 2 3 4 5 6 7))
+    (Unit.assert-equals (List.drop-right '(0 1 2) 10) ())
+)
+
 (Unit.test "ends-with"
     (Unit.assert-truthy (List.ends-with '(1 2 3) ()))
     (Unit.assert-truthy (List.ends-with '(1 2 3) '(2 3)))
@@ -88,3 +95,9 @@
     (Unit.assert-equals (List.take '(0 1 2) 10) '(0 1 2))
 )
 
+(Unit.test "take-right"
+    (Unit.assert-equals (List.take-right () 2) ())
+    (Unit.assert-equals (List.take-right '(0 1 2 3 4 5 6 7) 2) '(6 7))
+    (Unit.assert-equals (List.take-right '(0 1 2 3 4 5 6 7) (- 3)) ())
+    (Unit.assert-equals (List.take-right '(0 1 2) 10) '(0 1 2))
+)

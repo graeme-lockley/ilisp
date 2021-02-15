@@ -83,20 +83,19 @@
 (import "./vector.scm" :as Vector)
 
 (export (empty? seq)
-  (cond
-    (nil? seq)
-      t
-
-    (pair? seq)
-      f
-
-    (vector? seq)
-      (= (Vector.count seq) 0)
-
-    (string? seq)
-      (= seq "")
-
-    :else
+  (if (nil? seq) t
+      (pair? seq) f
+      (vector? seq) (= (Vector.count seq) 0)
+      (string? seq) (= seq "")
       (raise 'InvalidArgument {:procedure 'empty? :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)
+
+(export (count seq)
+  (if (nil? seq) 0
+      (pair? seq) (List.count seq)
+      (vector? seq) (Vector.count seq)
+      (string? seq) (String.count seq)
+      (raise 'InvalidArgument {:procedure 'count :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )

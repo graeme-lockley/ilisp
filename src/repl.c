@@ -443,30 +443,30 @@ Value *Repl_eval(Value *v, Value *env)
                 }
                 else if (strcmp(symbol_name, "if") == 0)
                 {
-                    Value *arguments[3];
+                    Value *c = CDR(v);
 
-                    Value *error = extract_range_parameters(arguments, CDR(v), 2, 3, "if");
-                    if (error != NULL)
-                        return error;
+                    while (1)
+                    {
+                        if (IS_NIL(c))
+                            return VNil;
 
-                    Value *e = Repl_eval(arguments[0], env);
-                    if (!IS_SUCCESSFUL(e))
-                        return e;
+                        Value *e = Repl_eval(CAR(c), env);
+                        if (!IS_SUCCESSFUL(e))
+                            return e;
 
-                    if (Value_truthy(e))
-                    {
-                        v = arguments[1];
-                        continue;
+                        c = CDR(c);
+                        if (IS_NIL(c))
+                            return e;
+
+                        if (Value_truthy(e))
+                        {
+                            v = CAR(c);
+                            break;
+                        }
+
+                        c = CDR(c);
                     }
-                    else if (arguments[2] == NULL)
-                    {
-                        return VNil;
-                    }
-                    else
-                    {
-                        v = arguments[2];
-                        continue;
-                    }
+                    continue;
                 }
                 else if (strcmp(symbol_name, "macroexpand") == 0)
                 {

@@ -28,6 +28,19 @@
   (Unit.assert-equals (cond f 7 f 8 f 9) ())
 )
 
+(Unit.test "count"
+  (Unit.assert-equals (count [1 2 3 4]) 4)
+  (Unit.assert-equals (count ()) 0)
+  (Unit.assert-equals (count '(1 2 3 4 5 6)) 6)
+  (Unit.assert-equals (count "hello world") 11)
+
+  (Unit.assert-signal (count 123) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'count)
+  )))
+)
+
 (Unit.test "empty?"
   (Unit.assert-truthy (empty? ()))
   (Unit.assert-falsy (empty? '(1)))

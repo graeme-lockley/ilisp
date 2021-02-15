@@ -58,6 +58,23 @@
   )))
 )
 
+(Unit.test "ends-with"
+  (Unit.assert-truthy (ends-with [1 2 3 4] [3 4]))
+  (Unit.assert-falsy (ends-with [1 2 3 4] [2 3]))
+
+  (Unit.assert-truthy (ends-with '(1 2 3 4 5 6) '(4 5 6)))
+  (Unit.assert-falsy (ends-with '(1 2 3 4 5 6) '(3 4 5)))
+
+  (Unit.assert-truthy (ends-with "hello world" "world"))
+  (Unit.assert-falsy (ends-with "hello world" "worl"))
+
+  (Unit.assert-signal (ends-with 123 1) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'ends-with)
+  )))
+)
+
 (Unit.test "not"
   (Unit.assert-truthy (not f))
   (Unit.assert-truthy (not (= 1 2)))
@@ -79,3 +96,21 @@
   (Unit.assert-equals (or () 1) 1)
   (Unit.assert-equals (or () ()) ())
 )
+
+(Unit.test "starts-with"
+  (Unit.assert-truthy (starts-with [1 2 3 4] [1 2]))
+  (Unit.assert-falsy (starts-with [1 2 3 4] [1 2 4]))
+
+  (Unit.assert-truthy (starts-with '(1 2 3 4 5 6) '(1 2 3)))
+  (Unit.assert-falsy (starts-with '(1 2 3 4 5 6) '(1 2 4)))
+
+  (Unit.assert-truthy (starts-with "hello world" "hello"))
+  (Unit.assert-falsy (starts-with "hello world" "helos"))
+
+  (Unit.assert-signal (starts-with 123 1) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'starts-with)
+  )))
+)
+

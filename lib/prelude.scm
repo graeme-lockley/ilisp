@@ -99,3 +99,21 @@
       (raise 'InvalidArgument {:procedure 'count :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )
+
+(export (starts-with seq prefix)
+  (if (nil? seq) f
+      (pair? seq) (List.starts-with seq prefix)
+      (vector? seq) (Vector.starts-with seq prefix)
+      (string? seq) (String.starts-with seq prefix)
+      (raise 'InvalidArgument {:procedure 'starts-with :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)
+
+(export (ends-with seq prefix)
+  (if (nil? seq) f
+      (pair? seq) (List.ends-with seq prefix)
+      (vector? seq) (Vector.ends-with seq prefix)
+      (string? seq) (String.ends-with seq prefix)
+      (raise 'InvalidArgument {:procedure 'ends-with :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)

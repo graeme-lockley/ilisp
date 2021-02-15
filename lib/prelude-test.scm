@@ -75,6 +75,20 @@
   )))
 )
 
+(Unit.test "filter"
+  (define (odd n) (= (- n (* (/ n 2) 2)) 1))
+
+  (Unit.assert-equals (filter [1 2 3 4] odd) [1 3])
+  (Unit.assert-equals (filter '(1 2 3 4 5 6) odd) '(1 3 5))
+  (Unit.assert-equals (filter "hello world" odd) "eowo")
+
+  (Unit.assert-signal (filter 123 1) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'filter)
+  )))
+)
+
 (Unit.test "not"
   (Unit.assert-truthy (not f))
   (Unit.assert-truthy (not (= 1 2)))

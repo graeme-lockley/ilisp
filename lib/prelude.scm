@@ -117,3 +117,12 @@
       (raise 'InvalidArgument {:procedure 'ends-with :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )
+
+(export (filter seq predicate)
+  (if (nil? seq) f
+      (pair? seq) (List.filter seq predicate)
+      (vector? seq) (Vector.filter seq predicate)
+      (string? seq) (String.filter seq predicate)
+      (raise 'InvalidArgument {:procedure 'filter :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)

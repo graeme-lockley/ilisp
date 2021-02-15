@@ -5,7 +5,7 @@
 (export drop (get (car **root**) :builtins 'list-drop))
 
 (export (drop-right lst n)
-    (to-list (Vector.drop-right (vec lst) n))
+    (->list (Vector.drop-right (vec lst) n))
 )
 
 (export (ends-with lst suffix)
@@ -15,15 +15,13 @@
 (export filter (get (car **root**) :builtins 'list-filter))
 
  (export (fold xs z f)
-    (if (nil? xs)
-        z
+    (if (nil? xs) z
         (fold (cdr xs) (f z (car xs)) f)
     )
 )
 
 (export (fold-right xs z f)
-    (if (nil? xs)
-        z
+    (if (nil? xs) z
         (f (car xs) (fold-right (cdr xs) z f))
     )
 )
@@ -31,50 +29,32 @@
 (export nth (get (car **root**) :builtins 'list-nth))
 
 (export (reverse lst)
-    (to-list (Vector.reverse (vec lst)))
+    (->list (Vector.reverse (vec lst)))
 )
 
 (export (slice lst start end)
-    (cond
-        (<= start 0)
-            (take lst (+ end 1))
-
-        :else
-            (take (drop lst start) (+ (- end start) 1))
+    (if (<= start 0) (take lst (+ end 1))
+        (take (drop lst start) (+ (- end start) 1))
     )
 )
 
 (export (starts-with lst prefix)
-    (cond
-        (nil? prefix)
-            t
-
-        (nil? lst)
-            f
-
-        :else
-            (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
+    (if (nil? prefix) t
+        (nil? lst) f
+        (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
     )
 )
 
 (export take (get (car **root**) :builtins 'list-take))
 
 (export (take-right lst n)
-    (to-list (Vector.take-right (vec lst) n))
+    (->list (Vector.take-right (vec lst) n))
 )
 
-(export (to-list s)
-    (cond
-        (nil? s)
-            s
-
-        (list? s)
-            s
-
-        (or (vector? s) (string? s))
-            (map s (fn (n) n))
-
-        :else
-            (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure 'to-list})
+(export (->list s)
+    (if (nil? s) s
+        (list? s) s
+        (or (vector? s) (string? s)) (map s (fn (n) n))
+        (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})
     )
 )

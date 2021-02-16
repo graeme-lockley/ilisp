@@ -113,6 +113,13 @@
   )))
 )
 
+(Unit.test "first"
+  (Unit.assert-equals (first [1 2 3 4]) 1)
+  (Unit.assert-equals (first '(1 2 3 4 5 6)) 1)
+  (Unit.assert-equals (first "hello world") 104)
+  (Unit.assert-equals (first 123) ())
+)
+
 (Unit.test "not"
   (Unit.assert-truthy (not f))
   (Unit.assert-truthy (not (= 1 2)))
@@ -145,6 +152,13 @@
   (Unit.assert-equals (or 1 (/ 1 0)) t)
   (Unit.assert-equals (or () 1) 1)
   (Unit.assert-equals (or () ()) ())
+)
+
+(Unit.test "rest"
+  (Unit.assert-equals (rest [1 2 3 4]) [2 3 4])
+  (Unit.assert-equals (rest '(1 2 3 4 5 6)) '(2 3 4 5 6))
+  (Unit.assert-equals (rest "hello world") "ello world")
+  (Unit.assert-equals (rest 123) ())
 )
 
 (Unit.test "slice"

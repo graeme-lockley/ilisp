@@ -11,8 +11,7 @@ static Value *runtime_env(char *envp[])
 {
     Value *e = map_create();
 
-    int i;
-    for (i = 0; envp[i] != NULL; i++)
+    for (int i = 0; envp[i] != NULL; i += 1)
     {
         char *indexOfPeriod = strchr(envp[i], '=');
 
@@ -20,7 +19,7 @@ static Value *runtime_env(char *envp[])
         {
             *indexOfPeriod = '\0';
             map_set_bang(e, mkSymbol(envp[i]), mkString(indexOfPeriod + 1));
-            *indexOfPeriod = '.';
+            *indexOfPeriod = '=';
         }
     }
 

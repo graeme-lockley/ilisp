@@ -14,6 +14,30 @@
   (Unit.assert-equals (and () (/ 1 0)) ())
 )
 
+(Unit.test "car"
+  (Unit.assert-equals (car [1 2 3 4]) 1)
+  (Unit.assert-equals (car '(1 2 3 4 5 6)) 1)
+  (Unit.assert-equals (car "hello world") 104)
+
+  (Unit.assert-signal (car 123) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'car)
+  )))
+)
+
+(Unit.test "cdr"
+  (Unit.assert-equals (cdr [1 2 3 4]) [2 3 4])
+  (Unit.assert-equals (cdr '(1 2 3 4 5 6)) '(2 3 4 5 6))
+  (Unit.assert-equals (cdr "hello world") "ello world")
+
+  (Unit.assert-signal (cdr 123) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
+  )))
+)
+
 (Unit.test "cond"
   (Unit.assert-equals (macroexpand (cond)) ())
   (Unit.assert-equals (macroexpand (cond X Y)) (list 'if 'X 'Y (list 'cond)))

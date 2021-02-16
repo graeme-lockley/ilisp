@@ -123,6 +123,20 @@
   (Unit.assert-equals (or () ()) ())
 )
 
+(Unit.test "slice"
+  (Unit.assert-equals (slice [1 2 3 4] 1 2) [2 3])
+
+  (Unit.assert-equals (slice '(1 2 3 4 5 6) 1 2) '(2 3))
+  
+  (Unit.assert-equals (slice "hello world" 1 2) "el")
+  
+  (Unit.assert-signal (slice 123 1 2) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'slice)
+  )))
+)
+
 (Unit.test "starts-with"
   (Unit.assert-truthy (starts-with [1 2 3 4] [1 2]))
   (Unit.assert-falsy (starts-with [1 2 3 4] [1 2 4]))

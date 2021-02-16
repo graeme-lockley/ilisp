@@ -135,3 +135,12 @@
       (raise 'InvalidArgument {:procedure 'nth :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )
+
+(export (slice seq from to)
+  (if (nil? seq) ()
+      (pair? seq) (List.slice seq from to)
+      (vector? seq) (Vector.slice seq from to)
+      (string? seq) (String.slice seq from to)
+      (raise 'InvalidArgument {:procedure 'slice :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)

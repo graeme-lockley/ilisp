@@ -65,6 +65,34 @@
   )))
 )
 
+(Unit.test "drop"
+  (Unit.assert-equals (drop [1 2 3 4] 2) [3 4])
+
+  (Unit.assert-equals (drop '(1 2 3 4 5 6) 2) '(3 4 5 6))
+  
+  (Unit.assert-equals (drop "hello world" 2) "llo world")
+  
+  (Unit.assert-signal (drop 123 2) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'drop)
+  )))
+)
+
+(Unit.test "drop-right"
+  (Unit.assert-equals (drop-right [1 2 3 4] 2) [1 2])
+
+  (Unit.assert-equals (drop-right '(1 2 3 4 5 6) 2) '(1 2 3 4))
+  
+  (Unit.assert-equals (drop-right "hello world" 2) "hello wor")
+  
+  (Unit.assert-signal (drop-right 123 2) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'drop-right)
+  )))
+)
+
 (Unit.test "empty?"
   (Unit.assert-truthy (empty? ()))
   (Unit.assert-falsy (empty? '(1)))
@@ -189,6 +217,34 @@
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'starts-with)
+  )))
+)
+
+(Unit.test "take"
+  (Unit.assert-equals (take [1 2 3 4] 2) [1 2])
+
+  (Unit.assert-equals (take '(1 2 3 4 5 6) 2) '(1 2))
+  
+  (Unit.assert-equals (take "hello world" 2) "he")
+  
+  (Unit.assert-signal (take 123 2) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'take)
+  )))
+)
+
+(Unit.test "take-right"
+  (Unit.assert-equals (take-right [1 2 3 4] 2) [3 4])
+
+  (Unit.assert-equals (take-right '(1 2 3 4 5 6) 2) '(5 6))
+  
+  (Unit.assert-equals (take-right "hello world" 2) "ld")
+  
+  (Unit.assert-signal (take-right 123 2) (fn (signal) (do
+    (Unit.assert-equals (car signal) 'InvalidArgument)
+    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (get (cdr signal) :procedure) 'take-right)
   )))
 )
 

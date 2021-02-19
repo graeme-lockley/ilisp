@@ -1,13 +1,11 @@
 (import "../lib/filesystem.scm" :as FS)
-(import "../lib/list.scm" :as List)
-(import "../lib/string.scm" :as S)
 (import "../lib/unit.scm" :as Unit)
 
 (define test-files
     (map
-        (List.filter  
+        (filter  
           (FS.read-dir (FS.absolute-name-relative-to *source-name* "../lib"))
-          (fn (t) (and (get t :file?) (S.ends-with (get t :name) "-test.scm")))
+          (fn (t) (and (get t :file?) (ends-with (get t :name) "-test.scm")))
         )
         (fn (t) (get t :name))
     )

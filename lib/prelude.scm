@@ -78,6 +78,7 @@
 ; and is used to bootstrap the package mechanism.
 (load-file "./package.scm")
 
+(import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
 
 (export any Sequence.any)
@@ -92,6 +93,7 @@
 (export nth Sequence.nth)
 (export slice Sequence.slice)
 (export starts-with Sequence.starts-with)
+(export string->int Number.string->int)
 (export take Sequence.take)
 (export take-right Sequence.take-right)
 

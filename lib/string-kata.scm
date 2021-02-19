@@ -1,30 +1,6 @@
+(import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
 (import "./unit.scm" :as Unit)
-
-(define (char->int n)
-    (if (<= 48 n 57) (- n 48)
-        (raise 'InvalidArgument {:procedure 'char->int :arg-number 0 :expected "0..9" :received (char->string n)})
-    )
-)
-
-(define (string->int n)
-    (do
-        (define (->int n)
-            (fold n 0 
-                (fn (acc d) 
-                    (+ (* 10 acc) (char->int d)) 
-                )
-            )
-        )
-
-        (if (starts-with n "-")
-            (- (->int (drop n 1)))
-            (->int n)
-        )
-    )
-)
-
-(define (negative? n) (< n 0))
 
 (export (add input)
     (do
@@ -44,8 +20,8 @@
         )
         (define numbers (map tokens string->int))
 
-        (if (any numbers negative?)
-            (raise (filter numbers negative?))
+        (if (any numbers Number.negative?)
+            (raise (filter numbers Number.negative?))
             (Sequence.sum (filter numbers (fn (n) (<= n 1000))))
         )
     )

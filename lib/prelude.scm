@@ -180,3 +180,36 @@
       (raise 'InvalidArgument {:procedure 'drop-right :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )
+
+(export (fold seq z p)
+  (if (nil? seq) z
+      (pair? seq) (List.fold seq z p)
+      (vector? seq) (Vector.fold seq z p)
+      (string? seq) (String.fold seq z p)
+      (raise 'InvalidArgument {:procedure 'fold :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)
+
+(export (fold-right seq z p)
+  (if (nil? seq) z
+      (pair? seq) (List.fold-right seq z p)
+      (vector? seq) (Vector.fold-right seq z p)
+      (string? seq) (String.fold-right seq z p)
+      (raise 'InvalidArgument {:procedure 'fold-right :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+  )
+)
+
+(define (type-of v)
+  (if (nil? v) "nil"
+      (pair? v) "pair"
+      (vector? v) "vector"
+      (string? v) "string"
+      (number? v) "number"
+      (map? v) "map"
+      (fn? v) "fn"
+      (macro? v) "macro"
+      (keyword? v) "keyword"
+      (symbol? v) "symbol"
+      "don't know"
+  )
+)

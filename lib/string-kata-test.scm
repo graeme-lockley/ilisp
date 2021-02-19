@@ -4,7 +4,7 @@
     (Unit.assert-equals (SK.add "") 0)
 )
 
-(Unit.test "given a number should return it's value if less then 1001 else 9"
+(Unit.test "given a number should return it's value if less then 1001"
     (Unit.assert-equals (SK.add "123") 123)
     (Unit.assert-equals (SK.add "1001") 0)
 )

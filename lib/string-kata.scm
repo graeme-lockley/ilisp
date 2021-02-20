@@ -1,6 +1,6 @@
+(import "./list.scm" :as List)
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
-(import "./unit.scm" :as Unit)
 
 (export (add input)
     (do
@@ -9,7 +9,7 @@
                     (do
                         (define inputs (Sequence.split (drop input 3) "]\n"))
 
-                        (Sequence.split (nth inputs 1) (Sequence.split (nth inputs 0) "]["))
+                        (Sequence.split (nth inputs 1) (List.reverse (List.sort (Sequence.split (nth inputs 0) "]["))))
                     )
 
                 (starts-with input "//")

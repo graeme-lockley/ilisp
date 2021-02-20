@@ -89,6 +89,26 @@
     (Unit.assert-equals (List.reverse '(1 2 3 4 5)) '(5 4 3 2 1))
 )
 
+(Unit.test "separate"
+    (define (sep)
+        (do
+            (define c 64)
+            (fn () (do
+                (set! c (+ c 1))
+                (char->string c)
+            ))
+        )
+    )
+
+    (Unit.assert-equals (List.separate () ",") ())
+    (Unit.assert-equals (List.separate '(1) ",") '(1))
+    (Unit.assert-equals (List.separate '(5 4 3 2 1) ",") '(5 "," 4 "," 3 "," 2 "," 1))
+
+    (Unit.assert-equals (List.separate () (sep)) ())
+    (Unit.assert-equals (List.separate '(1) (sep)) '(1))
+    (Unit.assert-equals (List.separate '(5 4 3 2 1) (sep)) '(5 "A" 4 "B" 3 "C" 2 "D" 1))
+)
+
 (Unit.test "slice"
     (Unit.assert-equals (List.slice () 2 3) ())
     (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 2 5) '(2 3 4 5))

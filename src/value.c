@@ -193,110 +193,109 @@ static int list_length(Value *a)
 
 Value *Value_equals(Value *a, Value *b)
 {
+    return Value_compare(a, b) == 0 ? VTrue : VFalse;
+}
+
+static int sgn(int v)
+{
+    if (v < 0)
+        return -1;
+    if (v > 0)
+        return 1;
+    return 0;
+}
+
+int Value_compare(Value *a, Value *b)
+{
     if (a == b)
-        return VTrue;
+        return 0;
 
-    switch (TAG_TO_VT(a))
-    {
-    case VT_NIL:
-        return IS_NIL(b) ? VTrue : VFalse;
+    int tag_compare = sgn(TAG_TO_VT(a) - TAG_TO_VT(b));
 
-    case VT_SYMBOL:
-        if (IS_SYMBOL(b))
+    if (tag_compare == 0)
+        switch (TAG_TO_VT(a))
         {
-            if (strcmp(STRING(a), STRING(b)) == 0)
-                return VTrue;
-        }
-        return VFalse;
+        case VT_NIL:
+            return 0;
 
-    case VT_KEYWORD:
-        if (IS_KEYWORD(b))
-        {
-            if (strcmp(STRING(a), STRING(b)) == 0)
-                return VTrue;
-        }
-        return VFalse;
+        case VT_SYMBOL:
+        case VT_KEYWORD:
+        case VT_STRING:
+            return sgn(strcmp(STRING(a), STRING(b)));
 
-    case VT_CHARACTER:
-        if (IS_CHARACTER(b))
-        {
-            if (CHARACTER(a) == CHARACTER(b))
-                return VTrue;
-        }
-        return VFalse;
+        case VT_CHARACTER:
+            return sgn(CHARACTER(a) - CHARACTER(b));
 
-    case VT_NUMBER:
-        if (IS_NUMBER(b))
-        {
-            if (NUMBER(a) == NUMBER(b))
-                return VTrue;
-        }
-        return VFalse;
+        case VT_NUMBER:
+            return sgn(NUMBER(a) - NUMBER(b));
 
-    case VT_STRING:
-        if (IS_STRING(b))
-        {
-            if (strcmp(STRING(a), STRING(b)) == 0)
-                return VTrue;
-        }
-        return VFalse;
-
-    case VT_PAIR:
-        if (IS_PAIR(b))
-        {
-            if (Value_truthy(Value_equals(CAR(a), CAR(b))))
-                return Value_equals(CDR(a), CDR(b));
-        }
-        return VFalse;
-
-    case VT_VECTOR:
-        if (IS_VECTOR(b))
-        {
-            int length = VECTOR(a).length;
-            if (length == VECTOR(b).length)
+        case VT_PAIR:
+            while (1)
             {
+                if (IS_NIL(a) || IS_NIL(b))
+                    return Value_compare(a, b);
+
+                if (!IS_PAIR(a) || !IS_PAIR(b))
+                    return Value_compare(a, b);
+
+                int compare = Value_compare(CAR(a), CAR(b));
+                if (compare != 0)
+                    return compare;
+
+                a = CDR(a);
+                b = CDR(b);
+            }
+
+        case VT_VECTOR:
+        {
+            int compare = sgn(VECTOR(a).length - VECTOR(b).length);
+
+            if (compare == 0)
+            {
+                int length = VECTOR(a).length;
                 Value **as = VECTOR(a).items;
                 Value **bs = VECTOR(b).items;
 
                 for (int loop = 0; loop < length; loop += 1)
                 {
-                    if (!Value_truthy(Value_equals(as[loop], bs[loop])))
-                        return VFalse;
+                    compare = Value_compare(as[loop], bs[loop]);
+
+                    if (compare != 0)
+                        return compare;
                 }
 
-                return VTrue;
+                return 0;
+            }
+            else
+                return compare;
+        }
+
+        case VT_MAP:
+        {
+            int size_a = list_length(MAP(a));
+            int size_b = list_length(MAP(b));
+
+            if (size_a != size_b)
+                return sgn(size_a - size_b);
+
+            Value *cursor_a = MAP(a);
+            while (1)
+            {
+                if (IS_NIL(cursor_a))
+                    return 0;
+
+                int compare = Value_compare(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))));
+                if (compare != 0)
+                    return compare;
+
+                cursor_a = CDR(cursor_a);
             }
         }
-        return VFalse;
 
-    case VT_MAP:
-    {
-        if (!IS_MAP(b))
-            return VFalse;
-
-        int size_a = list_length(MAP(a));
-        int size_b = list_length(MAP(b));
-
-        if (size_a != size_b)
-            return VFalse;
-
-        Value *cursor_a = MAP(a);
-        while (1)
-        {
-            if (IS_NIL(cursor_a))
-                return VTrue;
-
-            if (!Value_truthy(Value_equals(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))))))
-                return VNil;
-
-            cursor_a = CDR(cursor_a);
+        case VT_NATIVE_PROCEDURE:
+        case VT_PROCEDURE:
+            return 0;
         }
-    }
 
-    case VT_NATIVE_PROCEDURE:
-    case VT_PROCEDURE:
-        return VFalse;
-    }
-
-    return VFalse;
+    return tag_compare;
 }

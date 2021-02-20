@@ -84,6 +84,8 @@
 
 (export slice (get (car **root**) :builtins 'vector-slice))
 
+(export sort! (get (car **root**) :builtins 'vector-sort!))
+
 (export (starts-with v prefix)
   (do
     (define (inc n) (+ n 1))

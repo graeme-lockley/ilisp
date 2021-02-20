@@ -32,10 +32,25 @@
     (->list (Vector.reverse (vec lst)))
 )
 
+(export (separate lst sep)
+    (if (nil? lst) ()
+        (nil? (cdr lst)) lst
+        (do
+            (define s (if (fn? sep) (sep) sep))
+
+            (cons (car lst) (cons s (separate (cdr lst) sep)))
+        )
+    )
+)
+
 (export (slice lst start end)
     (if (<= start 0) (take lst (+ end 1))
         (take (drop lst start) (+ (- end start) 1))
     )
+)
+
+(export (sort lst)
+    (->list (Vector.sort! (Vector.mutable (vec lst))))
 )
 
 (export (starts-with lst prefix)

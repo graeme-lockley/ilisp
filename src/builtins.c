@@ -179,7 +179,7 @@ static Value *apply(Value *parameters, Value *env)
             while (1)
             {
                 if (IS_NIL(parameters))
-                    return Repl_eval(mkPair(f, root), env);
+                    return Repl_eval_procedure(f, root, env);
 
                 Value *v = mkPair(CAR(parameters), VNil);
                 *root_cursor = v;
@@ -2048,6 +2048,36 @@ static Value *vector_slice(Value *parameters, Value *env)
     return mkVectorUse(result, result_size);
 }
 
+static int vector_value_compare(const void *a, const void *b)
+{
+    Value *va = *(Value **)a;
+    Value *vb = *(Value **)b;
+
+    return Value_compare(va, vb);
+}
+
+static Value *vector_sort_bang(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-sort");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-sort"), 0, mkSymbol("vector!"), parameter[0]);
+
+    if (IS_IMMUTABLE(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("vector-sort"), 0, mkSymbol("vector!"), parameter[0]);
+
+    Value **items = VECTOR(parameter[0]).items;
+    int vector_size = VECTOR(parameter[0]).length;
+
+    qsort(items, vector_size, sizeof(Value *), &vector_value_compare);
+
+    return parameter[0];
+}
+
 static Value *vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2172,6 +2202,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
+    add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
 
     define("list", "(fn x x)", root_scope);
     define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);

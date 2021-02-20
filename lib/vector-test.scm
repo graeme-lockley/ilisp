@@ -152,6 +152,10 @@
     (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 5 2) [])
 )
 
+(Unit.test "sort!"
+    (Unit.assert-equals (Vector.sort! (Vector.mutable [1 0 9 2 3 8 7 4 5 6])) (Vector.range 0 9))
+)
+
 (Unit.test "starts-with"
     (Unit.assert-truthy (Vector.starts-with [1 2 3] []))
     (Unit.assert-truthy (Vector.starts-with [1 2 3] [1 2]))

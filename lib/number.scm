@@ -25,3 +25,10 @@
 
 (export (positive? n) (>= n 0))
 
+(export (abs n) 
+    (if (< n 0) (- n)
+        n
+    )
+)
+
+(export (modulo m n) (- m (* n (/ m n))))

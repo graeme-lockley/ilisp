@@ -14,6 +14,7 @@ SRC_OBJECTS=\
 	src/builtins.o \
 	src/exceptions.o \
 	src/map.o \
+	src/mt19937.o \
 	src/printer.o \
 	src/reader.o \
 	src/readline.o \

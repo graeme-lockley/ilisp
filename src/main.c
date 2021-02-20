@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "builtins.h"
 #include "map.h"
+#include "mt19937.h"
 #include "repl.h"
 #include "value.h"
 
@@ -59,6 +61,8 @@ static void run_prelude(char *prelude_file_name, Value *env)
 
 int main(int argc, char *argv[], char *envp[])
 {
+    init_genrand(time(NULL));
+
     char *prelude_file_name = getenv("ILISP_PRELUDE");
     if (prelude_file_name != NULL)
         prelude_file_name = verify_prelude_file_name(prelude_file_name);

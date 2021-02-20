@@ -169,13 +169,13 @@
     (Sequence.sum (filter ns (fn (n) (<= n 1000))))
 )
 
-(Unit.test "given numbers separated with a comma or newline should return the sum of all less than 1001"
+(Unit.test "given positive integers separated with a comma or newline should return the sum of all less than 1001"
     (gen:for-all (gen:list-of *POSITIVE-INTEGER*) (fn (ns)
         (Unit.assert-equals (SK.add (apply str (List.separate ns (gen:one-of '("," "\n"))))) (test-sum ns))
     ))
 )
 
-(Unit.test "given numbers separated with a single character custom separator should return the sum of all less than 1001"
+(Unit.test "given positive integers separated with a single character custom separator should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *SEPARATOR*) (fn (ns sep)
         (do
             (define input (str "//" sep "\n" (apply str (List.separate ns sep))))
@@ -184,16 +184,7 @@
     ))
 )
 
-(Unit.test "given numbers separated with a single multi-character custom separator should return the sum of all less than 1001"
-    (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *STRING-SEPARATOR*) (fn (ns sep)
-        (do
-            (define input (str "//[" sep "]\n" (apply str (List.separate ns sep))))
-            (Unit.assert-equals (SK.add input) (test-sum ns))
-        )
-    ))
-)
-
-(Unit.test "given numbers separated with multiple multi-character custom separators should return the sum of all less than 1001"
+(Unit.test "given positive integers separated with multiple multi-character custom separators should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) (gen:list-of *STRING-SEPARATOR* 1)) (fn (ns seps)
         (do
             (define input (str "//[" (apply str (List.separate seps "][")) "]\n" (apply str (List.separate ns (gen:one-of seps)))))
@@ -202,12 +193,10 @@
     ))
 )
 
-(Unit.test "given numbers with at least one negative should report an error with all of the negatives"
+(Unit.test "given integers with at least one negative should report an error with all of the negatives"
     (gen:for-all (gen:filter (gen:list-of *INTEGER*) (fn (ns) (any ns Number.negative?))) (fn (ns)
         (Unit.assert-signal (SK.add (apply str (List.separate ns ",")))
-            (fn (n)
-                (Unit.assert-equals n (filter ns Number.negative?))
-            )
+            (fn (n) (Unit.assert-equals n (filter ns Number.negative?)))
         )
     ))
 )

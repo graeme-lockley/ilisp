@@ -135,37 +135,8 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
         break;
 
     case VT_MAP:
-    {
-        Value *cursor = map_to_assoc_list(v);
-
-        if (IS_NIL(cursor))
-            string_builder_append(sb, "{}");
-        else if (v_in_set)
-            string_builder_append(sb, "{...}");
-        else
-        {
-            string_builder_append(sb, "{");
-
-            if (!IS_NIL(cursor))
-            {
-                while (1)
-                {
-                    Printer_pr(s, sb, CAR(CAR(cursor)), readable, separator);
-                    string_builder_append(sb, " ");
-                    Printer_pr(s, sb, CDR(CAR(cursor)), readable, separator);
-
-                    cursor = CDR(cursor);
-                    if (IS_NIL(cursor))
-                        break;
-                    else
-                        string_builder_append(sb, " ");
-                }
-            }
-
-            string_builder_append(sb, "}");
-        }
+        map_pr(v_in_set, s, sb, v, readable, separator);
         break;
-    }
 
     case VT_NATIVE_PROCEDURE:
         string_builder_append(sb, "#NATIVE-PROCEDURE");

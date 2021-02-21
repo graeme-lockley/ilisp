@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "value.h"
 #include "map.h"
+#include "printer.h"
+#include "value.h"
 
 static int is_equals(Value *a, Value *b)
 {
@@ -172,7 +173,9 @@ int map_compare(Value *a, Value *b)
         if (IS_NIL(cursor_a))
             return 0;
 
-        int compare = Value_compare(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))));
+        Value *cell_a = CAR(cursor_a);
+        Value *key_a = CAR(cell_a);
+        int compare = Value_compare(cell_a, map_find(b, key_a));
         if (compare != 0)
             return compare;
 
@@ -198,6 +201,33 @@ int map_count(Value *a)
     }
 }
 
-Value *map_to_assoc_list(Value *map) {
-    return MAP(map);
+void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
+{
+    Value *cursor = MAP(v);
+
+    if (IS_NIL(cursor))
+        string_builder_append(sb, "{}");
+    else if (v_in_set)
+        string_builder_append(sb, "{...}");
+    else
+    {
+        string_builder_append(sb, "{");
+
+        while (1)
+        {
+            Value *cell = CAR(cursor);
+
+            Printer_pr(s, sb, CAR(cell), readable, separator);
+            string_builder_append(sb, " ");
+            Printer_pr(s, sb, CDR(cell), readable, separator);
+
+            cursor = CDR(cursor);
+            if (IS_NIL(cursor))
+                break;
+
+            string_builder_append(sb, " ");
+        }
+
+        string_builder_append(sb, "}");
+    }
 }

@@ -4,35 +4,6 @@
 #include "value.h"
 #include "map.h"
 
-#define ASSERT(e)                                                              \
-    do                                                                         \
-    {                                                                          \
-        int __v = e;                                                           \
-        if (!__v)                                                              \
-        {                                                                      \
-            fprintf(stderr, "ASSERTION FAILED: %s: %d\n", __FILE__, __LINE__); \
-            exit(-1);                                                          \
-        }                                                                      \
-    } while (0)
-
-static void ASSERT_IS_VALID_MAP(Value *map)
-{
-    ASSERT(IS_MAP(map));
-
-    Value *v = MAP(map);
-
-    while (1)
-    {
-        if (IS_NIL(v))
-            break;
-
-        ASSERT(IS_PAIR(v));
-
-        ASSERT(IS_PAIR(CAR(v)));
-        v = CDR(v);
-    }
-}
-
 static int is_equals(Value *a, Value *b)
 {
     return Value_truthy(Value_equals(a, b));
@@ -51,14 +22,10 @@ Value *map_create()
  */
 Value *map_set_bang(Value *map, Value *key, Value *value)
 {
-    ASSERT_IS_VALID_MAP(map);
-
     Value *result = map_remove_bang(map, key);
 
     Value *cons = mkPair(mkPair(key, value), MAP(map));
     MAP(map) = cons;
-
-    ASSERT_IS_VALID_MAP(map);
 
     return result;
 }
@@ -68,8 +35,6 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
  */
 Value *map_remove_bang(Value *map, Value *key)
 {
-    ASSERT_IS_VALID_MAP(map);
-
     Value *cursor = MAP(map);
 
     if (IS_NIL(cursor))
@@ -121,8 +86,6 @@ Value *map_clone(Value *map)
 
 Value *map_find(Value *map, Value *key)
 {
-    ASSERT_IS_VALID_MAP(map);
-
     Value *cursor = MAP(map);
 
     while (1)
@@ -139,8 +102,6 @@ Value *map_find(Value *map, Value *key)
 
 Value *map_containsp(Value *map, Value *key)
 {
-    ASSERT_IS_VALID_MAP(map);
-
     Value *cursor = MAP(map);
 
     while (1)
@@ -193,4 +154,46 @@ Value *map_vals(Value *map)
     }
 
     return root;
+}
+
+int map_compare(Value *a, Value *b)
+{
+    int size_a = map_count(a);
+    int size_b = map_count(b);
+
+    if (size_a < size_b)
+        return -1;
+    if (size_a > size_b)
+        return 1;
+
+    Value *cursor_a = MAP(a);
+    while (1)
+    {
+        if (IS_NIL(cursor_a))
+            return 0;
+
+        int compare = Value_compare(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))));
+        if (compare != 0)
+            return compare;
+
+        cursor_a = CDR(cursor_a);
+    }
+}
+
+int map_count(Value *a)
+{
+    int count = 0;
+    Value *cursor = MAP(a);
+
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            return count;
+
+        if (!IS_PAIR(cursor))
+            return count + 1;
+
+        count += 1;
+        cursor = CDR(cursor);
+    }
 }

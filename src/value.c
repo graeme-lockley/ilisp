@@ -172,25 +172,6 @@ int Value_truthy(Value *v)
     return (v == VFalse || v == VNil) ? 0 : 1;
 }
 
-static int list_length(Value *a)
-{
-    int count = 0;
-
-    while (1)
-    {
-        if (IS_NIL(a))
-            return count;
-
-        if (IS_PAIR(a))
-        {
-            count += 1;
-            a = CDR(a);
-        }
-        else
-            return count + 1;
-    }
-}
-
 Value *Value_equals(Value *a, Value *b)
 {
     return Value_compare(a, b) == 0 ? VTrue : VFalse;
@@ -271,26 +252,7 @@ int Value_compare(Value *a, Value *b)
         }
 
         case VT_MAP:
-        {
-            int size_a = list_length(MAP(a));
-            int size_b = list_length(MAP(b));
-
-            if (size_a != size_b)
-                return sgn(size_a - size_b);
-
-            Value *cursor_a = MAP(a);
-            while (1)
-            {
-                if (IS_NIL(cursor_a))
-                    return 0;
-
-                int compare = Value_compare(CAR(cursor_a), map_find(b, CAR(CAR(cursor_a))));
-                if (compare != 0)
-                    return compare;
-
-                cursor_a = CDR(cursor_a);
-            }
-        }
+            return map_compare(a, b);
 
         case VT_NATIVE_PROCEDURE:
         case VT_PROCEDURE:

@@ -33,6 +33,10 @@ enum ValueType
 #define TAG_TO_VT(t) ((t)->tag >> VALUE_SHIFT_WIDTH)
 #define VT_TO_TAG(t) ((t) << VALUE_SHIFT_WIDTH)
 
+struct MapValueRoot {
+    struct ValueStruct *assoc_list;
+};
+
 struct ValueStruct
 {
     char tag;
@@ -51,7 +55,7 @@ struct ValueStruct
             int length;
             struct ValueStruct **items;
         } vectorV;
-        struct ValueStruct *mapV;
+        struct MapValueRoot mapV;
         struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters, struct ValueStruct *env);
         struct
         {

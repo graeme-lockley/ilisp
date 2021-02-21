@@ -140,7 +140,7 @@ static char *test_map_values()
 
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_MAP(value));
-    mu_assert_label(MAP(value) == items);
+    mu_assert_label(MAP(value).assoc_list == items);
 
     return NULL;
 }

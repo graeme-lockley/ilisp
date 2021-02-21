@@ -111,7 +111,7 @@ Value *Repl_evalValue(Value *v, Value *env)
         Value *root = VNil;
         Value **root_cursor = &root;
 
-        Value *cursor = MAP(v);
+        Value *cursor = MAP(v).assoc_list;
 
         while (1)
         {
@@ -197,7 +197,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
         Value *root = VNil;
         Value **root_cursor = &root;
 
-        Value *cursor = MAP(v);
+        Value *cursor = MAP(v).assoc_list;
 
         while (1)
         {

@@ -25,8 +25,8 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
 {
     Value *result = map_remove_bang(map, key);
 
-    Value *cons = mkPair(mkPair(key, value), MAP(map));
-    MAP(map) = cons;
+    Value *cons = mkPair(mkPair(key, value), MAP(map).assoc_list);
+    MAP(map).assoc_list = cons;
 
     return result;
 }
@@ -36,7 +36,7 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
  */
 Value *map_remove_bang(Value *map, Value *key)
 {
-    Value *cursor = MAP(map);
+    Value *cursor = MAP(map).assoc_list;
 
     if (IS_NIL(cursor))
         return VNil;
@@ -44,7 +44,7 @@ Value *map_remove_bang(Value *map, Value *key)
     if (is_equals(CAR(CAR(cursor)), key))
     {
         Value *result = CDR(CAR(cursor));
-        MAP(map) = CDR(cursor);
+        MAP(map).assoc_list = CDR(cursor);
         return result;
     }
 
@@ -70,7 +70,7 @@ Value *map_clone(Value *map)
     Value *root = VNil;
     Value **root_cursor = &root;
 
-    Value *src_cursor = MAP(map);
+    Value *src_cursor = MAP(map).assoc_list;
     while (1)
     {
         if (IS_NIL(src_cursor))
@@ -87,7 +87,7 @@ Value *map_clone(Value *map)
 
 Value *map_find(Value *map, Value *key)
 {
-    Value *cursor = MAP(map);
+    Value *cursor = MAP(map).assoc_list;
 
     while (1)
     {
@@ -103,7 +103,7 @@ Value *map_find(Value *map, Value *key)
 
 Value *map_containsp(Value *map, Value *key)
 {
-    Value *cursor = MAP(map);
+    Value *cursor = MAP(map).assoc_list;
 
     while (1)
     {
@@ -122,7 +122,7 @@ Value *map_keys(Value *map)
     Value *root = VNil;
     Value **root_cursor = &root;
 
-    Value *src_cursor = MAP(map);
+    Value *src_cursor = MAP(map).assoc_list;
     while (1)
     {
         if (IS_NIL(src_cursor))
@@ -142,7 +142,7 @@ Value *map_vals(Value *map)
     Value *root = VNil;
     Value **root_cursor = &root;
 
-    Value *src_cursor = MAP(map);
+    Value *src_cursor = MAP(map).assoc_list;
     while (1)
     {
         if (IS_NIL(src_cursor))
@@ -167,7 +167,7 @@ int map_compare(Value *a, Value *b)
     if (size_a > size_b)
         return 1;
 
-    Value *cursor_a = MAP(a);
+    Value *cursor_a = MAP(a).assoc_list;
     while (1)
     {
         if (IS_NIL(cursor_a))
@@ -186,7 +186,7 @@ int map_compare(Value *a, Value *b)
 int map_count(Value *a)
 {
     int count = 0;
-    Value *cursor = MAP(a);
+    Value *cursor = MAP(a).assoc_list;
 
     while (1)
     {
@@ -203,7 +203,7 @@ int map_count(Value *a)
 
 void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
 {
-    Value *cursor = MAP(v);
+    Value *cursor = MAP(v).assoc_list;
 
     if (IS_NIL(cursor))
         string_builder_append(sb, "{}");

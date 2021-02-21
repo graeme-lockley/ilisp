@@ -115,23 +115,10 @@ Value *mkVectorUse(Value *items[], int length)
     return value;
 }
 
-static Value *validateMap(Value *value)
-{
-    if (IS_PAIR(value))
-    {
-        Value *car = CAR(value);
-        Value *cdr = CDR(value);
-
-        if (IS_PAIR(car) && validateMap(cdr) == cdr)
-            return value;
-    }
-    return VNil;
-}
-
 Value *mkMap(Value *items)
 {
     Value *value = mkValue(VT_MAP);
-    value->mapV = validateMap(items);
+    value->mapV.assoc_list = items;
     return value;
 }
 

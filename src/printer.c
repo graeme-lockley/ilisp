@@ -3,11 +3,12 @@
 #include <string.h>
 
 #include "map.h"
+#include "printer.h"
 #include "set.h"
 #include "string_builder.h"
 #include "value.h"
 
-static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
+void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
 {
     int v_in_set = set_in(*s, v);
 
@@ -34,7 +35,7 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
             {
                 if (IS_PAIR(v))
                 {
-                    pString(s, sb, CAR(v), readable, separator);
+                    Printer_pr(s, sb, CAR(v), readable, separator);
                     v = CDR(v);
                     if (IS_NIL(v))
                     {
@@ -59,7 +60,7 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
                 }
                 else
                 {
-                    pString(s, sb, v, readable, separator);
+                    Printer_pr(s, sb, v, readable, separator);
                     string_builder_append(sb, ")");
                     break;
                 }
@@ -81,7 +82,7 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
             {
                 if (lp > 0)
                     string_builder_append(sb, separator);
-                pString(s, sb, VECTOR(v).items[lp], readable, separator);
+                Printer_pr(s, sb, VECTOR(v).items[lp], readable, separator);
             }
             string_builder_append(sb, "]");
         }
@@ -149,9 +150,9 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
             {
                 while (1)
                 {
-                    pString(s, sb, CAR(CAR(cursor)), readable, separator);
+                    Printer_pr(s, sb, CAR(CAR(cursor)), readable, separator);
                     string_builder_append(sb, " ");
-                    pString(s, sb, CDR(CAR(cursor)), readable, separator);
+                    Printer_pr(s, sb, CDR(CAR(cursor)), readable, separator);
 
                     cursor = CDR(cursor);
                     if (IS_NIL(cursor))
@@ -174,9 +175,9 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
         if (readable)
         {
             string_builder_append(sb, "(#PROCEDURE ");
-            pString(s, sb, MACRO(v).parameters, readable, separator);
+            Printer_pr(s, sb, MACRO(v).parameters, readable, separator);
             string_builder_append(sb, " ");
-            pString(s, sb, MACRO(v).body, readable, separator);
+            Printer_pr(s, sb, MACRO(v).body, readable, separator);
             string_builder_append(sb, ")");
         }
         else
@@ -187,9 +188,9 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
         if (readable)
         {
             string_builder_append(sb, "(#MACRO ");
-            pString(s, sb, MACRO(v).parameters, readable, separator);
+            Printer_pr(s, sb, MACRO(v).parameters, readable, separator);
             string_builder_append(sb, " ");
-            pString(s, sb, MACRO(v).body, readable, separator);
+            Printer_pr(s, sb, MACRO(v).body, readable, separator);
             string_builder_append(sb, ")");
         }
         else
@@ -198,7 +199,7 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
 
     case VT_EXCEPTION:
         string_builder_append(sb, "(:exception ");
-        pString(s, sb, v->exceptionV, readable, separator);
+        Printer_pr(s, sb, v->exceptionV, readable, separator);
         string_builder_append(sb, ")");
         break;
 
@@ -218,7 +219,7 @@ Value *Printer_prStr(Value *v, int readable, char *separator)
 
     struct Set *values = NULL;
 
-    pString(&values, sb, v, readable, separator);
+    Printer_pr(&values, sb, v, readable, separator);
 
     set_free(values);
 

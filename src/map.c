@@ -197,3 +197,7 @@ int map_count(Value *a)
         cursor = CDR(cursor);
     }
 }
+
+Value *map_to_assoc_list(Value *map) {
+    return MAP(map);
+}

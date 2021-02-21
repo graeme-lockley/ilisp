@@ -2,49 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "map.h"
+#include "set.h"
 #include "string_builder.h"
 #include "value.h"
-
-struct Set
-{
-    Value *v;
-    struct Set *next;
-};
-
-static int set_in(struct Set *s, Value *v)
-{
-    while (1)
-    {
-        if (s == NULL)
-            return 0;
-
-        if (s->v == v)
-            return 1;
-
-        s = s->next;
-    }
-}
-
-static void set_include(struct Set **s, Value *v)
-{
-    struct Set *result = (struct Set *)malloc(sizeof(struct Set));
-    result->v = v;
-    result->next = *s;
-    *s = result;
-}
-
-static void set_free(struct Set *s)
-{
-    while (1)
-    {
-        if (s == NULL)
-            return;
-
-        struct Set *next = s->next;
-        free(s);
-        s = next;
-    }
-}
 
 static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
 {
@@ -174,7 +135,9 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
 
     case VT_MAP:
     {
-        if (IS_NIL(MAP(v)))
+        Value *cursor = map_to_assoc_list(v);
+
+        if (IS_NIL(cursor))
             string_builder_append(sb, "{}");
         else if (v_in_set)
             string_builder_append(sb, "{...}");
@@ -182,7 +145,6 @@ static void pString(struct Set **s, StringBuilder *sb, Value *v, int readable, c
         {
             string_builder_append(sb, "{");
 
-            Value *cursor = MAP(v);
             if (!IS_NIL(cursor))
             {
                 while (1)

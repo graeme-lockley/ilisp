@@ -1,11 +1,13 @@
-#CC=gcc
 CC=clang-9 -Ofast
-# CFLAGS=-g -pg -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
 CFLAGS=-g -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
-# LDFLAGS=-g -pg
 LDFLAGS=-g
-LDLIBS=-ledit
+
+# CC=gcc
+# CFLAGS=-g -pg -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
+# LDFLAGS=-g -pg
+
 RM=rm
+LDLIBS=-ledit
 
 # gprof src/main > x.txt
 
@@ -19,6 +21,7 @@ SRC_OBJECTS=\
 	src/reader.o \
 	src/readline.o \
 	src/repl.o \
+	src/set.o \
 	src/string_builder.o \
 	src/value.o
 

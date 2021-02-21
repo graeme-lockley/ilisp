@@ -81,8 +81,8 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./test/*.scm
 test: $(TEST_INPUT) 
 
 clean:
-	rm src/*.o
-	rm test/*.o
-	rm src/main
-	rm test/*_test
-	rm test/flag
+	rm -f src/*.o
+	rm -f test/*.o
+	rm -f src/main
+	rm -f test/*_test
+	rm -f test/flag

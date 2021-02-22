@@ -50,7 +50,7 @@
 )
 
 (export (sort lst)
-    (->list (Vector.sort! (Vector.mutable (vec lst))))
+    (->list (Vector.sort! (Vector.->mutable lst)))
 )
 
 (export (starts-with lst prefix)

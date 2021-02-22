@@ -97,9 +97,7 @@ static Value *list_to_vector(Value *v)
     Value **items = (Value **)malloc(sizeof(Value *) * list_length);
     cursor = v;
     for (int lp = 0; lp < list_length; lp += 1, cursor = CDR(cursor))
-    {
         items[lp] = CAR(cursor);
-    }
 
     return mkVector(items, list_length);
 }
@@ -1887,8 +1885,16 @@ static Value *vector_mutable(Value *parameters, Value *env)
         return extract_result;
 
     Value *args = parameter[0];
+
+    if (IS_PAIR(args))
+    {
+        Value *result = list_to_vector(args);
+        result->tag &= ~VP_IMMUTABLE;
+        return result;
+    }
+
     if (!IS_VECTOR(args))
-        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkSymbol("vector"), args);
+        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkPair(mkSymbol("vector"), mkPair(mkSymbol("pair"), VNil)), args);
 
     int number_of_items = VECTOR(args).length;
     Value **items = VECTOR(args).items;

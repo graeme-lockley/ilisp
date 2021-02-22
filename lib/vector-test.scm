@@ -3,6 +3,11 @@
 
 (define (even? n) (= (* (/ n 2) 2) n))
 
+(Unit.test "->mutable"
+    (Unit.assert-equals (Vector.->mutable []) [])
+    (Unit.assert-truthy (mutable? (Vector.->mutable [])))
+)
+
 (Unit.test "car"
     (Unit.assert-equals (car [1]) 1)
     (Unit.assert-equals (car [1 2 3]) 1)
@@ -86,11 +91,6 @@
    (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] "0" (fn (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
-(Unit.test "mutable"
-    (Unit.assert-equals (Vector.mutable []) [])
-    (Unit.assert-truthy (mutable? (Vector.mutable [])))
-)
-
 (Unit.test "nth"
     (Unit.assert-equals (Vector.nth [] 5) ())
     (Unit.assert-equals (Vector.nth [1 2 3] (- 1)) ())
@@ -101,19 +101,19 @@
 )
 
 (Unit.test "nth!"
-    (Unit.assert-equals (Vector.nth! (Vector.mutable [1]) 0 2) [2])
-    (Unit.assert-equals (Vector.nth! (Vector.mutable [1 2]) 1 5) [1 5])
-    (Unit.assert-equals (Vector.nth! (Vector.mutable [1 2 () 4 5]) 2 3) [1 2 3 4 5])
+    (Unit.assert-equals (Vector.nth! (Vector.->mutable [1]) 0 2) [2])
+    (Unit.assert-equals (Vector.nth! (Vector.->mutable [1 2]) 1 5) [1 5])
+    (Unit.assert-equals (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3) [1 2 3 4 5])
 
-    (Unit.assert-truthy (mutable? (Vector.nth! (Vector.mutable [1 2 () 4 5]) 2 3)))
+    (Unit.assert-truthy (mutable? (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3)))
 
-    (Unit.assert-signal (Vector.nth! (Vector.mutable [1]) 2 0) (fn (signal) (do
+    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (fn (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
         (Unit.assert-equals (get (cdr signal) :index) 2)
         (Unit.assert-equals (get (cdr signal) :operand) [1])
     )))
 
-    (Unit.assert-signal (Vector.nth! (Vector.mutable [1]) (- 3) 0) (fn (signal) (do
+    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) (- 3) 0) (fn (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
         (Unit.assert-equals (get (cdr signal) :index) (- 3))
         (Unit.assert-equals (get (cdr signal) :operand) [1])
@@ -153,7 +153,7 @@
 )
 
 (Unit.test "sort!"
-    (Unit.assert-equals (Vector.sort! (Vector.mutable [1 0 9 2 3 8 7 4 5 6])) (Vector.range 0 9))
+    (Unit.assert-equals (Vector.sort! (Vector.->mutable [1 0 9 2 3 8 7 4 5 6])) (Vector.range 0 9))
 )
 
 (Unit.test "starts-with"

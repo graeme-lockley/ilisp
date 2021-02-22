@@ -72,7 +72,7 @@
     )
 )
 
-(export mutable (get (car **root**) :builtins 'vector-mutable))
+(export ->mutable (get (car **root**) :builtins 'vector-mutable))
 
 (export nth (get (car **root**) :builtins 'vector-nth))
 

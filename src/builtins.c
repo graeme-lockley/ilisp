@@ -582,15 +582,14 @@ static Value *get(Value *parameters, Value *env)
 
 static Value *hash_map(Value *parameters, Value *env)
 {
-    Value *root = VNil;
-    Value **root_cursor = &root;
+    Value *result = map_create();
 
     int parameter_count = 0;
 
     while (1)
     {
         if (IS_NIL(parameters))
-            return mkMap(root);
+            return result;
 
         if (!IS_PAIR(parameters))
             return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkString("pair"), parameters);
@@ -606,9 +605,7 @@ static Value *hash_map(Value *parameters, Value *env)
         parameters = CDR(parameters);
         parameter_count += 1;
 
-        Value *link = mkPair(mkPair(mi_key, mi_value), VNil);
-        *root_cursor = link;
-        root_cursor = &CDR(link);
+        map_set_bang(result, mi_key, mi_value);
     }
 }
 

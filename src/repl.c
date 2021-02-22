@@ -108,29 +108,25 @@ Value *Repl_evalValue(Value *v, Value *env)
 
     if (IS_MAP(v))
     {
-        Value *root = VNil;
-        Value **root_cursor = &root;
-
-        Value *cursor = MAP(v).assoc_list;
+        Value *assoc = map_assoc_list(v);
+        Value *map = map_create();
 
         while (1)
         {
-            if (IS_NIL(cursor))
-                return mkMap(root);
+            if (IS_NIL(assoc))
+                return map;
 
-            Value *key = Repl_eval(CAR(CAR(cursor)), env);
+            Value *v = CAR(assoc);
+            Value *key = Repl_eval(CAR(v), env);
             if (IS_EXCEPTION(key))
                 return key;
-            Value *value = Repl_eval(CDR(CAR(cursor)), env);
+            Value *value = Repl_eval(CDR(v), env);
             if (IS_EXCEPTION(value))
                 return value;
 
-            Value *item = mkPair(mkPair(key, value), VNil);
+            map_set_bang(map, key, value);
 
-            *root_cursor = item;
-            root_cursor = &CDR(item);
-
-            cursor = CDR(cursor);
+            assoc = CDR(assoc);
         }
     }
 
@@ -194,28 +190,22 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
     if (IS_MAP(v))
     {
-        Value *root = VNil;
-        Value **root_cursor = &root;
-
-        Value *cursor = MAP(v).assoc_list;
+        Value *map = map_create();
+        Value *assoc = map_assoc_list(v);
 
         while (1)
         {
-            if (IS_NIL(cursor))
-                return mkMap(root);
+            if (IS_NIL(assoc))
+                return map;
 
-            Value *key = eval_quasiquote(CAR(CAR(cursor)), env);
-            Value *value = eval_quasiquote(CDR(CAR(cursor)), env);
+            Value *v = CAR(assoc);
+            Value *key = eval_quasiquote(CAR(v), env);
+            Value *value = eval_quasiquote(CDR(v), env);
 
-            Value *item = mkPair(mkPair(key, value), VNil);
+            map_set_bang(map, key, value);
 
-            *root_cursor = item;
-            root_cursor = &CDR(item);
-
-            cursor = CDR(cursor);
+            assoc = CDR(assoc);
         }
-
-        return mkMap(root);
     }
 
     return v;
@@ -223,7 +213,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
 static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_env)
 {
-    Value *new_bindings = mkMap(VNil);
+    Value *new_bindings = mkMap(NULL);
     Value *new_env = mkPair(new_bindings, enclosing_env);
 
     Value *parameter_cursor = params;

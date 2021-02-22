@@ -57,13 +57,13 @@ static char *test_map_set_bang()
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v1), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v2), "()");
-    ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v3), "()");
-    ASSERT_VALUE_STRING_EQUALS(m, "{\"c\" 3 \"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2 \"c\" 3}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v4), "3");
-    ASSERT_VALUE_STRING_EQUALS(m, "{\"c\" 4 \"b\" 2 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2 \"c\" 4}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v4), "2");
-    ASSERT_VALUE_STRING_EQUALS(m, "{\"b\" 4 \"c\" 4 \"a\" 1}");
+    ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 4 \"c\" 4}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v4), "1");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 4 \"b\" 4 \"c\" 4}");
 
@@ -77,10 +77,13 @@ static char *test_map_remove_bang()
     map_remove_bang(m, k1);
     ASSERT_VALUE_STRING_EQUALS(m, "{}");
 
+    // printf("[%s]\n", as_string(m));
+
     // Single binding map scenario
     m = map_test_data_1();
     ASSERT_VALUE_STRING_EQUALS(map_remove_bang(m, k2), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
+    // printf("[%s]\n", as_string(map_remove_bang(m, k1)));
     ASSERT_VALUE_STRING_EQUALS(map_remove_bang(m, k1), "1");
     ASSERT_VALUE_STRING_EQUALS(m, "{}");
 

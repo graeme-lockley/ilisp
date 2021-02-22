@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "minunit.h"
+#include "../src/map.h"
 #include "../src/value.h"
 
 static char *test_ordinal_values()
@@ -128,19 +129,13 @@ static char *test_vector_values()
 
 static char *test_map_values()
 {
-    Value *items = mkPair(
-        mkPair(mkString("a"), mkNumber(1)),
-        mkPair(
-            mkPair(mkString("b"), mkNumber(2)),
-            mkPair(
-                mkPair(mkString("c"), mkNumber(2)),
-                VNil)));
+    Value *map = map_create();
+    map_set_bang(map, mkString("a"), mkNumber(1));
+    map_set_bang(map, mkString("b"), mkNumber(2));
+    map_set_bang(map, mkString("c"), mkNumber(2));
 
-    Value *value = mkMap(items);
-
-    mu_assert_label(IS_IMMUTABLE(value));
-    mu_assert_label(IS_MAP(value));
-    mu_assert_label(MAP(value).assoc_list == items);
+    mu_assert_label(IS_IMMUTABLE(map));
+    mu_assert_label(IS_MAP(map));
 
     return NULL;
 }

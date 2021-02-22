@@ -33,8 +33,19 @@ enum ValueType
 #define TAG_TO_VT(t) ((t)->tag >> VALUE_SHIFT_WIDTH)
 #define VT_TO_TAG(t) ((t) << VALUE_SHIFT_WIDTH)
 
-struct MapValueRoot {
-    struct ValueStruct *assoc_list;
+struct MapStruct
+{
+    struct MapStruct *left;
+    struct MapStruct *right;
+    struct ValueStruct *key;
+    struct ValueStruct *value;
+};
+
+typedef struct MapStruct Map;
+
+struct MapValueRoot
+{
+    Map *root;
 };
 
 struct ValueStruct
@@ -122,7 +133,7 @@ extern Value *mkVectorUse(Value **items, int length);
 extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 
-extern Value *mkMap(Value *items);
+extern Value *mkMap(Map *map);
 extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 

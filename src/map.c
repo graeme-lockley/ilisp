@@ -5,17 +5,12 @@
 #include "printer.h"
 #include "value.h"
 
-static int is_equals(Value *a, Value *b)
-{
-    return Value_truthy(Value_equals(a, b));
-}
-
 /* Creates a new empty association.  As this association is new and not shared 
  * it allows it to be mutated.
  */
 Value *map_create()
 {
-    return mkMap(VNil);
+    return mkMap(NULL);
 }
 
 /* Adds the binding key to value into map and returns the former binding 
@@ -23,12 +18,37 @@ Value *map_create()
  */
 Value *map_set_bang(Value *map, Value *key, Value *value)
 {
-    Value *result = map_remove_bang(map, key);
+    Map **node = &MAP(map).root;
 
-    Value *cons = mkPair(mkPair(key, value), MAP(map).assoc_list);
-    MAP(map).assoc_list = cons;
+    while (1)
+    {
+        Map *snode = *node;
 
-    return result;
+        if (snode == NULL)
+        {
+            snode = (Map *)malloc(sizeof(Map));
+            snode->left = NULL;
+            snode->right = NULL;
+            snode->key = key;
+            snode->value = value;
+            *node = snode;
+            return VNil;
+        }
+
+        int c = Value_compare(snode->key, key);
+
+        if (c == 0)
+        {
+            Value *former_binding = snode->value;
+            snode->value = value;
+            return former_binding;
+        }
+
+        if (c < 0)
+            node = &snode->left;
+        else
+            node = &snode->right;
+    }
 }
 
 /* Removes the binding associated with key and, if such a binding exists, 
@@ -36,125 +56,170 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
  */
 Value *map_remove_bang(Value *map, Value *key)
 {
-    Value *cursor = MAP(map).assoc_list;
-
-    if (IS_NIL(cursor))
-        return VNil;
-
-    if (is_equals(CAR(CAR(cursor)), key))
-    {
-        Value *result = CDR(CAR(cursor));
-        MAP(map).assoc_list = CDR(cursor);
-        return result;
-    }
+    Map **node = &MAP(map).root;
 
     while (1)
     {
-        Value *next = CDR(cursor);
-        if (IS_NIL(next))
+        Map *snode = *node;
+
+        if (snode == NULL)
             return VNil;
 
-        if (is_equals(CAR(CAR(next)), key))
+        int c = Value_compare(snode->key, key);
+
+        if (c == 0)
         {
-            Value *result = CDR(CAR(next));
-            CDR(cursor) = CDR(next);
-            return result;
+            Value *former_binding = snode->value;
+
+            if (snode->left == NULL)
+                *node = snode->right;
+            else if (snode->right == NULL)
+                *node = snode->left;
+            else
+            {
+                Map **node_left = &snode->left;
+
+                while ((*node_left)->right != NULL)
+                    node_left = &(*node_left)->right;
+
+                Map *snode_left = *node_left;
+                (*node_left) = snode_left->left;
+                snode->key = snode_left->key;
+                snode->value = snode_left->value;
+            }
+
+            return former_binding;
         }
 
-        cursor = next;
+        if (c < 0)
+            node = &snode->left;
+        else
+            node = &snode->right;
     }
+}
+
+static Map *clone(Map *map)
+{
+    if (map == NULL)
+        return NULL;
+
+    Map *snode = (Map *)malloc(sizeof(Map));
+    snode->left = clone(map->left);
+    snode->right = clone(map->right);
+    snode->key = map->key;
+    snode->value = map->value;
+    return snode;
 }
 
 Value *map_clone(Value *map)
 {
-    Value *root = VNil;
-    Value **root_cursor = &root;
+    Map *r = clone(MAP(map).root);
 
-    Value *src_cursor = MAP(map).assoc_list;
-    while (1)
-    {
-        if (IS_NIL(src_cursor))
-            break;
-
-        Value *link = mkPair(CAR(src_cursor), VNil);
-        *root_cursor = link;
-        root_cursor = &CDR(link);
-        src_cursor = CDR(src_cursor);
-    }
-
-    return mkMap(root);
+    return mkMap(r);
 }
 
 Value *map_find(Value *map, Value *key)
 {
-    Value *cursor = MAP(map).assoc_list;
+    Map *snode = MAP(map).root;
 
     while (1)
     {
-        if (IS_NIL(cursor))
+        if (snode == NULL)
             return VNil;
 
-        if (is_equals(CAR(CAR(cursor)), key))
-            return CAR(cursor);
+        int c = Value_compare(snode->key, key);
 
-        cursor = CDR(cursor);
+        if (c == 0)
+            return mkPair(snode->key, snode->value);
+
+        if (c < 0)
+            snode = snode->left;
+        else
+            snode = snode->right;
     }
 }
 
 Value *map_containsp(Value *map, Value *key)
 {
-    Value *cursor = MAP(map).assoc_list;
+    Map *snode = MAP(map).root;
 
     while (1)
     {
-        if (IS_NIL(cursor))
+        if (snode == NULL)
             return VFalse;
 
-        if (is_equals(CAR(CAR(cursor)), key))
+        int c = Value_compare(snode->key, key);
+
+        if (c == 0)
             return VTrue;
 
-        cursor = CDR(cursor);
+        if (c < 0)
+            snode = snode->left;
+        else
+            snode = snode->right;
     }
+}
+
+static Value *assoc_list(Value *tail, Map *map)
+{
+    if (map == NULL)
+        return tail;
+
+    return assoc_list(mkPair(
+                          mkPair(map->key, map->value),
+                          assoc_list(tail, map->left)),
+                      map->right);
+}
+
+Value *map_assoc_list(Value *map)
+{
+    return assoc_list(VNil, MAP(map).root);
+}
+
+static Value *keys(Value *tail, Map *map)
+{
+    if (map == NULL)
+        return tail;
+
+    return keys(mkPair(map->key, keys(tail, map->left)), map->right);
 }
 
 Value *map_keys(Value *map)
 {
-    Value *root = VNil;
-    Value **root_cursor = &root;
+    return keys(VNil, MAP(map).root);
+}
 
-    Value *src_cursor = MAP(map).assoc_list;
-    while (1)
-    {
-        if (IS_NIL(src_cursor))
-            break;
+static Value *values(Value *tail, Map *map)
+{
+    if (map == NULL)
+        return tail;
 
-        Value *link = mkPair(CAR(CAR(src_cursor)), VNil);
-        *root_cursor = link;
-        root_cursor = &CDR(link);
-        src_cursor = CDR(src_cursor);
-    }
-
-    return root;
+    return values(mkPair(map->value, values(tail, map->left)), map->right);
 }
 
 Value *map_vals(Value *map)
 {
-    Value *root = VNil;
-    Value **root_cursor = &root;
+    return values(VNil, MAP(map).root);
+}
 
-    Value *src_cursor = MAP(map).assoc_list;
-    while (1)
-    {
-        if (IS_NIL(src_cursor))
-            break;
+int compare(Map *map, Value *other)
+{
+    if (map == NULL)
+        return 0;
 
-        Value *link = mkPair(CDR(CAR(src_cursor)), VNil);
-        *root_cursor = link;
-        root_cursor = &CDR(link);
-        src_cursor = CDR(src_cursor);
-    }
+    Value *find_result = map_find(other, map->key);
+    Value *other_value = IS_PAIR(find_result) ? CDR(find_result) : find_result;
 
-    return root;
+    int c = Value_compare(map->value, other_value);
+
+    if (c != 0)
+        return c;
+
+    c = compare(map->left, other);
+    if (c != 0)
+        return c;
+
+    return compare(map->right, other);
 }
 
 int map_compare(Value *a, Value *b)
@@ -166,46 +231,29 @@ int map_compare(Value *a, Value *b)
         return -1;
     if (size_a > size_b)
         return 1;
+    if (size_a == 0)
+        return 0;
 
-    Value *cursor_a = MAP(a).assoc_list;
-    while (1)
-    {
-        if (IS_NIL(cursor_a))
-            return 0;
+    int r = compare(MAP(a).root, b);
 
-        Value *cell_a = CAR(cursor_a);
-        Value *key_a = CAR(cell_a);
-        int compare = Value_compare(cell_a, map_find(b, key_a));
-        if (compare != 0)
-            return compare;
+    return r;
+}
 
-        cursor_a = CDR(cursor_a);
-    }
+static int count(Map *map)
+{
+    return map == NULL ? 0 : 1 + count(map->left) + count(map->right);
 }
 
 int map_count(Value *a)
 {
-    int count = 0;
-    Value *cursor = MAP(a).assoc_list;
-
-    while (1)
-    {
-        if (IS_NIL(cursor))
-            return count;
-
-        if (!IS_PAIR(cursor))
-            return count + 1;
-
-        count += 1;
-        cursor = CDR(cursor);
-    }
+    return count(MAP(a).root);
 }
 
 void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)
 {
-    Value *cursor = MAP(v).assoc_list;
+    Value *assoc = map_assoc_list(v);
 
-    if (IS_NIL(cursor))
+    if (IS_NIL(assoc))
         string_builder_append(sb, "{}");
     else if (v_in_set)
         string_builder_append(sb, "{...}");
@@ -215,14 +263,14 @@ void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int reada
 
         while (1)
         {
-            Value *cell = CAR(cursor);
+            Value *v = CAR(assoc);
 
-            Printer_pr(s, sb, CAR(cell), readable, separator);
+            Printer_pr(s, sb, CAR(v), readable, separator);
             string_builder_append(sb, " ");
-            Printer_pr(s, sb, CDR(cell), readable, separator);
+            Printer_pr(s, sb, CDR(v), readable, separator);
 
-            cursor = CDR(cursor);
-            if (IS_NIL(cursor))
+            assoc = CDR(assoc);
+            if (IS_NIL(assoc))
                 break;
 
             string_builder_append(sb, " ");

@@ -4,6 +4,7 @@
 
 #include "buffer.h"
 #include "exceptions.h"
+#include "map.h"
 #include "printer.h"
 #include "value.h"
 
@@ -454,7 +455,7 @@ static Value *parse(Lexer *lexer)
             if (lexer->token == RBRACKET)
             {
                 next_token(lexer);
-                Value *result = mkVectorUse((Value **) buffer->buffer, buffer->items_count);
+                Value *result = mkVectorUse((Value **)buffer->buffer, buffer->items_count);
                 buffer_free_use(buffer);
                 return result;
             }
@@ -472,12 +473,14 @@ static Value *parse(Lexer *lexer)
 
     case LCURLY:
     {
+        Value *result = mkMap(NULL);
+
         next_token(lexer);
 
         if (lexer->token == RCURLEY)
         {
             next_token(lexer);
-            return mkMap(VNil);
+            return result;
         }
 
         Value *m1_key = parse(lexer);
@@ -488,8 +491,7 @@ static Value *parse(Lexer *lexer)
         if (!IS_SUCCESSFUL(m1_value))
             return m1_value;
 
-        Value *head = mkPair(mkPair(m1_key, m1_value), VNil);
-        Value *cursor = head;
+        map_set_bang(result, m1_key, m1_value);
 
         while (1)
         {
@@ -504,7 +506,7 @@ static Value *parse(Lexer *lexer)
             if (lexer->token == RCURLEY)
             {
                 next_token(lexer);
-                return mkMap(head);
+                return result;
             }
 
             Value *mi_key = parse(lexer);
@@ -515,10 +517,7 @@ static Value *parse(Lexer *lexer)
             if (!IS_SUCCESSFUL(mi_value))
                 return mi_value;
 
-            Value *link = mkPair(mkPair(mi_key, mi_value), VNil);
-
-            cursor->pairV.cdr = link;
-            cursor = link;
+            map_set_bang(result, mi_key, mi_value);
         }
     }
 

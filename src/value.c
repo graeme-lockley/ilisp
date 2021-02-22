@@ -115,10 +115,10 @@ Value *mkVectorUse(Value *items[], int length)
     return value;
 }
 
-Value *mkMap(Value *items)
+Value *mkMap(Map *map)
 {
     Value *value = mkValue(VT_MAP);
-    value->mapV.assoc_list = items;
+    value->mapV.root = map;
     return value;
 }
 

@@ -38,18 +38,6 @@
   )
 )
 
-(export-macro (cond . xs)
-  (if (> (count xs) 0) 
-    (list 
-      'if 
-      (first xs) 
-      (if (> (count xs) 1) 
-        (nth xs 1) 
-        (raise "odd number of forms to cond")) 
-      (cons 'cond (rest (rest xs))))
-  )
-)
-
 ; A wrapper macro that uses the builtin set! quoting the first parameter in so
 ; that is appears as a symbol.
 (export-macro (set! name value)

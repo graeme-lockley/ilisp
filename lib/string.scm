@@ -15,12 +15,9 @@
 (export (fold v z p)
     (do
         (define (fold-idx idx z)
-            (cond
-                (= idx (count v))
+            (if (= idx (count v))
                     z
-
-                :else
-                    (fold-idx (+ idx 1) (p z (nth v idx)))
+                (fold-idx (+ idx 1) (p z (nth v idx)))
             )
         )
 
@@ -31,15 +28,13 @@
 (export (fold-right v z p)
     (do
         (define (iter idx z) 
-            (cond 
+            (if
                 (= idx 0) 
                     z 
-                    
-                :else
-                    (do
-                        (define idxp (- idx 1))
-                        (iter idxp (p (nth v idxp) z))
-                    )
+                (do
+                    (define idxp (- idx 1))
+                    (iter idxp (p (nth v idxp) z))
+                )
             )
         )
         

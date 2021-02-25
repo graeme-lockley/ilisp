@@ -13,24 +13,17 @@
     (define (dec n) (- n 1))
 
     (define (iter v-idx prefix-idx)
-        (cond 
-            (< prefix-idx 0) 
+        (if (< prefix-idx 0) 
                 t
-
             (= (nth v v-idx) (nth prefix prefix-idx)) 
                 (iter (dec v-idx) (dec prefix-idx))
-
-            :else 
-                f
+            f
         )
     )
 
-    (cond 
-        (> (count prefix) (count v)) 
+    (if (> (count prefix) (count v)) 
             f
-
-        :else 
-            (iter (dec (count v)) (dec (count prefix)))
+        (iter (dec (count v)) (dec (count prefix)))
     )
   )  
 )
@@ -40,12 +33,9 @@
 (export (fold v z p)
     (do
         (define (fold-idx idx z)
-            (cond
-                (= idx (count v))
+            (if (= idx (count v))
                     z
-
-                :else
-                    (fold-idx (+ idx 1) (p z (nth v idx)))
+                (fold-idx (+ idx 1) (p z (nth v idx)))
             )
         )
 
@@ -56,15 +46,12 @@
 (export (fold-right v z p)
     (do
         (define (iter idx z) 
-            (cond 
-                (= idx 0) 
+            (if (= idx 0) 
                     z 
-                    
-                :else
-                    (do
-                        (define idxp (- idx 1))
-                        (iter idxp (p (nth v idxp) z))
-                    )
+                (do
+                    (define idxp (- idx 1))
+                    (iter idxp (p (nth v idxp) z))
+                )
             )
         )
         
@@ -91,24 +78,17 @@
     (define (inc n) (+ n 1))
 
     (define (iter idx max)
-        (cond 
-            (= idx max) 
+        (if (= idx max) 
                 t
-
             (= (nth v idx) (nth prefix idx)) 
                 (iter (inc idx) max)
-
-            :else 
-                f
+            f
         )
     )
 
-    (cond 
-        (> (count prefix) (count v)) 
+    (if (> (count prefix) (count v)) 
             f
-
-        :else 
-            (iter 0 (count prefix))
+        (iter 0 (count prefix))
     )
   )  
 )

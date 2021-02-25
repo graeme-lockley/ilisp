@@ -5,12 +5,23 @@
 #include "printer.h"
 #include "value.h"
 
+#define HASH_SIZE 13
+
 /* Creates a new empty association.  As this association is new and not shared 
  * it allows it to be mutated.
  */
-Value *map_create()
+Value *map_create(int hash_size)
 {
-    return mkMap(NULL);
+    if (hash_size < 1)
+        hash_size = HASH_SIZE;
+        
+    Map map;
+    map.hash_size = hash_size;
+    map.nodes = (MapNode **)(malloc(hash_size * sizeof(MapNode *)));
+    for (int i = 0; i < hash_size; i += 1)
+        map.nodes[i] = NULL;
+
+    return mkMap(&map);
 }
 
 /* Adds the binding key to value into map and returns the former binding 
@@ -18,15 +29,15 @@ Value *map_create()
  */
 Value *map_set_bang(Value *map, Value *key, Value *value)
 {
-    Map **node = &MAP(map).root;
+    MapNode **node = &MAP(map).nodes[Value_hash(key) % MAP(map).hash_size];
 
     while (1)
     {
-        Map *snode = *node;
+        MapNode *snode = *node;
 
         if (snode == NULL)
         {
-            snode = (Map *)malloc(sizeof(Map));
+            snode = (MapNode *)malloc(sizeof(MapNode));
             snode->left = NULL;
             snode->right = NULL;
             snode->key = key;
@@ -56,11 +67,11 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
  */
 Value *map_remove_bang(Value *map, Value *key)
 {
-    Map **node = &MAP(map).root;
+    MapNode **node = &MAP(map).nodes[Value_hash(key) % MAP(map).hash_size];
 
     while (1)
     {
-        Map *snode = *node;
+        MapNode *snode = *node;
 
         if (snode == NULL)
             return VNil;
@@ -77,12 +88,12 @@ Value *map_remove_bang(Value *map, Value *key)
                 *node = snode->left;
             else
             {
-                Map **node_left = &snode->left;
+                MapNode **node_left = &snode->left;
 
                 while ((*node_left)->right != NULL)
                     node_left = &(*node_left)->right;
 
-                Map *snode_left = *node_left;
+                MapNode *snode_left = *node_left;
                 (*node_left) = snode_left->left;
                 snode->key = snode_left->key;
                 snode->value = snode_left->value;
@@ -98,12 +109,12 @@ Value *map_remove_bang(Value *map, Value *key)
     }
 }
 
-static Map *clone(Map *map)
+static MapNode *clone(MapNode *map)
 {
     if (map == NULL)
         return NULL;
 
-    Map *snode = (Map *)malloc(sizeof(Map));
+    MapNode *snode = (MapNode *)malloc(sizeof(MapNode));
     snode->left = clone(map->left);
     snode->right = clone(map->right);
     snode->key = map->key;
@@ -113,14 +124,20 @@ static Map *clone(Map *map)
 
 Value *map_clone(Value *map)
 {
-    Map *r = clone(MAP(map).root);
+    Map r;
 
-    return mkMap(r);
+    r.hash_size = MAP(map).hash_size;
+    r.nodes = (MapNode **)malloc(sizeof(MapNode *) * MAP(map).hash_size);
+
+    for (int i = 0; i < MAP(map).hash_size; i += 1)
+        r.nodes[i] = clone(MAP(map).nodes[i]);
+
+    return mkMap(&r);
 }
 
 Value *map_find(Value *map, Value *key)
 {
-    Map *snode = MAP(map).root;
+    MapNode *snode = MAP(map).nodes[Value_hash(key) % MAP(map).hash_size];
 
     while (1)
     {
@@ -141,7 +158,7 @@ Value *map_find(Value *map, Value *key)
 
 Value *map_containsp(Value *map, Value *key)
 {
-    Map *snode = MAP(map).root;
+    MapNode *snode = MAP(map).nodes[Value_hash(key) % MAP(map).hash_size];
 
     while (1)
     {
@@ -160,36 +177,89 @@ Value *map_containsp(Value *map, Value *key)
     }
 }
 
-static Value *assoc_list(Value *tail, Map *map)
+static void assoc_list(Value **buffer, int *idx, MapNode *map)
 {
     if (map == NULL)
-        return tail;
+        return;
 
-    return assoc_list(mkPair(
-                          mkPair(map->key, map->value),
-                          assoc_list(tail, map->left)),
-                      map->right);
+    buffer[*idx] = mkPair(map->key, map->value);
+    *idx += 1;
+    assoc_list(buffer, idx, map->left);
+    assoc_list(buffer, idx, map->right);
+}
+
+static Value *buffer_to_list(Value **buffer, int size)
+{
+    Value *root = VNil;
+    Value **root_cursor = &root;
+    for (int l = 0; l < size; l += 1)
+    {
+        Value *i = buffer[l];
+
+        Value *v = mkPair(i, VNil);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    return root;
+}
+
+static int vector_value_compare(const void *a, const void *b)
+{
+    Value *va = *(Value **)a;
+    Value *vb = *(Value **)b;
+
+    return Value_compare(va, vb);
 }
 
 Value *map_assoc_list(Value *map)
 {
-    return assoc_list(VNil, MAP(map).root);
+    int cnt = map_count(map);
+
+    Value **buffer = (Value **)malloc(sizeof(Value *) * cnt);
+
+    int idx = 0;
+
+    for (int i = 0; i < MAP(map).hash_size; i += 1)
+        assoc_list(buffer, &idx, MAP(map).nodes[i]);
+
+    qsort(buffer, cnt, sizeof(Value *), &vector_value_compare);
+
+    Value *result = buffer_to_list(buffer, cnt);
+    free(buffer);
+    return result;
 }
 
-static Value *keys(Value *tail, Map *map)
+static void keys(Value **buffer, int *idx, MapNode *map)
 {
     if (map == NULL)
-        return tail;
+        return;
 
-    return keys(mkPair(map->key, keys(tail, map->left)), map->right);
+    buffer[*idx] = map->key;
+    *idx += 1;
+
+    keys(buffer, idx, map->left);
+    keys(buffer, idx, map->right);
 }
 
 Value *map_keys(Value *map)
 {
-    return keys(VNil, MAP(map).root);
+    int cnt = map_count(map);
+
+    Value **buffer = (Value **)malloc(sizeof(Value *) * cnt);
+
+    int idx = 0;
+
+    for (int i = 0; i < MAP(map).hash_size; i += 1)
+        keys(buffer, &idx, MAP(map).nodes[i]);
+
+    qsort(buffer, cnt, sizeof(Value *), &vector_value_compare);
+
+    Value *result = buffer_to_list(buffer, cnt);
+    free(buffer);
+    return result;
 }
 
-static Value *values(Value *tail, Map *map)
+static Value *values(Value *tail, MapNode *map)
 {
     if (map == NULL)
         return tail;
@@ -199,10 +269,15 @@ static Value *values(Value *tail, Map *map)
 
 Value *map_vals(Value *map)
 {
-    return values(VNil, MAP(map).root);
+    Value *result = VNil;
+
+    for (int i = 0; i < MAP(map).hash_size; i += 1)
+        result = values(result, MAP(map).nodes[i]);
+
+    return result;
 }
 
-int compare(Map *map, Value *other)
+int compare(MapNode *map, Value *other)
 {
     if (map == NULL)
         return 0;
@@ -234,19 +309,30 @@ int map_compare(Value *a, Value *b)
     if (size_a == 0)
         return 0;
 
-    int r = compare(MAP(a).root, b);
+    for (int i = 0; i < MAP(a).hash_size; i += 1)
+    {
+        int c = compare(MAP(a).nodes[i], b);
 
-    return r;
+        if (c != 0)
+            return c;
+    }
+
+    return 0;
 }
 
-static int count(Map *map)
+static int count(MapNode *map)
 {
     return map == NULL ? 0 : 1 + count(map->left) + count(map->right);
 }
 
-int map_count(Value *a)
+int map_count(Value *map)
 {
-    return count(MAP(a).root);
+    int result = 0;
+
+    for (int i = 0; i < MAP(map).hash_size; i += 1)
+        result += count(MAP(map).nodes[i]);
+
+    return result;
 }
 
 void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int readable, char *separator)

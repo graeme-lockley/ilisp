@@ -118,7 +118,8 @@ Value *mkVectorUse(Value *items[], int length)
 Value *mkMap(Map *map)
 {
     Value *value = mkValue(VT_MAP);
-    value->mapV.root = map;
+    value->mapV.hash_size = map->hash_size;
+    value->mapV.nodes = map->nodes;
     return value;
 }
 
@@ -247,4 +248,70 @@ int Value_compare(Value *a, Value *b)
         }
 
     return tag_compare;
+}
+
+unsigned long Value_hash(Value *v)
+{
+    switch (TAG_TO_VT(v))
+    {
+    case VT_SYMBOL:
+    case VT_KEYWORD:
+    case VT_STRING:
+    {
+        char *str = STRING(v);
+
+        unsigned long hash = 5381;
+        int c = *str;
+
+        while (c != 0)
+        {
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+            str += 1;
+            c = *str;
+        }
+
+        return hash;
+    }
+
+    case VT_CHARACTER:
+        return CHARACTER(v);
+
+    case VT_NUMBER:
+        return NUMBER(v);
+
+    case VT_PAIR:
+    {
+        unsigned long hash = 5381;
+        while (1)
+        {
+            if (IS_NIL(v))
+                return hash;
+
+            if (!IS_PAIR(v))
+                return hash + Value_hash(v);
+
+            hash += Value_hash(CAR(v));
+
+            v = CDR(v);
+        }
+    }
+
+    case VT_VECTOR:
+    {
+        unsigned long hash = 5381;
+
+        int length = VECTOR(v).length;
+        Value **vs = VECTOR(v).items;
+
+        for (int loop = 0; loop < length; loop += 1)
+            hash += Value_hash(vs[loop]);
+
+        return hash;
+    }
+
+    case VT_MAP:
+        return 1;
+    }
+
+    return 0;
 }

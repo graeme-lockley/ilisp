@@ -109,7 +109,7 @@ Value *Repl_evalValue(Value *v, Value *env)
     if (IS_MAP(v))
     {
         Value *assoc = map_assoc_list(v);
-        Value *map = map_create();
+        Value *map = map_create(1);
 
         while (1)
         {
@@ -190,7 +190,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
     if (IS_MAP(v))
     {
-        Value *map = map_create();
+        Value *map = map_create(1);
         Value *assoc = map_assoc_list(v);
 
         while (1)
@@ -213,7 +213,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
 static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_env)
 {
-    Value *new_bindings = mkMap(NULL);
+    Value *new_bindings = map_create(1);
     Value *new_env = mkPair(new_bindings, enclosing_env);
 
     Value *parameter_cursor = params;

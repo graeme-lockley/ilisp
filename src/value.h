@@ -41,12 +41,14 @@ struct MapStruct
     struct ValueStruct *value;
 };
 
-typedef struct MapStruct Map;
-
-struct MapValueRoot
-{
-    Map *root;
+struct MapValueRoot {
+    int hash_size;
+    struct MapStruct **nodes;
 };
+
+typedef struct MapStruct MapNode;
+
+typedef struct MapValueRoot Map;
 
 struct ValueStruct
 {
@@ -99,6 +101,7 @@ typedef struct ValueStruct Value;
 extern int Value_truthy(Value *v);
 extern Value *Value_equals(Value *a, Value *b);
 extern int Value_compare(Value *a, Value *b);
+extern unsigned long Value_hash(Value *v);
 
 extern Value *VNil;
 extern Value *mkNil();
@@ -134,7 +137,7 @@ extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 
 extern Value *mkMap(Map *map);
-extern void Value_setMapping(Value *map, Value *key, Value *value);
+// extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
 extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *env));

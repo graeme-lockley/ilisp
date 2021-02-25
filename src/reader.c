@@ -473,7 +473,7 @@ static Value *parse(Lexer *lexer)
 
     case LCURLY:
     {
-        Value *result = mkMap(NULL);
+        Value *result = map_create(0);
 
         next_token(lexer);
 

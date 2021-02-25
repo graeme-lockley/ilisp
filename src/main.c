@@ -11,7 +11,7 @@
 
 static Value *runtime_env(char *envp[])
 {
-    Value *e = map_create();
+    Value *e = map_create(0);
 
     for (int i = 0; envp[i] != NULL; i += 1)
     {

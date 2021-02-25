@@ -129,7 +129,7 @@ static char *test_vector_values()
 
 static char *test_map_values()
 {
-    Value *map = map_create();
+    Value *map = map_create(0);
     map_set_bang(map, mkString("a"), mkNumber(1));
     map_set_bang(map, mkString("b"), mkNumber(2));
     map_set_bang(map, mkString("c"), mkNumber(2));

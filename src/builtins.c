@@ -580,7 +580,7 @@ static Value *get(Value *parameters, Value *env)
 
 static Value *hash_map(Value *parameters, Value *env)
 {
-    Value *result = map_create();
+    Value *result = map_create(0);
 
     int parameter_count = 0;
 
@@ -898,20 +898,6 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
     }
 }
 
-static Value *keys(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "keys");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_MAP(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("keys"), 0, mkSymbol("map"), parameter[0]);
-
-    return map_keys(parameter[0]);
-}
-
 static Value *keyword(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1118,6 +1104,20 @@ static Value *macrop(Value *parameters, Value *env)
         return extract_result;
 
     return IS_MACRO(parameter[0]) ? VTrue : VNil;
+}
+
+static Value *map_to_list(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "map->list");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_MAP(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("map->list"), 0, mkSymbol("map"), parameter[0]);
+
+    return map_assoc_list(parameter[0]);
 }
 
 static Value *map(Value *parameters, Value *env)
@@ -1379,7 +1379,7 @@ static Value *read_dir(Value *parameters, Value *env)
         if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
             continue;
 
-        Value *h = map_create();
+        Value *h = map_create(4);
         map_set_bang(h, mkKeyword(":sym-link?"), (de->d_type & DT_LNK) ? VTrue : VFalse);
         map_set_bang(h, mkKeyword(":dir?"), (de->d_type & DT_DIR) ? VTrue : VFalse);
         map_set_bang(h, mkKeyword(":file?"), (de->d_type & DT_REG) ? VTrue : VFalse);
@@ -1786,20 +1786,6 @@ static Value *symbolp(Value *parameters, Value *env)
     return IS_SYMBOL(parameter[0]) ? VTrue : VNil;
 }
 
-static Value *vals(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vals");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_MAP(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vals"), 0, mkSymbol("map"), parameter[0]);
-
-    return map_vals(parameter[0]);
-}
-
 static Value *vec(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2115,9 +2101,9 @@ static void add_binding_into_environment(Value *env, char *name, Value *value)
 
 Value *builtins_initialise_environment()
 {
-    Value *root_bindings = map_create();
+    Value *root_bindings = map_create(0);
     Value *root_scope = mkPair(root_bindings, VNil);
-    Value *builtin_bindings = map_create();
+    Value *builtin_bindings = map_create(0);
 
     add_binding_into_environment(root_bindings, "**root**", root_scope);
     add_binding_into_environment(root_bindings, "+", mkNativeProcedure(integer_plus));
@@ -2149,12 +2135,12 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
     add_binding_into_environment(root_bindings, "get", mkNativeProcedure(get));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
-    add_binding_into_environment(root_bindings, "keys", mkNativeProcedure(keys));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "macro?", mkNativeProcedure(macrop));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
+    add_binding_into_environment(root_bindings, "map->list", mkNativeProcedure(map_to_list));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
     add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
@@ -2175,7 +2161,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "string?", mkNativeProcedure(stringp));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
-    add_binding_into_environment(root_bindings, "vals", mkNativeProcedure(vals));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(vec));
     add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));

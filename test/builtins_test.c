@@ -22,12 +22,12 @@ Value *v4;
 
 static Value *map_test_data_0()
 {
-    return map_create();
+    return map_create(0);
 }
 
 static Value *map_test_data_1()
 {
-    Value *result = map_create();
+    Value *result = map_create(0);
 
     map_set_bang(result, k1, v1);
 
@@ -36,7 +36,7 @@ static Value *map_test_data_1()
 
 static Value *map_test_data_3()
 {
-    Value *result = map_create();
+    Value *result = map_create(0);
 
     map_set_bang(result, k3, v3);
     map_set_bang(result, k2, v2);
@@ -57,6 +57,7 @@ static char *test_map_set_bang()
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v1), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v2), "()");
+    printf("%s\n", as_string(m));
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v3), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2 \"c\" 3}");

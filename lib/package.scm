@@ -13,13 +13,11 @@
 
 (export (package-import-with-context name *source-name*)
     (try
-        (do
-            (define *source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* name))
+        (do (define *source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* name))
 
             (define (load-package-file)
                 ((fn () 
-                    (do 
-                        (define nested-nested-scope
+                    (do (define nested-nested-scope
                             ((fn () 
                                 (do 
                                     (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
@@ -35,16 +33,14 @@
             (define root-scope (car **root**))
 
             (define imports-list
-                (do
-                    (if (not (contains? root-scope :imports))
+                (do (if (not (contains? root-scope :imports))
                         (assoc! root-scope :imports {}))
                     (get root-scope :imports)
                 )
             )
 
             (if (not (map? (get imports-list *source-name*)))
-                (do
-                    (if *verbose* (println "Loading " *source-name*))
+                (do (if *verbose* (println "Loading " *source-name*))
                     (assoc! imports-list *source-name* ())
                     (define bindings (load-package-file))
                     (if (map? (get imports-list *source-name*))
@@ -57,8 +53,7 @@
             (get imports-list *source-name*)
         )
         (fn (e)
-            (do
-                (if *verbose* (println "error loading " *source-name* ": " e))
+            (do (if *verbose* (println "error loading " *source-name* ": " e))
                 (raise e)
             )
         )

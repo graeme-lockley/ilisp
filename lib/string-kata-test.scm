@@ -38,8 +38,7 @@
     (do
         (define (list-of min max)
             (fn ()
-                (do
-                    (define length (integer-in-range min max))
+                (do (define length (integer-in-range min max))
 
                     (define (gen-list n)
                         (if (<= n 0) ()
@@ -64,8 +63,7 @@
 
 (define (gen:filter g predicate)
     (fn ()
-        (do
-            (define value (g))
+        (do (define value (g))
 
             (if (predicate value)
                 value
@@ -81,16 +79,14 @@
 
 (define (loop-n n thunk)
     (if (> n 0)
-        (do
-            (thunk)
+        (do (thunk)
             (loop-n (- n 1) thunk)
         )
     )
 )
 
 (define (sample gen)
-    (do
-        (define (ntimes n)
+    (do (define (ntimes n)
             (if (= 0 n) ()
                 (cons (gen) (ntimes (- n 1)))
             )
@@ -103,8 +99,7 @@
 (define (gen:for-all gen test)
     (loop-n 100 
         (fn () 
-            (do
-                (define arguments (gen))
+            (do (define arguments (gen))
 
                 (try
                     (test arguments)
@@ -123,8 +118,7 @@
 (define (gen:for-each gen test)
     (loop-n 100
         (fn ()
-            (do
-                (define arguments (gen))
+            (do (define arguments (gen))
 
                 (try
                     (apply test arguments)

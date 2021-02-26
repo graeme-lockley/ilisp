@@ -65,8 +65,8 @@
 )
 
 (export-macro (import name . options) 
-    `(if (and (= ~(first options) :as) (not (nil? '~(nth options 1))))
-        (define ~(nth options 1) (package-import ~name))
+    (if (and (= (first options) :as) (not (nil? (nth options 1))))
+        `(define ~(nth options 1) (package-import ~name))
         (raise 'IllegalImportSyntax {:expected ":as symbol"})
     )
 )

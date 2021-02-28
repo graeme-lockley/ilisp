@@ -1,36 +1,36 @@
 (import "./environment.scm" :as Environment)
 (import "./frame.scm" :as Frame)
 
-(export (eval exp env)
+(export (eval env exp)
     (if (self-evaluating? exp) 
             exp
 
         (variable? exp) 
-            (Environment.lookup-variable-value exp env)
+            (Environment.lookup-variable-value env exp)
 
         (quoted? exp) 
             (text-of-quotation exp)
 
         (assignment? exp) 
-            (eval-assignment exp env)
+            (eval-assignment env exp)
 
         (definition? exp) 
-            (eval-definition exp env)
+            (eval-definition env exp)
 
         (if? exp) 
-            (eval-if exp env)
+            (eval-if env exp)
 
         (lambda? exp) 
-            (make-procedure (lambda-parameters exp) (lambda-body exp) env)
+            (make-procedure env (lambda-parameters exp) (lambda-body exp))
 
         (begin? exp)
-            (eval-sequence (begin-actions exp) env)
+            (eval-sequence env (begin-actions exp))
 
         (cond? exp) 
-            (eval (cond->if exp) env)
+            (eval env (cond->if exp))
 
         (application? exp)
-            (apply (eval (operator exp) env) (list-of-values (operands exp) env))
+            (apply (eval env (operator exp)) (list-of-values env (operands exp)))
 
         (raise "Unknown expression type" {:exp exp :procedure 'eval})
     )
@@ -52,13 +52,25 @@
     )
 )
 
-(define (list-of-values exps env) 
+(define (list-of-values env exps) 
     (if (no-operands? exps)
         '()
         (cons
-            (eval (first-operand exps) env)
-            (list-of-values (rest-operands exps) env)
+            (eval env (first-operand exps))
+            (list-of-values env (rest-operands exps))
         )
+    )
+)
+
+(define (eval-assignment env exp)
+    (do
+        (Environment.set-variable-value! 
+            env
+            (assignment-variable exp)
+            (eval env (assignment-value exp))
+        )
+
+        ()
     )
 )
 
@@ -84,4 +96,16 @@
 
 (define (text-of-quotation exp)
     (car (cdr exp))
+)
+
+(define (assignment? exp)
+    (tagged-list? exp 'set!)
+)
+
+(define (assignment-variable exp) 
+    (nth exp 1)
+)
+
+(define (assignment-value exp) 
+    (nth exp 2)
 )

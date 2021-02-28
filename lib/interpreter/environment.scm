@@ -6,7 +6,7 @@
 
 (export (first-frame env) (car env))
 
-(export (lookup-variable-value var env)
+(export (lookup-variable-value env var)
     (do (define (env-lookup env)
             (if (= env the-empty-environment)
                     (raise 'UnboundVariable {:procedure 'lookup-variable-name :name var})
@@ -24,4 +24,28 @@
 
         (env-lookup env)
     )
+)
+
+(export (set-variable-value! env var val)
+    (do (define (env-set! env)
+            (if (= env the-empty-environment)
+                    (raise 'UnboundVariable {:procedure 'lookup-variable-name :name var})
+
+                (do (define frame (first-frame env))
+                    (define binding (Frame.binding frame var))
+
+                    (if (nil? binding)
+                        (env-set! (enclosing-environment env))
+                        (Frame.add-binding! frame var val)
+                    )
+                )
+            )
+        )
+
+        (env-set! env)
+    )
+)
+
+(export (extend base-env val vars)
+    (cons (Frame.mk val vars) base-env)
 )

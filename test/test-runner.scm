@@ -3,41 +3,24 @@
 
 (define (directory dir)
     (do
+        (define (format-name n) (str dir "/" (get n :name)))
+        (define (file-is-dir? n) (get n :dir?))
+        (define (file-is-test? n) (and (get n :file?) (ends-with (get n :name) "-test.scm")))
+
         (define contents (FS.read-dir (FS.absolute-name-relative-to-file-name *source-name* dir)))
 
-        (define directories (map (filter contents (fn (t) (get t :dir?))) (fn (n) (str dir "/" (get n :name)))))
+        (define directories (map (filter contents file-is-dir?) format-name))
+        (define files-in-directories (map directories directory))
  
-        (define files 
-            (map 
-                (filter 
-                    contents 
-                    (fn (t) (and (get t :file?) (ends-with (get t :name) "-test.scm")))
-                )
-                (fn (t) (str dir "/" (get t :name)))
-            )
-        )
+        (define files (map (filter contents file-is-test?) format-name))
 
-        (define ff (map files (fn (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
+        (define files-with-absolute-name (map files (fn (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
         
-        (define result (apply concat (cons ff (map directories directory))))
-
-        (apply prn result)
-
-        result
+        (apply concat (cons files-with-absolute-name files-in-directories))
     )
 )
 
 (define test-files (directory "../lib"))
-
-(define test-files'
-    (map
-        (filter  
-          (FS.read-dir (FS.absolute-name-relative-to-file-name *source-name* "../lib"))
-          (fn (t) (and (get t :file?) (ends-with (get t :name) "-test.scm")))
-        )
-        (fn (t) (get t :name))
-    )
-)
 
 (define *signal* ())
 

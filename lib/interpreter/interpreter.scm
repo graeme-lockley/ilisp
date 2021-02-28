@@ -23,11 +23,8 @@
         (lambda? exp) 
             (make-procedure env (lambda-parameters exp) (lambda-body exp))
 
-        (begin? exp)
-            (eval-sequence env (begin-actions exp))
-
-        (cond? exp) 
-            (eval env (cond->if exp))
+        (do? exp)
+            (eval-sequence env (do-actions exp))
 
         (application? exp)
             (apply (eval env (operator exp)) (list-of-values env (operands exp)))
@@ -86,6 +83,20 @@
     (if (true? (eval env (if-predicate exp)))
         (eval env (if-consequant exp))
         (eval env (if-alternative exp))
+    )
+)
+
+(define (eval-sequence env exps)
+    (if (do-actions-empty? exps)
+            ()
+
+        (do-actions-last? exps)
+            (eval env (do-actions-first exps))
+
+        (do
+            (eval env (do-actions-first exps))
+            (eval-sequence env (do-actions-rest exps))
+        )
     )
 )
 
@@ -186,3 +197,16 @@
 (define (make-procedure env parameters body)
     (list 'procedure parameters body env)
 )
+
+(define (do? exp)
+    (tagged-list? exp 'do)
+)
+
+(define (do-actions exp)
+    (cdr exp)
+)
+
+(define (do-actions-empty? exps) (nil? exps))
+(define (do-actions-last? exps) (nil? (cdr exps)))
+(define (do-actions-first exps) (car exps))
+(define (do-actions-rest exps) (cdr exps))

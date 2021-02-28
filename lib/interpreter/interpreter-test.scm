@@ -64,3 +64,12 @@
     (Unit.assert-equals (Interpreter.eval env (list 'if () 2 3)) 3)
     (Unit.assert-equals (Interpreter.eval env (list 'if () 2)) ())
 )
+
+(Unit.test "eval do"
+    (define env (mk-env))
+    
+    (Unit.assert-equals (Interpreter.eval env (list 'do)) ())
+    (Unit.assert-equals (Interpreter.eval env (list 'do (list 'define 'b "bye") 'b)) "bye")
+
+    (Unit.assert-equals (Environment.lookup-variable-value env 'b) "bye")
+)

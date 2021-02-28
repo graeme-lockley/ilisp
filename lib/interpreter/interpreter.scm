@@ -82,8 +82,19 @@
     )
 )
 
+(define (eval-if env exp)
+    (if (true? (eval env (if-predicate exp)))
+        (eval env (if-consequant exp))
+        (eval env (if-alternative exp))
+    )
+)
+
 (define (make-lambda parameters body) 
     (cons 'lambda (cons parameters body))
+)
+
+(define (make-if predicate consequent alternative)
+    (list 'if predicate consequent alternative)
 )
 
 (define (tagged-list? exp tag)
@@ -95,7 +106,7 @@
 )
 
 (define (self-evaluating? exp)
-    (or (number? exp) (string? exp))
+    (or (number? exp) (string? exp) (nil? exp))
 )
 
 (define (variable? exp)
@@ -142,6 +153,22 @@
 
 (define (if? exp)
     (tagged-list? exp 'if)
+)
+
+(define (if-predicate exp)
+    (nth exp 1)
+)
+
+(define (if-consequant exp)
+    (nth exp 2)
+)
+
+(define (if-alternative exp)
+    (nth exp 3)
+)
+
+(define (true? exp)
+    exp
 )
 
 (define (lambda? exp)

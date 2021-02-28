@@ -6,7 +6,7 @@
 (define (mk-env)
     (Environment.extend 
         Environment.the-empty-environment 
-        (list 'a 'x) 
+        (list 'a 'x)
         (list "hello" 10)
     )
 )
@@ -57,4 +57,10 @@
 (Unit.test "eval define procedure"
     (Interpreter.eval env (list 'define (list 'b 'x) 'x))
     (Unit.assert-equals (Environment.lookup-variable-value env (symbol "b")) (list 'procedure (list 'x) (list 'x) env))
+)
+
+(Unit.test "eval if"
+    (Unit.assert-equals (Interpreter.eval env (list 'if 1 2 3)) 2)
+    (Unit.assert-equals (Interpreter.eval env (list 'if () 2 3)) 3)
+    (Unit.assert-equals (Interpreter.eval env (list 'if () 2)) ())
 )

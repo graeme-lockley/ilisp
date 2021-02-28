@@ -46,6 +46,13 @@
     )
 )
 
-(export (extend base-env val vars)
-    (cons (Frame.mk val vars) base-env)
+(export (define-variable! env var val)
+    (do (define frame (first-frame env))
+
+        (Frame.add-binding! frame var val)
+    )
+)
+
+(export (extend base-env vars vals)
+    (cons (Frame.mk vars vals) base-env)
 )

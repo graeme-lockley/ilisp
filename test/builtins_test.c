@@ -57,7 +57,6 @@ static char *test_map_set_bang()
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k1, v1), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k2, v2), "()");
-    printf("%s\n", as_string(m));
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2}");
     ASSERT_VALUE_STRING_EQUALS(map_set_bang(m, k3, v3), "()");
     ASSERT_VALUE_STRING_EQUALS(m, "{\"a\" 1 \"b\" 2 \"c\" 3}");

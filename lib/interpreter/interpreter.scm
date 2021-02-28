@@ -1,6 +1,8 @@
 (import "./environment.scm" :as Environment)
 (import "./frame.scm" :as Frame)
 
+(define builtin-apply apply)
+
 (export (eval env exp)
     (if (self-evaluating? exp) 
             exp
@@ -33,7 +35,7 @@
     )
 )
 
-(define (apply procedure arguments) 
+(define (apply procedure arguments)
     (if (primitive-procedure? procedure)
             (apply-primitive-procedure procedure arguments)
 
@@ -51,7 +53,7 @@
 
 (define (list-of-values env exps) 
     (if (no-operands? exps)
-        '()
+        ()
         (cons
             (eval env (first-operand exps))
             (list-of-values env (rest-operands exps))
@@ -210,3 +212,45 @@
 (define (do-actions-last? exps) (nil? (cdr exps)))
 (define (do-actions-first exps) (car exps))
 (define (do-actions-rest exps) (cdr exps))
+
+(define (application? exp)
+    (pair? exp)
+)
+
+(define (operator exp) 
+    (car exp)
+)
+
+(define (operands exp) 
+    (cdr exp)
+)
+
+(define (no-operands? ops) 
+    (nil? ops)
+)
+
+(define (first-operand ops)
+    (car ops)
+)
+
+(define (rest-operands ops)
+    (cdr ops)
+)
+
+(define (operator exp)
+    (car exp)
+)
+
+(define (primitive-procedure? proc) 
+    (tagged-list? proc 'primitive)
+)
+
+(define (primitive-implementation proc) 
+    (car (cdr proc))
+)
+
+(define (apply-primitive-procedure procedure arguments)
+    (builtin-apply (primitive-implementation procedure) arguments)    
+)
+
+(define (compound-procedure? exp) ())

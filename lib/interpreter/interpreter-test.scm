@@ -6,8 +6,8 @@
 (define (mk-env)
     (Environment.extend 
         Environment.the-empty-environment 
-        (list 'a 'x)
-        (list "hello" 10)
+        (list 'a 'x 'plus)
+        (list "hello" 10 (list 'primitive +))
     )
 )
 
@@ -72,4 +72,10 @@
     (Unit.assert-equals (Interpreter.eval env (list 'do (list 'define 'b "bye") 'b)) "bye")
 
     (Unit.assert-equals (Environment.lookup-variable-value env 'b) "bye")
+)
+
+(Unit.test "eval apply primitive"
+    (define env (mk-env))
+    
+    (Unit.assert-equals (Interpreter.eval env (list 'plus 1 2 3)) 6)
 )

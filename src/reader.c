@@ -231,7 +231,7 @@ static void next_token(Lexer *lexer)
         {
             current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);
             // \s\[\]{}('"`,;
-            while (current > 32 && current != '[' && current != ']' && current != '{' && current != '}' && current != '(' && current != ')' && current != '\'' && current != '"' && current != '`' && current != ',' && current != ';')
+            while (current > 32 && current != '[' && current != ']' && current != '{' && current != '}' && current != '(' && current != ')' && current != '"' && current != '`' && current != ',' && current != ';')
             {
                 advance_position(lexer, &cursor);
                 current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);

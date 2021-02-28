@@ -97,7 +97,7 @@
 )
 
 (define (gen:for-all gen test)
-    (loop-n 100 
+    (loop-n 10 
         (fn () 
             (do (define arguments (gen))
 
@@ -116,7 +116,7 @@
 )
 
 (define (gen:for-each gen test)
-    (loop-n 100
+    (loop-n 10
         (fn ()
             (do (define arguments (gen))
 

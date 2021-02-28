@@ -11,22 +11,22 @@
 
 (export-macro (assert-msg-equals msg v1 v2)
     `(do 
-        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        ((get (car **root**) :unit 'inc-asserts-total))
         (define __v1 ~v1) 
         (define __v2 ~v2) 
         (if (= __v1 __v2) 
-            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+            ((get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:msg ~msg :v1 '~v1 :v2 '~v2 :__v1 __v1 :__v2 __v2 :src *source-name*}))
         )
 )
 
 (export-macro (assert-equals v1 v2)
     `(do 
-        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        ((get (car **root**) :unit 'inc-asserts-total))
         (define __v1 ~v1) 
         (define __v2 ~v2) 
         (if (= __v1 __v2) 
-            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+            ((get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:v1 '~v1 :v2 '~v2 :__v1 __v1 :__v2 __v2 :src *source-name*})
         )
     )
@@ -34,10 +34,10 @@
 
 (export-macro (assert-truthy v)
     `(do 
-        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        ((get (car **root**) :unit 'inc-asserts-total))
         (define __v ~v) 
         (if __v 
-            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+            ((get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
         )
     )
@@ -45,18 +45,18 @@
 
 (export-macro (assert-falsy v)
     `(do 
-        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        ((get (car **root**) :unit 'inc-asserts-total))
         (define __v ~v) 
         (if __v 
             (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
-            ((get (package-import "./unit.scm") 'inc-asserts-passed))
+            ((get (car **root**) :unit 'inc-asserts-passed))
         )
     )
 )
 
 (export-macro (assert-signal e p)
     `(do
-        ((get (package-import "./unit.scm") 'inc-asserts-total))
+        ((get (car **root**) :unit 'inc-asserts-total))
         (define signal-raised f)
         (try
             ~e
@@ -64,7 +64,7 @@
                 (do
                     (set! signal-raised t)
                     (~p signal)
-                    ((get (package-import "./unit.scm") 'inc-asserts-passed))
+                    ((get (car **root**) :unit 'inc-asserts-passed))
                 )
             )
         )
@@ -79,13 +79,12 @@
         (try
             (do 
                 (println "- " ~name)
-                ((get (package-import "./unit.scm") 'inc-tests-total))
+                ((get (car **root**) :unit 'inc-tests-total))
                 ~@tests
-                ((get (package-import "./unit.scm") 'inc-tests-passed))
+                ((get (car **root**) :unit 'inc-tests-passed))
             )
             (fn (e)
                 (do
-                    (println "Here we are: " e)
                     (if (and (pair? e) (map? (cdr e)))
                             (raise (car e) (assoc (cdr e) :src *source-name* :test-name ~name))
                         (raise e {:src *source-name* :test-name ~name})

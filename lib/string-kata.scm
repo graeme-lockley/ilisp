@@ -6,9 +6,7 @@
     (do
         (define tokens 
             (if (starts-with input "//[")
-                    (do
-                        (define inputs (Sequence.split (drop input 3) "]\n"))
-
+                    (do (define inputs (Sequence.split (drop input 3) "]\n"))
                         (Sequence.split (nth inputs 1) (List.reverse (List.sort (Sequence.split (nth inputs 0) "]["))))
                     )
 

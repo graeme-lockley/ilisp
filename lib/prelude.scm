@@ -66,6 +66,8 @@
 ; and is used to bootstrap the package mechanism.
 (load-file "./package.scm")
 
+(assoc! (car **root**) :unit (package-import "./unit.scm"))
+
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
 

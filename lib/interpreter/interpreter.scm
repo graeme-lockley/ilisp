@@ -74,6 +74,18 @@
     )
 )
 
+(define (eval-definition env exp)
+    (do
+        (Environment.define-variable! env (definition-variable exp) (eval env (definition-value exp)))
+
+        ()
+    )
+)
+
+(define (make-lambda parameters body) 
+    (cons 'lambda (cons parameters body))
+)
+
 (define (tagged-list? exp tag)
     (if (pair? exp)
             (= (car exp) tag)
@@ -108,4 +120,42 @@
 
 (define (assignment-value exp) 
     (nth exp 2)
+)
+
+(define (definition? exp)
+    (tagged-list? exp 'define)
+)
+
+(define (definition-variable exp)
+    (if (symbol? (nth exp 1))
+          (nth exp 1)
+        (car (nth exp 1))
+    )
+)
+
+(define (definition-value exp)
+    (if (symbol? (nth exp 1))
+            (nth exp 2)
+        (make-lambda (cdr (nth exp 1)) (drop exp 2))
+    )
+)
+
+(define (if? exp)
+    (tagged-list? exp 'if)
+)
+
+(define (lambda? exp)
+    (tagged-list? exp 'lambda)
+)
+
+(define (lambda-parameters exp)
+    (nth exp 1)
+)
+
+(define (lambda-body exp)
+    (drop exp 2)
+)
+
+(define (make-procedure env parameters body)
+    (list 'procedure parameters body env)
 )

@@ -29,7 +29,7 @@
 (export (set-variable-value! env var val)
     (do (define (env-set! env)
             (if (= env the-empty-environment)
-                    (raise 'UnboundVariable {:procedure 'lookup-variable-name :name var})
+                    (raise 'UnboundVariable {:procedure 'set-variable-value! :name var})
 
                 (do (define frame (first-frame env))
                     (define binding (Frame.binding frame var))

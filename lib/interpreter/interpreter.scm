@@ -41,14 +41,20 @@
 
         (compound-procedure? procedure)
             (eval-sequence
-                (procedure-body procedure)
-                (extend-environment
+                (Environment.extend
+                    (procedure-environment procedure)
                     (procedure-parameters procedure)
                     arguments
-                    (procedure-environment procedure)))
+                )
+                (procedure-body procedure)
+            )
 
         (raise 'UnknownProcedureType {:procedure 'apply :procedure-type procedure})
     )
+)
+
+(define (apply-primitive-procedure procedure arguments)
+    (builtin-apply (primitive-implementation procedure) arguments)    
 )
 
 (define (list-of-values env exps) 
@@ -196,10 +202,6 @@
     (drop exp 2)
 )
 
-(define (make-procedure env parameters body)
-    (list 'procedure parameters body env)
-)
-
 (define (do? exp)
     (tagged-list? exp 'do)
 )
@@ -241,16 +243,30 @@
     (car exp)
 )
 
-(define (primitive-procedure? proc) 
-    (tagged-list? proc 'primitive)
+(define (make-procedure env parameters body)
+    (list 'procedure parameters body env)
+)
+
+(define (primitive-procedure? exp) 
+    (tagged-list? exp 'primitive)
+)
+
+(define (compound-procedure? exp)
+    (tagged-list? exp 'procedure)
 )
 
 (define (primitive-implementation proc) 
     (car (cdr proc))
 )
 
-(define (apply-primitive-procedure procedure arguments)
-    (builtin-apply (primitive-implementation procedure) arguments)    
+(define (procedure-parameters p)
+    (nth p 1)
 )
 
-(define (compound-procedure? exp) ())
+(define (procedure-body p)
+    (nth p 2)
+)
+
+(define (procedure-environment p)
+    (nth p 3)
+)

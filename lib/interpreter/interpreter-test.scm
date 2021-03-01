@@ -79,3 +79,11 @@
     
     (Unit.assert-equals (Interpreter.eval env (list 'plus 1 2 3)) 6)
 )
+
+(Unit.test "eval apply compound"
+    (define env (mk-env))
+    
+    (Interpreter.eval env (list 'define 'inc (list 'lambda (list 'n) (list 'plus 'n 1))))
+
+    (Unit.assert-equals (Interpreter.eval env (list 'inc 1)) 2)
+)

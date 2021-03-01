@@ -11,30 +11,53 @@ This project is an implementation of Lisp with the following technical character
 
 ## Super High-Level Approach
 
-- Build an iLisp- interpreter entirely in C
-- Add a garbage collector to the iLisp- C implementation
-- Write an iLisp- interpreter in iLisp-
-- Write a compiler of iLisp- in iLisp- to native code
-- Build an interpreter of iLisp in iLisp-
+In order to bootstrap this project it is necessary to consider a watered down version of iLisp that is rich enough to build an interpreter and compiler for iLisp.  The watered down version will be called `iLisp-`.
+
+The high-level approach then is as follows:
+
+- Build an `iLisp-` interpreter entirely in C
+- Add a garbage collector to the `iLisp-` C implementation
+- Write an `iLisp-` interpreter in `iLisp-`
+- Write a compiler of `iLisp-` in `iLisp-` to native code
+- Build an interpreter of iLisp in `iLisp-`
 - Write the iLisp compiler in iLisp
 
-Clearly iLisp- needs to be a subset of iLisp and which needs to be defined.
+Clearly `iLisp-` needs to be a subset of iLisp and which needs to be defined.
 
-## Description of iLisp-
+## Description of `iLisp-`
 
-iLisp- supports the following set of data types:
+If I had to make a list of the influences of `iLisp-` from heavy to light the order would probably be:
+
+
+- Scheme
+- JavaScript
+- Deno
+- MAL
+- Bel
+- Common Lisp
+
+The interesting addition onto the list would be JavaScript.  The contribution from Javascript is primarily:
+
+- The obvious separation between constant (const) and variable (let) declarations.  This is really helpful is it makes intention explicit.
+- The module system is simple and easy to understand
+
+`iLisp-` supports the following set of data types:
 
 - Nil
 
 - Symbol 
 - Keyword
 
+- Boolean
 - Character
-- Number
-- String 
+- Byte
+- Integer
+- String
 
+- Atom
 - Pair
 - Vector
+- Byte Vector
 - Map
 
 - Function

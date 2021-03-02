@@ -26,19 +26,16 @@ Clearly `iLisp-` needs to be a subset of iLisp and which needs to be defined.
 
 ## Description of `iLisp-`
 
-The following is a list of `iLisp-` influences with what aspect each of these languages or runtime systems introduced.
+The following lists `iLisp-` influences with aspects contributed by each influencer..
 
 | Language/Runtime | Contribution |
 |-|-|
-| Scheme | - Data types |
-|        | - The rich collection of built-in procedures |
-|        | - Boolean values rather than just truthy and falsy |
-| JavaScript | - A module system that is simple and easy to understand |
-|            | - The obvious separation between constant (const) and variable (let) declarations.  This is really helpful is it makes intention explicit. |
-| Deno | - Runtime environment |
-| MAL | - The basic list interpreter |
-| Bel | - Thinking about a list flavour in an original way |
-| Common Lisp | - Source of many ideas |
+| Scheme | <ul><li>Data types</li><li>The rich collection of built-in procedures</li><li>Boolean values rather than just truthy and falsy</li><li>Syntactic flavour</li></ul> |
+| JavaScript | <ul><li>A module system that is simple and easy to understand</li><li>The obvious separation between constant (const) and variable (let) declarations.  This is really helpful is it makes intention explicit.</li></ul> |
+| Deno | <ul><li>Runtime environment</li></ul> |
+| MAL | <ul><li>The basic Lisp interpreter</li></ul> |
+| Bel | <ul><li>Thinking about a Lisp flavour in an original way</li></ul> |
+| Common Lisp | <ul><li>Source of many ideas</li></ul> |
 
 
 `iLisp-` supports the following set of data types:

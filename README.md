@@ -52,10 +52,63 @@ The following lists `iLisp-` influences with aspects contributed by each influen
 | Integer | A 32 bit signed value. |
 | String | A sequence of characters. A literal string is a sequence of character delmitted with with quotation marks (`"`). Within a string literal, various escape sequences represent characters other than themselves: <ul><li>`\t` character tabulation `#\x09`</li><li>`\n`: linefeed `#\0a`</li><li>`\r`: return `\#x0d`</li><li>`\\`: backslash</li><li>`\x`*\<hex scalar\>*`;`: specified character with the ASCII code of *\<hex scalar*\></li></ul>|
 | Atom | Atoms provide a way to manage shared, synchronous, independent, mutable state and are the primary mechansim in handling mutation. |
-| Pair | A pair is an object with two fields - *car* and *cdr*. Pairs are created using the procedure `cons` with each field accessible using the procedures `car` and `cdr` respectively. Pairs are used primarily to represent lists. A list is defined recursively as either *null* or a pair whose *cdr* is a list. Pairs created using the procedure `cons` are immutable.  A mutable pair can be created using the procedure `mcons` with the `car` and `cdr` fields being mutated using the procedures `set-car!` and `set-cdr!` respectively. Other than supporting mutation, pairs created using `mcons` are simliar to `cons` pairs in every other way. Literal lists are represented by enclosing the elements with parenthesis and separating with whitespace.  The expression `(cons 1 (cons 2 (cons 3 (cons 4 ()))))` can literally be represented as `(1 2 3 4)` |
+| Pair | A pair is an object with two fields - *car* and *cdr*. Pairs are created using the procedure `cons` with each field accessible using the procedures `car` and `cdr` respectively. Pairs are used primarily to represent lists. A list is defined recursively as either *null* or a pair whose *cdr* is a list. Pairs created using the procedure `cons` are immutable.  A mutable pair can be created using the procedure `mcons` with the *car* and *cdr* fields being mutated using the procedures `set-car!` and `set-cdr!` respectively. Other than supporting mutation, pairs created using `mcons` are simliar to `cons` pairs in every other way. Literal lists are represented by enclosing the elements with parenthesis and separating with whitespace.  The expression `(cons 1 (cons 2 (cons 3 (cons 4 ()))))` can literally be represented as `(1 2 3 4)` |
 | Vector | Vectors are heterogeneous structures whose elements are indexed by integers. A vector typically occupies less space than a list of the same length, and the average time needed to access a randomly chosen element is typically less for the vector than for the list. Literal vectors are represented by enclosing the elements with square brackers and separating with whitespace. The literal vector `[1 2 3 4 5]` is a vector with 5 elements indexed from 0 to 4 inclusive.  Vectors are immutable however a mutable vector can be formed by passing a vector to the procedure `->mutable`.  So the following expression `(->mutable [1 2 3 4 5])` will return a mutable vector. |
 | Byte Vector | Byte vectors represent blocks of binary data. They are fixed-length sequences of bytes, where a byte is an exact integer in the range from 0 to 255 inclusive. A bytevector is typically more space-efficient than a vector containing the same values. |
 | Procedure | A procedure is how things get done in `iLisp-`.  There are two kinds of procedures - native procedures and compound procedures.  A native procedure is provided by the `iLisp-` runtime system whilst a compound procedure is composed using a sequence of expressions and represented using the `proc` form. As an aside it pains me to introduce the `proc` form and define increment as `((proc n) (+ n 1))` rather than using Scheme's `lambda` form `((lambda n) (+ n 1))` or Clojure's `fn` form `((fn n) (+ n 1))`.  I have elected to go with the `proc` form for the following reasons: <ul><li>All the Lisp flavours refer to behavior as a procedure rather than a function or method.</li> <li>Functions are grounded in maths and the association to many is they are a mapping from a domain to a range, side-effect free and are total.  A language based on functions, like Haskell, is rather explicit about this.</li><li>These behaviours are procedures: they are a step-by-step sequence of instructions, they can mutate both internal and external state, they may fail in execution and they make no pretence as to being a function or relation.</li></ul>The difficulty in changing from `lambda`/`fn` to `proc` is sentiment and, on reflection, appropriation of the concept felt unnecessary. |
+
+### Modules
+
+The `iLisp-` module system has the follow characteristics:
+
+- `iLisp-` code is stored in a file and the file denotes a module.
+- Internally a module is composed of a number of declarations.  A declaration can be a value declaration or a macro declaration.
+- A declaration binding can be denoted public in which case it can be referenced from a second module.  A declaration that is not public is deemed private and is not referencable from a second module.
+- Referencing a module is done by using a file name.  The file name can be absolute, relative to the calling file or a URL.
+- Module dependencies may not form a cycle.
+- Within a module bindings are formed simultaneously however calculated in sequence.  This implies that values can not be recursively defined however procedures can be mutually recursive.  For example the following would result in an error:
+
+```scheme
+(declare stuff (+ other-stuff 1))
+(declare other-stuff 10)
+```
+
+  Although the declaration above is a little trite and can be resolved by reordering, a real world example would be mututally recursive values constructed using a combinator parser.  The following shows two declarations where the bindings to `odd` and `even` are made when the module is loaded however the value for odd and even is calculated without dereferencing either of these values.
+
+```scheme
+(declare even
+    (proc (n) 
+        (if (= n 0) #t
+            (odd (- n 1))
+        )
+    )
+)
+
+(declare odd
+    (proc (n)
+        (if (= n 0) #f
+            (even (- n 1))
+        )
+    )
+)
+```
+- Modules are imported using the `import` macro and declarations references using dot notation.
+
+
+### Standard Forms
+
+The following table desscribes the standard available forms.
+
+| Purpose | Forms |
+|-|-|
+| Declaration | `declare`, `declare-` |
+| Binding constructs | `const`, `const-`, `let`, `let-` |
+| Conditional evaluation | `if` |
+| Iteration | `proc` |
+| Syntactic extension | `macro`, `macro-` |
+| Quoting | `quote`, `unquote`, `quasiquote`, `unquote-splicing` |
+| Signals | `try`, `signal` |
+| Module | `import` |
 
 
 ## References 

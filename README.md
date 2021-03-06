@@ -72,26 +72,22 @@ The `iLisp-` module system has the follow characteristics:
 The following examples illustrate the ordering within an `iLisp-` module.
 
 ```scheme
-(declare stuff (+ other-stuff 1))
-(declare other-stuff 10)
+(const stuff (+ other-stuff 1))
+(const other-stuff 10)
 ```
 
 Although the declaration above is a little trite and can be resolved by reordering, a real world example would be mututally recursive values constructed for a combinator parser.  The following shows two declarations where the bindings to `odd` and `even` are made when the module is loaded however the value for odd and even is calculated without dereferencing either of these values.
 
 ```scheme
-(declare even
-    (proc (n) 
-        (if (= n 0) #t
-            (odd (- n 1))
-        )
+(const (even n) 
+    (if (= n 0) #t
+        (odd (- n 1))
     )
 )
 
-(declare odd
-    (proc (n)
-        (if (= n 0) #f
-            (even (- n 1))
-        )
+(const (odd n)
+    (if (= n 0) #f
+        (even (- n 1))
     )
 )
 ```
@@ -102,11 +98,10 @@ The following table desscribes the standard available forms.
 
 | Purpose | Forms |
 |-|-|
-| Declaration | `declare`, `declare-` |
-| Binding constructs | `const`, `const-`, `let`, `let-` |
+| Binding declaration | `const`, `const-`, `let`, `let-`, `macro`, `macro-` |
 | Conditional evaluation | `if` |
 | Iteration | `proc` |
-| Syntactic extension | `macro`, `macro-` |
+| Sequence | `do` |
 | Quoting | `quote`, `unquote`, `quasiquote`, `unquote-splicing` |
 | Signals | `try`, `signal` |
 | Module | `import` |

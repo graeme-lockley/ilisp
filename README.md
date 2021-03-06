@@ -66,14 +66,17 @@ The `iLisp-` module system has the follow characteristics:
 - A declaration binding can be denoted public in which case it can be referenced from a second module.  A declaration that is not public is deemed private and is not referencable from a second module.
 - Referencing a module is done by using a file name.  The file name can be absolute, relative to the calling file or a URL.
 - Module dependencies may not form a cycle.
-- Within a module bindings are formed simultaneously however calculated in sequence.  This implies that values can not be recursively defined however procedures can be mutually recursive.  For example the following would result in an error:
+- Within a module bindings are formed simultaneously however calculated in sequence.  This implies that values can not be recursively defined however procedures can be mutually recursive.
+- Modules are imported using the `import` macro and declarations references using dot notation.
+
+The following examples illustrate the ordering within an `iLisp-` module.
 
 ```scheme
 (declare stuff (+ other-stuff 1))
 (declare other-stuff 10)
 ```
 
-  Although the declaration above is a little trite and can be resolved by reordering, a real world example would be mututally recursive values constructed using a combinator parser.  The following shows two declarations where the bindings to `odd` and `even` are made when the module is loaded however the value for odd and even is calculated without dereferencing either of these values.
+Although the declaration above is a little trite and can be resolved by reordering, a real world example would be mututally recursive values constructed for a combinator parser.  The following shows two declarations where the bindings to `odd` and `even` are made when the module is loaded however the value for odd and even is calculated without dereferencing either of these values.
 
 ```scheme
 (declare even
@@ -92,8 +95,6 @@ The `iLisp-` module system has the follow characteristics:
     )
 )
 ```
-- Modules are imported using the `import` macro and declarations references using dot notation.
-
 
 ### Standard Forms
 

@@ -106,6 +106,29 @@ The following table desscribes the standard available forms.
 | Signals | `try`, `signal` |
 | Module | `import` |
 
+### Special Variables
+
+| Name | Purpose |
+|-|-|
+| `*args*` | A list of the command line arguments passed into the program off of the command line. |
+| `*builtin*` | A mapping of the builtin procedures that have been made available through the runtime system to an `iLisp-` program.  The mapping is from string onto native procedure. |
+| `*env*` | A mapping of the enclosing shell environment from name onto value.  Both name and value are strings. |
+| `*imports*` | A reference to all the imports that have been used within a running program.  In an interpreted environment this declartion would be built as modules are imported and consequently would be variable whereas, in a compiled environment, it would be statically populated by the runtime system before control is handed to procedure execution. |
+| `*source-name*` | The absolute file of the package in which this declaration is referenced. A REPL would populate this variable to `**repl**` whilst `eval` can set this declaration to a sensible value. |
+
+### Naming Idioms
+
+To reduce cognitive dissonance when working through a code base the following naming idioms are encouraged.
+
+| Idiom | Examples |
+|-|-|
+| All special variables are enclosed with `*` character. | `*args*`, `*builtin*` |
+| All predicates have a `?` suffix.  A procedure name containin an `-is-` is considered a bad small and should probably be renamed by removing the `-is-` and adding a `?` suffix. | `empty?`, `string?`, `prime?` |
+| Conversions between types or structures have `->` embedded into the name.  | `vector->list`, `->string` | 
+| Collections are in the first parameter. | `(map '(1 2 3 4) (proc (n) (+ n 1)))`|
+| Constructors of a structure have the prefix `mk-` | `mk-name` |
+| Procedure names are lower case, unless an acronym, and use `-` as a separator | `lookup-variable-value` |
+| Procedures that incure a state side effect have a `!` suffix | `set-variable-value!`, `set-car` |
 
 ## References 
 

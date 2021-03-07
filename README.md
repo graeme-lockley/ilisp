@@ -129,7 +129,7 @@ To reduce cognitive dissonance when working through a code base the following na
 | Constructors of a structure have the prefix `mk-` | `mk-name` |
 | Procedure names are lower case, unless an acronym, and use `-` as a separator | `lookup-variable-value` |
 | Module names are title case | `Unit`, `Sequence` |
-| Procedures that incure a state side effect have a `!` suffix | `set-variable-value!`, `set-car` |
+| Procedures that incure a state side effect have a `!` suffix | `set-variable-value!`, `set-car!` |
 
 ## References 
 

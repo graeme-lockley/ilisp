@@ -26,7 +26,7 @@ Clearly `iLisp-` needs to be a subset of iLisp and which needs to be defined.
 
 ## Description of `iLisp-`
 
-The following lists `iLisp-` influences with aspects contributed by each influencer..
+The following lists `iLisp-` influences with aspects contributed by each influencer.
 
 | Language/Runtime | Contribution |
 |-|-|
@@ -106,7 +106,9 @@ The following table desscribes the standard available forms.
 | Signals | `try`, `signal` |
 | Module | `import` |
 
-### Special Variables
+### Special Bindings
+
+`iLisp-` includes some special bindings that are the responsibility of the runtime system to make available to all `iLisp-` programs. 
 
 | Name | Purpose |
 |-|-|
@@ -116,9 +118,9 @@ The following table desscribes the standard available forms.
 | `*imports*` | A reference to all the imports that have been used within a running program.  In an interpreted environment this declartion would be built as modules are imported and consequently would be variable whereas, in a compiled environment, it would be statically populated by the runtime system before control is handed to procedure execution. |
 | `*source-name*` | The absolute file of the package in which this declaration is referenced. A REPL would populate this variable to `**repl**` whilst `eval` can set this declaration to a sensible value. |
 
-### Naming Idioms
+### Idioms
 
-To reduce cognitive dissonance when working through a code base the following naming idioms are encouraged.
+To reduce cognitive dissonance when working through a code base the following idioms are encouraged.
 
 | Idiom | Examples |
 |-|-|

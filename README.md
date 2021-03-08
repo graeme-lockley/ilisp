@@ -133,28 +133,25 @@ To reduce cognitive dissonance when working through a code base the following id
 | Module names are title case | `Unit`, `Sequence` |
 | Procedures that incure a state side effect have a `!` suffix | `set-variable-value!`, `set-car!` |
 
-### Standard Procedures
+### Builtin Procedures
 
-Each `iLisp-` environment is installed with a collection of bindings.  Other than the *Standard Forms*, *Special Bindings* and the builtin procedures installed in `*builtin*`, a prelude file is installed which contains a collection bindings that are imported into each module.  The following table lists the *Standard Procedures* with names emphasised available in `*builtin*` whilst this is non-emphasised defined in prelude.
+Each `iLisp-` environment is installed with a collection of bindings.  Other than the *Standard Forms*, *Special Bindings* and the builtin procedures installed in `*builtin*`, a prelude file is installed which contains a bindings imported into each module.  The following table lists the procedures available in `*builtin*`.  These procedures are used to the bootstrap each of the libraries and are typically included into prelude other directly or part of a prelude procedure.
 
 Purpose | Procedures
 -|-
-Construction | `atom`, `byte-vector`, `cons`, `keyword`, `mk-map`, `mk-mutable-map`, `mcons`, `symbol`
-Conversion | `->list`, `->string`, `->vector`, *`->mutable-vector`*, *`byte-vector->list`*, *`byte-vector->vector`*, *`char->integer`*, *`integer->char`*, *`list->string`*, *`map->list`*, *`string->list`*, *`string->vector`*, *`string->mutable-vector`*, *`list->vector`*, *`list->mutable-vector`*, *`vector->list`*
+Construction | `atom`, `byte-vector`, `cons`, `keyword`, `mk-map`, `mcons`, `mutable-byte-vector`, `mutable-map`, `mutable-vector`, `symbol`
+Conversion | `char->integer`, `integer->char`, `list->string`, `map->list`, `string->mutable-vector`, `list->vector`, `list->mutable-vector`, `vector->list`
 Identifiy predicates | `atom?`, `boolean?`, `fn?`, `integer?`, `keyword?`, `list?`, `macro?`, `map?`, `mutable?`, `null?`, `number?`, `pair?`, `sequential?`, `symbol?`, `vector?`
 Relational operators | `=`, `!=`, `<`, `>`, `<=`, `>=`
-Boolean | `and`, `not`, `or`
 Number | `+`, `-`, `*`, `/`
-String | *`string-count`*, *`string-ends-with`*, *`string-filter`*, *`string-map`*, *`string-nth`*, *`string-reverse`*, *`string-slice`*, *`string-starts-with`*
-Sequential | `any`, `concat`, `contains?`, `count`, `drop`, `drop-right`, `empty?`, `ends-with`, `filter`, `fold`, `fold-right`, `first`, `map`, `nth`, `slice`, `starts-with`, `rest`, `take`, `take-right`
-Pairs and lists | `car`, `cdr`, *`list-count`*, *`list-drop`*, *`list-filter`*, *`list-map`*, *`list-nth`*, *`list-take`*, `set-car!`, `set-cdr!`
+String | `string-count`, `string-filter`, `string-nth`, `string-reverse`, `string-slice`
+Pairs and lists | `car`, `cdr`, `list-take`, `set-car!`, `set-cdr!`
 Map | `assoc`, `assoc!`, `dissoc`, `dissoc?`, `get`
-Vector | *`mk-vector`*, *`vector-count`*, *`vector-filter`*, *`vector-map`*, *`vector-nth`*,*`vector-nth!`*, *`vector-range`*, *`vector-reverse`*, *`vector-slice`*, *`vector-sort!`*
-Byte Vector | *`byte-vector-count`*, *`byte-vector-filter`*, *`byte-vector-map`*, *`byte-vector-nth`*,*`byte-vector-nth!`*, *`byte-vector-reverse`*, *`byte-vector-slice`*, *`mk-byte-vector`*
-Atom | `atom`, `swap!`, *`atom-deref`*, `@`
+Vector | `mutable-vector`, `vector`, `vector-count`, `vector-filter`, `vector-nth`, `vector-nth!`, `vector-sort!`
+Byte Vector | `byte-vector`, `byte-vector-count`, `byte-vector-nth`, `byte-vector-nth!`, `mutable-byte-vector`
+Atom | `atom`, `swap!`, `atom-deref`, `@`
 Functional | `apply`, `eval`
 Input/Output | `print`, `println`, `slurp`
-
 
 
 ## References 

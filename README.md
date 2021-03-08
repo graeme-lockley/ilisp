@@ -128,10 +128,34 @@ To reduce cognitive dissonance when working through a code base the following id
 | All predicates have a `?` suffix.  A procedure name containin an `-is-` is considered a bad small and should probably be renamed by removing the `-is-` and adding a `?` suffix. | `empty?`, `string?`, `prime?` |
 | Conversions between types or structures have `->` embedded into the name.  | `vector->list`, `->string` | 
 | Collections are in the first parameter. | `(map '(1 2 3 4) (proc (n) (+ n 1)))`|
-| Constructors of a structure have the prefix `mk-` | `mk-name` |
+| Constructors that wish to add a prefix verb to communicate intent should use `mk-` | `mk-name` |
 | Procedure names are lower case, unless an acronym, and use `-` as a separator | `lookup-variable-value` |
 | Module names are title case | `Unit`, `Sequence` |
 | Procedures that incure a state side effect have a `!` suffix | `set-variable-value!`, `set-car!` |
+
+### Standard Procedures
+
+Each `iLisp-` environment is installed with a collection of bindings.  Other than the *Standard Forms*, *Special Bindings* and the builtin procedures installed in `*builtin*`, a prelude file is installed which contains a collection bindings that are imported into each module.  The following table lists the *Standard Procedures* with names emphasised available in `*builtin*` whilst this is non-emphasised defined in prelude.
+
+Purpose | Procedures
+-|-
+Construction | `atom`, `byte-vector`, `cons`, `keyword`, `mk-map`, `mk-mutable-map`, `mcons`, `symbol`
+Conversion | `->list`, `->string`, `->vector`, *`->mutable-vector`*, *`byte-vector->list`*, *`byte-vector->vector`*, *`char->integer`*, *`integer->char`*, *`list->string`*, *`map->list`*, *`string->list`*, *`string->vector`*, *`string->mutable-vector`*, *`list->vector`*, *`list->mutable-vector`*, *`vector->list`*
+Identifiy predicates | `atom?`, `boolean?`, `fn?`, `integer?`, `keyword?`, `list?`, `macro?`, `map?`, `mutable?`, `null?`, `number?`, `pair?`, `sequential?`, `symbol?`, `vector?`
+Relational operators | `=`, `!=`, `<`, `>`, `<=`, `>=`
+Boolean | `and`, `not`, `or`
+Number | `+`, `-`, `*`, `/`
+String | *`string-count`*, *`string-ends-with`*, *`string-filter`*, *`string-map`*, *`string-nth`*, *`string-reverse`*, *`string-slice`*, *`string-starts-with`*
+Sequential | `any`, `concat`, `contains?`, `count`, `drop`, `drop-right`, `empty?`, `ends-with`, `filter`, `fold`, `fold-right`, `first`, `map`, `nth`, `slice`, `starts-with`, `rest`, `take`, `take-right`
+Pairs and lists | `car`, `cdr`, *`list-count`*, *`list-drop`*, *`list-filter`*, *`list-map`*, *`list-nth`*, *`list-take`*, `set-car!`, `set-cdr!`
+Map | `assoc`, `assoc!`, `dissoc`, `dissoc?`, `get`
+Vector | *`mk-vector`*, *`vector-count`*, *`vector-filter`*, *`vector-map`*, *`vector-nth`*,*`vector-nth!`*, *`vector-range`*, *`vector-reverse`*, *`vector-slice`*, *`vector-sort!`*
+Byte Vector | *`byte-vector-count`*, *`byte-vector-filter`*, *`byte-vector-map`*, *`byte-vector-nth`*,*`byte-vector-nth!`*, *`byte-vector-reverse`*, *`byte-vector-slice`*, *`mk-byte-vector`*
+Atom | `atom`, `swap!`, *`atom-deref`*, `@`
+Functional | `apply`, `eval`
+Input/Output | `print`, `println`, `slurp`
+
+
 
 ## References 
 

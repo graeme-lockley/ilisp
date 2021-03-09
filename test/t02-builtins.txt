@@ -2,13 +2,13 @@
 > (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure car}))
 
 (car 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure car :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure car :received 1}))
 
 (car '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure car}))
 
 (car '())
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure car :received ()}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure car :received ()}))
 
 (car '(1 2 3 4 5))
 > 1
@@ -18,13 +18,13 @@
 > (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure cdr}))
 
 (cdr 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure cdr :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure cdr :received 1}))
 
 (cdr '(1 2) '(3 4))
 > (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure cdr}))
 
 (cdr '())
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure cdr :received ()}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure cdr :received ()}))
 
 (cdr '(1 2 3 4 5))
 > (2 3 4 5)
@@ -298,10 +298,10 @@ fred
 > ()
 
 (< "hello" 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "number" :procedure integer-less-than :received "hello"}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type number :procedure integer-less-than :received "hello"}))
 
 (< 1 "hello")
-> (:exception (InvalidArgument . {:arg-number 1 :expected-type "number" :procedure integer-less-than :received "hello"}))
+> (:exception (InvalidArgument . {:arg-number 1 :expected-type number :procedure integer-less-than :received "hello"}))
 
 (<=)
 > t
@@ -322,7 +322,7 @@ fred
 > ()
 
 (<= "hello" 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "number" :procedure integer-less-equal :received "hello"}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type number :procedure integer-less-equal :received "hello"}))
 
 (>)
 > t
@@ -340,7 +340,7 @@ fred
 > ()
 
 (> "hello" 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "number" :procedure integer-greater-than :received "hello"}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type number :procedure integer-greater-than :received "hello"}))
 
 (>=)
 > t
@@ -361,13 +361,13 @@ fred
 > ()
 
 (>= "hello" 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "number" :procedure integer-greater-equal :received "hello"}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type number :procedure integer-greater-equal :received "hello"}))
 
 (read-string)
 > (:exception (ExpectedArgumentCount . {:arguments () :max-arg-count 2 :min-arg-count 1 :procedure read-string}))
 
 (read-string 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "string" :procedure read-string :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type string :procedure read-string :received 1}))
 
 (read-string "1")
 > 1
@@ -409,10 +409,10 @@ fred
 > ()
 
 (concat 1 2 3)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure concat :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure concat :received 1}))
 
 (concat '(1 2 3) (cons 1 9))
-> (:exception (InvalidArgument . {:arg-number 1 :expected-type "pair" :procedure concat :received (1 . 9)}))
+> (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure concat :received (1 . 9)}))
 
 (concat '(1) '(2) '(3))
 > (1 2 3)
@@ -475,13 +475,13 @@ fred
 >(11 12)
 
 (apply)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure apply :received ()}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure apply :received ()}))
 
 (apply 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "procedure" :procedure apply :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type procedure :procedure apply :received 1}))
 
 (apply +)
-> (:exception (InvalidArgument . {:arg-number 1 :expected-type "pair" :procedure apply :received ()}))
+> (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure apply :received ()}))
 
 (apply + '(1 2 3))
 > 6
@@ -490,7 +490,7 @@ fred
 > 10
 
 (apply + 1 2 3)
-> (:exception (InvalidArgument . {:arg-number 3 :expected-type "pair" :procedure apply :received 3}))
+> (:exception (InvalidArgument . {:arg-number 3 :expected-type pair :procedure apply :received 3}))
 
 (apply + 1 2 3 '())
 > 6
@@ -541,7 +541,7 @@ fred
 > t
 
 (hash-map :a 1 :b 2 :c)
-> (:exception (InvalidArgument . {:arg-number 5 :expected-type "pair" :procedure hash-map :received ()}))
+> (:exception (InvalidArgument . {:arg-number 5 :expected-type pair :procedure hash-map :received ()}))
 
 (assoc {})
 > {}
@@ -562,7 +562,7 @@ fred
 > ({:c 3} {:a 1 :b 2 :c 3})
 
 (get)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type "pair" :procedure get :received ()}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure get :received ()}))
 
 (get {})
 > {}

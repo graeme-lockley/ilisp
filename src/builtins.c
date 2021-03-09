@@ -89,7 +89,7 @@ static Value *list_to_vector(Value *v)
         if (IS_PAIR(cursor))
             cursor = CDR(cursor);
         else
-            return exceptions_invalid_argument(mkSymbol("count"), 0, mkString("pair"), v);
+            return exceptions_invalid_argument(mkSymbol("count"), 0, mkSymbol("pair"), v);
 
         list_length += 1;
     }
@@ -146,17 +146,17 @@ Value *vector_to_list(Value *v)
 static Value *apply(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("pair"), parameters);
 
     if (!IS_PROCEDURE(CAR(parameters)) && !IS_NATIVE_PROCEDURE(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkString("procedure"), CAR(parameters));
+        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("procedure"), CAR(parameters));
 
     Value *f = CAR(parameters);
 
     parameters = CDR(parameters);
 
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("apply"), 1, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("apply"), 1, mkSymbol("pair"), parameters);
 
     Value *root = VNil;
     Value **root_cursor = &root;
@@ -172,7 +172,7 @@ static Value *apply(Value *parameters, Value *env)
                 parameters = vector_to_list(parameters);
 
             if (!IS_PAIR(parameters) && !IS_NIL(parameters))
-                return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkString("pair"), parameters);
+                return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkSymbol("pair"), parameters);
 
             while (1)
             {
@@ -201,11 +201,11 @@ static Value *apply(Value *parameters, Value *env)
 static Value *assoc(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkSymbol("pair"), parameters);
 
     Value *assoc = CAR(parameters);
     if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkString("map"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkSymbol("map"), parameters);
 
     Value *result = map_clone(assoc);
 
@@ -218,14 +218,14 @@ static Value *assoc(Value *parameters, Value *env)
             return result;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_key = CAR(parameters);
         parameters = CDR(parameters);
         parameter_count += 1;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_value = CAR(parameters);
         parameters = CDR(parameters);
@@ -238,11 +238,11 @@ static Value *assoc(Value *parameters, Value *env)
 static Value *assoc_bang(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkSymbol("pair"), parameters);
 
     Value *assoc = CAR(parameters);
     if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkString("map"), parameters);
+        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkSymbol("map"), parameters);
 
     int parameter_count = 1;
     parameters = CDR(parameters);
@@ -253,14 +253,14 @@ static Value *assoc_bang(Value *parameters, Value *env)
             return assoc;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_key = CAR(parameters);
         parameters = CDR(parameters);
         parameter_count += 1;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_value = CAR(parameters);
         parameters = CDR(parameters);
@@ -295,7 +295,7 @@ static Value *car(Value *parameters, Value *env)
     }
 
     if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("car"), 0, mkString("pair"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("pair"), parameter[0]);
 
     return CAR(parameter[0]);
 }
@@ -311,7 +311,7 @@ Value *cdr(Value *parameters, Value *env)
     if (IS_VECTOR(parameter[0]))
     {
         if (VECTOR(parameter[0]).length == 0)
-            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("vector"), parameter[0]);
+            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("vector"), parameter[0]);
 
         if (VECTOR(parameter[0]).length == 1)
             return VEmptyVector;
@@ -332,7 +332,7 @@ Value *cdr(Value *parameters, Value *env)
     }
 
     if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkString("pair"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("pair"), parameter[0]);
 
     return CDR(parameter[0]);
 }
@@ -365,7 +365,7 @@ static Value *concat(Value *parameters, Value *env)
             return result;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkSymbol("pair"), parameters);
 
         Value *car = CAR(parameters);
         if (IS_VECTOR(car))
@@ -386,7 +386,7 @@ static Value *concat(Value *parameters, Value *env)
                     break;
 
                 if (!IS_PAIR(car))
-                    return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkString("pair"), CAR(parameters));
+                    return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkSymbol("pair"), CAR(parameters));
 
                 Value *v = mkPair(CAR(car), VNil);
                 *result_cursor = v;
@@ -427,11 +427,11 @@ static Value *containp(Value *parameters, Value *env)
 static Value *dissoc(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkSymbol("pair"), parameters);
 
     Value *assoc = CAR(parameters);
     if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkString("map"), parameters);
+        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkSymbol("map"), parameters);
 
     int parameter_count = 1;
     parameters = CDR(parameters);
@@ -444,7 +444,7 @@ static Value *dissoc(Value *parameters, Value *env)
             return result;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("dissoc"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("dissoc"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *key = CAR(parameters);
         parameters = CDR(parameters);
@@ -457,11 +457,11 @@ static Value *dissoc(Value *parameters, Value *env)
 static Value *dissoc_bang(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkSymbol("pair"), parameters);
 
     Value *assoc = CAR(parameters);
     if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkString("map"), parameters);
+        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkSymbol("map"), parameters);
 
     int parameter_count = 1;
     parameters = CDR(parameters);
@@ -472,7 +472,7 @@ static Value *dissoc_bang(Value *parameters, Value *env)
             return assoc;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("dissoc!"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("dissoc!"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *key = CAR(parameters);
         parameters = CDR(parameters);
@@ -551,7 +551,7 @@ static Value *fnp(Value *parameters, Value *env)
 static Value *get(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("get"), 0, mkString("pair"), parameters);
+        return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("pair"), parameters);
 
     Value *cursor = CAR(parameters);
     Value *keys = CDR(parameters);
@@ -590,14 +590,14 @@ static Value *hash_map(Value *parameters, Value *env)
             return result;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_key = CAR(parameters);
         parameters = CDR(parameters);
         parameter_count += 1;
 
         if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkString("pair"), parameters);
+            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkSymbol("pair"), parameters);
 
         Value *mi_value = CAR(parameters);
         parameters = CDR(parameters);
@@ -629,10 +629,10 @@ static Value *integer_plus(Value *parameters, Value *env)
                 argument_number += 1;
             }
             else
-                return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkString("number"), car);
+                return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkString("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), VNil);
     }
 }
 
@@ -658,10 +658,10 @@ Value *integer_multiply(Value *parameters, Value *env)
                 argument_number += 1;
             }
             else
-                return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkString("number"), car);
+                return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkString("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), VNil);
     }
 }
 
@@ -702,10 +702,10 @@ static Value *integer_minus(Value *parameters, Value *env)
                 argument_number += 1;
             }
             else
-                return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkString("number"), car);
+                return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkString("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), VNil);
     }
 }
 
@@ -759,10 +759,10 @@ static Value *integer_divide(Value *parameters, Value *env)
                 }
             }
             else
-                return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkString("number"), car);
+                return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkString("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), VNil);
     }
 }
 
@@ -772,7 +772,7 @@ static Value *integer_less_than(Value *parameters, Value *env)
         return VTrue;
 
     if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-less-than"), 0, mkString("number"), CAR(parameters));
+        return exceptions_invalid_argument(mkSymbol("integer-less-than"), 0, mkSymbol("number"), CAR(parameters));
 
     int operand = NUMBER(CAR(parameters));
 
@@ -788,7 +788,7 @@ static Value *integer_less_than(Value *parameters, Value *env)
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-less-than"), argument_count, mkString("number"), CAR(parameters));
+            return exceptions_invalid_argument(mkSymbol("integer-less-than"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand >= NUMBER(car))
             return VNil;
@@ -805,7 +805,7 @@ static Value *integer_less_equal(Value *parameters, Value *env)
         return VTrue;
 
     if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-less-equal"), 0, mkString("number"), CAR(parameters));
+        return exceptions_invalid_argument(mkSymbol("integer-less-equal"), 0, mkSymbol("number"), CAR(parameters));
 
     int operand = NUMBER(CAR(parameters));
 
@@ -821,7 +821,7 @@ static Value *integer_less_equal(Value *parameters, Value *env)
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkString("number"), CAR(parameters));
+            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand > NUMBER(car))
             return VNil;
@@ -838,7 +838,7 @@ static Value *integer_greater_than(Value *parameters, Value *env)
         return VTrue;
 
     if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-greater-than"), 0, mkString("number"), CAR(parameters));
+        return exceptions_invalid_argument(mkSymbol("integer-greater-than"), 0, mkSymbol("number"), CAR(parameters));
 
     int operand = NUMBER(CAR(parameters));
 
@@ -854,7 +854,7 @@ static Value *integer_greater_than(Value *parameters, Value *env)
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-greather-than"), argument_count, mkString("number"), CAR(parameters));
+            return exceptions_invalid_argument(mkSymbol("integer-greather-than"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand <= NUMBER(car))
             return VNil;
@@ -871,7 +871,7 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
         return VTrue;
 
     if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), 0, mkString("number"), CAR(parameters));
+        return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), 0, mkSymbol("number"), CAR(parameters));
 
     int operand = NUMBER(CAR(parameters));
 
@@ -887,7 +887,7 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkString("number"), CAR(parameters));
+            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand < NUMBER(car))
             return VNil;
@@ -910,7 +910,7 @@ static Value *keyword(Value *parameters, Value *env)
         return parameter[0];
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("keyword"), 0, mkPair(mkString("string"), mkPair(mkString("keyword"), VNil)), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("keyword"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("keyword"), VNil)), parameter[0]);
 
     char *keyword = (char *)malloc(strlen(STRING(parameter[0]) + 2));
     sprintf(keyword, ":%s", STRING(parameter[0]));
@@ -1201,7 +1201,7 @@ static Value *nth(Value *parameters, Value *env)
         return extract_result;
 
     if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkString("number"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkSymbol("number"), parameter[1]);
 
     int nth = NUMBER(parameter[1]);
     if (IS_PAIR(parameter[0]) || IS_NIL(parameter[0]))
@@ -1228,7 +1228,7 @@ static Value *nth(Value *parameters, Value *env)
         return VECTOR(parameter[0]).items[nth];
     }
 
-    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkString("pair"), mkPair(mkString("()"), VNil)), parameter[0]);
+    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
 }
 
 static Value *numberp(Value *parameters, Value *env)
@@ -1342,10 +1342,10 @@ static Value *read_string(Value *parameters, Value *env)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkSymbol("string"), parameter[0]);
 
     if (parameter[1] != NULL && !IS_STRING(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("read-string"), 1, mkString("string"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("read-string"), 1, mkSymbol("string"), parameter[1]);
 
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
@@ -1538,31 +1538,31 @@ static Value *slurp(Value *parameters, Value *env)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
 
     FILE *f = fopen(STRING(parameter[0]), "rb");
 
     if (!f)
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
 
     if (fseek(f, 0, SEEK_END) != 0)
     {
         fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
     }
 
     long length = ftell(f);
     if (fseek(f, 0, SEEK_SET) != 0)
     {
         fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
     }
 
     char *buffer = (char *)malloc(length + 1);
     if (buffer == NULL)
     {
         fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
     }
 
     fread(buffer, 1, length, f);
@@ -1770,7 +1770,7 @@ static Value *symbol(Value *parameters, Value *env)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("symbol"), 0, mkString("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("symbol"), 0, mkSymbol("string"), parameter[0]);
 
     return mkSymbol(STRING(parameter[0]));
 }
@@ -1900,7 +1900,7 @@ static Value *vector_nth(Value *parameters, Value *env)
         return extract_result;
 
     if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkString("number"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkSymbol("number"), parameter[1]);
 
     int nth = NUMBER(parameter[1]);
 
@@ -1927,7 +1927,7 @@ static Value *vector_nth_bang(Value *parameters, Value *env)
         return exceptions_vector_is_immutable(mkSymbol("vector-nth!"), parameter[0]);
 
     if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-nth!"), 1, mkString("number"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("vector-nth!"), 1, mkSymbol("number"), parameter[1]);
 
     int nth = NUMBER(parameter[1]);
 

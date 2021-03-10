@@ -317,6 +317,14 @@ Value *Repl_eval_procedure(Value *p, Value *args, Value *env)
         return Repl_eval(PROCEDURE(p).body, new_env);
     }
 
+    if (IS_KEYWORD(p))
+    {
+        if (!IS_NIL(args))
+            return exceptions_expected_argument_count(p, 0, args);
+
+        return p;
+    }
+
     return IS_NATIVE_PROCEDURE(p) ? p->native_procedure(args, env) : exceptions_value_not_applicable(p, args);
 }
 
@@ -528,6 +536,14 @@ Value *Repl_eval(Value *v, Value *env)
                         continue;
                     }
 
+                    if (IS_KEYWORD(f))
+                    {
+                        if (!IS_NIL(args))
+                            return exceptions_expected_argument_count(f, 0, args);
+
+                        return f;
+                    }
+
                     return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);
                 }
             }
@@ -559,6 +575,14 @@ Value *Repl_eval(Value *v, Value *env)
                         v = PROCEDURE(f).body;
                         env = new_env;
                         continue;
+                    }
+
+                    if (IS_KEYWORD(f))
+                    {
+                        if (!IS_NIL(args))
+                            return exceptions_expected_argument_count(f, 0, args);
+
+                        return f;
                     }
 
                     return IS_NATIVE_PROCEDURE(f) ? f->native_procedure(args, env) : exceptions_value_not_applicable(f, args);

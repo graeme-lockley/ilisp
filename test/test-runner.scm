@@ -20,7 +20,7 @@
     )
 )
 
-(define test-files (directory "../lib"))
+(define test-files (directory ".."))
 
 (define *signal* ())
 

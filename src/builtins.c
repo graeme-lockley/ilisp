@@ -148,10 +148,10 @@ static Value *apply(Value *parameters, Value *env)
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("pair"), parameters);
 
-    if (!IS_PROCEDURE(CAR(parameters)) && !IS_NATIVE_PROCEDURE(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("procedure"), CAR(parameters));
-
     Value *f = CAR(parameters);
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f) && !IS_KEYWORD(f))
+        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("procedure"), f);
 
     parameters = CDR(parameters);
 

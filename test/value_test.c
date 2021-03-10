@@ -9,18 +9,19 @@
 static char *test_ordinal_values()
 {
     mu_assert_label(VT_NIL == 0);
-    mu_assert_label(VT_SYMBOL == 1);
-    mu_assert_label(VT_KEYWORD == 2);
-    mu_assert_label(VT_CHARACTER == 3);
-    mu_assert_label(VT_NUMBER == 4);
-    mu_assert_label(VT_STRING == 5);
-    mu_assert_label(VT_PAIR == 6);
-    mu_assert_label(VT_VECTOR == 7);
-    mu_assert_label(VT_MAP == 8);
-    mu_assert_label(VT_NATIVE_PROCEDURE == 9);
-    mu_assert_label(VT_PROCEDURE == 10);
-    mu_assert_label(VT_MACRO == 11);
-    mu_assert_label(VT_EXCEPTION == 12);
+    mu_assert_label(VT_BOOLEAN == 1);
+    mu_assert_label(VT_SYMBOL == 2);
+    mu_assert_label(VT_KEYWORD == 3);
+    mu_assert_label(VT_CHARACTER == 4);
+    mu_assert_label(VT_NUMBER == 5);
+    mu_assert_label(VT_STRING == 6);
+    mu_assert_label(VT_PAIR == 7);
+    mu_assert_label(VT_VECTOR == 8);
+    mu_assert_label(VT_MAP == 9);
+    mu_assert_label(VT_NATIVE_PROCEDURE == 10);
+    mu_assert_label(VT_PROCEDURE == 11);
+    mu_assert_label(VT_MACRO == 12);
+    mu_assert_label(VT_EXCEPTION == 13);
 
     return NULL;
 }
@@ -30,6 +31,16 @@ static char *test_unit_values()
     mu_assert_label(IS_IMMUTABLE(mkNil()));
     mu_assert_label(IS_IMMUTABLE(VNil));
     mu_assert_label(IS_NIL(VNil));
+
+    return NULL;
+}
+
+static char *test_boolean_values()
+{
+    mu_assert_label(IS_IMMUTABLE(VTrue));
+    mu_assert_label(IS_IMMUTABLE(VFalse));
+    mu_assert_label(IS_BOOLEAN(VTrue));
+    mu_assert_label(IS_BOOLEAN(VFalse));
 
     return NULL;
 }
@@ -256,6 +267,7 @@ static char *test_suite()
 {
     mu_run_test(test_ordinal_values);
     mu_run_test(test_unit_values);
+    mu_run_test(test_boolean_values);
     mu_run_test(test_symbol_values);
     mu_run_test(test_keyword_values);
     mu_run_test(test_character_values);

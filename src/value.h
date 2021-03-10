@@ -15,16 +15,17 @@ enum ValueProperties
 enum ValueType
 {
     VT_NIL = 0,
+    VT_BOOLEAN,
     VT_SYMBOL,
     VT_KEYWORD,
     VT_CHARACTER,
-    VT_NUMBER,
-    VT_STRING, // == 5
+    VT_NUMBER, // == 5
+    VT_STRING,
     VT_PAIR,
     VT_VECTOR,
     VT_MAP,
-    VT_NATIVE_PROCEDURE,
-    VT_PROCEDURE, // == 10
+    VT_NATIVE_PROCEDURE, // == 10
+    VT_PROCEDURE,
     VT_MACRO,
     VT_EXCEPTION
 };
@@ -85,6 +86,7 @@ typedef struct ValueStruct Value;
 #define IS_IMMUTABLE(v) ((v)->tag & VP_IMMUTABLE)
 
 #define IS_NIL(v) ((TAG_TO_VT(v) == 0))
+#define IS_BOOLEAN(v) ((TAG_TO_VT(v) == VT_BOOLEAN))
 #define IS_SYMBOL(v) ((TAG_TO_VT(v) == VT_SYMBOL))
 #define IS_KEYWORD(v) ((TAG_TO_VT(v) == VT_KEYWORD))
 #define IS_CHARACTER(v) ((TAG_TO_VT(v) == VT_CHARACTER))
@@ -108,6 +110,9 @@ extern Value *mkNil();
 
 extern Value *VTrue;
 extern Value *VFalse;
+#define BOOLEAN(v) ((v)->intV)
+
+#define SYMBOL(v) (((v)->strV))
 extern Value *mkSymbol(char *string);
 extern Value *mkSymbolUse(char *string);
 #define SYMBOL(v) (((v)->strV))

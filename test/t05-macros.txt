@@ -114,7 +114,7 @@ c
 
 ;; Testing symbol equality
 (= (quote abc) (quote abc))
->t
+> #t
 (= (quote abc) (quote abcd))
 >()
 (= (quote abc) "abc")
@@ -122,7 +122,7 @@ c
 (= "abc" (quote abc))
 >()
 (= "abc" (str (quote abc)))
->t
+> #t
 (= (quote abc) ())
 >()
 (= () (quote abc))
@@ -362,7 +362,7 @@ a
 
 ;; This should fail if it is a macro
 (not (= 1 2))
->t
+> #t
 
 ((mo (a) `(count ~a)) '(1 2 3 4))
 > 4

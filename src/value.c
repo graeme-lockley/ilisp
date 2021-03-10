@@ -7,8 +7,8 @@
 #include "value.h"
 
 static Value VNil_Value = {VP_IMMUTABLE, {0}};
-static Value VTrue_Value = {VT_TO_TAG(VT_SYMBOL) | VP_IMMUTABLE, {"t"}};
-static Value VFalse_Value = {VT_TO_TAG(VT_SYMBOL) | VP_IMMUTABLE, {"f"}};
+static Value VTrue_Value = {VT_TO_TAG(VT_BOOLEAN) | VP_IMMUTABLE, {1}};
+static Value VFalse_Value = {VT_TO_TAG(VT_BOOLEAN) | VP_IMMUTABLE, {0}};
 static Value VEmptyString_Value = {VT_TO_TAG(VT_STRING), {""}};
 static Value *VEmptyVector_Value_Buffer = {0};
 static Value VEmptyVector_Value = {VT_TO_TAG(VT_VECTOR) | VP_IMMUTABLE, {0, &VEmptyVector_Value_Buffer}};

@@ -21,6 +21,13 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
         string_builder_append(sb, "()");
         break;
 
+    case VT_BOOLEAN:
+        if (BOOLEAN(v))
+            string_builder_append(sb, "#t");
+        else
+            string_builder_append(sb, "#f");
+        break;
+
     case VT_PAIR:
     {
         if (IS_NIL(v))

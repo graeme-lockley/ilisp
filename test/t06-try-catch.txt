@@ -5,7 +5,7 @@
 > (:exception (DivideByZero . {:arg-number 1 :procedure integer-divide}))
 
 (try (/ 10 0) (fn (e) (= 'DivideByZero (car e))))
-> t
+> #t
 
 (try (/ 10 1) (fn (e) (= 'DivideByZero (car e))))
 > 10

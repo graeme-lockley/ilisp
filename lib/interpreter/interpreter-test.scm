@@ -60,9 +60,9 @@
 )
 
 (Unit.test "eval if"
-    (Unit.assert-equals (Interpreter.eval env (list 'if 1 2 3)) 2)
-    (Unit.assert-equals (Interpreter.eval env (list 'if () 2 3)) 3)
-    (Unit.assert-equals (Interpreter.eval env (list 'if () 2)) ())
+    (Unit.assert-equals (Interpreter.eval env (list 'if #t 2 3)) 2)
+    (Unit.assert-equals (Interpreter.eval env (list 'if #f 2 3)) 3)
+    (Unit.assert-equals (Interpreter.eval env (list 'if #f 2)) ())
 )
 
 (Unit.test "eval do"

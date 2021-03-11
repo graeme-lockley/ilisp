@@ -54,8 +54,8 @@
 )
 
 (export (starts-with lst prefix)
-    (if (nil? prefix) t
-        (nil? lst) f
+    (if (nil? prefix) #t
+        (nil? lst) #f
         (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
     )
 )

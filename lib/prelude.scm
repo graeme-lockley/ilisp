@@ -14,12 +14,12 @@
 
 (export-macro (and . terms)
   (if (nil? terms) 
-    t
+    #t
     (if (= (count terms) 1)
       (first terms) 
       `(if ~(first terms) 
         (and ~@(rest terms)) 
-        ()
+        #f
       )
     )
   )
@@ -27,11 +27,11 @@
 
 (export-macro (or . terms)
   (if (nil? terms) 
-    () 
+    #f
     (if (= (count terms) 1)
       (first terms)
       `(if ~(first terms) 
-        t
+        #t
         (or ~@(rest terms)) 
       )
     )
@@ -56,10 +56,7 @@
   )
 )
 
-(export t (=))
-(export f ())
-
-(export (not x) (if x f t))
+(export (not x) (if x #f #t))
 
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly
@@ -89,6 +86,7 @@
 
 (define (type-of v)
   (if (nil? v) "nil"
+      (boolean? v) "boolean"
       (pair? v) "pair"
       (vector? v) "vector"
       (string? v) "string"

@@ -1,4 +1,4 @@
-(define *verbose* f)
+(define *verbose* #f)
 
 (export (verbose?) *verbose*)
 

@@ -379,6 +379,16 @@ static Value *parse(Lexer *lexer)
                 free(s);
                 return root;
             }
+            else if (strcmp(s, "#t") == 0)
+            {
+                free(s);
+                return VTrue;
+            }
+            else if (strcmp(s, "#f") == 0)
+            {
+                free(s);
+                return VFalse;
+            }
             else
                 return mkSymbolUse(s);
         }

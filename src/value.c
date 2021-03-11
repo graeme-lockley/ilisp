@@ -157,7 +157,7 @@ Value *mkException(Value *exception)
 
 int Value_truthy(Value *v)
 {
-    return (v == VFalse || v == VNil) ? 0 : 1;
+    return (v == VFalse) ? 0 : 1;
 }
 
 Value *Value_equals(Value *a, Value *b)

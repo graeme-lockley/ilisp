@@ -14,15 +14,15 @@
 
     (define (iter v-idx prefix-idx)
         (if (< prefix-idx 0) 
-                t
+                #t
             (= (nth v v-idx) (nth prefix prefix-idx)) 
                 (iter (dec v-idx) (dec prefix-idx))
-            f
+            #f
         )
     )
 
     (if (> (count prefix) (count v)) 
-            f
+            #f
         (iter (dec (count v)) (dec (count prefix)))
     )
   )  
@@ -79,15 +79,15 @@
 
     (define (iter idx max)
         (if (= idx max) 
-                t
+                #t
             (= (nth v idx) (nth prefix idx)) 
                 (iter (inc idx) max)
-            f
+            #f
         )
     )
 
     (if (> (count prefix) (count v)) 
-            f
+            #f
         (iter 0 (count prefix))
     )
   )  

@@ -1,17 +1,17 @@
 (import "./unit.scm" :as Unit)
 
 (Unit.test "and"
-  (Unit.assert-equals (macroexpand (and)) t)
+  (Unit.assert-equals (macroexpand (and)) #t)
   (Unit.assert-equals (macroexpand (and A)) 'A)
-  (Unit.assert-equals (macroexpand (and A B)) (list 'if 'A (list 'and 'B) ()))
-  (Unit.assert-equals (macroexpand (and A B C)) (list 'if 'A (list 'and 'B 'C) ()))
+  (Unit.assert-equals (macroexpand (and A B)) (list 'if 'A (list 'and 'B) #f))
+  (Unit.assert-equals (macroexpand (and A B C)) (list 'if 'A (list 'and 'B 'C) #f))
 
-  (Unit.assert-equals (and) t)
-  (Unit.assert-equals (and 1) 1)
-  (Unit.assert-equals (and ()) ())
-  (Unit.assert-equals (and 1 1) 1)
-  (Unit.assert-equals (and 1 ()) ())
-  (Unit.assert-equals (and () (/ 1 0)) ())
+  (Unit.assert-equals (and) #t)
+  (Unit.assert-equals (and #t) #t)
+  (Unit.assert-equals (and #f) #f)
+  (Unit.assert-equals (and #t #t) #t)
+  (Unit.assert-equals (and #t #f) #f)
+  (Unit.assert-equals (and #f (/ 1 0)) #f)
 )
 
 (Unit.test "car"
@@ -46,25 +46,25 @@
 )
 
 (Unit.test "not"
-  (Unit.assert-truthy (not f))
+  (Unit.assert-truthy (not #f))
   (Unit.assert-truthy (not (= 1 2)))
 
-  (Unit.assert-falsy (not t))
+  (Unit.assert-falsy (not #t))
   (Unit.assert-falsy (not (= 1 1)))
 )
 
 (Unit.test "or"
-  (Unit.assert-equals (macroexpand (or)) ())
+  (Unit.assert-equals (macroexpand (or)) #t)
   (Unit.assert-equals (macroexpand (or A)) 'A)
-  (Unit.assert-equals (macroexpand (or A B)) (list 'if 'A 't (list 'or 'B)))
-  (Unit.assert-equals (macroexpand (or A B C)) (list 'if 'A 't (list 'or 'B 'C)))
+  (Unit.assert-equals (macroexpand (or A B)) (list 'if 'A #t (list 'or 'B)))
+  (Unit.assert-equals (macroexpand (or A B C)) (list 'if 'A #t (list 'or 'B 'C)))
 
-  (Unit.assert-equals (or) ())
-  (Unit.assert-equals (or 1) 1)
-  (Unit.assert-equals (or ()) ())
-  (Unit.assert-equals (or 1 (/ 1 0)) t)
-  (Unit.assert-equals (or () 1) 1)
-  (Unit.assert-equals (or () ()) ())
+  (Unit.assert-equals (or) #t)
+  (Unit.assert-equals (or #t) #t)
+  (Unit.assert-equals (or #f) #f)
+  (Unit.assert-equals (or #t (/ 1 0)) #t)
+  (Unit.assert-equals (or #f #t) #t)
+  (Unit.assert-equals (or #f #f) #f)
 )
 
 (Unit.test "rest"

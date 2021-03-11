@@ -270,6 +270,17 @@ static Value *assoc_bang(Value *parameters, Value *env)
     }
 }
 
+static Value *booleanp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "boolean?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
+}
+
 static Value *car(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -503,10 +514,10 @@ static Value *equal(Value *parameters, Value *env)
                 continue;
             }
             else
-                return VNil;
+                return VFalse;
         }
 
-        return Value_truthy(Value_equals(operand, parameters)) ? VTrue : VNil;
+        return Value_truthy(Value_equals(operand, parameters)) ? VTrue : VFalse;
     }
 }
 
@@ -545,7 +556,7 @@ static Value *fnp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PROCEDURE(parameter[0]) || IS_NATIVE_PROCEDURE(parameter[0]) ? VTrue : VNil;
+    return IS_PROCEDURE(parameter[0]) || IS_NATIVE_PROCEDURE(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *get(Value *parameters, Value *env)
@@ -784,14 +795,14 @@ static Value *integer_less_than(Value *parameters, Value *env)
             return VTrue;
 
         if (!IS_PAIR(parameters))
-            return VNil;
+            return VFalse;
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
             return exceptions_invalid_argument(mkSymbol("integer-less-than"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand >= NUMBER(car))
-            return VNil;
+            return VFalse;
 
         operand = NUMBER(car);
         argument_count += 1;
@@ -817,14 +828,14 @@ static Value *integer_less_equal(Value *parameters, Value *env)
             return VTrue;
 
         if (!IS_PAIR(parameters))
-            return VNil;
+            return VFalse;
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
             return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand > NUMBER(car))
-            return VNil;
+            return VFalse;
 
         operand = NUMBER(car);
         argument_count += 1;
@@ -850,14 +861,14 @@ static Value *integer_greater_than(Value *parameters, Value *env)
             return VTrue;
 
         if (!IS_PAIR(parameters))
-            return VNil;
+            return VFalse;
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
             return exceptions_invalid_argument(mkSymbol("integer-greather-than"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand <= NUMBER(car))
-            return VNil;
+            return VFalse;
 
         operand = NUMBER(car);
         argument_count += 1;
@@ -883,14 +894,14 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
             return VTrue;
 
         if (!IS_PAIR(parameters))
-            return VNil;
+            return VFalse;
 
         Value *car = CAR(parameters);
         if (!IS_NUMBER(car))
             return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkSymbol("number"), CAR(parameters));
 
         if (operand < NUMBER(car))
-            return VNil;
+            return VFalse;
 
         operand = NUMBER(car);
         argument_count += 1;
@@ -1092,7 +1103,7 @@ static Value *listp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VNil;
+    return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *macrop(Value *parameters, Value *env)
@@ -1103,7 +1114,7 @@ static Value *macrop(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_MACRO(parameter[0]) ? VTrue : VNil;
+    return IS_MACRO(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *map_to_list(Value *parameters, Value *env)
@@ -1178,7 +1189,7 @@ static Value *mutablep(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_IMMUTABLE(parameter[0]) ? VNil : VTrue;
+    return IS_IMMUTABLE(parameter[0]) ? VFalse : VTrue;
 }
 
 static Value *nilp(Value *parameters, Value *env)
@@ -1239,7 +1250,7 @@ static Value *numberp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_NUMBER(parameter[0]) ? VTrue : VNil;
+    return IS_NUMBER(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *pairp(Value *parameters, Value *env)
@@ -1250,7 +1261,7 @@ static Value *pairp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PAIR(parameter[0]) ? VTrue : VNil;
+    return IS_PAIR(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *value_to_str(Value *parameters, int readable, char *separator)
@@ -1580,7 +1591,7 @@ static Value *stringp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_STRING(parameter[0]) ? VTrue : VNil;
+    return IS_STRING(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *string_count(Value *parameters, Value *env)
@@ -1617,9 +1628,9 @@ static Value *string_ends_with(Value *parameters, Value *env)
     int needle_length = strlen(needle);
 
     if (haystack_length < needle_length)
-        return VNil;
+        return VFalse;
 
-    return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VNil;
+    return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VFalse;
 }
 
 static Value *string_filter(Value *parameters, Value *env)
@@ -1758,7 +1769,7 @@ static Value *string_starts_with(Value *parameters, Value *env)
     char *haystack = STRING(parameter[0]);
     char *needle = STRING(parameter[1]);
 
-    return starts_with(haystack, needle) ? VTrue : VNil;
+    return starts_with(haystack, needle) ? VTrue : VFalse;
 }
 
 static Value *symbol(Value *parameters, Value *env)
@@ -1783,7 +1794,7 @@ static Value *symbolp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_SYMBOL(parameter[0]) ? VTrue : VNil;
+    return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *vec(Value *parameters, Value *env)
@@ -2121,6 +2132,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
     add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(assoc));
     add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(assoc_bang));
+    add_binding_into_environment(root_bindings, "boolean?", mkNativeProcedure(booleanp));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));

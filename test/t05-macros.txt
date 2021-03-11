@@ -116,17 +116,17 @@ c
 (= (quote abc) (quote abc))
 > #t
 (= (quote abc) (quote abcd))
->()
+> #f
 (= (quote abc) "abc")
->()
+> #f
 (= "abc" (quote abc))
->()
+> #f
 (= "abc" (str (quote abc)))
 > #t
 (= (quote abc) ())
->()
+> #f
 (= () (quote abc))
->()
+> #f
 
 ;; Testing ' (quote) reader macro
 '7
@@ -342,23 +342,23 @@ a
 >2
 
 ;; Testing unless macros
-(do (assoc! (car **root**) 'unless (mo (pred a b) `(if ~pred ~b ~a))) (unless () 7 8))
+(do (assoc! (car **root**) 'unless (mo (pred a b) `(if ~pred ~b ~a))) (unless #f 7 8))
 >7
-(unless 1 7 8)
+(unless #t 7 8)
 >8
 
 (do 
-    (assoc! (car **root**) 'not (fn (x) (if x () (=))))
+    (assoc! (car **root**) 'not (fn (x) (if x #f #t)))
     (assoc! (car **root**) 'unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) 
-    (unless2 () 7 8)
+    (unless2 #f 7 8)
 )
 >7
-(unless2 1 7 8)
+(unless2 #t 7 8)
 >8
 
 ;; Testing non-macro function
 (not (= 1 1))
->()
+> #f
 
 ;; This should fail if it is a macro
 (not (= 1 2))

@@ -120,12 +120,12 @@
     (if (pair? exp)
             (= (car exp) tag)
 
-        f
+        #f
     )
 )
 
 (define (self-evaluating? exp)
-    (or (number? exp) (string? exp) (nil? exp))
+    (or (number? exp) (string? exp) (nil? exp) (boolean? exp))
 )
 
 (define (variable? exp)

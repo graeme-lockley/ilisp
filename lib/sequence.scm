@@ -3,8 +3,8 @@
 (import "./vector.scm" :as Vector)
 
 (export (empty? seq)
-  (if (nil? seq) t
-      (pair? seq) f
+  (if (nil? seq) #t
+      (pair? seq) #f
       (vector? seq) (= (Vector.count seq) 0)
       (string? seq) (= seq "")
       (raise 'InvalidArgument {:procedure 'empty? :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -21,7 +21,7 @@
 )
 
 (export (starts-with seq prefix)
-  (if (nil? seq) f
+  (if (nil? seq) #f
       (pair? seq) (List.starts-with seq prefix)
       (vector? seq) (Vector.starts-with seq prefix)
       (string? seq) (String.starts-with seq prefix)
@@ -30,7 +30,7 @@
 )
 
 (export (ends-with seq prefix)
-  (if (nil? seq) f
+  (if (nil? seq) #f
       (pair? seq) (List.ends-with seq prefix)
       (vector? seq) (Vector.ends-with seq prefix)
       (string? seq) (String.ends-with seq prefix)
@@ -39,7 +39,7 @@
 )
 
 (export (filter seq predicate)
-  (if (nil? seq) f
+  (if (nil? seq) ()
       (pair? seq) (List.filter seq predicate)
       (vector? seq) (Vector.filter seq predicate)
       (string? seq) (String.filter seq predicate)

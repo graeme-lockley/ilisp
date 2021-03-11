@@ -44,13 +44,13 @@
 )
 
 (Unit.test "ends-with"
-    (Unit.assert-equals (S.ends-with "" "") t)
-    (Unit.assert-equals (S.ends-with "hello" "") t)
-    (Unit.assert-equals (S.ends-with "hello" "lo") t)
-    (Unit.assert-equals (S.ends-with "hello" "hello") t)
+    (Unit.assert-equals (S.ends-with "" "") #t)
+    (Unit.assert-equals (S.ends-with "hello" "") #t)
+    (Unit.assert-equals (S.ends-with "hello" "lo") #t)
+    (Unit.assert-equals (S.ends-with "hello" "hello") #t)
 
-    (Unit.assert-equals (S.ends-with "hello" "Lo") f)
-    (Unit.assert-equals (S.ends-with "hello" "ohello") f)
+    (Unit.assert-equals (S.ends-with "hello" "Lo") #f)
+    (Unit.assert-equals (S.ends-with "hello" "ohello") #f)
 
     (Unit.assert-signal (S.ends-with 1 "abv") (fn (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
@@ -127,14 +127,14 @@
 )
 
 (Unit.test "starts-with"
-    (Unit.assert-equals (S.starts-with "" "") t)
-    (Unit.assert-equals (S.starts-with "hello world" "") t)
-    (Unit.assert-equals (S.starts-with "hello world" "hello") t)
-    (Unit.assert-equals (S.starts-with "hello world" "hello world") t)
+    (Unit.assert-equals (S.starts-with "" "") #t)
+    (Unit.assert-equals (S.starts-with "hello world" "") #t)
+    (Unit.assert-equals (S.starts-with "hello world" "hello") #t)
+    (Unit.assert-equals (S.starts-with "hello world" "hello world") #t)
 
-    (Unit.assert-equals (S.starts-with "hello world" "Hello") f)
-    (Unit.assert-equals (S.starts-with "hello world" "hello worlds") f)
-    (Unit.assert-equals (S.starts-with "" "h") f)
+    (Unit.assert-equals (S.starts-with "hello world" "Hello") #f)
+    (Unit.assert-equals (S.starts-with "hello world" "hello worlds") #f)
+    (Unit.assert-equals (S.starts-with "" "h") #f)
 
     (Unit.assert-signal (S.starts-with 1 "abv") (fn (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)

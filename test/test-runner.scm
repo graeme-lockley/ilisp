@@ -20,9 +20,10 @@
     )
 )
 
+
 (define test-files (directory ".."))
 
-(define *signal* ())
+(define *signal* #f)
 
 (define (show-test-stats)
     (prn (Unit.stats))

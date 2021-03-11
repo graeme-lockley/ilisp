@@ -57,12 +57,12 @@
 (export-macro (assert-signal e p)
     `(do
         ((get (car **root**) :unit 'inc-asserts-total))
-        (define signal-raised f)
+        (define signal-raised #f)
         (try
             ~e
             (fn (signal)
                 (do
-                    (set! signal-raised t)
+                    (set! signal-raised #t)
                     (~p signal)
                     ((get (car **root**) :unit 'inc-asserts-passed))
                 )

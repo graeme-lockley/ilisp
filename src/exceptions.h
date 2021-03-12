@@ -19,6 +19,7 @@ extern Value *exceptions_divide_by_zero(int argument_number);
 extern Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments);
 extern Value *exceptions_expected_range_argument_count(Value *procedure_name, int min_argument_count, int max_argument_count, Value *arguments);
 extern Value *exceptions_expected_token(char *expected, struct Exception_Position *position);
+extern Value *exceptions_illegal_token(struct Exception_Position *position);
 extern Value *exceptions_incorrect_number_of_arguments(Value *parameters, Value *arguments);
 extern Value *exceptions_invalid_argument(Value *procedure_name, int argument_number, Value *expected_type, Value *argument);
 extern Value *exceptions_invalid_fn_form(Value *parameters);

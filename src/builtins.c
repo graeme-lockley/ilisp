@@ -356,12 +356,28 @@ Value *char_to_string(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    if (!IS_NUMBER(parameter[0]))
+    int value;
+    if (IS_NUMBER(parameter[0]))
+        value = NUMBER(parameter[0]);
+    else if (IS_CHARACTER(parameter[0]))
+        value = (int)CHARACTER(parameter[0]);
+    else
         return exceptions_invalid_argument(mkSymbol("char-string"), 0, mkSymbol("number"), parameter[0]);
 
     char result[] = {'X', '\0'};
-    result[0] = (char)NUMBER(parameter[0]);
+    result[0] = (char)value;
     return mkString(result);
+}
+
+static Value *characterp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "character?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_CHARACTER(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *concat(Value *parameters, Value *env)
@@ -639,6 +655,12 @@ static Value *integer_plus(Value *parameters, Value *env)
                 parameters = cdr;
                 argument_number += 1;
             }
+            else if (IS_CHARACTER(car))
+            {
+                result += CHARACTER(car);
+                parameters = cdr;
+                argument_number += 1;
+            }
             else
                 return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), car);
         }
@@ -668,6 +690,12 @@ Value *integer_multiply(Value *parameters, Value *env)
                 parameters = cdr;
                 argument_number += 1;
             }
+            else if (IS_CHARACTER(car))
+            {
+                result *= CHARACTER(car);
+                parameters = cdr;
+                argument_number += 1;
+            }
             else
                 return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), car);
         }
@@ -684,13 +712,21 @@ static Value *integer_minus(Value *parameters, Value *env)
     int argument_number = 0;
     int result = 0;
 
-    if (IS_PAIR(parameters) && IS_NUMBER(CAR(parameters)))
+    if (IS_PAIR(parameters))
     {
+        Value *v = CAR(parameters);
+
+        if (IS_NUMBER(v))
+            result = NUMBER(v);
+        else if (IS_CHARACTER(v))
+            result = CHARACTER(v);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), v);
+
         if (IS_NIL(CDR(parameters)))
-            return mkNumber(-NUMBER(CAR(parameters)));
+            return mkNumber(-result);
         else
         {
-            result = NUMBER(CAR(parameters));
             parameters = CDR(parameters);
             argument_number = 1;
         }
@@ -712,6 +748,12 @@ static Value *integer_minus(Value *parameters, Value *env)
                 parameters = cdr;
                 argument_number += 1;
             }
+            else if (IS_CHARACTER(car))
+            {
+                result -= CHARACTER(car);
+                parameters = cdr;
+                argument_number += 1;
+            }
             else
                 return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), car);
         }
@@ -728,20 +770,26 @@ static Value *integer_divide(Value *parameters, Value *env)
     int argument_number = 0;
     int result = 0;
 
-    if (IS_PAIR(parameters) && IS_NUMBER(CAR(parameters)))
+    if (IS_PAIR(parameters))
     {
+        Value *v = CAR(parameters);
+
+        if (IS_NUMBER(v))
+            result = NUMBER(v);
+        else if (IS_CHARACTER(v))
+            result = (int)CHARACTER(v);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), v);
+
         if (IS_NIL(CDR(parameters)))
         {
-            int n = NUMBER(CAR(parameters));
-
-            if (n == 0)
+            if (result == 0)
                 return exceptions_divide_by_zero(0);
             else
-                return mkNumber(1 / n);
+                return mkNumber(1 / result);
         }
         else
         {
-            result = NUMBER(CAR(parameters));
             parameters = CDR(parameters);
             argument_number = 1;
         }
@@ -769,6 +817,18 @@ static Value *integer_divide(Value *parameters, Value *env)
                     argument_number += 1;
                 }
             }
+            else if (IS_CHARACTER(car))
+            {
+                int n = (int)CHARACTER(CAR(parameters));
+                if (n == 0)
+                    return exceptions_divide_by_zero(argument_number);
+                else
+                {
+                    result /= n;
+                    parameters = cdr;
+                    argument_number += 1;
+                }
+            }
             else
                 return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), car);
         }
@@ -782,10 +842,16 @@ static Value *integer_less_than(Value *parameters, Value *env)
     if (IS_NIL(parameters))
         return VTrue;
 
-    if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-less-than"), 0, mkSymbol("number"), CAR(parameters));
-
-    int operand = NUMBER(CAR(parameters));
+    int operand;
+    {
+        Value *car = CAR(parameters);
+        if (IS_NUMBER(car))
+            operand = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            operand = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-less-than"), 0, mkSymbol("number"), car);
+    }
 
     parameters = CDR(parameters);
     int argument_count = 1;
@@ -798,13 +864,19 @@ static Value *integer_less_than(Value *parameters, Value *env)
             return VFalse;
 
         Value *car = CAR(parameters);
-        if (!IS_NUMBER(car))
+
+        int value;
+        if (IS_NUMBER(car))
+            value = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            value = (int)CHARACTER(car);
+        else
             return exceptions_invalid_argument(mkSymbol("integer-less-than"), argument_count, mkSymbol("number"), CAR(parameters));
 
-        if (operand >= NUMBER(car))
+        if (operand >= value)
             return VFalse;
 
-        operand = NUMBER(car);
+        operand = value;
         argument_count += 1;
         parameters = CDR(parameters);
     }
@@ -815,10 +887,16 @@ static Value *integer_less_equal(Value *parameters, Value *env)
     if (IS_NIL(parameters))
         return VTrue;
 
-    if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-less-equal"), 0, mkSymbol("number"), CAR(parameters));
-
-    int operand = NUMBER(CAR(parameters));
+    int operand;
+    {
+        Value *car = CAR(parameters);
+        if (IS_NUMBER(car))
+            operand = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            operand = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), 0, mkSymbol("number"), car);
+    }
 
     parameters = CDR(parameters);
     int argument_count = 1;
@@ -831,13 +909,18 @@ static Value *integer_less_equal(Value *parameters, Value *env)
             return VFalse;
 
         Value *car = CAR(parameters);
-        if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkSymbol("number"), CAR(parameters));
+        int value;
+        if (IS_NUMBER(car))
+            value = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            value = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-less-equal"), argument_count, mkSymbol("number"), car);
 
-        if (operand > NUMBER(car))
+        if (operand > value)
             return VFalse;
 
-        operand = NUMBER(car);
+        operand = value;
         argument_count += 1;
         parameters = CDR(parameters);
     }
@@ -848,10 +931,16 @@ static Value *integer_greater_than(Value *parameters, Value *env)
     if (IS_NIL(parameters))
         return VTrue;
 
-    if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-greater-than"), 0, mkSymbol("number"), CAR(parameters));
-
-    int operand = NUMBER(CAR(parameters));
+    int operand;
+    {
+        Value *car = CAR(parameters);
+        if (IS_NUMBER(car))
+            operand = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            operand = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-greater-than"), 0, mkSymbol("number"), car);
+    }
 
     parameters = CDR(parameters);
     int argument_count = 1;
@@ -864,13 +953,18 @@ static Value *integer_greater_than(Value *parameters, Value *env)
             return VFalse;
 
         Value *car = CAR(parameters);
-        if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-greather-than"), argument_count, mkSymbol("number"), CAR(parameters));
+        int value;
+        if (IS_NUMBER(car))
+            value = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            value = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-greater-than"), argument_count, mkSymbol("number"), car);
 
-        if (operand <= NUMBER(car))
+        if (operand <= value)
             return VFalse;
 
-        operand = NUMBER(car);
+        operand = value;
         argument_count += 1;
         parameters = CDR(parameters);
     }
@@ -881,10 +975,16 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
     if (IS_NIL(parameters))
         return VTrue;
 
-    if (!IS_NUMBER(CAR(parameters)))
-        return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), 0, mkSymbol("number"), CAR(parameters));
-
-    int operand = NUMBER(CAR(parameters));
+    int operand;
+    {
+        Value *car = CAR(parameters);
+        if (IS_NUMBER(car))
+            operand = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            operand = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), 0, mkSymbol("number"), car);
+    }
 
     parameters = CDR(parameters);
     int argument_count = 1;
@@ -897,13 +997,18 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
             return VFalse;
 
         Value *car = CAR(parameters);
-        if (!IS_NUMBER(car))
-            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkSymbol("number"), CAR(parameters));
+        int value;
+        if (IS_NUMBER(car))
+            value = NUMBER(car);
+        else if (IS_CHARACTER(car))
+            value = (int)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("integer-greater-equal"), argument_count, mkSymbol("number"), car);
 
-        if (operand < NUMBER(car))
+        if (operand < value)
             return VFalse;
 
-        operand = NUMBER(car);
+        operand = value;
         argument_count += 1;
         parameters = CDR(parameters);
     }
@@ -2136,6 +2241,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));
+    add_binding_into_environment(root_bindings, "character?", mkNativeProcedure(characterp));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));

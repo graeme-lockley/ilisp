@@ -159,6 +159,15 @@ Value *exceptions_unexpected_token(struct Exception_Position *position)
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_illegal_token(struct Exception_Position *position)
+{
+    Value *exception_name = mkSymbol("IllegalToken");
+    Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
+    include_exception_position(exception_payload, position);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_unknown_symbol(Value *symbol)
 {
     Value *exception_name = mkSymbol("UnknownSymbol");

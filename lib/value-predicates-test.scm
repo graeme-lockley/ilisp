@@ -3,6 +3,7 @@
 (Unit.test "fn?"
     (Unit.assert-falsy (fn? ()))
     (Unit.assert-falsy (fn? 1))
+    (Unit.assert-falsy (fn? #\A))
     (Unit.assert-falsy (fn? "name"))
     (Unit.assert-falsy (fn? 'name))
     (Unit.assert-falsy (fn? :name))
@@ -19,6 +20,7 @@
 (Unit.test "keyword?"
     (Unit.assert-falsy (keyword? ()))
     (Unit.assert-falsy (keyword? 1))
+    (Unit.assert-falsy (keyword? #\A))
     (Unit.assert-falsy (keyword? "name"))
     (Unit.assert-falsy (keyword? 'name))
     (Unit.assert-truthy (keyword? :name))
@@ -35,6 +37,7 @@
 (Unit.test "list?"
     (Unit.assert-truthy (list? ()))
     (Unit.assert-falsy (list? 1))
+    (Unit.assert-falsy (list? #\A))
     (Unit.assert-falsy (list? "name"))
     (Unit.assert-falsy (list? 'name))
     (Unit.assert-falsy (list? :name))
@@ -51,6 +54,7 @@
 (Unit.test "macro?"
     (Unit.assert-falsy (macro? ()))
     (Unit.assert-falsy (macro? 1))
+    (Unit.assert-falsy (macro? #\A))
     (Unit.assert-falsy (macro? "name"))
     (Unit.assert-falsy (macro? 'name))
     (Unit.assert-falsy (macro? :name))
@@ -67,6 +71,7 @@
 (Unit.test "map?"
     (Unit.assert-falsy (map? ()))
     (Unit.assert-falsy (map? 1))
+    (Unit.assert-falsy (map? #\A))
     (Unit.assert-falsy (map? "name"))
     (Unit.assert-falsy (map? 'name))
     (Unit.assert-falsy (map? :name))
@@ -83,6 +88,7 @@
 (Unit.test "mutable?"
     (Unit.assert-falsy (mutable? ()))
     (Unit.assert-falsy (mutable? 1))
+    (Unit.assert-falsy (mutable? #\A))
     (Unit.assert-falsy (mutable? "name"))
     (Unit.assert-falsy (mutable? 'name))
     (Unit.assert-falsy (mutable? :name))
@@ -99,6 +105,7 @@
 (Unit.test "nil?"
     (Unit.assert-truthy (nil? ()))
     (Unit.assert-falsy (nil? 1))
+    (Unit.assert-falsy (nil? #\A))
     (Unit.assert-falsy (nil? "name"))
     (Unit.assert-falsy (nil? 'name))
     (Unit.assert-falsy (nil? :name))
@@ -115,6 +122,7 @@
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))
+    (Unit.assert-falsy (number? #\A))
     (Unit.assert-falsy (number? "name"))
     (Unit.assert-falsy (number? 'name))
     (Unit.assert-falsy (number? :name))
@@ -131,6 +139,7 @@
 (Unit.test "pair?"
     (Unit.assert-falsy (pair? ()))
     (Unit.assert-falsy (pair? 1))
+    (Unit.assert-falsy (pair? #\A))
     (Unit.assert-falsy (pair? "name"))
     (Unit.assert-falsy (pair? 'name))
     (Unit.assert-falsy (pair? :name))
@@ -147,6 +156,7 @@
 (Unit.test "sequential?"
     (Unit.assert-truthy (sequential? ()))
     (Unit.assert-falsy (sequential? 1))
+    (Unit.assert-falsy (sequential? #\A))
     (Unit.assert-falsy (sequential? "name"))
     (Unit.assert-falsy (sequential? 'name))
     (Unit.assert-falsy (sequential? :name))
@@ -163,6 +173,7 @@
 (Unit.test "string?"
     (Unit.assert-falsy (string? ()))
     (Unit.assert-falsy (string? 1))
+    (Unit.assert-falsy (string? #\A))
     (Unit.assert-truthy (string? "name"))
     (Unit.assert-falsy (string? 'name))
     (Unit.assert-falsy (string? :name))
@@ -179,6 +190,7 @@
 (Unit.test "symbol?"
     (Unit.assert-falsy (symbol? ()))
     (Unit.assert-falsy (symbol? 1))
+    (Unit.assert-falsy (symbol? #\A))
     (Unit.assert-falsy (symbol? "name"))
     (Unit.assert-truthy (symbol? 'name))
     (Unit.assert-falsy (symbol? :name))
@@ -195,6 +207,7 @@
 (Unit.test "vector?"
     (Unit.assert-falsy (vector? ()))
     (Unit.assert-falsy (vector? 1))
+    (Unit.assert-falsy (vector? #\A))
     (Unit.assert-falsy (vector? "name"))
     (Unit.assert-falsy (vector? 'name))
     (Unit.assert-falsy (vector? :name))

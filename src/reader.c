@@ -230,8 +230,7 @@ static void next_token(Lexer *lexer)
         else
         {
             current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);
-            // \s\[\]{}('"`,;
-            while (current > 32 && current != '[' && current != ']' && current != '{' && current != '}' && current != '(' && current != ')' && current != '"' && current != '`' && current != ',' && current != ';')
+            while (current > 32 && current != '[' && current != ']' && current != '{' && current != '}' && current != '(' && current != ')' && current != '"' && current != '`' && current != ',')
             {
                 advance_position(lexer, &cursor);
                 current = CHARACTER_AT_NEXT_POSITION(lexer, &cursor);
@@ -388,6 +387,36 @@ static Value *parse(Lexer *lexer)
             {
                 free(s);
                 return VFalse;
+            }
+            else if (strncmp(s, "#\\", 2) == 0)
+            {
+                if (strlen(s) != 3)
+                {
+                    struct Exception_Position *position = mkExceptionPosition(lexer);
+                    Value *e = exceptions_illegal_token(position);
+                    freeExceptionPosition(position);
+                    return e;
+                }
+
+                return mkCharacter(s[2]);
+            }
+            else if (strncmp(s, "#x", 2) == 0)
+            {
+                int length_of_s = strlen(s);
+
+                if (s[length_of_s - 1] == ';')
+                {
+                    s[length_of_s - 1] = '\0';
+                    int num = (int)strtol(s + 2, NULL, 16);
+                    return mkCharacter(num);
+                }
+                else
+                {
+                    struct Exception_Position *position = mkExceptionPosition(lexer);
+                    Value *e = exceptions_illegal_token(position);
+                    freeExceptionPosition(position);
+                    return e;
+                }
             }
             else
                 return mkSymbolUse(s);

@@ -28,6 +28,25 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
             string_builder_append(sb, "#f");
         break;
 
+    case VT_CHARACTER:
+        if (readable)
+        {
+            if (CHARACTER(v) <= 32)
+            {
+                char buffer[6];
+                sprintf(buffer, "#x%X;", CHARACTER(v));
+                string_builder_append(sb, buffer);
+            }
+            else
+            {
+                string_builder_append(sb, "#\\");
+                string_builder_append_char(sb, CHARACTER(v));
+            }
+        }
+        else
+            string_builder_append_char(sb, CHARACTER(v));
+        break;
+
     case VT_PAIR:
     {
         if (IS_NIL(v))

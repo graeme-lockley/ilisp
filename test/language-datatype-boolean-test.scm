@@ -4,6 +4,7 @@
     (Unit.assert-falsy (boolean? ()))
     (Unit.assert-truthy (boolean? #t))
     (Unit.assert-truthy (boolean? #f))
+    (Unit.assert-falsy (boolean? #\A))
     (Unit.assert-falsy (boolean? 1))
     (Unit.assert-falsy (boolean? "name"))
     (Unit.assert-falsy (boolean? 'name))
@@ -16,4 +17,8 @@
     (Unit.assert-falsy (boolean? (fn (n) (+ n 1))))
     (Unit.assert-falsy (boolean? car))
     (Unit.assert-falsy (boolean? and))
+)
+
+(Unit.test "printer"
+    (Unit.assert-equals (str #f) "#f")
 )

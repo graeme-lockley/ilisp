@@ -407,8 +407,12 @@ static Value *parse(Lexer *lexer)
                 if (s[length_of_s - 1] == ';')
                 {
                     s[length_of_s - 1] = '\0';
-                    int num = (int)strtol(s + 2, NULL, 16);
-                    return mkCharacter(num);
+                    char ch = (char)strtol(s + 2, NULL, 16);
+
+                    if (ch < 0)
+                        ch = 0;
+
+                    return mkCharacter(ch);
                 }
                 else
                 {

@@ -133,6 +133,7 @@ extern Value *mkStringUse(char *string);
 #define STRING(v) ((v)->strV)
 
 extern Value *mkPair(Value *car, Value *cdr);
+#define PAIR(v) ((v)->pairV)
 #define CAR(v) ((v)->pairV.car)
 #define CDR(v) ((v)->pairV.cdr)
 

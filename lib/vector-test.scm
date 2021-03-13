@@ -121,7 +121,7 @@
     )))
 
     (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (fn (signal) (do
-        (Unit.assert-equals (car signal) 'VectorIsImmutable)
+        (Unit.assert-equals (car signal) 'ValueIsImmutable)
         (Unit.assert-equals (get (cdr signal) :operand) [1 2 3])
         (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
     )))

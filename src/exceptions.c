@@ -177,6 +177,15 @@ Value *exceptions_unknown_symbol(Value *symbol)
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_value_is_immutable(Value *procedure_name, Value *operand) {
+    Value *exception_name = mkSymbol("ValueIsImmutable");
+    Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
+    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure_name);
+    map_set_bang(exception_payload, mkKeyword(":operand"), operand);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_value_not_applicable(Value *value, Value *arguments)
 {
     Value *exception_name = mkSymbol("ValueNotApplicable");
@@ -186,13 +195,3 @@ Value *exceptions_value_not_applicable(Value *value, Value *arguments)
 
     return mkException(mkPair(exception_name, exception_payload));
 }
-
-Value *exceptions_vector_is_immutable(Value *procedure_name, Value *operand) {
-    Value *exception_name = mkSymbol("VectorIsImmutable");
-    Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
-    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure_name);
-    map_set_bang(exception_payload, mkKeyword(":operand"), operand);
-
-    return mkException(mkPair(exception_name, exception_payload));
-}
-

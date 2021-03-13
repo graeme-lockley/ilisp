@@ -30,7 +30,7 @@ extern Value *exceptions_system_error(Value *procedure, Value *parameters);
 extern Value *exceptions_unexpected_end_of_stream(char *expected, struct Exception_Position *position);
 extern Value *exceptions_unexpected_token(struct Exception_Position *position);
 extern Value *exceptions_unknown_symbol(Value *symbol);
+extern Value *exceptions_value_is_immutable(Value *procedure_name, Value *operand);
 extern Value *exceptions_value_not_applicable(Value *value, Value *arguments);
-extern Value *exceptions_vector_is_immutable(Value *procedure_name, Value *operand);
 
 #endif

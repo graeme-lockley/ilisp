@@ -74,6 +74,10 @@
     )
 )
 
+(export-macro (assert-signal-name e n)
+    `(Unit.assert-signal ~e (fn (s) (Unit.assert-equals (car s) ~n)))
+)
+
 (export-macro (test name . tests)
     `(do
         (try

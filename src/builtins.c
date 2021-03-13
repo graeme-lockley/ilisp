@@ -1286,6 +1286,20 @@ static Value *mapp(Value *parameters, Value *env)
     return IS_MAP(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *mcons(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "cons");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *result = mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
+    result->tag &= ~VP_IMMUTABLE;
+
+    return result;
+}
+
 static Value *mutablep(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1643,6 +1657,46 @@ static Value *set_bang(Value *parameters, Value *env)
 
         env = CDR(env);
     }
+}
+
+static Value *set_car_bang(Value *parameters, Value *env) {
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "set-car!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *pair = parameter[0];
+    Value *value = parameter[1];
+
+    if (!IS_PAIR(pair))
+        return exceptions_invalid_argument(mkSymbol("set-car!"), 0, mkSymbol("pair"), pair);
+    if (IS_IMMUTABLE(pair))
+        return exceptions_value_is_immutable(mkSymbol("set-car!"), pair);
+
+    PAIR(pair).car = value;
+
+    return pair;
+}
+
+static Value *set_cdr_bang(Value *parameters, Value *env) {
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "set-cdr!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *pair = parameter[0];
+    Value *value = parameter[1];
+
+    if (!IS_PAIR(pair))
+        return exceptions_invalid_argument(mkSymbol("set-cdr!"), 0, mkSymbol("pair"), pair);
+    if (IS_IMMUTABLE(pair))
+        return exceptions_value_is_immutable(mkSymbol("set-cdr!"), pair);
+
+    PAIR(pair).cdr = value;
+
+    return pair;
 }
 
 static Value *slurp(Value *parameters, Value *env)
@@ -2040,7 +2094,7 @@ static Value *vector_nth_bang(Value *parameters, Value *env)
     if (!IS_VECTOR(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("vector-nth!"), 0, mkSymbol("vector"), parameter[0]);
     if (IS_IMMUTABLE(parameter[0]))
-        return exceptions_vector_is_immutable(mkSymbol("vector-nth!"), parameter[0]);
+        return exceptions_value_is_immutable(mkSymbol("vector-nth!"), parameter[0]);
 
     if (!IS_NUMBER(parameter[1]))
         return exceptions_invalid_argument(mkSymbol("vector-nth!"), 1, mkSymbol("number"), parameter[1]);
@@ -2260,6 +2314,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map->list", mkNativeProcedure(map_to_list));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
+    add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
     add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
     add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(nth));
@@ -2293,6 +2348,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(list_take));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set!", mkNativeProcedure(set_bang));
+    add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));
+    add_binding_into_environment(builtin_bindings, "set-cdr!", mkNativeProcedure(set_cdr_bang));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));

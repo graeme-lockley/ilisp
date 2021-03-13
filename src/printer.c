@@ -34,7 +34,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
             if (CHARACTER(v) <= 32)
             {
                 char buffer[6];
-                sprintf(buffer, "#x%X;", CHARACTER(v));
+                sprintf(buffer, "#x%X", CHARACTER(v));
                 string_builder_append(sb, buffer);
             }
             else

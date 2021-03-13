@@ -92,7 +92,7 @@
 (Unit.test "nth"
   (Unit.assert-equals (nth [1 2 3 4] 2) 3)
   (Unit.assert-equals (nth '(1 2 3 4 5 6) 2) 3)
-  (Unit.assert-equals (nth "hello world" 2) 108)
+  (Unit.assert-equals (nth "hello world" 2) #\l)
 
   (Unit.assert-signal (nth 123 1) (fn (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)

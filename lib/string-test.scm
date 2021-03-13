@@ -99,11 +99,11 @@
 )
 
 (Unit.test "nth"
-    (Unit.assert-equals (S.nth "hello" 1) 101)
-    (Unit.assert-equals (S.nth "hello" 2) 108)
-    (Unit.assert-equals (S.nth "hello" (- 1)) ())
-    (Unit.assert-equals (S.nth "hello" 10) ())
-    (Unit.assert-equals (S.nth "" 0) ())
+    (Unit.assert-equals (S.nth "hello" 1) #\e)
+    (Unit.assert-equals (S.nth "hello" 2) #\l)
+    (Unit.assert-equals (S.nth "hello" (- 1)) #x00)
+    (Unit.assert-equals (S.nth "hello" 10) #x00) 
+    (Unit.assert-equals (S.nth "" 0) #x00)
 )
 
 (Unit.test "rest"

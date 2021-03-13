@@ -1789,7 +1789,7 @@ static Value *string_nth(Value *parameters, Value *env)
     int string_length = strlen(string);
     int n = NUMBER(parameter[1]);
 
-    return (n < 0) || (n >= string_length) ? VNil : mkNumber(string[n]);
+    return (n < 0) || (n >= string_length) ? mkCharacter(0) : mkCharacter(string[n]);
 }
 
 static Value *string_reverse(Value *parameters, Value *env)

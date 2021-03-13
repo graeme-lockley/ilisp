@@ -301,14 +301,63 @@ static Value *parse(Lexer *lexer)
             if (*from == '\\')
             {
                 from += 1;
-                if (*from == 'n')
-                    *to = '\n';
+                if (*from == 'x')
+                {
+                    from += 1;
+                    char *start = from;
+
+                    while (*from != ';' && *from != '\0')
+                        from += 1;
+
+                    if (*from == ';')
+                    {
+                        *from = '\0';
+                        char ch = (char)strtol(start, NULL, 16);
+
+                        if (ch < 0)
+                            ch = 0;
+
+                        *to = ch;
+                        from += 1;
+                    }
+                    else
+                    {
+                        free(to_free);
+                        struct Exception_Position *position = mkExceptionPosition(lexer);
+                        Value *e = exceptions_illegal_token(position);
+                        freeExceptionPosition(position);
+                        return e;
+                    }
+                }
                 else
-                    *to = *from;
+                {
+                    if (*from == 'n')
+                        *to = 10;
+                    else if (*from == 't')
+                        *to = 9;
+                    else if (*from == 'r')
+                        *to = 13;
+                    else if (*from == '"')
+                        *to = '"';
+                    else if (*from == '\\')
+                        *to = '\\';
+                    else
+                    {
+                        free(to_free);
+                        struct Exception_Position *position = mkExceptionPosition(lexer);
+                        Value *e = exceptions_illegal_token(position);
+                        freeExceptionPosition(position);
+                        return e;
+                    }
+
+                    from += 1;
+                }
             }
             else
+            {
                 *to = *from;
-            from += 1;
+                from += 1;
+            }
             to += 1;
         }
         *to = '\0';
@@ -402,25 +451,12 @@ static Value *parse(Lexer *lexer)
             }
             else if (strncmp(s, "#x", 2) == 0)
             {
-                int length_of_s = strlen(s);
+                char ch = (char)strtol(s + 2, NULL, 16);
 
-                if (s[length_of_s - 1] == ';')
-                {
-                    s[length_of_s - 1] = '\0';
-                    char ch = (char)strtol(s + 2, NULL, 16);
+                if (ch < 0)
+                    ch = 0;
 
-                    if (ch < 0)
-                        ch = 0;
-
-                    return mkCharacter(ch);
-                }
-                else
-                {
-                    struct Exception_Position *position = mkExceptionPosition(lexer);
-                    Value *e = exceptions_illegal_token(position);
-                    freeExceptionPosition(position);
-                    return e;
-                }
+                return mkCharacter(ch);
             }
             else
                 return mkSymbolUse(s);

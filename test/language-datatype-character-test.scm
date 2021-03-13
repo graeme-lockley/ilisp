@@ -27,7 +27,7 @@
     (Unit.assert-equals (str #\A) "A")
     (Unit.assert-equals (str #x20;) " ")
     (Unit.assert-equals (pr-str #\A) "#\\A")
-    (Unit.assert-equals (pr-str #x20;) "#x20;")
+    (Unit.assert-equals (pr-str #x20) "#x20")
 )
 
 (Unit.test "+"

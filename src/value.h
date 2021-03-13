@@ -23,8 +23,9 @@ enum ValueType
     VT_STRING,
     VT_PAIR,
     VT_VECTOR,
-    VT_MAP,
-    VT_NATIVE_PROCEDURE, // == 10
+    VT_BYTE_VECTOR,
+    VT_MAP, // == 10
+    VT_NATIVE_PROCEDURE,
     VT_PROCEDURE,
     VT_MACRO,
     VT_EXCEPTION
@@ -69,6 +70,11 @@ struct ValueStruct
             int length;
             struct ValueStruct **items;
         } vectorV;
+        struct ValueByteVectorStruct
+        {
+            int length;
+            unsigned char *items;
+        } byteVectorV;
         struct MapValueRoot mapV;
         struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters, struct ValueStruct *env);
         struct
@@ -94,6 +100,7 @@ typedef struct ValueStruct Value;
 #define IS_STRING(v) ((TAG_TO_VT(v) == VT_STRING))
 #define IS_PAIR(v) ((TAG_TO_VT(v) == VT_PAIR))
 #define IS_VECTOR(v) ((TAG_TO_VT(v) == VT_VECTOR))
+#define IS_BYTE_VECTOR(v) ((TAG_TO_VT(v) == VT_BYTE_VECTOR))
 #define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
 #define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
 #define IS_PROCEDURE(v) ((TAG_TO_VT(v) == VT_PROCEDURE))
@@ -142,8 +149,12 @@ extern Value *mkVectorUse(Value **items, int length);
 extern Value *VEmptyVector;
 #define VECTOR(v) ((v)->vectorV)
 
+extern Value *mkByteVector(unsigned char *items, int length);
+extern Value *mkByteVectorUse(unsigned char *items, int length);
+extern Value *VEmptyByteVector;
+#define BYTE_VECTOR(v) ((v)->byteVectorV)
+
 extern Value *mkMap(Map *map);
-// extern void Value_setMapping(Value *map, Value *key, Value *value);
 #define MAP(v) ((v)->mapV)
 
 extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *env));

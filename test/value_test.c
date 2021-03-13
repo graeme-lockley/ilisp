@@ -17,11 +17,12 @@ static char *test_ordinal_values()
     mu_assert_label(VT_STRING == 6);
     mu_assert_label(VT_PAIR == 7);
     mu_assert_label(VT_VECTOR == 8);
-    mu_assert_label(VT_MAP == 9);
-    mu_assert_label(VT_NATIVE_PROCEDURE == 10);
-    mu_assert_label(VT_PROCEDURE == 11);
-    mu_assert_label(VT_MACRO == 12);
-    mu_assert_label(VT_EXCEPTION == 13);
+    mu_assert_label(VT_BYTE_VECTOR == 9);
+    mu_assert_label(VT_MAP == 10);
+    mu_assert_label(VT_NATIVE_PROCEDURE == 11);
+    mu_assert_label(VT_PROCEDURE == 12);
+    mu_assert_label(VT_MACRO == 13);
+    mu_assert_label(VT_EXCEPTION == 14);
 
     return NULL;
 }
@@ -134,6 +135,22 @@ static char *test_vector_values()
     {
         mu_assert_label(VECTOR(value).items[lp] == vector[lp]);
     }
+
+    return NULL;
+}
+
+static char *test_byte_vector_values()
+{
+    int length = 10;
+    unsigned char items[] = {32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
+
+    Value *value = mkByteVector(items, length);
+
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_BYTE_VECTOR(value));
+    mu_assert_label(BYTE_VECTOR(value).length == length);
+    for (int lp = 0; lp < length; lp += 1)
+        mu_assert_label(BYTE_VECTOR(value).items[lp] == items[lp]);
 
     return NULL;
 }
@@ -276,6 +293,7 @@ static char *test_suite()
     mu_run_test(test_pair_values);
     mu_run_test(test_map_values);
     mu_run_test(test_vector_values);
+    mu_run_test(test_byte_vector_values);
     mu_run_test(test_exception_values);
 
     mu_run_test(test_equals);

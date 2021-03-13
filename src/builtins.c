@@ -281,6 +281,148 @@ static Value *booleanp(Value *parameters, Value *env)
     return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *byte_vector(Value *parameters, Value *env)
+{
+    Value *v = parameters; // CDR(parameters);
+    Value *cursor = v;
+
+    int list_length = 0;
+    while (1)
+    {
+        if (IS_NIL(cursor))
+            break;
+
+        if (IS_PAIR(cursor))
+            cursor = CDR(cursor);
+        else
+            return exceptions_invalid_argument(mkSymbol("count"), 0, mkSymbol("pair"), v);
+
+        list_length += 1;
+    }
+
+    unsigned char *items = (unsigned char *)malloc(sizeof(unsigned char) * list_length);
+    cursor = v;
+    for (int lp = 0; lp < list_length; lp += 1, cursor = CDR(cursor))
+    {
+        unsigned char value;
+        Value *car = CAR(cursor);
+
+        if (IS_NUMBER(car))
+            value = (unsigned char)NUMBER(car);
+        else if (IS_CHARACTER(car))
+            value = (unsigned char)CHARACTER(car);
+        else
+            return exceptions_invalid_argument(mkSymbol("byte-vector"), lp, mkSymbol("number"), car);
+
+        items[lp] = value;
+    }
+
+    return mkByteVectorUse(items, list_length);
+}
+
+static Value *byte_vectorp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "byte-vector?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_BYTE_VECTOR(parameter[0]) ? VTrue : VFalse;
+}
+
+static Value *byte_vector_count(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "byte-vector-count");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_BYTE_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-count"), 0, mkSymbol("byte-vector"), parameter[0]);
+
+    return mkNumber(BYTE_VECTOR(parameter[0]).length);
+}
+
+static Value *byte_vector_mutable(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "byte-vector-mutable");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *args = parameter[0];
+
+    if (!IS_BYTE_VECTOR(args))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-mutable"), 0, mkSymbol("byte-vector"), args);
+
+    int number_of_items = BYTE_VECTOR(args).length;
+    unsigned char *items = BYTE_VECTOR(args).items;
+    unsigned char *buffer = (unsigned char *)malloc(number_of_items * sizeof(unsigned char));
+    memcpy(buffer, items, number_of_items * sizeof(unsigned char));
+    Value *result = mkByteVectorUse(buffer, number_of_items);
+    result->tag &= ~VP_IMMUTABLE;
+    return result;
+}
+
+static Value *byte_vector_nth(Value *parameters, Value *env)
+{
+    Value *parameter[3];
+
+    Value *extract_result = extract_range_parameters(parameter, parameters, 2, 3, "byte-vector-nth");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-nth"), 1, mkSymbol("number"), parameter[1]);
+
+    int nth = NUMBER(parameter[1]);
+
+    if (!IS_BYTE_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-nth"), 0, mkSymbol("byte-vector"), parameter[0]);
+
+    if (nth < 0 || nth >= BYTE_VECTOR(parameter[0]).length)
+        return parameter[2] == NULL ? mkNumber(0) : parameter[2];
+
+    return mkNumber(BYTE_VECTOR(parameter[0]).items[nth]);
+}
+
+static Value *byte_vector_nth_bang(Value *parameters, Value *env)
+{
+    Value *parameter[3];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "vector-nth!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_BYTE_VECTOR(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-nth!"), 0, mkSymbol("byte-vector"), parameter[0]);
+    if (IS_IMMUTABLE(parameter[0]))
+        return exceptions_value_is_immutable(mkSymbol("byte-vector-nth!"), parameter[0]);
+
+    if (!IS_NUMBER(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("byte-vector-nth!"), 1, mkSymbol("number"), parameter[1]);
+
+    unsigned char value;
+    if (IS_NUMBER(parameter[2]))
+        value = (unsigned char)NUMBER(parameter[2]);
+    else if (IS_CHARACTER(parameter[1]))
+        value = (unsigned char)CHARACTER(parameter[2]);
+    else
+        return exceptions_invalid_argument(mkSymbol("byte-vector-nth!"), 2, mkSymbol("number"), parameter[1]);
+
+    int nth = NUMBER(parameter[1]);
+
+    if (nth < 0 || nth >= VECTOR(parameter[0]).length)
+        return exceptions_out_of_range(mkSymbol("byte-vector-nth!"), parameter[0], parameter[1]);
+
+    BYTE_VECTOR(parameter[0]).items[nth] = value;
+
+    return parameter[0];
+}
+
 static Value *car(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1659,7 +1801,8 @@ static Value *set_bang(Value *parameters, Value *env)
     }
 }
 
-static Value *set_car_bang(Value *parameters, Value *env) {
+static Value *set_car_bang(Value *parameters, Value *env)
+{
     Value *parameter[2];
 
     Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "set-car!");
@@ -1679,7 +1822,8 @@ static Value *set_car_bang(Value *parameters, Value *env) {
     return pair;
 }
 
-static Value *set_cdr_bang(Value *parameters, Value *env) {
+static Value *set_cdr_bang(Value *parameters, Value *env)
+{
     Value *parameter[2];
 
     Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "set-cdr!");
@@ -2340,6 +2484,12 @@ Value *builtins_initialise_environment()
 
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
+    add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(byte_vector));
+    add_binding_into_environment(builtin_bindings, "byte-vector?", mkNativeProcedure(byte_vectorp));
+    add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));
+    add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
+    add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(byte_vector_nth));
+    add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(byte_vector_nth_bang));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(list_count));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));

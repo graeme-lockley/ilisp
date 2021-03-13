@@ -1,0 +1,22 @@
+(import "../lib/unit.scm" :as Unit)
+
+(define byte-vector (get (car **root**) :builtins 'byte-vector))
+(define byte-vector? (get (car **root**) :builtins 'byte-vector?))
+
+(Unit.test "byte-vector?"
+    (Unit.assert-falsy (byte-vector? ()))
+    (Unit.assert-falsy (byte-vector? 1))
+    (Unit.assert-falsy (byte-vector? #\A))
+    (Unit.assert-falsy (byte-vector? "name"))
+    (Unit.assert-falsy (byte-vector? 'name))
+    (Unit.assert-falsy (byte-vector? :name))
+    (Unit.assert-falsy (byte-vector? '(1 2 3)))
+    (Unit.assert-falsy (byte-vector? []))
+    (Unit.assert-falsy (byte-vector? [1 2 3]))
+    (Unit.assert-truthy (byte-vector? (byte-vector 1 2 3)))
+    (Unit.assert-falsy (byte-vector? {}))
+    (Unit.assert-falsy (byte-vector? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (byte-vector? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (byte-vector? car))
+    (Unit.assert-falsy (byte-vector? and))
+)

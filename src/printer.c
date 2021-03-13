@@ -115,6 +115,36 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
         break;
     }
 
+    case VT_BYTE_VECTOR:
+    {
+        if (BYTE_VECTOR(v).length == 0)
+            string_builder_append(sb, "[| |]");
+        else if (v_in_set)
+            string_builder_append(sb, "[| ... |]");
+        else
+        {
+            string_builder_append(sb, "[|");
+            for (int lp = 0; lp < BYTE_VECTOR(v).length; lp += 1)
+            {
+                if (lp > 0)
+                    string_builder_append(sb, separator);
+
+                if (lp > 255) 
+                {
+                    string_builder_append(sb, "...");
+                    break;
+                }
+                
+                char buffer[10];
+
+                sprintf(buffer, "%x", BYTE_VECTOR(v).items[lp]);
+                string_builder_append(sb, buffer);
+            }
+            string_builder_append(sb, "|]");
+        }
+        break;
+    }
+
     case VT_SYMBOL:
     {
         string_builder_append(sb, SYMBOL(v));

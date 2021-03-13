@@ -115,6 +115,26 @@ Value *mkVectorUse(Value *items[], int length)
     return value;
 }
 
+Value *mkByteVector(unsigned char *items, int length)
+{
+    Value *value = mkValue(VT_BYTE_VECTOR);
+    value->vectorV.length = length;
+    value->vectorV.items = malloc(sizeof(unsigned char) * length);
+    memcpy(value->vectorV.items, items, sizeof(unsigned char) * length);
+
+    return value;
+}
+
+Value *mkByteVectorUse(unsigned char *items, int length)
+{
+    Value *value = mkValue(VT_BYTE_VECTOR);
+
+    value->byteVectorV.length = length;
+    value->byteVectorV.items = items;
+
+    return value;
+}
+
 Value *mkMap(Map *map)
 {
     Value *value = mkValue(VT_MAP);
@@ -228,6 +248,30 @@ int Value_compare(Value *a, Value *b)
                 for (int loop = 0; loop < length; loop += 1)
                 {
                     compare = Value_compare(as[loop], bs[loop]);
+
+                    if (compare != 0)
+                        return compare;
+                }
+
+                return 0;
+            }
+            else
+                return compare;
+        }
+
+        case VT_BYTE_VECTOR:
+        {
+            int compare = sgn(BYTE_VECTOR(a).length - BYTE_VECTOR(b).length);
+
+            if (compare == 0)
+            {
+                int length = BYTE_VECTOR(a).length;
+                unsigned char *as = BYTE_VECTOR(a).items;
+                unsigned char *bs = BYTE_VECTOR(b).items;
+
+                for (int loop = 0; loop < length; loop += 1)
+                {
+                    compare = sgn(((int) as[loop]) - ((int) bs[loop]));
 
                     if (compare != 0)
                         return compare;

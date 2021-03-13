@@ -60,7 +60,7 @@
         (define signal-raised #f)
         (try
             ~e
-            (fn (signal)
+            (proc (signal)
                 (do
                     (set! signal-raised #t)
                     (~p signal)
@@ -75,7 +75,7 @@
 )
 
 (export-macro (assert-signal-name e n)
-    `(Unit.assert-signal ~e (fn (s) (Unit.assert-equals (car s) ~n)))
+    `(Unit.assert-signal ~e (proc (s) (Unit.assert-equals (car s) ~n)))
 )
 
 (export-macro (test name . tests)
@@ -87,7 +87,7 @@
                 ~@tests
                 ((get (car **root**) :unit 'inc-tests-passed))
             )
-            (fn (e)
+            (proc (e)
                 (do
                     (if (and (pair? e) (map? (cdr e)))
                             (raise (car e) (assoc (cdr e) :src *source-name* :test-name ~name))

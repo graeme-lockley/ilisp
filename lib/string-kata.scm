@@ -20,7 +20,7 @@
 
         (if (any numbers Number.negative?)
             (raise (filter numbers Number.negative?))
-            (Sequence.sum (filter numbers (fn (n) (<= n 1000))))
+            (Sequence.sum (filter numbers (proc (n) (<= n 1000))))
         )
     )
 )

@@ -131,7 +131,7 @@
 
                 (define r 
                     (fold needles ()
-                        (fn (acc needle)
+                        (proc (acc needle)
                             (if (not (nil? acc)) acc
                                 (starts-with haystackp needle) (list idx needle)
                                 ()

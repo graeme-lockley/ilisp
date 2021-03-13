@@ -18,7 +18,7 @@
     (Unit.assert-falsy (character? [1 2 3]))
     (Unit.assert-falsy (character? {}))
     (Unit.assert-falsy (character? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (character? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (character? (proc (n) (+ n 1))))
     (Unit.assert-falsy (character? car))
     (Unit.assert-falsy (character? and))
 )

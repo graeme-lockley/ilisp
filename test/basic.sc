@@ -1,3 +1,3 @@
 (assoc! (car **root**) 
-  'caar (fn (l) (car (car l)))
-  'cadr (fn (l) (car (cdr l))))
+  'caar (proc (l) (car (car l)))
+  'cadr (proc (l) (car (cdr l))))

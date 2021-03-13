@@ -510,22 +510,22 @@ fred
 (map)
 > (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments () :procedure map}))
 
-(map (fn (n) (+ n 1)))
+(map (proc (n) (+ n 1)))
 > (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments ((#PROCEDURE (n) (+ n 1))) :procedure map}))
 
-(map 1 (fn (n) (+ n 1)))
+(map 1 (proc (n) (+ n 1)))
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type (pair vector () string) :procedure map :received 1}))
 
-(map '() (fn (n) (+ n 1)))
+(map '() (proc (n) (+ n 1)))
 > ()
 
-(map '(1 2 3 4) (fn (n) (+ n 1)))
+(map '(1 2 3 4) (proc (n) (+ n 1)))
 > (2 3 4 5)
 
-(map [] (fn (n) (+ n 1)))
+(map [] (proc (n) (+ n 1)))
 > ()
 
-(map [1 2 3 4] (fn (n) (+ n 1)))
+(map [1 2 3 4] (proc (n) (+ n 1)))
 > (2 3 4 5)
 
 (hash-map)
@@ -633,7 +633,7 @@ fred
 (count ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir"))
 > 3
 
-(count (map ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir") (fn (n) (get n :name))))
+(count (map ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir") (proc (n) (get n :name))))
 > 3
 
 (do (assoc! (car **root**) 'file-name-relative-to-file-name (get (car **root**) :builtins 'file-name-relative-to-file-name)) ())

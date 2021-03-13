@@ -38,7 +38,7 @@
     (Unit.assert-equals (List.filter '(1 2 3 4 5) even?) '(2 4))
     (Unit.assert-equals (List.filter '(2 4 6 8 10 12) even?) '(2 4 6 8 10 12))
 
-    (Unit.assert-signal (List.filter [2 4 6 8 10 12] even?) (fn (signal) (do
+    (Unit.assert-signal (List.filter [2 4 6 8 10 12] even?) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'list-filter)
@@ -58,7 +58,7 @@
     (Unit.assert-equals (List.fold '(1) () icons) '(1))
     (Unit.assert-equals (List.fold '(1 2 3 4 5) () icons) '(5 4 3 2 1))
 
-   (Unit.assert-equals (List.fold '(1 2 3 4 5) "0" (fn (a v) (str "(" a " + " v ")"))) "(((((0 + 1) + 2) + 3) + 4) + 5)")
+   (Unit.assert-equals (List.fold '(1 2 3 4 5) "0" (proc (a v) (str "(" a " + " v ")"))) "(((((0 + 1) + 2) + 3) + 4) + 5)")
 )
 
 (Unit.test "fold-right"
@@ -66,7 +66,7 @@
    (Unit.assert-equals (List.fold-right '(1) () cons) '(1))
    (Unit.assert-equals (List.fold-right '(1 2 3 4 5) () cons) '(1 2 3 4 5))
 
-   (Unit.assert-equals (List.fold-right '(1 2 3 4 5) "0" (fn (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
+   (Unit.assert-equals (List.fold-right '(1 2 3 4 5) "0" (proc (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
 (Unit.test "nth"
@@ -93,7 +93,7 @@
     (define (sep)
         (do
             (define c 64)
-            (fn () (do
+            (proc () (do
                 (set! c (+ c 1))
                 (char->string c)
             ))

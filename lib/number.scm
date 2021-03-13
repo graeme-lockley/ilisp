@@ -8,7 +8,7 @@
     (do
         (define (->int n)
             (fold n 0 
-                (fn (acc d) 
+                (proc (acc d) 
                     (+ (* 10 acc) (char->int d)) 
                 )
             )

@@ -348,7 +348,7 @@ a
 >8
 
 (do 
-    (assoc! (car **root**) 'not (fn (x) (if x #f #t)))
+    (assoc! (car **root**) 'not (proc (x) (if x #f #t)))
     (assoc! (car **root**) 'unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) 
     (unless2 #f 7 8)
 )

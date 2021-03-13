@@ -19,7 +19,7 @@
   (Unit.assert-equals (car '(1 2 3 4 5 6)) 1)
   (Unit.assert-equals (car "hello world") 104)
 
-  (Unit.assert-signal (car 123) (fn (signal) (do
+  (Unit.assert-signal (car 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'car)
@@ -31,7 +31,7 @@
   (Unit.assert-equals (cdr '(1 2 3 4 5 6)) '(2 3 4 5 6))
   (Unit.assert-equals (cdr "hello world") "ello world")
 
-  (Unit.assert-signal (cdr 123) (fn (signal) (do
+  (Unit.assert-signal (cdr 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)

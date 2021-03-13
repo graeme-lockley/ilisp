@@ -12,7 +12,7 @@
     (Unit.assert-equals (car [1]) 1)
     (Unit.assert-equals (car [1 2 3]) 1)
 
-    (Unit.assert-signal (car []) (fn (signal) (do
+    (Unit.assert-signal (car []) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'car)
@@ -23,7 +23,7 @@
     (Unit.assert-equals (cdr [1]) [])
     (Unit.assert-equals (cdr [1 2 3]) [2 3])
 
-    (Unit.assert-signal (cdr []) (fn (signal) (do
+    (Unit.assert-signal (cdr []) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
@@ -80,7 +80,7 @@
     (Unit.assert-equals (Vector.fold [1] () icons) '(1))
     (Unit.assert-equals (Vector.fold [1 2 3 4 5] () icons) '(5 4 3 2 1))
 
-   (Unit.assert-equals (Vector.fold [1 2 3 4 5] "0" (fn (a v) (str "(" a " + " v ")"))) "(((((0 + 1) + 2) + 3) + 4) + 5)")
+   (Unit.assert-equals (Vector.fold [1 2 3 4 5] "0" (proc (a v) (str "(" a " + " v ")"))) "(((((0 + 1) + 2) + 3) + 4) + 5)")
 )
 
 (Unit.test "fold-right"
@@ -88,7 +88,7 @@
    (Unit.assert-equals (Vector.fold-right [1] () cons) '(1))
    (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] () cons) '(1 2 3 4 5))
 
-   (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] "0" (fn (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
+   (Unit.assert-equals (Vector.fold-right [1 2 3 4 5] "0" (proc (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
 (Unit.test "nth"
@@ -107,20 +107,20 @@
 
     (Unit.assert-truthy (mutable? (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3)))
 
-    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (fn (signal) (do
+    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
         (Unit.assert-equals (get (cdr signal) :index) 2)
         (Unit.assert-equals (get (cdr signal) :operand) [1])
     )))
 
-    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) (- 3) 0) (fn (signal) (do
+    (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) (- 3) 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
         (Unit.assert-equals (get (cdr signal) :index) (- 3))
         (Unit.assert-equals (get (cdr signal) :operand) [1])
         (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
     )))
 
-    (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (fn (signal) (do
+    (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'ValueIsImmutable)
         (Unit.assert-equals (get (cdr signal) :operand) [1 2 3])
         (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)

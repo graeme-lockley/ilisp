@@ -2517,8 +2517,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
 
-    define("list", "(fn x x)", root_scope);
-    define("load-file", "(fn (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
+    define("list", "(proc x x)", root_scope);
+    define("load-file", "(proc (*source-name*) (eval (read-string (str \"(do \" (slurp *source-name*) \"\n)\") *source-name*)))", root_scope);
 
     return root_scope;
 }

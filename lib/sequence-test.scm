@@ -6,7 +6,7 @@
   (Unit.assert-equals (count '(1 2 3 4 5 6)) 6)
   (Unit.assert-equals (count "hello world") 11)
 
-  (Unit.assert-signal (count 123) (fn (signal) (do
+  (Unit.assert-signal (count 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'count)
@@ -20,7 +20,7 @@
   
   (Unit.assert-equals (drop "hello world" 2) "llo world")
   
-  (Unit.assert-signal (drop 123 2) (fn (signal) (do
+  (Unit.assert-signal (drop 123 2) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'drop)
@@ -34,7 +34,7 @@
   
   (Unit.assert-equals (drop-right "hello world" 2) "hello wor")
   
-  (Unit.assert-signal (drop-right 123 2) (fn (signal) (do
+  (Unit.assert-signal (drop-right 123 2) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'drop-right)
@@ -51,7 +51,7 @@
   (Unit.assert-truthy (empty? ""))
   (Unit.assert-falsy (empty? "hello"))
 
-  (Unit.assert-signal (empty? 123) (fn (signal) (do
+  (Unit.assert-signal (empty? 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'empty?)
@@ -68,7 +68,7 @@
   (Unit.assert-truthy (ends-with "hello world" "world"))
   (Unit.assert-falsy (ends-with "hello world" "worl"))
 
-  (Unit.assert-signal (ends-with 123 1) (fn (signal) (do
+  (Unit.assert-signal (ends-with 123 1) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'ends-with)
@@ -82,7 +82,7 @@
   (Unit.assert-equals (filter '(1 2 3 4 5 6) odd) '(1 3 5))
   (Unit.assert-equals (filter "hello world" odd) "eowo")
 
-  (Unit.assert-signal (filter 123 1) (fn (signal) (do
+  (Unit.assert-signal (filter 123 1) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'filter)
@@ -94,7 +94,7 @@
   (Unit.assert-equals (nth '(1 2 3 4 5 6) 2) 3)
   (Unit.assert-equals (nth "hello world" 2) #\l)
 
-  (Unit.assert-signal (nth 123 1) (fn (signal) (do
+  (Unit.assert-signal (nth 123 1) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'nth)
@@ -108,7 +108,7 @@
   
   (Unit.assert-equals (slice "hello world" 1 2) "el")
   
-  (Unit.assert-signal (slice 123 1 2) (fn (signal) (do
+  (Unit.assert-signal (slice 123 1 2) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'slice)
@@ -125,7 +125,7 @@
   (Unit.assert-truthy (starts-with "hello world" "hello"))
   (Unit.assert-falsy (starts-with "hello world" "helos"))
 
-  (Unit.assert-signal (starts-with 123 1) (fn (signal) (do
+  (Unit.assert-signal (starts-with 123 1) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'starts-with)
@@ -139,7 +139,7 @@
   
   (Unit.assert-equals (take "hello world" 2) "he")
   
-  (Unit.assert-signal (take 123 2) (fn (signal) (do
+  (Unit.assert-signal (take 123 2) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'take)
@@ -153,7 +153,7 @@
   
   (Unit.assert-equals (take-right "hello world" 2) "ld")
   
-  (Unit.assert-signal (take-right 123 2) (fn (signal) (do
+  (Unit.assert-signal (take-right 123 2) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
     (Unit.assert-equals (get (cdr signal) :arg-number) 0)
     (Unit.assert-equals (get (cdr signal) :procedure) 'take-right)

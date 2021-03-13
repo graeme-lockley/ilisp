@@ -26,18 +26,18 @@
 )
 
 (Unit.test "arg 0 incorrect type signal"
-    (define inputs (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (fn (n) (+ n 1)) car and))
+    (define inputs (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and))
 
-    (for-each inputs (fn (input)
+    (for-each inputs (proc (input)
         (Unit.assert-signal-name (byte-vector-nth! input 0 0) 'InvalidArgument)
     ))
 )
 
 (Unit.test "arg 1 incorrect type signal"
     (define bv' (byte-vector-mutable (byte-vector 1 #\2 3)))
-    (define inputs (list () #t #f 'hello "hello" #\a :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (fn (n) (+ n 1)) car and))
+    (define inputs (list () #t #f 'hello "hello" #\a :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and))
 
-    (for-each inputs (fn (input)
+    (for-each inputs (proc (input)
         (Unit.assert-signal-name (byte-vector-nth! bv' input 0) 'InvalidArgument)
     ))
 )

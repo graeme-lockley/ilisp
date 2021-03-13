@@ -6,7 +6,7 @@
     (Unit.assert-equals (car "h") 104)
     (Unit.assert-equals (car "hello") 104)
 
-    (Unit.assert-signal (car "") (fn (signal) (do
+    (Unit.assert-signal (car "") (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'car)
@@ -17,7 +17,7 @@
     (Unit.assert-equals (cdr "h") "")
     (Unit.assert-equals (cdr "hello") "ello")
 
-    (Unit.assert-signal (cdr "") (fn (signal) (do
+    (Unit.assert-signal (cdr "") (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
@@ -52,13 +52,13 @@
     (Unit.assert-equals (S.ends-with "hello" "Lo") #f)
     (Unit.assert-equals (S.ends-with "hello" "ohello") #f)
 
-    (Unit.assert-signal (S.ends-with 1 "abv") (fn (signal) (do
+    (Unit.assert-signal (S.ends-with 1 "abv") (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'string-ends-with)
     )))
 
-    (Unit.assert-signal (S.ends-with "asd" 2) (fn (signal) (do
+    (Unit.assert-signal (S.ends-with "asd" 2) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 1)
         (Unit.assert-equals (get (cdr signal) :procedure) 'string-ends-with)
@@ -66,10 +66,10 @@
 )
 
 (Unit.test "filter"
-    (Unit.assert-equals (S.filter "hello to the world" (fn (c) (not (< c 32)))) "hello to the world")
-    (Unit.assert-equals (S.filter "hello to the world" (fn (c) (not (= c 32)))) "hellototheworld")
-    (Unit.assert-equals (S.filter "hello to the world" (fn (c) (> c 110))) "ototwor")
-    (Unit.assert-equals (S.filter "hello to the world" (fn (c) (> c 255))) "")
+    (Unit.assert-equals (S.filter "hello to the world" (proc (c) (not (< c 32)))) "hello to the world")
+    (Unit.assert-equals (S.filter "hello to the world" (proc (c) (not (= c 32)))) "hellototheworld")
+    (Unit.assert-equals (S.filter "hello to the world" (proc (c) (> c 110))) "ototwor")
+    (Unit.assert-equals (S.filter "hello to the world" (proc (c) (> c 255))) "")
 )
 
 (Unit.test "first"
@@ -85,7 +85,7 @@
     (Unit.assert-equals (S.fold "h" "" join) "h")
     (Unit.assert-equals (S.fold "hello" "" join) "olleh")
 
-   (Unit.assert-equals (S.fold "hello" "0" (fn (a v) (str "(" a " + " (char->string v) ")"))) "(((((0 + h) + e) + l) + l) + o)")
+   (Unit.assert-equals (S.fold "hello" "0" (proc (a v) (str "(" a " + " (char->string v) ")"))) "(((((0 + h) + e) + l) + l) + o)")
 )
 
 (Unit.test "fold-right"
@@ -95,7 +95,7 @@
    (Unit.assert-equals (S.fold-right "h" "" join) "h")
    (Unit.assert-equals (S.fold-right "hello" "" join) "hello")
 
-   (Unit.assert-equals (S.fold-right "hello" "0" (fn (v a) (str "(" (char->string v) " + " a ")"))) "(h + (e + (l + (l + (o + 0)))))")
+   (Unit.assert-equals (S.fold-right "hello" "0" (proc (v a) (str "(" (char->string v) " + " a ")"))) "(h + (e + (l + (l + (o + 0)))))")
 )
 
 (Unit.test "nth"
@@ -136,13 +136,13 @@
     (Unit.assert-equals (S.starts-with "hello world" "hello worlds") #f)
     (Unit.assert-equals (S.starts-with "" "h") #f)
 
-    (Unit.assert-signal (S.starts-with 1 "abv") (fn (signal) (do
+    (Unit.assert-signal (S.starts-with 1 "abv") (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 0)
         (Unit.assert-equals (get (cdr signal) :procedure) 'string-starts-with)
     )))
 
-    (Unit.assert-signal (S.starts-with "asd" 2) (fn (signal) (do
+    (Unit.assert-signal (S.starts-with "asd" 2) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
         (Unit.assert-equals (get (cdr signal) :arg-number) 1)
         (Unit.assert-equals (get (cdr signal) :procedure) 'string-starts-with)

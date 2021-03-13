@@ -14,7 +14,7 @@
  
         (define files (map (filter contents file-is-test?) format-name))
 
-        (define files-with-absolute-name (map files (fn (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
+        (define files-with-absolute-name (map files (proc (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
         
         (apply concat (cons files-with-absolute-name files-in-directories))
     )
@@ -29,12 +29,12 @@
     (prn (Unit.stats))
 )
 
-(for-each test-files (fn (name)
+(for-each test-files (proc (name)
     (do 
         (println "Running tests: " name)
         (try
             (package-import name)
-            (fn (s)
+            (proc (s)
                 (do
                     (print "Test failed: ")
                     (prn s)

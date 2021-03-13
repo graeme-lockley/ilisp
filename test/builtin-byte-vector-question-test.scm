@@ -16,7 +16,7 @@
     (Unit.assert-truthy (byte-vector? (byte-vector 1 2 3)))
     (Unit.assert-falsy (byte-vector? {}))
     (Unit.assert-falsy (byte-vector? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (byte-vector? (fn (n) (+ n 1))))
+    (Unit.assert-falsy (byte-vector? (proc (n) (+ n 1))))
     (Unit.assert-falsy (byte-vector? car))
     (Unit.assert-falsy (byte-vector? and))
 )

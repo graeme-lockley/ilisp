@@ -1,9 +1,9 @@
 ; identity
-((fn (x) x) 100)
+((proc (x) x) 100)
 > 100
 
 ; Increment
-(do (assoc! (car **root**) 'inc (fn (x) (+ x 1)))
+(do (assoc! (car **root**) 'inc (proc (x) (+ x 1)))
     (inc 100))
 > 101
 
@@ -16,29 +16,29 @@
 > (:exception (IncorrectNumberOfArguments . {:arguments (1 2) :parameters (x)}))
 
 ; Arguments as a single parameters
-((fn a a) 1 2 3 4 5)
+((proc a a) 1 2 3 4 5)
 > (1 2 3 4 5)
 
 ; Arguments as a single parameters
-((fn a a) '(1 2 3 4 5))
+((proc a a) '(1 2 3 4 5))
 > ((1 2 3 4 5))
 
 ; Variable arguments - just enough
-((fn (a . b) b) "hello")
+((proc (a . b) b) "hello")
 > ()
 
 ; Variable arguments - single optional
-((fn (a . b) b) "hello" "world")
+((proc (a . b) b) "hello" "world")
 > ("world")
 
 ; Variable arguments - multiple optional
-((fn (a . b) b) "hello" "world's" "end")
+((proc (a . b) b) "hello" "world's" "end")
 > ("world's" "end")
 
 ; Variable arguments - period without parameter error
-(fn (a . ) a)
+(proc (a . ) a)
 > (:exception (InvalidFnForm . {:parameters (.)}))
 
 ; Variable arguments - period with multiple parameters error
-(fn (a . b c) b)
+(proc (a . b c) b)
 > (:exception (InvalidFnForm . {:parameters (. b c)}))

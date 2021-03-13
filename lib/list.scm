@@ -69,7 +69,7 @@
 (export (->list s)
     (if (nil? s) s
         (list? s) s
-        (or (vector? s) (string? s)) (map s (fn (n) n))
+        (or (vector? s) (string? s)) (map s (proc (n) n))
         (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})
     )
 )

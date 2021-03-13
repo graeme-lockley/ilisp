@@ -16,9 +16,9 @@
         (do (define *source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* name))
 
             (define (load-package-file)
-                ((fn () 
+                ((proc () 
                     (do (define nested-nested-scope
-                            ((fn () 
+                            ((proc () 
                                 (do 
                                     (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
                                     (cdr **scope**)
@@ -52,7 +52,7 @@
         
             (get imports-list *source-name*)
         )
-        (fn (e)
+        (proc (e)
             (do (if *verbose* (println "error loading " *source-name* ": " e))
                 (raise e)
             )

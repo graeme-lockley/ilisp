@@ -2,11 +2,11 @@
 
 (define string-nth (get (car **root**) :builtins 'string-nth))
 
-(Unit.test "character?"
+(Unit.test "result is character"
     (Unit.assert-truthy (character? (string-nth "Hello world" 0)))
 )
 
-(Unit.test "out of range"
+(Unit.test "out of range index"
     (Unit.assert-equals (string-nth "Hello world" (- 1)) #x00)
     (Unit.assert-equals (string-nth "Hello world" 100) #x00)
 )

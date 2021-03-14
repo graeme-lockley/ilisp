@@ -25,10 +25,11 @@ enum ValueType
     VT_VECTOR,
     VT_BYTE_VECTOR,
     VT_MAP, // == 10
+    VT_ATOM,
     VT_NATIVE_PROCEDURE,
     VT_PROCEDURE,
     VT_MACRO,
-    VT_EXCEPTION
+    VT_EXCEPTION // == 15
 };
 
 #define VALUE_SHIFT_WIDTH 1
@@ -76,6 +77,7 @@ struct ValueStruct
             unsigned char *items;
         } byteVectorV;
         struct MapValueRoot mapV;
+        struct ValueStruct *atomV;
         struct ValueStruct *(*native_procedure)(struct ValueStruct *parameters, struct ValueStruct *env);
         struct
         {
@@ -102,6 +104,7 @@ typedef struct ValueStruct Value;
 #define IS_VECTOR(v) ((TAG_TO_VT(v) == VT_VECTOR))
 #define IS_BYTE_VECTOR(v) ((TAG_TO_VT(v) == VT_BYTE_VECTOR))
 #define IS_MAP(v) ((TAG_TO_VT(v) == VT_MAP))
+#define IS_ATOM(v) ((TAG_TO_VT(v) == VT_ATOM))
 #define IS_NATIVE_PROCEDURE(v) ((TAG_TO_VT(v) == VT_NATIVE_PROCEDURE))
 #define IS_PROCEDURE(v) ((TAG_TO_VT(v) == VT_PROCEDURE))
 #define IS_MACRO(v) ((TAG_TO_VT(v) == VT_MACRO))
@@ -156,6 +159,9 @@ extern Value *VEmptyByteVector;
 
 extern Value *mkMap(Map *map);
 #define MAP(v) ((v)->mapV)
+
+extern Value *mkAtom(Value *value);
+#define ATOM(v) ((v)->atomV)
 
 extern Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *env));
 #define NATIVE_PROCEDURE(v) ((v)->native_procedure)

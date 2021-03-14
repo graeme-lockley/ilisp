@@ -281,6 +281,67 @@ static Value *booleanp(Value *parameters, Value *env)
     return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
 }
 
+static Value *atom(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "atom");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return mkAtom(parameter[0]);
+}
+
+static Value *atomp(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "atom?");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return IS_ATOM(parameter[0]) ? VTrue : VFalse;
+}
+
+static Value *atom_dereference(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "atom-dereference");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_ATOM(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("atom-dereference"), 0, mkSymbol("atom"), parameter[0]);
+
+    return ATOM(parameter[0]);
+}
+
+static Value *atom_swap_bang(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "atom-swap!");
+    if (extract_result != NULL)
+        return extract_result;
+
+    Value *atom = parameter[0];
+    if (!IS_ATOM(atom))
+        return exceptions_invalid_argument(mkSymbol("atom-swap!"), 0, mkSymbol("atom"), atom);
+
+    Value *f = parameter[1];
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("atom-swap!"), 1, mkSymbol("procedure"), f);
+
+    Value *v = Repl_eval_procedure(f, mkPair(ATOM(atom), VNil), env);
+    if (IS_EXCEPTION(v))
+        return v;
+
+    ATOM(atom) = v;
+
+    return v;
+}
+
 static Value *byte_vector(Value *parameters, Value *env)
 {
     Value *v = parameters; // CDR(parameters);
@@ -2484,6 +2545,10 @@ Value *builtins_initialise_environment()
 
     map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
 
+    add_binding_into_environment(builtin_bindings, "atom", mkNativeProcedure(atom));
+    add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(atomp));
+    add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(atom_dereference));
+    add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(atom_swap_bang));
     add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(byte_vector));
     add_binding_into_environment(builtin_bindings, "byte-vector?", mkNativeProcedure(byte_vectorp));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));

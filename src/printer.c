@@ -194,6 +194,17 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
         map_pr(v_in_set, s, sb, v, readable, separator);
         break;
 
+    case VT_ATOM:
+        if (readable)
+        {
+            string_builder_append(sb, "(#ATOM ");
+            Printer_pr(s, sb, ATOM(v), readable, separator);
+            string_builder_append(sb, ")");
+        }
+        else
+            Printer_pr(s, sb, ATOM(v), readable, separator);
+        break;
+
     case VT_NATIVE_PROCEDURE:
         string_builder_append(sb, "#NATIVE-PROCEDURE");
         break;

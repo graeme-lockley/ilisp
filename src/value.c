@@ -143,6 +143,13 @@ Value *mkMap(Map *map)
     return value;
 }
 
+Value *mkAtom(Value *v)
+{
+    Value *value = mkValue(VT_ATOM);
+    value->atomV = v;
+    return value;
+}
+
 Value *mkNativeProcedure(Value *(*native_procedure)(Value *parameters, Value *env))
 {
     Value *value = mkValue(VT_NATIVE_PROCEDURE);
@@ -285,6 +292,9 @@ int Value_compare(Value *a, Value *b)
 
         case VT_MAP:
             return map_compare(a, b);
+
+        case VT_ATOM:
+            return Value_compare(ATOM(a), ATOM(b));
 
         case VT_NATIVE_PROCEDURE:
         case VT_PROCEDURE:

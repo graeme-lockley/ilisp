@@ -19,10 +19,11 @@ static char *test_ordinal_values()
     mu_assert_label(VT_VECTOR == 8);
     mu_assert_label(VT_BYTE_VECTOR == 9);
     mu_assert_label(VT_MAP == 10);
-    mu_assert_label(VT_NATIVE_PROCEDURE == 11);
-    mu_assert_label(VT_PROCEDURE == 12);
-    mu_assert_label(VT_MACRO == 13);
-    mu_assert_label(VT_EXCEPTION == 14);
+    mu_assert_label(VT_ATOM == 11);
+    mu_assert_label(VT_NATIVE_PROCEDURE == 12);
+    mu_assert_label(VT_PROCEDURE == 13);
+    mu_assert_label(VT_MACRO == 14);
+    mu_assert_label(VT_EXCEPTION == 15);
 
     return NULL;
 }
@@ -168,6 +169,18 @@ static char *test_map_values()
     return NULL;
 }
 
+static char *test_atom_values()
+{
+    Value *number = mkNumber(1234);
+    Value *value = mkAtom(number);
+
+    mu_assert_label(IS_IMMUTABLE(value));
+    mu_assert_label(IS_ATOM(value));
+    mu_assert_label(ATOM(value) == number);
+
+    return NULL;
+}
+
 static char *test_exception_values()
 {
     char *string = "hello world";
@@ -292,6 +305,7 @@ static char *test_suite()
     mu_run_test(test_string_values);
     mu_run_test(test_pair_values);
     mu_run_test(test_map_values);
+    mu_run_test(test_atom_values);
     mu_run_test(test_vector_values);
     mu_run_test(test_byte_vector_values);
     mu_run_test(test_exception_values);

@@ -366,13 +366,13 @@ Value *Repl_eval(Value *v, Value *env)
                 }
                 else if (strcmp(symbol_name, "proc") == 0 || strcmp(symbol_name, "mo") == 0)
                 {
-                    Value *arguments[2];
-                    Value *error = extract_fixed_parameters(arguments, CDR(v), 2, symbol_name);
-                    if (error != NULL)
-                        return error;
+                    Value *arguments = CDR(v);
 
-                    Value *cursor = arguments[0];
+                    if (!IS_PAIR(arguments))
+                        return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("pair"), arguments);
 
+                    Value *signature = CAR(arguments);
+                    Value *cursor = signature;
                     if (!IS_SYMBOL(cursor))
                     {
                         int parameter_number = 0;
@@ -400,9 +400,15 @@ Value *Repl_eval(Value *v, Value *env)
                         }
                     }
 
+                    arguments = CDR(arguments);
+                    if (!IS_PAIR(arguments))
+                        return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("pair"), arguments);
+
+                    Value *body = (IS_NIL(CDR(arguments))) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
+
                     return strcmp(symbol_name, "proc") == 0
-                               ? mkProcedure(arguments[1], arguments[0], env)
-                               : mkMacro(arguments[1], arguments[0], env);
+                               ? mkProcedure(body, signature, env)
+                               : mkMacro(body, signature, env);
                 }
                 else if (strcmp(symbol_name, "for-each") == 0)
                 {

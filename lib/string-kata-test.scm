@@ -5,8 +5,8 @@
 (import "./unit.scm" :as Unit)
 
 
-(define (integer-in-range min max)
-    (do
+(define integer-in-range
+    (proc (min max)
         (define range (+ (- max min) 1))
 
         (+ min (Number.modulo (Number.abs (random)) range))
@@ -31,23 +31,24 @@
 )
 
 (define (gen:tuple . gens)
-    (proc () (map gens (proc (g) (g))))
+    (proc () 
+        (map gens (proc (g) (g)))
+    )
 )
 
 (define (gen:list-of g . options)
     (do
         (define (list-of min max)
             (proc ()
-                (do (define length (integer-in-range min max))
+                (define length (integer-in-range min max))
 
-                    (define (gen-list n)
-                        (if (<= n 0) ()
-                            (cons (g) (gen-list (- n 1)))
-                        )
+                (define (gen-list n)
+                    (if (<= n 0) ()
+                        (cons (g) (gen-list (- n 1)))
                     )
-
-                    (gen-list length)
                 )
+
+                (gen-list length)
             )
         )
 
@@ -63,12 +64,11 @@
 
 (define (gen:filter g predicate)
     (proc ()
-        (do (define value (g))
+        (define value (g))
 
-            (if (predicate value)
-                value
-                ((gen:filter g predicate))
-            )
+        (if (predicate value)
+            value
+            ((gen:filter g predicate))
         )
     )
 )
@@ -99,15 +99,14 @@
 (define (gen:for-all gen test)
     (loop-n 10 
         (proc () 
-            (do (define arguments (gen))
+            (define arguments (gen))
 
-                (try
-                    (test arguments)
-                    (proc (e)
-                        (if (and (pair? e) (map? (cdr e)))
-                                (raise (car e) (assoc (cdr e) :gen-arguments arguments))
-                            (raise e {:gen-arguments arguments})
-                        )
+            (try
+                (test arguments)
+                (proc (e)
+                    (if (and (pair? e) (map? (cdr e)))
+                            (raise (car e) (assoc (cdr e) :gen-arguments arguments))
+                        (raise e {:gen-arguments arguments})
                     )
                 )
             )
@@ -118,15 +117,14 @@
 (define (gen:for-each gen test)
     (loop-n 10
         (proc ()
-            (do (define arguments (gen))
+            (define arguments (gen))
 
-                (try
-                    (apply test arguments)
-                    (proc (e)
-                        (if (and (pair? e) (map? (cdr e)))
-                                (raise (car e) (assoc (cdr e) :gen-arguments arguments))
-                            (raise e {:gen-arguments arguments})
-                        )
+            (try
+                (apply test arguments)
+                (proc (e)
+                    (if (and (pair? e) (map? (cdr e)))
+                            (raise (car e) (assoc (cdr e) :gen-arguments arguments))
+                        (raise e {:gen-arguments arguments})
                     )
                 )
             )
@@ -164,33 +162,37 @@
 )
 
 (Unit.test "given positive integers separated with a comma or newline should return the sum of all less than 1001"
-    (gen:for-all (gen:list-of *POSITIVE-INTEGER*) (proc (ns)
-        (Unit.assert-equals (SK.add (apply str (List.separate ns (gen:one-of '("," "\n"))))) (test-sum ns))
-    ))
+    (gen:for-all (gen:list-of *POSITIVE-INTEGER*) 
+        (proc (ns)
+            (Unit.assert-equals (SK.add (apply str (List.separate ns (gen:one-of '("," "\n"))))) (test-sum ns))
+        )
+    )
 )
 
 (Unit.test "given positive integers separated with a single character custom separator should return the sum of all less than 1001"
-    (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *SEPARATOR*) (proc (ns sep)
-        (do
+    (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *SEPARATOR*) 
+        (proc (ns sep)
             (define input (str "//" sep "\n" (apply str (List.separate ns sep))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
-    ))
+    )
 )
 
 (Unit.test "given positive integers separated with multiple multi-character custom separators should return the sum of all less than 1001"
-    (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) (gen:list-of *STRING-SEPARATOR* 1)) (proc (ns seps)
-        (do
+    (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) (gen:list-of *STRING-SEPARATOR* 1)) 
+        (proc (ns seps)
             (define input (str "//[" (apply str (List.separate seps "][")) "]\n" (apply str (List.separate ns (gen:one-of seps)))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
-    ))
+    )
 )
 
 (Unit.test "given integers with at least one negative should report an error with all of the negatives"
-    (gen:for-all (gen:filter (gen:list-of *INTEGER*) (proc (ns) (any ns Number.negative?))) (proc (ns)
-        (Unit.assert-signal (SK.add (apply str (List.separate ns ",")))
-            (proc (n) (Unit.assert-equals n (filter ns Number.negative?)))
+    (gen:for-all (gen:filter (gen:list-of *INTEGER*) (proc (ns) (any ns Number.negative?))) 
+        (proc (ns)
+            (Unit.assert-signal (SK.add (apply str (List.separate ns ",")))
+                (proc (n) (Unit.assert-equals n (filter ns Number.negative?)))
+            )
         )
-    ))
+    )
 )

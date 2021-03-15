@@ -364,6 +364,43 @@ Value *Repl_eval(Value *v, Value *env)
 
                     continue;
                 }
+                else if (strcmp(symbol_name, "const") == 0 || strcmp(symbol_name, "const-") == 0)
+                {
+                    Value *arguments = CDR(v);
+
+                    if (!IS_PAIR(arguments))
+                        return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("pair"), arguments);
+
+                    Value *signature = CAR(arguments);
+                    arguments = CDR(arguments);
+                    if (!IS_PAIR(arguments))
+                        return exceptions_invalid_argument(mkSymbol(symbol_name), 1, mkSymbol("pair"), arguments);
+
+                    Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
+
+                    int isTopLevel = strcmp(symbol_name, "const-") == 0 || IS_NIL(CDR(env));
+
+                    if (IS_PAIR(signature))
+                    {
+                        Value *proc = Repl_eval(mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil))), env);
+                        if (IS_EXCEPTION(proc))
+                            return proc;
+
+                        map_set_bang(isTopLevel ? CAR(env) : CAR(CDR(env)), CAR(signature), proc);
+                    }
+                    else if (IS_SYMBOL(signature))
+                    {
+                        Value *proc = Repl_eval(body, env);
+                        if (IS_EXCEPTION(proc))
+                            return proc;
+
+                        map_set_bang(isTopLevel ? CAR(env) : CAR(CDR(env)), signature, proc);
+                    }
+                    else
+                        return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("symbol"), signature);
+
+                    return VNil;
+                }
                 else if (strcmp(symbol_name, "proc") == 0 || strcmp(symbol_name, "mo") == 0)
                 {
                     Value *arguments = CDR(v);

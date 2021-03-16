@@ -364,7 +364,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     continue;
                 }
-                else if (strcmp(symbol_name, "const") == 0 || strcmp(symbol_name, "const-") == 0)
+                else if (strcmp(symbol_name, "const") == 0 || strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
                 {
                     Value *arguments = CDR(v);
 
@@ -378,11 +378,16 @@ Value *Repl_eval(Value *v, Value *env)
 
                     Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
-                    int isTopLevel = strcmp(symbol_name, "const-") == 0 || IS_NIL(CDR(env));
+                    int isTopLevel = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || IS_NIL(CDR(env));
 
                     if (IS_PAIR(signature))
                     {
-                        Value *proc = Repl_eval(mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil))), env);
+                        body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
+
+                        if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
+                            body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+
+                        Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))
                             return proc;
 
@@ -390,6 +395,9 @@ Value *Repl_eval(Value *v, Value *env)
                     }
                     else if (IS_SYMBOL(signature))
                     {
+                        if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
+                            body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+
                         Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))
                             return proc;

@@ -55,11 +55,15 @@
 )
 
 (Unit.test "eval define procedure"
+    (define env (mk-env))
+    
     (Interpreter.eval env (list 'define (list 'b 'x) 'x))
     (Unit.assert-equals (Environment.lookup-variable-value env (symbol "b")) (list 'procedure (list 'x) (list 'x) env))
 )
 
 (Unit.test "eval if"
+    (define env (mk-env))
+    
     (Unit.assert-equals (Interpreter.eval env (list 'if #t 2 3)) 2)
     (Unit.assert-equals (Interpreter.eval env (list 'if #f 2 3)) 3)
     (Unit.assert-equals (Interpreter.eval env (list 'if #f 2)) ())

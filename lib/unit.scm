@@ -84,7 +84,9 @@
             (do 
                 (println "- " ~name)
                 ((get (car **root**) :unit 'inc-tests-total))
-                ~@tests
+                ((proc () 
+                    ~@tests
+                ))
                 ((get (car **root**) :unit 'inc-tests-passed))
             )
             (proc (e)

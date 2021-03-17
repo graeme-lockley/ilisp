@@ -13,7 +13,7 @@
 
 (export (package-import-with-context name *source-name*)
     (try
-        (do (define *source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* name))
+        (do (define *source-name* (*builtin*.file-name-relative-to-file-name *source-name* name))
 
             (define (load-package-file)
                 ((proc () 

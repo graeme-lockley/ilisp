@@ -41,7 +41,7 @@
 ; A wrapper macro that uses the builtin set! quoting the first parameter in so
 ; that is appears as a symbol.
 (export-macro (set! name value)
-  `((get (car **root**) :builtins 'set!) '~name ~value)
+  `((get *builtin* 'set!) '~name ~value)
 )
 
 (export *source-name* (str (get **env** 'PWD) "/home"))
@@ -51,7 +51,7 @@
 ; names. 
 (export-macro (load-file f)
   `(do
-    (assoc! (car **scope**) '*source-name* ((get (car **root**) :builtins 'file-name-relative-to-file-name) *source-name* ~f))
+    (assoc! (car **scope**) '*source-name* ((get *builtin* 'file-name-relative-to-file-name) *source-name* ~f))
     (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
   )
 )

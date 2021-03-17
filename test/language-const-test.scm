@@ -1,7 +1,5 @@
 (import "../lib/unit.scm" :as Unit)
 
-(const *builtin* (get (car **root**) :builtins))
-
 (Unit.test "const atom"
     (const s (*builtin*.atom 0))
     (Unit.assert-truthy (*builtin*.atom? s))

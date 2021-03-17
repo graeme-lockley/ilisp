@@ -1,4 +1,4 @@
-(export count (get (car **root**) :builtins 'vector-count))
+(export count *builtin*.vector-count)
 
 (export (drop v n)
     (slice v n (count v))
@@ -28,7 +28,7 @@
   )  
 )
 
-(export filter (get (car **root**) :builtins 'vector-filter))
+(export filter *builtin*.vector-filter)
 
 (export (fold v z p)
     (do
@@ -59,19 +59,19 @@
     )
 )
 
-(export ->mutable (get (car **root**) :builtins 'vector-mutable))
+(export ->mutable *builtin*.vector-mutable)
 
-(export nth (get (car **root**) :builtins 'vector-nth))
+(export nth *builtin*.vector-nth)
 
-(export nth! (get (car **root**) :builtins 'vector-nth!))
+(export nth! *builtin*.vector-nth!)
 
-(export range (get (car **root**) :builtins 'vector-range))
+(export range *builtin*.vector-range)
 
-(export reverse (get (car **root**) :builtins 'vector-reverse))
+(export reverse *builtin*.vector-reverse)
 
-(export slice (get (car **root**) :builtins 'vector-slice))
+(export slice *builtin*.vector-slice)
 
-(export sort! (get (car **root**) :builtins 'vector-sort!))
+(export sort! *builtin*.vector-sort!)
 
 (export (starts-with v prefix)
   (do

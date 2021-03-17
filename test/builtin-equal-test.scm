@@ -1,7 +1,5 @@
 (import "../lib/unit.scm" :as Unit)
 
-(define *builtin* (get (car **root**) :builtins))
-
 (Unit.test "atom ="
     (define atom-0 (*builtin*.atom 0))
     (define atom-1 (*builtin*.atom "Hello World"))

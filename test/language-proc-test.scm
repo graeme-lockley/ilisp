@@ -1,7 +1,5 @@
 (import "../lib/unit.scm" :as Unit)
 
-(define *builtin* (get (car **root**) :builtins))
-
 (Unit.test "thunk proc"
     (define s (*builtin*.atom 0))
 

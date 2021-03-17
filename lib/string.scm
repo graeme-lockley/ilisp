@@ -1,4 +1,4 @@
-(export count (get (car **root**) :builtins 'string-count))
+(export count *builtin*.string-count)
 
 (export (drop v n)
     (slice v n (count v))
@@ -8,9 +8,9 @@
     (slice v 0 (- (count v) n 1))
 )
 
-(export ends-with (get (car **root**) :builtins 'string-ends-with))
+(export ends-with *builtin*.string-ends-with)
 
-(export filter (get (car **root**) :builtins 'string-filter))
+(export filter *builtin*.string-filter)
 
 (export (fold v z p)
     (do
@@ -42,13 +42,13 @@
     )
 )
 
-(export nth (get (car **root**) :builtins 'string-nth))
+(export nth *builtin*.string-nth)
 
-(export reverse (get (car **root**) :builtins 'string-reverse))
+(export reverse *builtin*.string-reverse)
 
-(export slice (get (car **root**) :builtins 'string-slice))
+(export slice *builtin*.string-slice)
 
-(export starts-with (get (car **root**) :builtins 'string-starts-with))
+(export starts-with *builtin*.string-starts-with)
 
 (export (take s n)
     (slice s 0 (- n 1))

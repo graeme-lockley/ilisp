@@ -1,8 +1,8 @@
 (import "./vector.scm" :as Vector)
 
-(export count (get (car **root**) :builtins 'list-count))
+(export count *builtin*.list-count)
 
-(export drop (get (car **root**) :builtins 'list-drop))
+(export drop *builtin*.list-drop)
 
 (export (drop-right lst n)
     (->list (Vector.drop-right (vec lst) n))
@@ -12,7 +12,7 @@
     (starts-with (reverse lst) (reverse suffix))
 )
 
-(export filter (get (car **root**) :builtins 'list-filter))
+(export filter *builtin*.list-filter)
 
  (export (fold xs z f)
     (if (nil? xs) z
@@ -26,7 +26,7 @@
     )
 )
 
-(export nth (get (car **root**) :builtins 'list-nth))
+(export nth *builtin*.list-nth)
 
 (export (reverse lst)
     (->list (Vector.reverse (vec lst)))
@@ -60,7 +60,7 @@
     )
 )
 
-(export take (get (car **root**) :builtins 'list-take))
+(export take *builtin*.list-take)
 
 (export (take-right lst n)
     (->list (Vector.take-right (vec lst) n))

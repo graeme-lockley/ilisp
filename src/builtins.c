@@ -2543,7 +2543,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));
 
-    map_set_bang(root_bindings, mkKeyword(":builtins"), builtin_bindings);
+    map_set_bang(root_bindings, mkSymbol("*builtin*"), builtin_bindings);
 
     add_binding_into_environment(builtin_bindings, "atom", mkNativeProcedure(atom));
     add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(atomp));

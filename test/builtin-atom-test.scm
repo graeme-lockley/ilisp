@@ -1,7 +1,5 @@
 (import "../lib/unit.scm" :as Unit)
 
-(define *builtin* (get (car **root**) :builtins))
-
 (Unit.test "atom"
     (for-each (list () #t #f 1 #\Q 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and) 
         (proc (v) 

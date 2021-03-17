@@ -627,16 +627,16 @@ fred
 (map->list {:a 1 :b 2 :c 3})
 > ((:a . 1) (:b . 2) (:c . 3))
 
-((get (car **root**) :builtins 'read-dir) "./test/my_dir_that_does_not_exist")
+((get *builtin* 'read-dir) "./test/my_dir_that_does_not_exist")
 > (:exception (SystemError . {:code 2 :error "No such file or directory" :parameters "./test/my_dir_that_does_not_exist" :procedure read-dir}))
 
-(count ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir"))
+(count ((get *builtin* 'read-dir) "./test/my_test_dir"))
 > 3
 
-(count (map ((get (car **root**) :builtins 'read-dir) "./test/my_test_dir") (proc (n) (get n :name))))
+(count (map ((get *builtin* 'read-dir) "./test/my_test_dir") (proc (n) (get n :name))))
 > 3
 
-(do (assoc! (car **root**) 'file-name-relative-to-file-name (get (car **root**) :builtins 'file-name-relative-to-file-name)) ())
+(do (assoc! (car **root**) 'file-name-relative-to-file-name (get *builtin* 'file-name-relative-to-file-name)) ())
 > ()
 
 (file-name-relative-to-file-name "/home/ilisp/prelude.scm" "/dir/bob.scm")

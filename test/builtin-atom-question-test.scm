@@ -1,7 +1,5 @@
 (import "../lib/unit.scm" :as Unit)
 
-(define *builtin* (get (car **root**) :builtins))
-
 (Unit.test "atom?"
     (Unit.assert-falsy (*builtin*.atom? ()))
     (Unit.assert-falsy (*builtin*.atom? 1))

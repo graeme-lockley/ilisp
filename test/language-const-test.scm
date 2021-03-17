@@ -1,12 +1,12 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "const atom"
-    (const s (*builtin*.atom 0))
+    (const- s (*builtin*.atom 0))
     (Unit.assert-truthy (*builtin*.atom? s))
 )
 
 (Unit.test "const procedure"
-    (const (inc n) (+ n 1))
+    (const- (inc n) (+ n 1))
 
     (Unit.assert-equals (inc (inc (inc 2))) 5)
 )
@@ -19,14 +19,14 @@
 )
 
 (Unit.test "let variable"
-    (let s 0)
+    (let- s 0)
 
     (Unit.assert-truthy (*builtin*.atom? s))
     (Unit.assert-equals (*builtin*.atom-dereference s) 0)
 )
 
 (Unit.test "const procedure"
-    (let (inc n) (+ n 1))
+    (let- (inc n) (+ n 1))
 
     (Unit.assert-equals ((*builtin*.atom-dereference inc) ((*builtin*.atom-dereference inc) ((*builtin*.atom-dereference inc) 2))) 5)
 )

@@ -378,10 +378,14 @@ Value *Repl_eval(Value *v, Value *env)
 
                     Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
-                    int isTopLevel = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || IS_NIL(CDR(env));
+                    int is_top_level = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || IS_NIL(CDR(env));
+                    Value *binding_scope = is_top_level ? CAR(env) : CAR(CDR(env));
 
                     if (IS_PAIR(signature))
                     {
+                        if (Value_truthy(map_containsp(binding_scope, CAR(signature))))
+                            return exceptions_duplicate_binding(CAR(signature));
+
                         body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
@@ -391,10 +395,13 @@ Value *Repl_eval(Value *v, Value *env)
                         if (IS_EXCEPTION(proc))
                             return proc;
 
-                        map_set_bang(isTopLevel ? CAR(env) : CAR(CDR(env)), CAR(signature), proc);
+                        map_set_bang(binding_scope, CAR(signature), proc);
                     }
                     else if (IS_SYMBOL(signature))
                     {
+                        if (Value_truthy(map_containsp(binding_scope, signature)))
+                            return exceptions_duplicate_binding(signature);
+
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
                             body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
 
@@ -402,7 +409,7 @@ Value *Repl_eval(Value *v, Value *env)
                         if (IS_EXCEPTION(proc))
                             return proc;
 
-                        map_set_bang(isTopLevel ? CAR(env) : CAR(CDR(env)), signature, proc);
+                        map_set_bang(binding_scope, signature, proc);
                     }
                     else
                         return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("symbol"), signature);

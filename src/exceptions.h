@@ -15,6 +15,7 @@ struct Exception_Position
     char *content;
 };
 
+extern Value *exceptions_duplicate_binding(Value *procedure_name);
 extern Value *exceptions_divide_by_zero(int argument_number);
 extern Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments);
 extern Value *exceptions_expected_range_argument_count(Value *procedure_name, int min_argument_count, int max_argument_count, Value *arguments);

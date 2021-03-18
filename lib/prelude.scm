@@ -44,6 +44,7 @@
   `((get *builtin* 'set!) '~name ~value)
 )
 
+(const- *top-level* :t)
 (export *source-name* (str (get **env** 'PWD) "/home"))
 
 ; Replace the builtin load-file with a macro which uses the surrounding context 
@@ -84,7 +85,7 @@
 (export take Sequence.take)
 (export take-right Sequence.take-right)
 
-(define (type-of v)
+(const- (type-of v)
   (if (nil? v) "nil"
       (boolean? v) "boolean"
       (pair? v) "pair"

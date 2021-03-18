@@ -3,7 +3,7 @@
 (Unit.test "byte-vector"
     (Unit.assert-equals (*builtin*.byte-vector-count (*builtin*.byte-vector)) 0)
 
-    (define bv' (*builtin*.byte-vector 1 #\2 3))
+    (const bv' (*builtin*.byte-vector 1 #\2 3))
 
     (Unit.assert-equals (*builtin*.byte-vector-count bv') 3)
 
@@ -16,7 +16,7 @@
 )
 
 (Unit.test "incorrect argument type signal"
-    (define inputs
+    (const inputs
         (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and)
     )
 

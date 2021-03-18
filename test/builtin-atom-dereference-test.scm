@@ -9,7 +9,7 @@
 )
 
 (Unit.test "arg count signal"
-    (define a (*builtin*.atom 1))
+    (const a (*builtin*.atom 1))
 
     (Unit.assert-signal-name (*builtin*.atom-dereference) 'ExpectedArgumentCount)
     (Unit.assert-signal-name (*builtin*.atom-dereference a 2) 'ExpectedArgumentCount)

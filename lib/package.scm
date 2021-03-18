@@ -1,38 +1,36 @@
-(define *verbose* #f)
+(const- *verbose* #f)
 
-(export (verbose?) *verbose*)
+(const (verbose?) *verbose*)
 
-(export (verbose v) (set! *verbose* v))
+(const (verbose v) (set! *verbose* v))
 
-(export (package-use package name)
+(const (package-use package name)
     (if (contains? package name) 
         (get package name)
         (raise 'UnknownSymbolInPackage {:name name})
     )
 )
 
-(export (package-import-with-context name *source-name*)
+(const (package-import-with-context name *source-name*)
     (try
         (do (define *source-name* (*builtin*.file-name-relative-to-file-name *source-name* name))
 
-            (define (load-package-file)
+            (const (load-package-file)
                 ((proc () 
-                    (do (define nested-nested-scope
-                            ((proc () 
-                                (do 
-                                    (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
-                                    (cdr **scope**)
-                                )
-                            ))
-                        )
-                        (dissoc (car nested-nested-scope) 'nested-nested-scope)
+                    (const nested-nested-scope
+                        ((proc ()
+                            (const *top-level* :t) 
+                            (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
+                            (cdr **scope**)
+                        ))
                     )
+                    (dissoc (car nested-nested-scope) 'nested-nested-scope)
                 ))
             )
 
-            (define root-scope (car **root**))
+            (const root-scope (car **root**))
 
-            (define imports-list
+            (const imports-list
                 (do (if (not (contains? root-scope :imports))
                         (assoc! root-scope :imports {}))
                     (get root-scope :imports)
@@ -42,7 +40,7 @@
             (if (not (map? (get imports-list *source-name*)))
                 (do (if *verbose* (println "Loading " *source-name*))
                     (assoc! imports-list *source-name* ())
-                    (define bindings (load-package-file))
+                    (const bindings (load-package-file))
                     (if (map? (get imports-list *source-name*))
                         (raise 'CyclicPackageDependency {:name *source-name*})
                     )
@@ -53,9 +51,8 @@
             (get imports-list *source-name*)
         )
         (proc (e)
-            (do (if *verbose* (println "error loading " *source-name* ": " e))
-                (raise e)
-            )
+            (if *verbose* (println "error loading " *source-name* ": " e))
+            (raise e)
         )
     )
 )
@@ -66,7 +63,7 @@
 
 (export-macro (import name . options) 
     (if (and (= (first options) :as) (not (nil? (nth options 1))))
-        `(define ~(nth options 1) (package-import ~name))
+        `(const ~(nth options 1) (package-import ~name))
         (raise 'IllegalImportSyntax {:expected ":as symbol"})
     )
 )

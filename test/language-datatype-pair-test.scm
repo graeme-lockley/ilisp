@@ -9,7 +9,7 @@
 (Unit.test "mcons pair is mutable"
     (Unit.assert-truthy (mutable? (mcons 1 2)))
 
-    (define list' (mcons 1 (list 2 3)))
+    (const list' (mcons 1 (list 2 3)))
     (Unit.assert-truthy (mutable? list'))
     (Unit.assert-falsy (mutable? (cdr list')))
 )

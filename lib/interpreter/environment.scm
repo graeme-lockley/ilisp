@@ -1,58 +1,55 @@
 (import "./frame.scm" :as Frame)
 
-(export the-empty-environment ())
+(const the-empty-environment ())
 
-(export (enclosing-environment env) (cdr env))
+(const (enclosing-environment env) (cdr env))
 
-(export (first-frame env) (car env))
+(const (first-frame env) (car env))
 
-(export (lookup-variable-value env var)
-    (do (define (env-lookup env)
-            (if (= env the-empty-environment)
-                    (raise 'UnboundVariable {:procedure 'lookup-variable-name :name var})
+(const (lookup-variable-value env var)
+    (const (env-lookup env)
+        (if (= env the-empty-environment)
+                (raise 'UnboundVariable {:procedure 'lookup-variable-name :name var})
 
-                (do (define frame (first-frame env))
-                    (define binding (Frame.binding frame var))
+            (do (const frame (first-frame env))
+                (const binding (Frame.binding frame var))
 
-                    (if (nil? binding)
-                        (env-lookup (enclosing-environment env))
-                        (cdr binding)
-                    )
+                (if (nil? binding)
+                    (env-lookup (enclosing-environment env))
+                    (cdr binding)
                 )
             )
         )
-
-        (env-lookup env)
     )
+
+    (env-lookup env)
 )
 
-(export (set-variable-value! env var val)
-    (do (define (env-set! env)
-            (if (= env the-empty-environment)
-                    (raise 'UnboundVariable {:procedure 'set-variable-value! :name var})
+(const (set-variable-value! env var val)
+    (const (env-set! env)
+        (if (= env the-empty-environment)
+                (raise 'UnboundVariable {:procedure 'set-variable-value! :name var})
 
-                (do (define frame (first-frame env))
-                    (define binding (Frame.binding frame var))
+            (do (const frame (first-frame env))
+                (const binding (Frame.binding frame var))
 
-                    (if (nil? binding)
-                        (env-set! (enclosing-environment env))
-                        (Frame.add-binding! frame var val)
-                    )
+                (if (nil? binding)
+                    (env-set! (enclosing-environment env))
+                    (Frame.add-binding! frame var val)
                 )
             )
         )
-
-        (env-set! env)
     )
+
+    (env-set! env)
 )
 
-(export (define-variable! env var val)
-    (do (define frame (first-frame env))
+(const (define-variable! env var val)
+    (const frame (first-frame env))
 
-        (Frame.add-binding! frame var val)
-    )
+    (Frame.add-binding! frame var val)
 )
 
-(export (extend base-env vars vals)
+(const (extend base-env vars vals)
     (cons (Frame.mk vars vals) base-env)
 )

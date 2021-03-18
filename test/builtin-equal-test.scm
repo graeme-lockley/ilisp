@@ -1,9 +1,9 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "atom ="
-    (define atom-0 (*builtin*.atom 0))
-    (define atom-1 (*builtin*.atom "Hello World"))
-    (define atom-2 (*builtin*.atom (list :Bob :Mary)))
+    (const atom-0 (*builtin*.atom 0))
+    (const atom-1 (*builtin*.atom "Hello World"))
+    (const atom-2 (*builtin*.atom (list :Bob :Mary)))
 
     (Unit.assert-truthy (= atom-0 (*builtin*.atom 0)))
     (Unit.assert-falsy (= atom-0 (*builtin*.atom 1)))
@@ -17,9 +17,9 @@
 )
 
 (Unit.test "byte-vector ="
-    (define bv-0 (*builtin*.byte-vector))
-    (define bv-1 (*builtin*.byte-vector 1))
-    (define bv-3 (*builtin*.byte-vector 1 2 3))
+    (const bv-0 (*builtin*.byte-vector))
+    (const bv-1 (*builtin*.byte-vector 1))
+    (const bv-3 (*builtin*.byte-vector 1 2 3))
 
     (Unit.assert-truthy (= bv-0 (*builtin*.byte-vector)))
     (Unit.assert-truthy (= bv-1 (*builtin*.byte-vector 1)))

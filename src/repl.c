@@ -378,7 +378,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
-                    int is_top_level = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || IS_NIL(CDR(env));
+                    int is_top_level = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || !Value_truthy(map_containsp(CAR(env), mkSymbol("*top-level*")));
                     Value *binding_scope = is_top_level ? CAR(env) : CAR(CDR(env));
 
                     if (IS_PAIR(signature))

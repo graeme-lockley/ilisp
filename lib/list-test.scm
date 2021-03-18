@@ -32,7 +32,7 @@
 )
 
 (Unit.test "filter"
-    (define (even? n) (= (* (/ n 2) 2) n))
+    (const (even? n) (= (* (/ n 2) 2) n))
     (Unit.assert-equals (List.filter '() even?) '())
     (Unit.assert-equals (List.filter '(1 3 5 7 9 11) even?) '())
     (Unit.assert-equals (List.filter '(1 2 3 4 5) even?) '(2 4))
@@ -52,7 +52,7 @@
 )
 
 (Unit.test "fold"
-    (define (icons a b) (cons b a))
+    (const (icons a b) (cons b a))
 
     (Unit.assert-equals (List.fold () () icons) ())
     (Unit.assert-equals (List.fold '(1) () icons) '(1))
@@ -90,13 +90,11 @@
 )
 
 (Unit.test "separate"
-    (define (sep)
-        (do
-            (define c 64)
-            (proc () (do
-                (set! c (+ c 1))
-                (char->string c)
-            ))
+    (const (sep)
+        (const c 64)
+        (proc ()
+            (set! c (+ c 1))
+            (char->string c)
         )
     )
 

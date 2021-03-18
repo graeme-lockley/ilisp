@@ -1,18 +1,17 @@
-(export count *builtin*.vector-count)
+(const count *builtin*.vector-count)
 
-(export (drop v n)
+(const (drop v n)
     (slice v n (count v))
 )
 
-(export (drop-right v n)
+(const (drop-right v n)
     (slice v 0 (- (count v) n 1))
 )
 
-(export (ends-with v prefix)
-  (do
-    (define (dec n) (- n 1))
+(const (ends-with v prefix)
+    (const (dec n) (- n 1))
 
-    (define (iter v-idx prefix-idx)
+    (const (iter v-idx prefix-idx)
         (if (< prefix-idx 0) 
                 #t
             (= (nth v v-idx) (nth prefix prefix-idx)) 
@@ -25,59 +24,53 @@
             #f
         (iter (dec (count v)) (dec (count prefix)))
     )
-  )  
 )
 
-(export filter *builtin*.vector-filter)
+(const filter *builtin*.vector-filter)
 
-(export (fold v z p)
-    (do
-        (define (fold-idx idx z)
-            (if (= idx (count v))
-                    z
-                (fold-idx (+ idx 1) (p z (nth v idx)))
+(const (fold v z p)
+    (const (fold-idx idx z)
+        (if (= idx (count v))
+                z
+            (fold-idx (+ idx 1) (p z (nth v idx)))
+        )
+    )
+
+    (fold-idx 0 z)
+)
+
+(const (fold-right v z p)
+    (const (iter idx z) 
+        (if (= idx 0) 
+                z 
+            (do
+                (const idxp (- idx 1))
+                (iter idxp (p (nth v idxp) z))
             )
         )
-
-        (fold-idx 0 z)
     )
+    
+    (iter (count v) z)
 )
 
-(export (fold-right v z p)
-    (do
-        (define (iter idx z) 
-            (if (= idx 0) 
-                    z 
-                (do
-                    (define idxp (- idx 1))
-                    (iter idxp (p (nth v idxp) z))
-                )
-            )
-        )
-        
-        (iter (count v) z)
-    )
-)
+(const ->mutable *builtin*.vector-mutable)
 
-(export ->mutable *builtin*.vector-mutable)
+(const nth *builtin*.vector-nth)
 
-(export nth *builtin*.vector-nth)
+(const nth! *builtin*.vector-nth!)
 
-(export nth! *builtin*.vector-nth!)
+(const range *builtin*.vector-range)
 
-(export range *builtin*.vector-range)
+(const reverse *builtin*.vector-reverse)
 
-(export reverse *builtin*.vector-reverse)
+(const slice *builtin*.vector-slice)
 
-(export slice *builtin*.vector-slice)
+(const sort! *builtin*.vector-sort!)
 
-(export sort! *builtin*.vector-sort!)
+(const (starts-with v prefix)
+    (const (inc n) (+ n 1))
 
-(export (starts-with v prefix)
-  (do
-    (define (inc n) (+ n 1))
-
-    (define (iter idx max)
+    (const (iter idx max)
         (if (= idx max) 
                 #t
             (= (nth v idx) (nth prefix idx)) 
@@ -90,13 +83,12 @@
             #f
         (iter 0 (count prefix))
     )
-  )  
 )
 
-(export (take v n)
+(const (take v n)
     (slice v 0 (- n 1))
 )
 
-(export (take-right v n)
+(const (take-right v n)
     (slice v (- (count v) n) (count v))
 )

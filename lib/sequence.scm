@@ -2,7 +2,7 @@
 (import "./string.scm" :as String)
 (import "./vector.scm" :as Vector)
 
-(export (empty? seq)
+(const (empty? seq)
   (if (nil? seq) #t
       (pair? seq) #f
       (vector? seq) (= (Vector.count seq) 0)
@@ -11,7 +11,7 @@
   )
 )
 
-(export (count seq)
+(const (count seq)
   (if (nil? seq) 0
       (pair? seq) (List.count seq)
       (vector? seq) (Vector.count seq)
@@ -20,7 +20,7 @@
   )
 )
 
-(export (starts-with seq prefix)
+(const (starts-with seq prefix)
   (if (nil? seq) #f
       (pair? seq) (List.starts-with seq prefix)
       (vector? seq) (Vector.starts-with seq prefix)
@@ -29,7 +29,7 @@
   )
 )
 
-(export (ends-with seq prefix)
+(const (ends-with seq prefix)
   (if (nil? seq) #f
       (pair? seq) (List.ends-with seq prefix)
       (vector? seq) (Vector.ends-with seq prefix)
@@ -38,7 +38,7 @@
   )
 )
 
-(export (filter seq predicate)
+(const (filter seq predicate)
   (if (nil? seq) ()
       (pair? seq) (List.filter seq predicate)
       (vector? seq) (Vector.filter seq predicate)
@@ -47,7 +47,7 @@
   )
 )
 
-(export (nth seq n)
+(const (nth seq n)
   (if (nil? seq) ()
       (pair? seq) (List.nth seq n)
       (vector? seq) (Vector.nth seq n)
@@ -56,7 +56,7 @@
   )
 )
 
-(export (slice seq from to)
+(const (slice seq from to)
   (if (nil? seq) ()
       (pair? seq) (List.slice seq from to)
       (vector? seq) (Vector.slice seq from to)
@@ -65,7 +65,7 @@
   )
 )
 
-(export (take seq n)
+(const (take seq n)
   (if (nil? seq) ()
       (pair? seq) (List.take seq n)
       (vector? seq) (Vector.take seq n)
@@ -74,7 +74,7 @@
   )
 )
 
-(export (take-right seq n)
+(const (take-right seq n)
   (if (nil? seq) ()
       (pair? seq) (List.take-right seq n)
       (vector? seq) (Vector.take-right seq n)
@@ -83,7 +83,7 @@
   )
 )
 
-(export (drop seq n)
+(const (drop seq n)
   (if (nil? seq) ()
       (pair? seq) (List.drop seq n)
       (vector? seq) (Vector.drop seq n)
@@ -92,7 +92,7 @@
   )
 )
 
-(export (drop-right seq n)
+(const (drop-right seq n)
   (if (nil? seq) ()
       (pair? seq) (List.drop-right seq n)
       (vector? seq) (Vector.drop-right seq n)
@@ -101,7 +101,7 @@
   )
 )
 
-(export (fold seq z p)
+(const (fold seq z p)
   (if (nil? seq) z
       (pair? seq) (List.fold seq z p)
       (vector? seq) (Vector.fold seq z p)
@@ -110,7 +110,7 @@
   )
 )
 
-(export (fold-right seq z p)
+(const (fold-right seq z p)
   (if (nil? seq) z
       (pair? seq) (List.fold-right seq z p)
       (vector? seq) (Vector.fold-right seq z p)
@@ -119,60 +119,54 @@
   )
 )
 
-(export (index-of haystack needles)
-    (do
-        (if (not (pair? needles))
-            (set! needles (list needles))
-        )
+(const (index-of haystack needles)
+    (if (not (pair? needles))
+        (set! needles (list needles))
+    )
 
-        (define (find-needle idx)
-            (do
-                (define haystackp (drop haystack idx))
+    (const (find-needle idx)
+        (const haystackp (drop haystack idx))
 
-                (define r 
-                    (fold needles ()
-                        (proc (acc needle)
-                            (if (not (nil? acc)) acc
-                                (starts-with haystackp needle) (list idx needle)
-                                ()
-                            )
-                        )
+        (const r 
+            (fold needles ()
+                (proc (acc needle)
+                    (if (not (nil? acc)) acc
+                        (starts-with haystackp needle) (list idx needle)
+                        ()
                     )
                 )
-
-                (if (empty? haystackp) ()
-                    (nil? r) (find-needle (+ idx 1))
-                    r
-                )
             )
         )
 
-        (find-needle 0)
+        (if (empty? haystackp) ()
+            (nil? r) (find-needle (+ idx 1))
+            r
+        )
     )
+
+    (find-needle 0)
 )
 
-(export (split s seps)
-    (do
-        (define index-of-result (index-of s seps))
+(const (split s seps)
+    (const index-of-result (index-of s seps))
 
-        (if (nil? index-of-result) (list s)
-            (do
-                (define index-of-sep (nth index-of-result 0))
-                (define sep (nth index-of-result 1))
+    (if (nil? index-of-result) (list s)
+        (do
+            (const index-of-sep (nth index-of-result 0))
+            (const sep (nth index-of-result 1))
 
-                (cons 
-                    (take s index-of-sep) 
-                    (split (drop s (+ index-of-sep (count sep))) seps)
-                )
+            (cons 
+                (take s index-of-sep) 
+                (split (drop s (+ index-of-sep (count sep))) seps)
             )
         )
     )
 )
 
-(export (sum ns)
+(const (sum ns)
     (fold ns 0 +)
 )
 
-(export (any seq f)
+(const (any seq f)
     (> (count (filter seq f)) 0)
 )

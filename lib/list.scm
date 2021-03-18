@@ -36,7 +36,7 @@
     (if (nil? lst) ()
         (nil? (cdr lst)) lst
         (do
-            (define s (if (fn? sep) (sep) sep))
+            (const s (if (fn? sep) (sep) sep))
 
             (cons (car lst) (cons s (separate (cdr lst) sep)))
         )

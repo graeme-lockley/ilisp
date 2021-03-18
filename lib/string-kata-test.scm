@@ -5,15 +5,15 @@
 (import "./unit.scm" :as Unit)
 
 
-(define integer-in-range
+(const- integer-in-range
     (proc (min max)
-        (define range (+ (- max min) 1))
+        (const range (+ (- max min) 1))
 
         (+ min (Number.modulo (Number.abs (random)) range))
     )
 )
 
-(define (gen:integer . range)
+(const- (gen:integer . range)
     (if (empty? range) 
             (proc () (random))
 
@@ -24,47 +24,45 @@
     )
 )
 
-(define (gen:one-of seq)
+(const- (gen:one-of seq)
     (proc () 
         (nth seq (integer-in-range 0 (- (count seq) 1)))
     )
 )
 
-(define (gen:tuple . gens)
+(const- (gen:tuple . gens)
     (proc () 
         (map gens (proc (g) (g)))
     )
 )
 
-(define (gen:list-of g . options)
-    (do
-        (define (list-of min max)
-            (proc ()
-                (define length (integer-in-range min max))
+(const- (gen:list-of g . options)
+    (const (list-of min max)
+        (proc ()
+            (const length (integer-in-range min max))
 
-                (define (gen-list n)
-                    (if (<= n 0) ()
-                        (cons (g) (gen-list (- n 1)))
-                    )
+            (const (gen-list n)
+                (if (<= n 0) ()
+                    (cons (g) (gen-list (- n 1)))
                 )
-
-                (gen-list length)
             )
-        )
 
-        (define number-of-options (count options))
-
-        (if (= 0 number-of-options) (list-of 0 10)
-            (= 1 number-of-options) (list-of (car options) 10)
-            (= 2 number-of-options) (list-of (car options) (nth options 1))
-            (raise 'ExpectedArgumentCount {:procedure 'gen:list-of :min-arg-count: 1 :max-arg-count 3 :arguments (cons g opitions) :usage "(gen:list-of gen [min [max]])"})
+            (gen-list length)
         )
+    )
+
+    (const number-of-options (count options))
+
+    (if (= 0 number-of-options) (list-of 0 10)
+        (= 1 number-of-options) (list-of (car options) 10)
+        (= 2 number-of-options) (list-of (car options) (nth options 1))
+        (raise 'ExpectedArgumentCount {:procedure 'gen:list-of :min-arg-count: 1 :max-arg-count 3 :arguments (cons g opitions) :usage "(gen:list-of gen [min [max]])"})
     )
 )
 
-(define (gen:filter g predicate)
+(const- (gen:filter g predicate)
     (proc ()
-        (define value (g))
+        (const value (g))
 
         (if (predicate value)
             value
@@ -73,11 +71,11 @@
     )
 )
 
-(define (gen:map g f)
+(const- (gen:map g f)
     (proc () (f (g)))
 )
 
-(define (loop-n n thunk)
+(const- (loop-n n thunk)
     (if (> n 0)
         (do (thunk)
             (loop-n (- n 1) thunk)
@@ -85,21 +83,20 @@
     )
 )
 
-(define (sample gen)
-    (do (define (ntimes n)
-            (if (= 0 n) ()
-                (cons (gen) (ntimes (- n 1)))
-            )
+(const- (sample gen)
+    (const (ntimes n)
+        (if (= 0 n) ()
+            (cons (gen) (ntimes (- n 1)))
         )
-
-        (ntimes 10)
     )
+
+    (ntimes 10)
 )
 
-(define (gen:for-all gen test)
+(const- (gen:for-all gen test)
     (loop-n 10 
         (proc () 
-            (define arguments (gen))
+            (const arguments (gen))
 
             (try
                 (test arguments)
@@ -114,10 +111,10 @@
     )
 )
 
-(define (gen:for-each gen test)
+(const- (gen:for-each gen test)
     (loop-n 10
         (proc ()
-            (define arguments (gen))
+            (const arguments (gen))
 
             (try
                 (apply test arguments)
@@ -132,10 +129,10 @@
     )   
 )
 
-(define *POSITIVE-INTEGER* (gen:integer 0 2000))
-(define *INTEGER* (gen:integer (- 2000) 2000))
+(const- *POSITIVE-INTEGER* (gen:integer 0 2000))
+(const- *INTEGER* (gen:integer (- 2000) 2000))
 
-(define *SEPARATOR* 
+(const- *SEPARATOR* 
     (gen:map 
         (gen:filter 
             (gen:integer 32 36) 
@@ -152,12 +149,12 @@
         char->string
     )
 )
-(define *STRING-SEPARATOR*
+(const- *STRING-SEPARATOR*
     (gen:map (gen:list-of *SEPARATOR* 1) (proc (seps) (apply str seps)))
 )
 
 
-(define (test-sum ns)
+(const- (test-sum ns)
     (Sequence.sum (filter ns (proc (n) (<= n 1000))))
 )
 
@@ -172,7 +169,7 @@
 (Unit.test "given positive integers separated with a single character custom separator should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *SEPARATOR*) 
         (proc (ns sep)
-            (define input (str "//" sep "\n" (apply str (List.separate ns sep))))
+            (const input (str "//" sep "\n" (apply str (List.separate ns sep))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
     )
@@ -181,7 +178,7 @@
 (Unit.test "given positive integers separated with multiple multi-character custom separators should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) (gen:list-of *STRING-SEPARATOR* 1)) 
         (proc (ns seps)
-            (define input (str "//[" (apply str (List.separate seps "][")) "]\n" (apply str (List.separate ns (gen:one-of seps)))))
+            (const input (str "//[" (apply str (List.separate seps "][")) "]\n" (apply str (List.separate ns (gen:one-of seps)))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
     )

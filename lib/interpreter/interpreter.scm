@@ -1,9 +1,9 @@
 (import "./environment.scm" :as Environment)
 (import "./frame.scm" :as Frame)
 
-(define builtin-apply apply)
+(const- builtin-apply apply)
 
-(export (eval env exp)
+(const (eval env exp)
     (if (self-evaluating? exp) 
             exp
 
@@ -35,7 +35,7 @@
     )
 )
 
-(define (apply procedure arguments)
+(const- (apply procedure arguments)
     (if (primitive-procedure? procedure)
             (apply-primitive-procedure procedure arguments)
 
@@ -53,11 +53,11 @@
     )
 )
 
-(define (apply-primitive-procedure procedure arguments)
+(const- (apply-primitive-procedure procedure arguments)
     (builtin-apply (primitive-implementation procedure) arguments)    
 )
 
-(define (list-of-values env exps) 
+(const- (list-of-values env exps) 
     (if (no-operands? exps)
         ()
         (cons
@@ -67,7 +67,7 @@
     )
 )
 
-(define (eval-assignment env exp)
+(const- (eval-assignment env exp)
     (do
         (Environment.set-variable-value! 
             env
@@ -79,7 +79,7 @@
     )
 )
 
-(define (eval-definition env exp)
+(const- (eval-definition env exp)
     (do
         (Environment.define-variable! env (definition-variable exp) (eval env (definition-value exp)))
 
@@ -87,14 +87,14 @@
     )
 )
 
-(define (eval-if env exp)
+(const- (eval-if env exp)
     (if (true? (eval env (if-predicate exp)))
         (eval env (if-consequant exp))
         (eval env (if-alternative exp))
     )
 )
 
-(define (eval-sequence env exps)
+(const- (eval-sequence env exps)
     (if (do-actions-empty? exps)
             ()
 
@@ -108,15 +108,15 @@
     )
 )
 
-(define (make-lambda parameters body) 
+(const- (make-lambda parameters body) 
     (cons 'lambda (cons parameters body))
 )
 
-(define (make-if predicate consequent alternative)
+(const- (make-if predicate consequent alternative)
     (list 'if predicate consequent alternative)
 )
 
-(define (tagged-list? exp tag)
+(const- (tagged-list? exp tag)
     (if (pair? exp)
             (= (car exp) tag)
 
@@ -124,149 +124,145 @@
     )
 )
 
-(define (self-evaluating? exp)
+(const- (self-evaluating? exp)
     (or (number? exp) (string? exp) (nil? exp) (boolean? exp))
 )
 
-(define (variable? exp)
+(const- (variable? exp)
     (symbol? exp)
 )
 
-(define (quoted? exp)
+(const- (quoted? exp)
     (tagged-list? exp 'quote)
 )
 
-(define (text-of-quotation exp)
+(const- (text-of-quotation exp)
     (car (cdr exp))
 )
 
-(define (assignment? exp)
+(const- (assignment? exp)
     (tagged-list? exp 'set!)
 )
 
-(define (assignment-variable exp) 
+(const- (assignment-variable exp) 
     (nth exp 1)
 )
 
-(define (assignment-value exp) 
+(const- (assignment-value exp) 
     (nth exp 2)
 )
 
-(define (definition? exp)
+(const- (definition? exp)
     (tagged-list? exp 'define)
 )
 
-(define (definition-variable exp)
+(const- (definition-variable exp)
     (if (symbol? (nth exp 1))
           (nth exp 1)
         (car (nth exp 1))
     )
 )
 
-(define (definition-value exp)
+(const- (definition-value exp)
     (if (symbol? (nth exp 1))
             (nth exp 2)
         (make-lambda (cdr (nth exp 1)) (drop exp 2))
     )
 )
 
-(define (if? exp)
+(const- (if? exp)
     (tagged-list? exp 'if)
 )
 
-(define (if-predicate exp)
+(const- (if-predicate exp)
     (nth exp 1)
 )
 
-(define (if-consequant exp)
+(const- (if-consequant exp)
     (nth exp 2)
 )
 
-(define (if-alternative exp)
+(const- (if-alternative exp)
     (nth exp 3)
 )
 
-(define (true? exp)
+(const- (true? exp)
     exp
 )
 
-(define (lambda? exp)
+(const- (lambda? exp)
     (tagged-list? exp 'lambda)
 )
 
-(define (lambda-parameters exp)
+(const- (lambda-parameters exp)
     (nth exp 1)
 )
 
-(define (lambda-body exp)
+(const- (lambda-body exp)
     (drop exp 2)
 )
 
-(define (do? exp)
+(const- (do? exp)
     (tagged-list? exp 'do)
 )
 
-(define (do-actions exp)
+(const- (do-actions exp)
     (cdr exp)
 )
 
-(define (do-actions-empty? exps) (nil? exps))
-(define (do-actions-last? exps) (nil? (cdr exps)))
-(define (do-actions-first exps) (car exps))
-(define (do-actions-rest exps) (cdr exps))
+(const- (do-actions-empty? exps) (nil? exps))
+(const- (do-actions-last? exps) (nil? (cdr exps)))
+(const- (do-actions-first exps) (car exps))
+(const- (do-actions-rest exps) (cdr exps))
 
-(define (application? exp)
+(const- (application? exp)
     (pair? exp)
 )
 
-(define (operator exp) 
+(const- (operator exp) 
     (car exp)
 )
 
-(define (operands exp) 
+(const- (operands exp) 
     (cdr exp)
 )
 
-(define (no-operands? ops) 
+(const- (no-operands? ops) 
     (nil? ops)
 )
 
-(define (first-operand ops)
+(const- (first-operand ops)
     (car ops)
 )
 
-(define (rest-operands ops)
+(const- (rest-operands ops)
     (cdr ops)
 )
 
-(define (operator exp)
-    (car exp)
-)
-
-(define (make-procedure env parameters body)
+(const- (make-procedure env parameters body)
     (list 'procedure parameters body env)
 )
 
-(define (primitive-procedure? exp) 
+(const- (primitive-procedure? exp) 
     (tagged-list? exp 'primitive)
 )
 
-(define (compound-procedure? exp)
+(const- (compound-procedure? exp)
     (tagged-list? exp 'procedure)
 )
 
-(define (primitive-implementation proc) 
+(const- (primitive-implementation proc) 
     (car (cdr proc))
 )
 
-(define (procedure-parameters p)
+(const- (procedure-parameters p)
     (nth p 1)
 )
 
-(define (procedure-body p)
+(const- (procedure-body p)
     (nth p 2)
 )
 
-(define (procedure-environment p)
+(const- (procedure-environment p)
     (nth p 3)
 )

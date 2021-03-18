@@ -1,9 +1,8 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "atom-swap!"
-    (define atom (*builtin*.atom 0))
-
-    (define (nudge) (*builtin*.atom-swap! atom (proc (n) (+ n 1))))
+    (const atom (*builtin*.atom 0))
+    (const (nudge) (*builtin*.atom-swap! atom (proc (n) (+ n 1))))
 
     (Unit.assert-equals (*builtin*.atom-dereference atom) 0)
 
@@ -22,8 +21,8 @@
 )
 
 (Unit.test "arg 0 incorrect type signal"
-    (define atom (*builtin*.atom 0))
-    (define (inc n) (+ n 1))
+    (const atom (*builtin*.atom 0))
+    (const (inc n) (+ n 1))
 
     (for-each (list () #t #f 1 #\Q 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and) 
         (proc (v) 

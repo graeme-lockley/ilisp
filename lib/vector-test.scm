@@ -1,7 +1,7 @@
 (import "./unit.scm" :as Unit)
 (import "./vector.scm" :as Vector)
 
-(define (even? n) (= (* (/ n 2) 2) n))
+(const- (even? n) (= (* (/ n 2) 2) n))
 
 (Unit.test "->mutable"
     (Unit.assert-equals (Vector.->mutable []) [])
@@ -74,7 +74,7 @@
 )
 
 (Unit.test "fold"
-    (define (icons a b) (cons b a))
+    (const (icons a b) (cons b a))
 
     (Unit.assert-equals (Vector.fold [] () icons) '())
     (Unit.assert-equals (Vector.fold [1] () icons) '(1))

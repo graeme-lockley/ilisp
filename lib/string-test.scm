@@ -79,7 +79,7 @@
 )
 
 (Unit.test "fold"
-    (define (join a b) (str (char->string b) a))
+    (const (join a b) (str (char->string b) a))
 
     (Unit.assert-equals (S.fold "" "" join) "")
     (Unit.assert-equals (S.fold "h" "" join) "h")
@@ -89,7 +89,7 @@
 )
 
 (Unit.test "fold-right"
-   (define (join a b) (str (char->string a) b))
+   (const (join a b) (str (char->string a) b))
 
    (Unit.assert-equals (S.fold-right "" "" join) "")
    (Unit.assert-equals (S.fold-right "h" "" join) "h")

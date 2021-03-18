@@ -1,9 +1,9 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "thunk proc"
-    (define s (*builtin*.atom 0))
+    (const s (*builtin*.atom 0))
 
-    (define t (proc () (*builtin*.atom-dereference s)))
+    (const t (proc () (*builtin*.atom-dereference s)))
 
     (Unit.assert-equals (t) 0)
 
@@ -25,14 +25,14 @@
 )
 
 (Unit.test "proc with rest parameters"
-    (define p (proc (a b . x) (list a b x)))
+    (const p (proc (a b . x) (list a b x)))
 
     (Unit.assert-equals (p :bob :fred) '(:bob :fred ()))
     (Unit.assert-equals (p :bob :fred :bill :pete) '(:bob :fred (:bill :pete)))
 )
 
 (Unit.test "proc has implied do"
-    (define inc 
+    (const inc 
         (proc (atom)
             (*builtin*.atom-swap! atom (proc (n) (+ n 1)))
             atom

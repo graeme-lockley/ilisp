@@ -1,7 +1,7 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "byte-vector-nth"
-    (define bv' (*builtin*.byte-vector 1 #\2 3))
+    (const bv' (*builtin*.byte-vector 1 #\2 3))
 
     (Unit.assert-equals (*builtin*.byte-vector-count bv') 3)
 
@@ -16,7 +16,7 @@
 )
 
 (Unit.test "arg 0 incorrect type signal"
-    (define inputs
+    (const inputs
         (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and)
     )
 
@@ -26,7 +26,7 @@
 )
 
 (Unit.test "arg 1 incorrect type signal"
-    (define inputs
+    (const inputs
         (list () #t #f 'hello "hello" #\a :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and)
     )
 

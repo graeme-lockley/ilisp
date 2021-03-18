@@ -2,25 +2,23 @@
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
 
-(export (add input)
-    (do
-        (define tokens 
-            (if (starts-with input "//[")
-                    (do (define inputs (Sequence.split (drop input 3) "]\n"))
-                        (Sequence.split (nth inputs 1) (List.reverse (List.sort (Sequence.split (nth inputs 0) "]["))))
-                    )
+(const (add input)
+    (const tokens 
+        (if (starts-with input "//[")
+                (do (const inputs (Sequence.split (drop input 3) "]\n"))
+                    (Sequence.split (nth inputs 1) (List.reverse (List.sort (Sequence.split (nth inputs 0) "]["))))
+                )
 
-                (starts-with input "//")
-                    (Sequence.split (drop input 4) (slice input 2 2))
+            (starts-with input "//")
+                (Sequence.split (drop input 4) (slice input 2 2))
 
-                (Sequence.split input '("," "\n"))
-            )
+            (Sequence.split input '("," "\n"))
         )
-        (define numbers (map tokens string->int))
+    )
+    (const numbers (map tokens string->int))
 
-        (if (any numbers Number.negative?)
-            (raise (filter numbers Number.negative?))
-            (Sequence.sum (filter numbers (proc (n) (<= n 1000))))
-        )
+    (if (any numbers Number.negative?)
+        (raise (filter numbers Number.negative?))
+        (Sequence.sum (filter numbers (proc (n) (<= n 1000))))
     )
 )

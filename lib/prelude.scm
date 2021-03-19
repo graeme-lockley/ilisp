@@ -15,7 +15,7 @@
 (export-macro (and . terms)
   (if (nil? terms) 
     #t
-    (if (= (count terms) 1)
+    (if (= ((get *builtin* 'list-count) terms) 1)
       (first terms) 
       `(if ~(first terms) 
         (and ~@(rest terms)) 
@@ -28,7 +28,7 @@
 (export-macro (or . terms)
   (if (nil? terms) 
     #f
-    (if (= (count terms) 1)
+    (if (= ((get *builtin* 'list-count) terms) 1)
       (first terms)
       `(if ~(first terms) 
         #t

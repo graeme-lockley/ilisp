@@ -1525,45 +1525,6 @@ static Value *nilp(Value *parameters, Value *env)
     return IS_NIL(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *nth(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "nth");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("nth"), 1, mkSymbol("number"), parameter[1]);
-
-    int nth = NUMBER(parameter[1]);
-    if (IS_PAIR(parameter[0]) || IS_NIL(parameter[0]))
-    {
-        Value *cursor = parameter[0];
-        while (1)
-        {
-            if (IS_NIL(cursor) || !IS_PAIR(cursor))
-                return VNil;
-
-            if (nth == 0)
-                return CAR(cursor);
-
-            nth -= 1;
-            cursor = CDR(cursor);
-        }
-    }
-
-    if (IS_VECTOR(parameter[0]))
-    {
-        if (nth >= VECTOR(parameter[0]).length)
-            return VNil;
-
-        return VECTOR(parameter[0]).items[nth];
-    }
-
-    return exceptions_invalid_argument(mkSymbol("nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
-}
-
 static Value *numberp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2504,7 +2465,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
-    add_binding_into_environment(root_bindings, "count", mkNativeProcedure(list_count));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
     add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(eval));
@@ -2522,7 +2482,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
     add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
-    add_binding_into_environment(root_bindings, "nth", mkNativeProcedure(nth));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pair?", mkNativeProcedure(pairp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));

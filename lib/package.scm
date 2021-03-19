@@ -1,8 +1,8 @@
-(const- *verbose* #f)
+(const- *verbose* ((get *builtin* 'atom) :f))
 
-(const (verbose?) *verbose*)
+(const (verbose?) ((get *builtin* 'atom-dereference) *verbose*))
 
-(const (verbose v) (set! *verbose* v))
+(const (verbose v) ((get *builtin* 'atom-swap!) *verbose* (proc (f) v)))
 
 (const (package-use package name)
     (if (contains? package name) 

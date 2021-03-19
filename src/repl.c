@@ -364,7 +364,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     continue;
                 }
-                else if (strcmp(symbol_name, "const") == 0 || strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
+                else if (strcmp(symbol_name, "const") == 0 || strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0 || strcmp(symbol_name, "macro") == 0 || strcmp(symbol_name, "macro-") == 0)
                 {
                     Value *arguments = CDR(v);
 
@@ -378,7 +378,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
-                    int is_top_level = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || !Value_truthy(map_containsp(CAR(env), mkSymbol("*top-level*")));
+                    int is_top_level = strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || strcmp(symbol_name, "macro-") == 0 || !Value_truthy(map_containsp(CAR(env), mkSymbol("*top-level*")));
                     Value *binding_scope = is_top_level ? CAR(env) : CAR(CDR(env));
 
                     if (IS_PAIR(signature))
@@ -386,7 +386,10 @@ Value *Repl_eval(Value *v, Value *env)
                         if (Value_truthy(map_containsp(binding_scope, CAR(signature))))
                             return exceptions_duplicate_binding(CAR(signature));
 
-                        body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
+                        if (strcmp(symbol_name, "macro") == 0 || strcmp(symbol_name, "macro-") == 0)
+                            body = mkPair(mkSymbol("mo"), mkPair(CDR(signature), mkPair(body, VNil)));
+                        else
+                            body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
                             body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));

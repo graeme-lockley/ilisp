@@ -9,7 +9,7 @@
 (const (inc-asserts-total) (set! *asserts-total* (+ *asserts-total* 1)))
 (const (inc-asserts-passed) (set! *asserts-passed* (+ *asserts-passed* 1)))
 
-(export-macro (assert-msg-equals msg v1 v2)
+(macro (assert-msg-equals msg v1 v2)
     `((proc () 
         ((get (car **root**) :unit 'inc-asserts-total))
         (const __v1 ~v1) 
@@ -21,7 +21,7 @@
     ))
 )
 
-(export-macro (assert-equals v1 v2)
+(macro (assert-equals v1 v2)
     `((proc ()
         ((get (car **root**) :unit 'inc-asserts-total))
         (const __v1 ~v1) 
@@ -33,7 +33,7 @@
     ))
 )
 
-(export-macro (assert-truthy v)
+(macro (assert-truthy v)
     `((proc () 
         ((get (car **root**) :unit 'inc-asserts-total))
         (const __v ~v) 
@@ -44,7 +44,7 @@
     ))
 )
 
-(export-macro (assert-falsy v)
+(macro (assert-falsy v)
     `((proc () 
         ((get (car **root**) :unit 'inc-asserts-total))
         (const __v ~v) 
@@ -55,7 +55,7 @@
     ))
 )
 
-(export-macro (assert-signal e p)
+(macro (assert-signal e p)
     `((proc ()
         ((get (car **root**) :unit 'inc-asserts-total))
         (const signal-raised (*builtin*.atom #f))
@@ -75,11 +75,11 @@
     ))
 )
 
-(export-macro (assert-signal-name e n)
+(macro (assert-signal-name e n)
     `(Unit.assert-signal ~e (proc (s) (Unit.assert-equals (car s) ~n)))
 )
 
-(export-macro (test name . tests)
+(macro (test name . tests)
     `(try
         (do 
             (println "- " ~name)

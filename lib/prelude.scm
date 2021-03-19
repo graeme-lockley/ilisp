@@ -1,18 +1,6 @@
-(assoc! (car **root**)
-  'is-top-level     (mo ()           '(nil? (cdr **scope**)))
+(const- *top-level* :t)
 
-  'define-procedure (mo (sig body)   `(do (assoc! (car **scope**) '~(car sig) (proc ~(cdr sig) ~body)) ()))
-  'define-atom      (mo (name value) `(do (assoc! (car **scope**) '~name ~value) ()))
-  'define-macro     (mo (sig body)   `(do (assoc! (car **scope**) '~(car sig) (mo ~(cdr sig) ~body)) ()))
-  'define           (mo (sig body)   `(if (list? '~sig) (define-procedure ~sig ~body) (define-atom ~sig ~body)))
-
-  'export-procedure (mo (sig body)   `(if (is-top-level) (define-procedure '~sig '~body) (do (assoc! (car (cdr **scope**)) '~(car sig) (proc ~(cdr sig) ~body)) ())))
-  'export-atom      (mo (name value) `(if (is-top-level) (define-atom '~name '~value) (do (assoc! (car (cdr **scope**)) '~name ~value) ())))
-  'export-macro     (mo (sig body)   `(if (is-top-level) (define-macro '~sig '~body) (do (assoc! (car (cdr **scope**)) '~(car sig) (mo ~(cdr sig) ~body)) ())))
-  'export           (mo (sig body)   `(if (list? '~sig) (export-procedure ~sig ~body) (export-atom ~sig ~body)))
-)
-
-(export-macro (and . terms)
+(macro (and . terms)
   (if (nil? terms) 
     #t
     (if (= ((get *builtin* 'list-count) terms) 1)
@@ -25,7 +13,7 @@
   )
 )
 
-(export-macro (or . terms)
+(macro (or . terms)
   (if (nil? terms) 
     #f
     (if (= ((get *builtin* 'list-count) terms) 1)
@@ -40,21 +28,20 @@
 
 ; A wrapper macro that uses the builtin set! quoting the first parameter in so
 ; that is appears as a symbol.
-(export-macro (set! name value)
+(macro (set! name value)
   `((get *builtin* 'set!) '~name ~value)
 )
 
-(const- *top-level* :t)
 (const *source-name* (str (get **env** 'PWD) "/home"))
 
 ; Replace the builtin load-file with a macro which uses the surrounding context 
 ; to access *source-name*.  This value is used to capture relative library 
 ; names. 
-(export-macro (load-file f)
-  `(do
+(set! load-file
+  (mo (f) `(do
     (assoc! (car **scope**) '*source-name* ((get *builtin* 'file-name-relative-to-file-name) *source-name* ~f))
     (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
-  )
+  ))
 )
 
 (const (not x) (if x #f #t))

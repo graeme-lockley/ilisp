@@ -13,7 +13,7 @@
 
 (const (package-import-with-context name *source-name*)
     (try
-        (do (define *source-name* (*builtin*.file-name-relative-to-file-name *source-name* name))
+        (do (set! *source-name* (*builtin*.file-name-relative-to-file-name *source-name* name))
 
             (const (load-package-file)
                 ((proc () 
@@ -57,11 +57,11 @@
     )
 )
 
-(export-macro (package-import name)
+(macro (package-import name)
     `(package-import-with-context ~name *source-name*)
 )
 
-(export-macro (import name . options) 
+(macro (import name . options) 
     (if (and (= (first options) :as) (not (nil? ((get *builtin* 'list-nth) options 1))))
         `(const ~((get *builtin* 'list-nth) options 1) (package-import ~name))
         (raise 'IllegalImportSyntax {:expected ":as symbol"})

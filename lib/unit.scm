@@ -3,11 +3,11 @@
 (const- *asserts-total* 0)
 (const- *asserts-passed* 0)
 
-(export (inc-tests-total) (set! *tests-total* (+ *tests-total* 1)))
-(export (inc-tests-passed) (set! *tests-passed* (+ *tests-passed* 1)))
+(const (inc-tests-total) (set! *tests-total* (+ *tests-total* 1)))
+(const (inc-tests-passed) (set! *tests-passed* (+ *tests-passed* 1)))
 
-(export (inc-asserts-total) (set! *asserts-total* (+ *asserts-total* 1)))
-(export (inc-asserts-passed) (set! *asserts-passed* (+ *asserts-passed* 1)))
+(const (inc-asserts-total) (set! *asserts-total* (+ *asserts-total* 1)))
+(const (inc-asserts-passed) (set! *asserts-passed* (+ *asserts-passed* 1)))
 
 (export-macro (assert-msg-equals msg v1 v2)
     `((proc () 
@@ -100,7 +100,7 @@
     )
 )
 
-(export (stats)
+(const (stats)
     {
         :tests-total *tests-total*
         :tests-passed *tests-passed*

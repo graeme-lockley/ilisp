@@ -1,38 +1,38 @@
 (import "./vector.scm" :as Vector)
 
-(export count *builtin*.list-count)
+(const count *builtin*.list-count)
 
-(export drop *builtin*.list-drop)
+(const drop *builtin*.list-drop)
 
-(export (drop-right lst n)
+(const (drop-right lst n)
     (->list (Vector.drop-right (vec lst) n))
 )
 
-(export (ends-with lst suffix)
+(const (ends-with lst suffix)
     (starts-with (reverse lst) (reverse suffix))
 )
 
-(export filter *builtin*.list-filter)
+(const filter *builtin*.list-filter)
 
- (export (fold xs z f)
+ (const (fold xs z f)
     (if (nil? xs) z
         (fold (cdr xs) (f z (car xs)) f)
     )
 )
 
-(export (fold-right xs z f)
+(const (fold-right xs z f)
     (if (nil? xs) z
         (f (car xs) (fold-right (cdr xs) z f))
     )
 )
 
-(export nth *builtin*.list-nth)
+(const nth *builtin*.list-nth)
 
-(export (reverse lst)
+(const (reverse lst)
     (->list (Vector.reverse (vec lst)))
 )
 
-(export (separate lst sep)
+(const (separate lst sep)
     (if (nil? lst) ()
         (nil? (cdr lst)) lst
         (do
@@ -43,30 +43,30 @@
     )
 )
 
-(export (slice lst start end)
+(const (slice lst start end)
     (if (<= start 0) (take lst (+ end 1))
         (take (drop lst start) (+ (- end start) 1))
     )
 )
 
-(export (sort lst)
+(const (sort lst)
     (->list (Vector.sort! (Vector.->mutable lst)))
 )
 
-(export (starts-with lst prefix)
+(const (starts-with lst prefix)
     (if (nil? prefix) #t
         (nil? lst) #f
         (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
     )
 )
 
-(export take *builtin*.list-take)
+(const take *builtin*.list-take)
 
-(export (take-right lst n)
+(const (take-right lst n)
     (->list (Vector.take-right (vec lst) n))
 )
 
-(export (->list s)
+(const (->list s)
     (if (nil? s) s
         (list? s) s
         (or (vector? s) (string? s)) (map s (proc (n) n))

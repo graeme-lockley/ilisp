@@ -45,7 +45,7 @@
 )
 
 (const- *top-level* :t)
-(export *source-name* (str (get **env** 'PWD) "/home"))
+(const *source-name* (str (get **env** 'PWD) "/home"))
 
 ; Replace the builtin load-file with a macro which uses the surrounding context 
 ; to access *source-name*.  This value is used to capture relative library 
@@ -57,7 +57,7 @@
   )
 )
 
-(export (not x) (if x #f #t))
+(const (not x) (if x #f #t))
 
 ; By loading package.scm into this file, the public procedures and macros are
 ; exported as a result of the package mechanism.  Note that this is an anomoly
@@ -69,21 +69,21 @@
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)
 
-(export any Sequence.any)
-(export count Sequence.count)
-(export drop Sequence.drop)
-(export drop-right Sequence.drop-right)
-(export empty? Sequence.empty?)
-(export ends-with Sequence.ends-with)
-(export filter Sequence.filter)
-(export fold Sequence.fold)
-(export fold-right Sequence.fold-right)
-(export nth Sequence.nth)
-(export slice Sequence.slice)
-(export starts-with Sequence.starts-with)
-(export string->int Number.string->int)
-(export take Sequence.take)
-(export take-right Sequence.take-right)
+(const any Sequence.any)
+(const count Sequence.count)
+(const drop Sequence.drop)
+(const drop-right Sequence.drop-right)
+(const empty? Sequence.empty?)
+(const ends-with Sequence.ends-with)
+(const filter Sequence.filter)
+(const fold Sequence.fold)
+(const fold-right Sequence.fold-right)
+(const nth Sequence.nth)
+(const slice Sequence.slice)
+(const starts-with Sequence.starts-with)
+(const string->int Number.string->int)
+(const take Sequence.take)
+(const take-right Sequence.take-right)
 
 (const- (type-of v)
   (if (nil? v) "nil"

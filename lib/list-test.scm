@@ -91,10 +91,12 @@
 
 (Unit.test "separate"
     (const (sep)
-        (const c 64)
+        (const c (*builtin*.atom 64))
+        (const (inc n) (+ n 1))
+
         (proc ()
-            (set! c (+ c 1))
-            (char->string c)
+            (*builtin*.atom-swap! c inc)
+            (char->string (*builtin*.atom-dereference c))
         )
     )
 

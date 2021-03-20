@@ -120,15 +120,17 @@
 )
 
 (const (index-of haystack needles)
-    (if (not (pair? needles))
-        (set! needles (list needles))
+    (const needles'
+        (if (pair? needles) needles
+            (list needles)
+        )
     )
 
     (const (find-needle idx)
         (const haystackp (drop haystack idx))
 
         (const r 
-            (fold needles ()
+            (fold needles' ()
                 (proc (acc needle)
                     (if (not (nil? acc)) acc
                         (starts-with haystackp needle) (list idx needle)

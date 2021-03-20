@@ -23,7 +23,7 @@
 
 (const- test-files (directory ".."))
 
-(const- *signal* #f)
+(const- *signal* (*builtin*.atom #f))
 
 (const- (show-test-stats)
     (prn (Unit.stats))
@@ -38,7 +38,7 @@
                 (do
                     (print "Test failed: ")
                     (prn s)
-                    (set! *signal* s)
+                    (*builtin*.atom-swap! *signal* (proc (v) s))
                 )
             )
         )
@@ -47,4 +47,4 @@
 
 (show-test-stats)
 
-(if *signal* (raise *signal*))
+(if (*builtin*.atom-dereference *signal*) (raise *signal*))

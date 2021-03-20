@@ -1,13 +1,14 @@
-(const- *tests-total* 0)
-(const- *tests-passed* 0)
-(const- *asserts-total* 0)
-(const- *asserts-passed* 0)
+(const- *tests-total* (*builtin*.atom 0))
+(const- *tests-passed* (*builtin*.atom 0))
+(const- *asserts-total* (*builtin*.atom 0))
+(const- *asserts-passed* (*builtin*.atom 0))
 
-(const (inc-tests-total) (set! *tests-total* (+ *tests-total* 1)))
-(const (inc-tests-passed) (set! *tests-passed* (+ *tests-passed* 1)))
+(const- (inc n) (+ n 1))
 
-(const (inc-asserts-total) (set! *asserts-total* (+ *asserts-total* 1)))
-(const (inc-asserts-passed) (set! *asserts-passed* (+ *asserts-passed* 1)))
+(const (inc-tests-total) (*builtin*.atom-swap! *tests-total* inc))
+(const (inc-tests-passed) (*builtin*.atom-swap! *tests-passed* inc))
+(const (inc-asserts-total) (*builtin*.atom-swap! *asserts-total* inc))
+(const (inc-asserts-passed) (*builtin*.atom-swap! *asserts-passed* inc))
 
 (macro (assert-msg-equals msg v1 v2)
     `((proc () 
@@ -102,9 +103,9 @@
 
 (const (stats)
     {
-        :tests-total *tests-total*
-        :tests-passed *tests-passed*
-        :asserts-total *asserts-total*
-        :asserts-passed *asserts-passed*
+        :tests-total (*builtin*.atom-dereference *tests-total*)
+        :tests-passed (*builtin*.atom-dereference *tests-passed*)
+        :asserts-total (*builtin*.atom-dereference *asserts-total*)
+        :asserts-passed (*builtin*.atom-dereference *asserts-passed*)
     }
 )

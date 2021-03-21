@@ -35,23 +35,37 @@ Value *builtin_import_source(char *source_name, Value *env)
 
         env_add_binding(import_outer_env, source_name_symbol, absolute_source_name);
         env_add_binding(import_inner_env, mkSymbol("*top-level*"), VTrue);
+        map_set_bang(imports, absolute_source_name, VTrue);
 
         while (1)
         {
             if (IS_NIL(expressions))
                 break;
 
-            EVAL_ASSIGN(eval_result, builtin_eval(CAR(expressions), import_inner_env));
+            Value *eval_result = builtin_eval(CAR(expressions), import_inner_env);
+            if (IS_EXCEPTION(eval_result))
+            {
+                map_remove_bang(imports, absolute_source_name);
+                return eval_result;
+            }
 
             expressions = CDR(expressions);
         }
 
-        map_set_bang(imports, absolute_source_name, env_bindings((import_outer_env)));
+        map_set_bang(imports, absolute_source_name, env_bindings(import_outer_env));
 
         return env_bindings(import_outer_env);
     }
-    else
-        return CDR(mapped_value);
+
+    Value *import_bindings = CDR(mapped_value);
+
+    if (!IS_MAP(import_bindings))
+    {
+        map_remove_bang(imports, absolute_source_name);
+        return exceptions_cyclic_module_dependency(absolute_source_name);
+    }
+
+    return import_bindings;
 }
 
 Value *builtin_import_source_wrapped(Value *parameters, Value *env)

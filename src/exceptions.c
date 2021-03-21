@@ -22,6 +22,15 @@ static void include_exception_position(Value *exception_payload, struct Exceptio
     map_set_bang(exception_payload, mkKeyword(":source-name"), mkString(position->source_name));
 }
 
+Value *exceptions_cyclic_module_dependency(Value *source_name)
+{
+    Value *exception_name = mkSymbol("CyclicModuleDependency");
+    Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
+    map_set_bang(exception_payload, mkKeyword("source-name"), source_name);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_duplicate_binding(Value *symbol)
 {
     Value *exception_name = mkSymbol("DuplicateBinding");
@@ -30,7 +39,6 @@ Value *exceptions_duplicate_binding(Value *symbol)
 
     return mkException(mkPair(exception_name, exception_payload));
 }
-
 
 Value *exceptions_expected_argument_count(Value *procedure_name, int argument_count, Value *arguments)
 {

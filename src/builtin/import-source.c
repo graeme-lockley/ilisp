@@ -10,13 +10,14 @@
 
 Value *builtin_import_source(char *source_name, Value *env)
 {
+    EVAL_ASSIGN(imports_symbol, mkSymbol("*imports*"));
     EVAL_ASSIGN(source_name_symbol, mkSymbol("*source-name*"));
     EVAL_ASSIGN(absolute_source_name, builtin_file_name_relative_to_file_name(STRING(env_get_binding(env, source_name_symbol)), source_name));
-    Value *imports = env_find_binding(env, mkKeyword(":imports"));
+    Value *imports = env_find_binding(env, imports_symbol);
     if (imports == NULL)
     {
         imports = map_create(0);
-        env_add_binding(env_get_toplevel(env), mkKeyword(":imports"), imports);
+        env_add_binding(env_get_toplevel(env), imports_symbol, imports);
     }
     else if (IS_EXCEPTION(imports))
         return imports;

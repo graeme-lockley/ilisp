@@ -1,5 +1,5 @@
 CC=clang-9 -Ofast
-CFLAGS=-g -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
+CFLAGS=-g -Wall -Wunused-parameter -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
 LDFLAGS=-g
 
 # CC=gcc
@@ -14,6 +14,7 @@ LDLIBS=-ledit
 SRC_OBJECTS=\
 	src/buffer.o \
 	src/builtins.o \
+	src/env.o \
 	src/exceptions.o \
 	src/map.o \
 	src/mt19937.o \
@@ -23,7 +24,12 @@ SRC_OBJECTS=\
 	src/repl.o \
 	src/set.o \
 	src/string_builder.o \
-	src/value.o
+	src/value.o \
+	src/builtin/eval.o \
+	src/builtin/file-name-relative-to-file-name.o \
+	src/builtin/get.o \
+	src/builtin/import-source.o \
+	src/builtin/slurp.o
 
 SRC_TARGETS=\
 	src/main
@@ -82,6 +88,7 @@ test: $(TEST_INPUT)
 
 clean:
 	rm -f src/*.o
+	rm -f src/builtin/*.o
 	rm -f test/*.o
 	rm -f src/main
 	rm -f test/*_test

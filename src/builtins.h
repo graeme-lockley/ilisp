@@ -3,6 +3,8 @@
 
 #include "value.h"
 
+#define EVAL_ASSIGN(name, expr) Value *name = expr; if (IS_EXCEPTION(name)) return name
+
 extern Value *println(Value *parameters, Value *env);
 extern Value *prn(Value *parameters, Value *env);
 
@@ -10,6 +12,16 @@ extern Value *vector_to_list(Value *v);
 
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
 extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name);
+
+extern Value *builtin_eval(Value *v, Value *env);
+extern Value *builtin_eval_wrapped(Value *parameters, Value *env);
+extern Value *builtin_file_name_relative_to_file_name(char *base_file_name, char *file_name);
+extern Value *builtin_file_name_relative_to_file_name_wrapped(Value *parameters, Value *env);
+extern Value *builtin_get(Value *map, Value *keys);
+extern Value *builtin_get_wrapped(Value *parameters, Value *env);
+extern Value *builtin_import_source_wrapped(Value *parameters, Value *env);
+extern Value *builtin_slurp(char *file_name);
+extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 
 extern Value *builtins_initialise_environment();
 

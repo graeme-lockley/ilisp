@@ -642,3 +642,26 @@ Value *Reader_read(char *source_name, char *content)
         return e;
     }
 }
+
+Value *Reader_read_many(char *source_name, char *content)
+{
+    struct LexerState lexer = initialise_lexer(source_name, content);
+
+    Value *result = VNil;
+    Value **cursor = &result;
+
+    while (1)
+    {
+        if (lexer.token == EOS)
+            return result;
+
+        Value *term = parse(&lexer);
+
+        if (IS_EXCEPTION(term))
+            return term;
+
+        Value *term_pair = mkPair(term, VNil);
+        *cursor = term_pair;
+        cursor = &(CDR(term_pair));
+    }
+}

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "builtins.h"
+#include "env.h"
 #include "exceptions.h"
 #include "map.h"
 #include "printer.h"
@@ -14,27 +15,7 @@
 Value *Repl_evalValue(Value *v, Value *env)
 {
     if (IS_SYMBOL(v))
-    {
-        Value *binding = VNil;
-        Value *cursor = env;
-        while (1)
-        {
-            if (IS_NIL(cursor))
-            {
-                if (strcmp(SYMBOL(v), "**scope**") == 0)
-                    return env;
-
-                return exceptions_unknown_symbol(v);
-            }
-
-            binding = map_find(CAR(cursor), v);
-
-            if (!IS_NIL(binding))
-                return CDR(binding);
-
-            cursor = CDR(cursor);
-        }
-    }
+        return env_get_binding(env, v);
 
     if (IS_PAIR(v))
     {

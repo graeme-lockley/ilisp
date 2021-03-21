@@ -740,17 +740,6 @@ static Value *equal(Value *parameters, Value *env)
     }
 }
 
-static Value *eval(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "eval");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return Repl_eval(parameter[0], env);
-}
-
 static Value *first(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -776,36 +765,6 @@ static Value *fnp(Value *parameters, Value *env)
         return extract_result;
 
     return IS_PROCEDURE(parameter[0]) || IS_NATIVE_PROCEDURE(parameter[0]) ? VTrue : VFalse;
-}
-
-static Value *get(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("pair"), parameters);
-
-    Value *cursor = CAR(parameters);
-    Value *keys = CDR(parameters);
-    int parameter_count = 1;
-
-    while (1)
-    {
-        if (IS_NIL(keys))
-            return cursor;
-
-        if (!IS_PAIR(keys))
-            return exceptions_invalid_argument(mkSymbol("get"), parameter_count, mkSymbol("pair"), keys);
-
-        Value *key = CAR(keys);
-        if (!IS_MAP(cursor))
-            return exceptions_invalid_argument(mkSymbol("get"), 0, mkSymbol("map"), cursor);
-
-        cursor = map_find(cursor, key);
-        if (!IS_NIL(cursor))
-            cursor = CDR(cursor);
-
-        keys = CDR(keys);
-        parameter_count += 1;
-    }
 }
 
 static Value *hash_map(Value *parameters, Value *env)
@@ -1644,6 +1603,23 @@ static Value *read_string(Value *parameters, Value *env)
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
 
+static Value *read_string_many(Value *parameters, Value *env)
+{
+    Value *parameter[2];
+
+    Value *extract_result = extract_range_parameters(parameter, parameters, 1, 2, "read-string-many");
+    if (extract_result != NULL)
+        return extract_result;
+
+    if (!IS_STRING(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("read-string-many"), 0, mkSymbol("string"), parameter[0]);
+
+    if (parameter[1] != NULL && !IS_STRING(parameter[1]))
+        return exceptions_invalid_argument(mkSymbol("read-string-many"), 1, mkSymbol("string"), parameter[1]);
+
+    return Reader_read_many(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
+}
+
 static Value *read_dir(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1688,70 +1664,6 @@ static Value *read_dir(Value *parameters, Value *env)
     closedir(dir);
 
     return root;
-}
-
-static char *remove_file_name_from_path(char *file_name)
-{
-    int index = strlen(file_name) - 1;
-
-    while (1)
-    {
-        if (index == -1)
-            return strdup("");
-
-        if (file_name[index] == '/')
-        {
-            char *result = (char *)malloc(index + 1);
-            strncpy(result, file_name, index);
-            result[index] = '\0';
-            return result;
-        }
-
-        index -= 1;
-    }
-}
-
-static Value *file_name_relative_to_file_name(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "file-name-relative-to-file-name");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("file-name-relative-to-file-name"), 0, mkSymbol("string"), parameter[0]);
-    if (!IS_STRING(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("file-name-relative-to-file-name"), 1, mkSymbol("string"), parameter[1]);
-
-    char *base_file_name = STRING(parameter[0]);
-    char *file_name = STRING(parameter[1]);
-
-    if (starts_with(file_name, "/"))
-        return parameter[1];
-
-    char *base_base = remove_file_name_from_path(base_file_name);
-    while (1)
-    {
-        if (starts_with(file_name, "./"))
-        {
-            file_name = file_name + 2;
-            continue;
-        }
-
-        if (starts_with(file_name, "../"))
-        {
-            file_name = file_name + 3;
-            char *b = remove_file_name_from_path(base_base);
-            free(base_base);
-            base_base = b;
-            continue;
-        }
-
-        char *buffer = (char *)malloc(strlen(base_base) + 1 + strlen(file_name) + 1);
-        sprintf(buffer, "%s/%s", base_base, file_name);
-        return mkStringUse(buffer);
-    }
 }
 
 static Value *rest(Value *parameters, Value *env)
@@ -1863,49 +1775,6 @@ static Value *set_cdr_bang(Value *parameters, Value *env)
     PAIR(pair).cdr = value;
 
     return pair;
-}
-
-static Value *slurp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "slurp");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
-
-    FILE *f = fopen(STRING(parameter[0]), "rb");
-
-    if (!f)
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
-
-    if (fseek(f, 0, SEEK_END) != 0)
-    {
-        fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
-    }
-
-    long length = ftell(f);
-    if (fseek(f, 0, SEEK_SET) != 0)
-    {
-        fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
-    }
-
-    char *buffer = (char *)malloc(length + 1);
-    if (buffer == NULL)
-    {
-        fclose(f);
-        return exceptions_invalid_argument(mkSymbol("slurp"), 0, mkSymbol("string"), parameter[0]);
-    }
-
-    fread(buffer, 1, length, f);
-    buffer[length] = '\0';
-    fclose(f);
-
-    return mkStringUse(buffer);
 }
 
 static Value *stringp(Value *parameters, Value *env)
@@ -2467,10 +2336,10 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
     add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
-    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(eval));
+    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
-    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(get));
+    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get_wrapped));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
@@ -2491,9 +2360,10 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
     add_binding_into_environment(root_bindings, "random", mkNativeProcedure(random_number));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
+    add_binding_into_environment(root_bindings, "read-string-many", mkNativeProcedure(read_string_many));
     add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(rest));
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
-    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(slurp));
+    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "string?", mkNativeProcedure(stringp));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
@@ -2514,7 +2384,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(byte_vector_nth));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(byte_vector_nth_bang));
-    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(file_name_relative_to_file_name));
+    add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
+    add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(list_count));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));

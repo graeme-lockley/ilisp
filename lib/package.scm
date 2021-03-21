@@ -1,4 +1,4 @@
-(const- *verbose* ((get *builtin* 'atom) :f))
+(const- *verbose* ((get *builtin* 'atom) #f))
 
 (const (verbose?) ((get *builtin* 'atom-dereference) *verbose*))
 
@@ -38,7 +38,7 @@
             )
 
             (if (not (map? (get imports-list *source-name*)))
-                (do (if *verbose* (println "Loading " *source-name*))
+                (do (if (verbose?) (println "Loading " *source-name*))
                     (assoc! imports-list *source-name* ())
                     (const bindings (load-package-file))
                     (if (map? (get imports-list *source-name*))
@@ -51,14 +51,14 @@
             (get imports-list *source-name*)
         )
         (proc (e)
-            (if *verbose* (println "error loading " *source-name* ": " e))
+            (if (verbose?) (println "error loading " *source-name* ": " e))
             (raise e)
         )
     )
 )
 
 (macro (package-import name)
-    `(package-import-with-context ~name *source-name*)
+    `(*builtin*.import-source ~name)
 )
 
 (macro (import name . options) 

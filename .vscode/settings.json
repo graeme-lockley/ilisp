@@ -9,6 +9,10 @@
         "functional": "c",
         "tuple": "c",
         "type_traits": "c",
-        "utility": "c"
+        "utility": "c",
+        "exceptions.h": "c",
+        "map.h": "c",
+        "env.h": "c",
+        "builtins.h": "c"
     }
 }

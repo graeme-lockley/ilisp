@@ -11,7 +11,7 @@
 
 (macro (import name . options) 
     (if (and (= (first options) :as) (not (nil? ((get *builtin* 'list-nth) options 1))))
-        `(const ~((get *builtin* 'list-nth) options 1) (package-import ~name))
+        `(const- ~((get *builtin* 'list-nth) options 1) (package-import ~name))
         (raise 'IllegalImportSyntax {:expected ":as symbol"})
     )
 )

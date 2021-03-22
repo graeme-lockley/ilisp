@@ -26,24 +26,6 @@
   )
 )
 
-; A wrapper macro that uses the builtin set! quoting the first parameter in so
-; that is appears as a symbol.
-(macro (set! name value)
-  `((get *builtin* 'set!) '~name ~value)
-)
-
-(const *source-name* (str (get **env** 'PWD) "/home"))
-
-; Replace the builtin load-file with a macro which uses the surrounding context 
-; to access *source-name*.  This value is used to capture relative library 
-; names. 
-(set! load-file
-  (mo (f) `(do
-    (assoc! (car **scope**) '*source-name* ((get *builtin* 'file-name-relative-to-file-name) *source-name* ~f))
-    (eval (read-string (str "(do " (slurp *source-name*) "\n)") *source-name*))
-  ))
-)
-
 (const (not x) (if x #f #t))
 
 ; By loading package.scm into this file, the public procedures and macros are

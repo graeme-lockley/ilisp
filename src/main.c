@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "builtins.h"
+#include "env.h"
 #include "map.h"
 #include "mt19937.h"
 #include "repl.h"
@@ -46,10 +47,7 @@ static void run_prelude(char *prelude_file_name, Value *env)
     if (prelude_file_name == NULL)
         prelude_file_name = verify_prelude_file_name("prelude.scm");
 
-    char *content = (char *)malloc(strlen(prelude_file_name) + 20);
-    sprintf(content, "(load-file \"%s\")", prelude_file_name);
-
-    Value *result = Repl_rep(prelude_file_name, content, env);
+    Value *result = builtin_load_source(prelude_file_name, env);
 
     if (IS_EXCEPTION(result))
     {
@@ -68,15 +66,16 @@ int main(int argc, char *argv[], char *envp[])
         prelude_file_name = verify_prelude_file_name(prelude_file_name);
 
     Value *env = builtins_initialise_environment();
-    map_set_bang(CAR(env), mkSymbol("**env**"), runtime_env(envp));
-
+    Value *runtime = runtime_env(envp);
+    env_add_binding(env_get_toplevel(env), mkSymbol("*env*"), runtime);
+    env_add_binding(env_get_toplevel(env), mkSymbol("*source-name*"), CDR(map_find(runtime, mkSymbol("PWD"))));
     int arg_idx = 1;
 
     while (1)
     {
         if (arg_idx >= argc)
         {
-            map_set_bang(CAR(env), mkSymbol("*args*"), VNil);
+            env_add_binding(env, mkSymbol("*args*"), VNil);
             run_prelude(prelude_file_name, env);
             return Repl_repl(env);
         }
@@ -119,11 +118,8 @@ int main(int argc, char *argv[], char *envp[])
         map_set_bang(CAR(env), mkSymbol("*args*"), args);
 
         run_prelude(prelude_file_name, env);
+        Value *result = builtin_load_source(script_name, env);
 
-        char *content = (char *)malloc(strlen(script_name) + 20);
-        sprintf(content, "(load-file \"%s\")", script_name);
-
-        Value *result = Repl_rep(script_name, content, env);
         free(script_name);
 
         if (IS_EXCEPTION(result))

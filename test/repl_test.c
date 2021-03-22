@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "minunit.h"
 #include "../src/builtins.h"
+#include "../src/env.h"
 #include "../src/printer.h"
 #include "../src/repl.h"
 
@@ -149,6 +151,12 @@ int main(int argc, char *argv[])
     printf("| %s\n", argv[1]);
 
     Value *env = builtins_initialise_environment();
+    {
+        char cwd[1024];
+        getcwd(cwd, 1024);
+        strcat(cwd, "/home");
+        env_add_binding(env, mkSymbol("*source-name*"), mkString(cwd));
+    }
 
     while (1)
     {

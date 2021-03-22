@@ -29,6 +29,7 @@ SRC_OBJECTS=\
 	src/builtin/file-name-relative-to-file-name.o \
 	src/builtin/get.o \
 	src/builtin/import-source.o \
+	src/builtin/load-source.o \
 	src/builtin/slurp.o
 
 SRC_TARGETS=\

@@ -20,6 +20,8 @@ extern Value *builtin_file_name_relative_to_file_name_wrapped(Value *parameters,
 extern Value *builtin_get(Value *map, Value *keys);
 extern Value *builtin_get_wrapped(Value *parameters, Value *env);
 extern Value *builtin_import_source_wrapped(Value *parameters, Value *env);
+extern Value *builtin_load_source(char *source_name, Value *env);
+extern Value *builtin_load_source_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 

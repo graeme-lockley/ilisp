@@ -9,7 +9,7 @@ Value *env_get_binding(Value *env, Value *key)
 {
     Value *result = env_find_binding(env, key);
 
-    return (result == NULL) ?exceptions_unknown_symbol(key) : result;
+    return (result == NULL) ? exceptions_unknown_symbol(key) : result;
 }
 
 Value *env_find_binding(Value *env, Value *key)
@@ -61,4 +61,22 @@ Value *env_add_binding(Value *env, Value *key, Value *value)
 Value *env_bindings(Value *env)
 {
     return CAR(env);
+}
+
+Value *env_update_binding(Value *env, Value *key, Value *value)
+{
+    while (1)
+    {
+        if (IS_NIL(env))
+            return exceptions_unknown_symbol(key);
+
+        Value *scope = CAR(env);
+        if (Value_truthy(map_containsp(scope, key)))
+        {
+            map_set_bang(scope, key, value);
+            return value;
+        }
+
+        env = CDR(env);
+    }
 }

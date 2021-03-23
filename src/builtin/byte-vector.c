@@ -2,7 +2,7 @@
 
 #include "../builtins.h"
 #include "../exceptions.h"
-#include "../values.h"
+#include "../value.h"
 
 Value *builtin_byte_vector_wrapper(Value *parameters, Value *env)
 {

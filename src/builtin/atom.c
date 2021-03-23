@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "../builtins.h"
-#include "../values.h"
+#include "../value.h"
 
 Value *builtin_atom(Value *value)
 {

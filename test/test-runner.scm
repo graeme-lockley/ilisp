@@ -33,7 +33,7 @@
     (do 
         (println "Running tests: " name)
         (try
-            (package-import name)
+            (module-import name)
             (proc (s)
                 (do
                     (print "Test failed: ")

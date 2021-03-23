@@ -402,7 +402,7 @@ static Value *parse(Lexer *lexer)
                 Value *root = VNil;
                 Value **root_cursor = &root;
 
-                append_to_list(mkSymbol("package-use"), &root_cursor);
+                append_to_list(mkSymbol("module-use"), &root_cursor);
 
                 int is_first = 1;
                 char *s_cursor = s;

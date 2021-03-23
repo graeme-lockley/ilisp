@@ -1,0 +1,17 @@
+(const (module-use module name)
+    (if (contains? module name) 
+        (get module name)
+        (raise 'UnknownSymbolInModule {:name name})
+    )
+)
+
+(macro (module-import name)
+    `(*builtin*.import-source ~name)
+)
+
+(macro (import name . options) 
+    (if (and (= (first options) :as) (not (nil? ((get *builtin* 'list-nth) options 1))))
+        `(const- ~((get *builtin* 'list-nth) options 1) (module-import ~name))
+        (raise 'IllegalImportSyntax {:expected ":as symbol"})
+    )
+)

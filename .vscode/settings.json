@@ -13,6 +13,7 @@
         "exceptions.h": "c",
         "map.h": "c",
         "env.h": "c",
-        "builtins.h": "c"
+        "builtins.h": "c",
+        "reader.h": "c"
     }
 }

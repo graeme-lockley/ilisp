@@ -28,12 +28,12 @@
 
 (const (not x) (if x #f #t))
 
-; By loading package.scm into this file, the public procedures and macros are
-; exported as a result of the package mechanism.  Note that this is an anomoly
-; and is used to bootstrap the package mechanism.
-(load-file "./package.scm")
+; By loading module.scm into this file, the public procedures and macros are
+; exported as a result of the module mechanism.  Note that this is an anomoly
+; and is used to bootstrap the module mechanism.
+(load-file "./module.scm")
 
-(assoc! (car **root**) :unit (package-import "./unit.scm"))
+(assoc! (car **root**) :unit (module-import "./unit.scm"))
 
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)

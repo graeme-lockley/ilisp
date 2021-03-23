@@ -116,7 +116,7 @@ The following table desscribes the standard available forms.
 | `*builtin*` | A mapping of the builtin procedures that have been made available through the runtime system to an `iLisp-` program.  The mapping is from string onto native procedure. |
 | `*env*` | A mapping of the enclosing shell environment from name onto value.  Both name and value are strings. |
 | `*imports*` | A reference to all the imports that have been used within a running program.  In an interpreted environment this declartion would be built as modules are imported and consequently would be variable whereas, in a compiled environment, it would be statically populated by the runtime system before control is handed to procedure execution. |
-| `*source-name*` | The absolute file of the package in which this declaration is referenced. A REPL would populate this variable to `**repl**` whilst `eval` can set this declaration to a sensible value. |
+| `*source-name*` | The absolute file of the module in which this declaration is referenced. A REPL would populate this variable to `**repl**` whilst `eval` can set this declaration to a sensible value. |
 
 ### Idioms
 

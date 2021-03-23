@@ -15,7 +15,7 @@
     (import "./language-const-import.scm" :as Import)
 
     (Unit.assert-equals (Import.inc (Import.inc (Import.inc 2))) 5)
-    (Unit.assert-signal-name (Import.plus 2 3) 'UnknownSymbolInPackage)
+    (Unit.assert-signal-name (Import.plus 2 3) 'UnknownSymbolInModule)
 )
 
 (Unit.test "let variable"
@@ -35,6 +35,6 @@
     (import "./language-const-import.scm" :as Import)
 
     (Unit.assert-equals ((*builtin*.atom-dereference Import.dec) 2) 1)
-    (Unit.assert-signal-name (Import.minus 2 3) 'UnknownSymbolInPackage)
+    (Unit.assert-signal-name (Import.minus 2 3) 'UnknownSymbolInModule)
 )
 

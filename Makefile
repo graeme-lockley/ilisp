@@ -26,10 +26,12 @@ SRC_OBJECTS=\
 	src/string_builder.o \
 	src/value.o \
 	src/builtin/atom.o \
+	src/builtin/byte-vector.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
 	src/builtin/get.o \
 	src/builtin/import-source.o \
+	src/builtin/list-count.o \
 	src/builtin/load-source.o \
 	src/builtin/slurp.o
 

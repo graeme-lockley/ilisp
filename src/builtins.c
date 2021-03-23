@@ -331,45 +331,6 @@ static Value *atom_swap_bang(Value *parameters, Value *env)
     return v;
 }
 
-static Value *byte_vector(Value *parameters, Value *env)
-{
-    Value *v = parameters; // CDR(parameters);
-    Value *cursor = v;
-
-    int list_length = 0;
-    while (1)
-    {
-        if (IS_NIL(cursor))
-            break;
-
-        if (IS_PAIR(cursor))
-            cursor = CDR(cursor);
-        else
-            return exceptions_invalid_argument(mkSymbol("count"), 0, mkSymbol("pair"), v);
-
-        list_length += 1;
-    }
-
-    unsigned char *items = (unsigned char *)malloc(sizeof(unsigned char) * list_length);
-    cursor = v;
-    for (int lp = 0; lp < list_length; lp += 1, cursor = CDR(cursor))
-    {
-        unsigned char value;
-        Value *car = CAR(cursor);
-
-        if (IS_NUMBER(car))
-            value = (unsigned char)NUMBER(car);
-        else if (IS_CHARACTER(car))
-            value = (unsigned char)CHARACTER(car);
-        else
-            return exceptions_invalid_argument(mkSymbol("byte-vector"), lp, mkSymbol("number"), car);
-
-        items[lp] = value;
-    }
-
-    return mkByteVectorUse(items, list_length);
-}
-
 static Value *byte_vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1193,31 +1154,6 @@ static Value *keywordp(Value *parameters, Value *env)
         return extract_result;
 
     return IS_KEYWORD(parameter[0]) ? VTrue : VFalse;
-}
-
-static Value *list_count(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "list-count");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *list = CAR(parameters);
-
-    int list_length = 0;
-    while (1)
-    {
-        if (IS_NIL(list))
-            return mkNumber(list_length);
-
-        if (IS_PAIR(list))
-            list = CDR(list);
-        else
-            return exceptions_invalid_argument(mkSymbol("list-count"), 0, mkSymbol("pair"), list);
-
-        list_length += 1;
-    }
 }
 
 static Value *list_drop(Value *parameters, Value *env)
@@ -2337,7 +2273,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(atomp));
     add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(atom_dereference));
     add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(atom_swap_bang));
-    add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(byte_vector));
+    add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(builtin_byte_vector_wrapper));
     add_binding_into_environment(builtin_bindings, "byte-vector?", mkNativeProcedure(byte_vectorp));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
@@ -2345,7 +2281,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(byte_vector_nth_bang));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
-    add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(list_count));
+    add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));

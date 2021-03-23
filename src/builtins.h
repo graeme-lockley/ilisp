@@ -18,6 +18,7 @@ extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int
 
 extern Value *builtin_atom(Value *value);
 extern Value *builtin_atom_wrapped(Value *parameters, Value *env);
+extern Value *builtin_byte_vector_wrapper(Value *parameters, Value *env);
 extern Value *builtin_eval(Value *v, Value *env);
 extern Value *builtin_eval_wrapped(Value *parameters, Value *env);
 extern Value *builtin_file_name_relative_to_file_name(char *base_file_name, char *file_name);
@@ -25,6 +26,8 @@ extern Value *builtin_file_name_relative_to_file_name_wrapped(Value *parameters,
 extern Value *builtin_get(Value *map, Value *keys);
 extern Value *builtin_get_wrapped(Value *parameters, Value *env);
 extern Value *builtin_import_source_wrapped(Value *parameters, Value *env);
+extern Value *builtin_list_count(Value *list);
+extern Value *builtin_list_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_load_source(char *source_name, Value *env);
 extern Value *builtin_load_source_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);

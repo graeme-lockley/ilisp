@@ -1134,17 +1134,6 @@ static Value *keyword(Value *parameters, Value *env)
     return mkKeywordUse(keyword);
 }
 
-static Value *keywordp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "keyword?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_KEYWORD(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *list_drop(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -2225,7 +2214,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
-    add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "macro?", mkNativeProcedure(macrop));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
@@ -2272,6 +2260,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
+    add_binding_into_environment(builtin_bindings, "keyword?", mkNativeProcedure(builtin_keywordp_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));

@@ -17,23 +17,6 @@
     (Unit.assert-falsy (fn? and))
 )
 
-(Unit.test "keyword?"
-    (Unit.assert-falsy (keyword? ()))
-    (Unit.assert-falsy (keyword? 1))
-    (Unit.assert-falsy (keyword? #\A))
-    (Unit.assert-falsy (keyword? "name"))
-    (Unit.assert-falsy (keyword? 'name))
-    (Unit.assert-truthy (keyword? :name))
-    (Unit.assert-falsy (keyword? '(1 2 3)))
-    (Unit.assert-falsy (keyword? []))
-    (Unit.assert-falsy (keyword? [1 2 3]))
-    (Unit.assert-falsy (keyword? {}))
-    (Unit.assert-falsy (keyword? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (keyword? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (keyword? car))
-    (Unit.assert-falsy (keyword? and))
-)
-
 (Unit.test "list?"
     (Unit.assert-truthy (list? ()))
     (Unit.assert-falsy (list? 1))

@@ -30,6 +30,7 @@ SRC_OBJECTS=\
 	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
+	src/builtin/keywordp.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
 	src/builtin/import-source.o \

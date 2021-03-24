@@ -30,6 +30,7 @@ extern Value *builtin_map_find_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_get(Value *map, Value *keys);
 extern Value *builtin_map_get_wrapped(Value *parameters, Value *env);
 extern Value *builtin_import_source_wrapped(Value *parameters, Value *env);
+extern Value *builtin_keywordp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_count(Value *list);
 extern Value *builtin_list_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_load_source(char *source_name, Value *env);

@@ -459,7 +459,12 @@ static Value *parse(Lexer *lexer)
                 return mkCharacter(ch);
             }
             else
+            {
+                // if (strcmp(s, "get") == 0)
+                //     printf("%s:%d:%d\n", lexer->source_name, lexer->start.line, lexer->start.column);
+
                 return mkSymbolUse(s);
+            }
         }
     }
 

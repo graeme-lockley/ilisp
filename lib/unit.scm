@@ -12,11 +12,11 @@
 
 (macro (assert-msg-equals msg v1 v2)
     `((proc () 
-        ((get (car **root**) :unit 'inc-asserts-total))
+        ((map-get (car **root**) :unit 'inc-asserts-total))
         (const __v1 ~v1) 
         (const __v2 ~v2) 
         (if (= __v1 __v2) 
-            ((get (car **root**) :unit 'inc-asserts-passed))
+            ((map-get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:msg ~msg :v1 '~v1 :v2 '~v2 :__v1 __v1 :__v2 __v2 :src *source-name*})
         )
     ))
@@ -24,11 +24,11 @@
 
 (macro (assert-equals v1 v2)
     `((proc ()
-        ((get (car **root**) :unit 'inc-asserts-total))
+        ((map-get (car **root**) :unit 'inc-asserts-total))
         (const __v1 ~v1) 
         (const __v2 ~v2) 
         (if (= __v1 __v2) 
-            ((get (car **root**) :unit 'inc-asserts-passed))
+            ((map-get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:v1 '~v1 :v2 '~v2 :__v1 __v1 :__v2 __v2 :src *source-name*})
         )
     ))
@@ -36,10 +36,10 @@
 
 (macro (assert-truthy v)
     `((proc () 
-        ((get (car **root**) :unit 'inc-asserts-total))
+        ((map-get (car **root**) :unit 'inc-asserts-total))
         (const __v ~v) 
         (if __v 
-            ((get (car **root**) :unit 'inc-asserts-passed))
+            ((map-get (car **root**) :unit 'inc-asserts-passed))
             (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
         )
     ))
@@ -47,18 +47,18 @@
 
 (macro (assert-falsy v)
     `((proc () 
-        ((get (car **root**) :unit 'inc-asserts-total))
+        ((map-get (car **root**) :unit 'inc-asserts-total))
         (const __v ~v) 
         (if __v 
             (raise 'AssertionFailed {:v '~v :__v __v :src *source-name*})
-            ((get (car **root**) :unit 'inc-asserts-passed))
+            ((map-get (car **root**) :unit 'inc-asserts-passed))
         )
     ))
 )
 
 (macro (assert-signal e p)
     `((proc ()
-        ((get (car **root**) :unit 'inc-asserts-total))
+        ((map-get (car **root**) :unit 'inc-asserts-total))
         (const signal-raised (*builtin*.atom #f))
         (try
             ~e
@@ -66,7 +66,7 @@
                 (do
                     (*builtin*.atom-swap! signal-raised (proc (v) #t))
                     (~p signal)
-                    ((get (car **root**) :unit 'inc-asserts-passed))
+                    ((map-get (car **root**) :unit 'inc-asserts-passed))
                 )
             )
         )
@@ -84,11 +84,11 @@
     `(try
         (do 
             (println "- " ~name)
-            ((get (car **root**) :unit 'inc-tests-total))
+            ((map-get (car **root**) :unit 'inc-tests-total))
             ((proc () 
                 ~@tests
             ))
-            ((get (car **root**) :unit 'inc-tests-passed))
+            ((map-get (car **root**) :unit 'inc-tests-passed))
         )
         (proc (e)
             (do

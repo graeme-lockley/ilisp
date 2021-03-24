@@ -364,5 +364,5 @@ a
 (not (= 1 2))
 > #t
 
-((mo (a) `((get *builtin* 'list-count) ~a)) '(1 2 3 4))
+((mo (a) `((map-get *builtin* 'list-count) ~a)) '(1 2 3 4))
 > 4

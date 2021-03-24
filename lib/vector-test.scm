@@ -14,8 +14,8 @@
 
     (Unit.assert-signal (car []) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
-        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
-        (Unit.assert-equals (get (cdr signal) :procedure) 'car)
+        (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (map-get (cdr signal) :procedure) 'car)
     )))
 )
 
@@ -25,8 +25,8 @@
 
     (Unit.assert-signal (cdr []) (proc (signal) (do
         (Unit.assert-equals (car signal) 'InvalidArgument)
-        (Unit.assert-equals (get (cdr signal) :arg-number) 0)
-        (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
+        (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
+        (Unit.assert-equals (map-get (cdr signal) :procedure) 'cdr)
     )))
 )
 
@@ -109,21 +109,21 @@
 
     (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
-        (Unit.assert-equals (get (cdr signal) :index) 2)
-        (Unit.assert-equals (get (cdr signal) :operand) [1])
+        (Unit.assert-equals (map-get (cdr signal) :index) 2)
+        (Unit.assert-equals (map-get (cdr signal) :operand) [1])
     )))
 
     (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) (- 3) 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)
-        (Unit.assert-equals (get (cdr signal) :index) (- 3))
-        (Unit.assert-equals (get (cdr signal) :operand) [1])
-        (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
+        (Unit.assert-equals (map-get (cdr signal) :index) (- 3))
+        (Unit.assert-equals (map-get (cdr signal) :operand) [1])
+        (Unit.assert-equals (map-get (cdr signal) :procedure) 'vector-nth!)
     )))
 
     (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'ValueIsImmutable)
-        (Unit.assert-equals (get (cdr signal) :operand) [1 2 3])
-        (Unit.assert-equals (get (cdr signal) :procedure) 'vector-nth!)
+        (Unit.assert-equals (map-get (cdr signal) :operand) [1 2 3])
+        (Unit.assert-equals (map-get (cdr signal) :procedure) 'vector-nth!)
     )))
 )
 

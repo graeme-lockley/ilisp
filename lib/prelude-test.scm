@@ -21,8 +21,8 @@
 
   (Unit.assert-signal (car 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (get (cdr signal) :procedure) 'car)
+    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (cdr signal) :procedure) 'car)
   )))
 )
 
@@ -33,8 +33,8 @@
 
   (Unit.assert-signal (cdr 123) (proc (signal) (do
     (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (get (cdr signal) :procedure) 'cdr)
+    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (cdr signal) :procedure) 'cdr)
   )))
 )
 

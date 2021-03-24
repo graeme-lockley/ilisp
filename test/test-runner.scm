@@ -3,9 +3,9 @@
 
 (const- (directory dir)
     (do
-        (const (format-name n) (str dir "/" (get n :name)))
-        (const (file-is-dir? n) (get n :dir?))
-        (const (file-is-test? n) (and (get n :file?) (ends-with (get n :name) "-test.scm")))
+        (const (format-name n) (str dir "/" (map-get n :name)))
+        (const (file-is-dir? n) (map-get n :dir?))
+        (const (file-is-test? n) (and (map-get n :file?) (ends-with (map-get n :name) "-test.scm")))
 
         (const contents (FS.read-dir (FS.absolute-name-relative-to-file-name *source-name* dir)))
 

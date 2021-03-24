@@ -2223,7 +2223,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
-    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
@@ -2300,7 +2299,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
 
     define("list", "(proc x x)", root_scope);
-    define("load-file", "(get *builtin* 'load-source)", root_scope);
+    define("load-file", "(map-get *builtin* 'load-source)", root_scope);
 
     return root_scope;
 }

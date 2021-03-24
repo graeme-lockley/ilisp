@@ -373,7 +373,7 @@ Value *Repl_eval(Value *v, Value *env)
                             body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
-                            body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
 
                         Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))
@@ -387,7 +387,7 @@ Value *Repl_eval(Value *v, Value *env)
                             return exceptions_duplicate_binding(signature);
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
-                            body = mkPair(mkPair(mkSymbol("get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
 
                         Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))

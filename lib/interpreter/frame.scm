@@ -27,7 +27,7 @@
 
 (const (binding frame var)
     (if (contains? frame var)
-        (cons var (get frame var))
+        (cons var (map-get frame var))
 
         ()
     )

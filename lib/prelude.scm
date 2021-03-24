@@ -3,7 +3,7 @@
 (macro (and . terms)
   (if (nil? terms) 
     #t
-    (if (= ((get *builtin* 'list-count) terms) 1)
+    (if (= ((map-get *builtin* 'list-count) terms) 1)
       (first terms) 
       `(if ~(first terms) 
         (and ~@(rest terms)) 
@@ -16,7 +16,7 @@
 (macro (or . terms)
   (if (nil? terms) 
     #f
-    (if (= ((get *builtin* 'list-count) terms) 1)
+    (if (= ((map-get *builtin* 'list-count) terms) 1)
       (first terms)
       `(if ~(first terms) 
         #t

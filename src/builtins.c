@@ -2223,7 +2223,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
-    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_get_wrapped));
+    add_binding_into_environment(root_bindings, "get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "keyword", mkNativeProcedure(keyword));
     add_binding_into_environment(root_bindings, "keyword?", mkNativeProcedure(keywordp));
@@ -2232,6 +2232,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map->list", mkNativeProcedure(map_to_list));
     add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
+    add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
+    add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
     add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));

@@ -27,6 +27,7 @@ SRC_OBJECTS=\
 	src/value.o \
 	src/builtin/atom.o \
 	src/builtin/byte-vector.o \
+	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
 	src/builtin/get.o \

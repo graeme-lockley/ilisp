@@ -139,11 +139,11 @@ c
 ;; Testing cons and concat with vectors
 
 (cons 1 [])
->(1)
+>(1 . [])
 (cons [1] [2 3])
->([1] 2 3)
+>([1] . [2 3])
 (cons 1 [2 3])
->(1 2 3)
+>(1 . [2 3])
 (concat [1 2] (list 3 4) [5 6])
 >(1 2 3 4 5 6)
 (concat [1 2])

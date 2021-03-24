@@ -434,7 +434,7 @@ fred
 (rest [10 11 12])
 >[11 12]
 (rest (cons 10 [11 12]))
->(11 12)
+>[11 12]
 
 (apply)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure apply :received ()}))

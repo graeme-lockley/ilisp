@@ -579,17 +579,6 @@ static Value *concat(Value *parameters, Value *env)
     }
 }
 
-static Value *cons(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "cons");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
-}
-
 static Value *containp(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -2227,7 +2216,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));
     add_binding_into_environment(root_bindings, "character?", mkNativeProcedure(characterp));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
-    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(cons));
+    add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
     add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
     add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
@@ -2279,6 +2268,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(byte_vector_nth));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(byte_vector_nth_bang));
+    add_binding_into_environment(builtin_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));

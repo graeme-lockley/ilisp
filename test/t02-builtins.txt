@@ -378,13 +378,13 @@ fred
 (do (load-file "./test/basic.sc") (cadr '((1 2) (3 4))))
 > (3 4)
 
-(cons 1 ())
+(*builtin*.cons 1 ())
 > (1)
 
-(cons 1 (cons 2 (cons 3 (cons 4 ()))))
+(*builtin*.cons 1 (*builtin*.cons 2 (*builtin*.cons 3 (*builtin*.cons 4 ()))))
 > (1 2 3 4)
 
-(cons 1 '(2 3 4))
+(*builtin*.cons 1 '(2 3 4))
 > (1 2 3 4)
 
 (concat)
@@ -396,7 +396,7 @@ fred
 (concat 1 2 3)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure concat :received 1}))
 
-(concat '(1 2 3) (cons 1 9))
+(concat '(1 2 3) (*builtin*.cons 1 9))
 > (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure concat :received (1 . 9)}))
 
 (concat '(1) '(2) '(3))
@@ -433,7 +433,7 @@ fred
 >[]
 (rest [10 11 12])
 >[11 12]
-(rest (cons 10 [11 12]))
+(rest (*builtin*.cons 10 [11 12]))
 >[11 12]
 
 (apply)

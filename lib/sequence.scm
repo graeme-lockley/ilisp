@@ -157,7 +157,7 @@
             (const index-of-sep (nth index-of-result 0))
             (const sep (nth index-of-result 1))
 
-            (cons 
+            (*builtin*.cons 
                 (take s index-of-sep) 
                 (split (drop s (+ index-of-sep (count sep))) seps)
             )

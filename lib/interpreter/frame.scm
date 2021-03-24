@@ -6,7 +6,7 @@
             (or (nil? vars') (nil? vals'))
                 (raise 'ListsNotSameLength {:procedure 'make-frame :vars vars :vals :vals})
 
-            (cons (car vars') (cons (car vals') (interleve (cdr vars') (cdr vals'))))
+            (*builtin*.cons (car vars') (*builtin*.cons (car vals') (interleve (cdr vars') (cdr vals'))))
         )
     )
 
@@ -27,7 +27,7 @@
 
 (const (binding frame var)
     (if (contains? frame var)
-        (cons var (map-get frame var))
+        (*builtin*.cons var (map-get frame var))
 
         ()
     )

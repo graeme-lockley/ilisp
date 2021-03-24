@@ -1,11 +1,11 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "set-cdr!"
-    (Unit.assert-equals (*builtin*.set-cdr! (mcons 1 2) 3) (cons 1 3))
+    (Unit.assert-equals (*builtin*.set-cdr! (mcons 1 2) 3) (*builtin*.cons 1 3))
 )
 
 (Unit.test "set-cdr! on immutable pair signal"
-    (Unit.assert-signal-name (*builtin*.set-cdr! (cons 1 2) 3) 'ValueIsImmutable)
+    (Unit.assert-signal-name (*builtin*.set-cdr! (*builtin*.cons 1 2) 3) 'ValueIsImmutable)
 )
 
 (Unit.test "arg count signal"

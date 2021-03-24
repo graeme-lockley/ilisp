@@ -16,7 +16,7 @@
 
         (const files-with-absolute-name (map files (proc (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
         
-        (apply concat (cons files-with-absolute-name files-in-directories))
+        (apply concat (*builtin*.cons files-with-absolute-name files-in-directories))
     )
 )
 

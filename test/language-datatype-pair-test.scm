@@ -1,7 +1,7 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "cons pair is immutable"
-    (Unit.assert-falsy (mutable? (cons 1 2)))
+    (Unit.assert-falsy (mutable? (*builtin*.cons 1 2)))
     (Unit.assert-falsy (mutable? ()))
     (Unit.assert-falsy (mutable? (list 1 2 3 4 5)))
 )

@@ -51,5 +51,5 @@
 )
 
 (const (extend base-env vars vals)
-    (cons (Frame.mk vars vals) base-env)
+    (*builtin*.cons (Frame.mk vars vals) base-env)
 )

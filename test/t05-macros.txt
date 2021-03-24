@@ -1,14 +1,14 @@
-;; Testing cons function
-(cons 1 (list))
+;; Testing *builtin*.cons function
+(*builtin*.cons 1 (list))
 >(1)
-(cons 1 (list 2))
+(*builtin*.cons 1 (list 2))
 >(1 2)
-(cons 1 (list 2 3))
+(*builtin*.cons 1 (list 2 3))
 >(1 2 3)
-(cons (list 1) (list 2 3))
+(*builtin*.cons (list 1) (list 2 3))
 >((1) 2 3)
 
-(do (assoc! (car **root**) 'a (list 2 3)) (cons 1 a))
+(do (assoc! (car **root**) 'a (list 2 3)) (*builtin*.cons 1 a))
 >(1 2 3)
 a
 >(2 3)
@@ -136,13 +136,13 @@ c
 '(1 2 (3 4))
 >(1 2 (3 4))
 
-;; Testing cons and concat with vectors
+;; Testing *builtin*.cons and concat with vectors
 
-(cons 1 [])
+(*builtin*.cons 1 [])
 >(1 . [])
-(cons [1] [2 3])
+(*builtin*.cons [1] [2 3])
 >([1] . [2 3])
-(cons 1 [2 3])
+(*builtin*.cons 1 [2 3])
 >(1 . [2 3])
 (concat [1 2] (list 3 4) [5 6])
 >(1 2 3 4 5 6)

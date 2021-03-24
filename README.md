@@ -140,7 +140,7 @@ Each `iLisp-` environment is installed with a collection of bindings.  Other tha
 Purpose | Procedures
 -|-
 Construction | `atom`, `byte-vector`, `cons`, `keyword`, `mk-map`, `mcons`, `mutable-byte-vector`, `mutable-map`, `mutable-vector`, `symbol`
-Conversion | `char->integer`, `integer->char`, `list->string`, `map->list`, `string->mutable-vector`, `list->vector`, `list->mutable-vector`, `vector->list`
+Conversion | `char->integer`, `integer->char`, `list->string`, `keyword->string`, `map->list`, `string->mutable-vector`, `list->vector`, `list->mutable-vector`, `vector->list`
 Identifiy predicates | `atom?`, `boolean?`, `fn?`, `integer?`, `keyword?`, `list?`, `macro?`, `map?`, `mutable?`, `null?`, `number?`, `pair?`, `sequential?`, `symbol?`, `vector?`
 Relational operators | `=`, `!=`, `<`, `>`, `<=`, `>=`
 Number | `+`, `-`, `*`, `/`

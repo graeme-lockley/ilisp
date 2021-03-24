@@ -533,7 +533,7 @@ fred
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure map-get :received []}))
 
 (get {} :a)
-> ()
+> (:exception (UnknownKeyInMap . {key :a map {}}))
 
 (get {:a 1 :b 2 :c 3} :a)
 > 1
@@ -542,7 +542,7 @@ fred
 > 3
 
 (get {:a 1 :b 2 :c 3} :d)
-> ()
+> (:exception (UnknownKeyInMap . {key :d map {:a 1 :b 2 :c 3}}))
 
 (get {:a 1 :b () :c 3} :b)
 > ()

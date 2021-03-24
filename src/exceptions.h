@@ -31,6 +31,7 @@ extern Value *exceptions_out_of_range(Value *procedure_name, Value *operand, Val
 extern Value *exceptions_system_error(Value *procedure, Value *parameters);
 extern Value *exceptions_unexpected_end_of_stream(char *expected, struct Exception_Position *position);
 extern Value *exceptions_unexpected_token(struct Exception_Position *position);
+extern Value *exceptions_unknown_key_in_map(Value *map, Value *key);
 extern Value *exceptions_unknown_symbol(Value *symbol);
 extern Value *exceptions_value_is_immutable(Value *procedure_name, Value *operand);
 extern Value *exceptions_value_not_applicable(Value *value, Value *arguments);

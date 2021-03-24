@@ -186,6 +186,15 @@ Value *exceptions_illegal_token(struct Exception_Position *position)
     return mkException(mkPair(exception_name, exception_payload));
 }
 
+Value *exceptions_unknown_key_in_map(Value *map, Value *key){
+    Value *exception_name = mkSymbol("UnknownKeyInMap");
+    Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
+    map_set_bang(exception_payload, mkKeyword("map"), map);
+    map_set_bang(exception_payload, mkKeyword("key"), key);
+
+    return mkException(mkPair(exception_name, exception_payload));
+}
+
 Value *exceptions_unknown_symbol(Value *symbol)
 {
     Value *exception_name = mkSymbol("UnknownSymbol");

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "exceptions.h"
 #include "map.h"
 #include "printer.h"
 #include "value.h"
@@ -143,6 +144,27 @@ Value *map_find(Value *map, Value *key)
     {
         if (snode == NULL)
             return VNil;
+
+        int c = Value_compare(snode->key, key);
+
+        if (c == 0)
+            return mkPair(snode->key, snode->value);
+
+        if (c < 0)
+            snode = snode->left;
+        else
+            snode = snode->right;
+    }
+}
+
+Value *map_get(Value *map, Value *key)
+{
+    MapNode *snode = MAP(map).nodes[Value_hash(key) % MAP(map).hash_size];
+
+    while (1)
+    {
+        if (snode == NULL)
+            return exceptions_unknown_key_in_map(map, key);
 
         int c = Value_compare(snode->key, key);
 

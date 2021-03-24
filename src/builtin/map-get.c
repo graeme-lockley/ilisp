@@ -21,7 +21,9 @@ Value *builtin_map_get(Value *map, Value *keys)
         if (!IS_MAP(map))
             return exceptions_invalid_argument(mkSymbol("map-get"), 0, mkSymbol("map"), map);
 
-        map = map_find(map, key);
+        map = map_get(map, key);
+        if (IS_EXCEPTION(map))
+            return map;
         if (!IS_NIL(map))
             map = CDR(map);
 

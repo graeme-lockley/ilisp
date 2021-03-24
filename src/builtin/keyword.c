@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "../builtins.h"
+#include "../exceptions.h"
 #include "../value.h"
 
 Value *builtin_keyword_wrapped(Value *parameters, Value *env)

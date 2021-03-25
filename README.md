@@ -141,7 +141,7 @@ Purpose | Procedures
 -|-
 Construction | `atom`, `byte-vector`, `cons`, `keyword`, `mk-map`, `mcons`, `mutable-byte-vector`, `mutable-map`, `mutable-vector`, `symbol`
 Conversion | `char->integer`, `integer->char`, `list->string`, `keyword->string`, `map->list`, `string->mutable-vector`, `list->vector`, `list->mutable-vector`, `vector->list`
-Identifiy predicates | `atom?`, `boolean?`, `fn?`, `integer?`, `keyword?`, `list?`, `macro?`, `map?`, `mutable?`, `null?`, `number?`, `pair?`, `sequential?`, `symbol?`, `vector?`
+Identifiy predicates | `atom?`, `boolean?`, `cond?`, `integer?`, `keyword?`, `list?`, `macro?`, `map?`, `mutable?`, `null?`, `number?`, `proc?`, `symbol?`, `vector?`
 Relational operators | `=`, `!=`, `<`, `>`, `<=`, `>=`
 Number | `+`, `-`, `*`, `/`
 String | `string-count`, `string-filter`, `string-nth`, `string-reverse`, `string-slice`

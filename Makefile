@@ -26,6 +26,7 @@ SRC_OBJECTS=\
 	src/string_builder.o \
 	src/value.o \
 	src/builtin/atom.o \
+	src/builtin/atomp.o \
 	src/builtin/byte-vector.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \

@@ -281,17 +281,6 @@ static Value *booleanp(Value *parameters, Value *env)
     return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *atomp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "atom?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_ATOM(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *atom_dereference(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2228,7 +2217,7 @@ Value *builtins_initialise_environment()
     map_set_bang(root_bindings, mkSymbol("*builtin*"), builtin_bindings);
 
     add_binding_into_environment(builtin_bindings, "atom", mkNativeProcedure(builtin_atom_wrapped));
-    add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(atomp));
+    add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(builtin_atomp_wrapped));
     add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(atom_dereference));
     add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(atom_swap_bang));
     add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(builtin_byte_vector_wrapper));

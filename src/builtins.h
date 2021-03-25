@@ -18,6 +18,8 @@ extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int
 
 extern Value *builtin_atom(Value *value);
 extern Value *builtin_atom_wrapped(Value *parameters, Value *env);
+extern Value *builtin_atomp(Value *value);
+extern Value *builtin_atomp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_wrapper(Value *parameters, Value *env);
 extern Value *builtin_cons(Value *car, Value *cdr);
 extern Value *builtin_cons_wrapped(Value *parameters, Value *env);

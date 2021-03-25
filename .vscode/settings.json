@@ -15,6 +15,7 @@
         "env.h": "c",
         "builtins.h": "c",
         "reader.h": "c",
-        "value.h": "c"
+        "value.h": "c",
+        "typeinfo": "c"
     }
 }

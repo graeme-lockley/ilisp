@@ -6,9 +6,6 @@
 
 Value *builtin_atom_dereference(Value *value)
 {
-    if (!IS_ATOM(value))
-        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-dereference"), 0, mkSymbol("atom"), value);
-
     return ATOM(value);
 }
 
@@ -19,6 +16,9 @@ Value *builtin_atom_dereference_wrapped(Value *parameters, Value *env)
     Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.atom-dereference");
     if (extract_result != NULL)
         return extract_result;
+
+    if (!IS_ATOM(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-dereference"), 0, mkSymbol("atom"), parameter[0]);
 
     return builtin_atom_dereference(parameter[0]);
 }

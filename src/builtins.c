@@ -281,31 +281,6 @@ static Value *booleanp(Value *parameters, Value *env)
     return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *atom_swap_bang(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "atom-swap!");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *atom = parameter[0];
-    if (!IS_ATOM(atom))
-        return exceptions_invalid_argument(mkSymbol("atom-swap!"), 0, mkSymbol("atom"), atom);
-
-    Value *f = parameter[1];
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("atom-swap!"), 1, mkSymbol("procedure"), f);
-
-    Value *v = Repl_eval_procedure(f, mkPair(ATOM(atom), VNil), env);
-    if (IS_EXCEPTION(v))
-        return v;
-
-    ATOM(atom) = v;
-
-    return v;
-}
-
 static Value *byte_vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2205,7 +2180,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "atom", mkNativeProcedure(builtin_atom_wrapped));
     add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(builtin_atomp_wrapped));
     add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(builtin_atom_dereference_wrapped));
-    add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(atom_swap_bang));
+    add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(builtin_atom_swap_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(builtin_byte_vector_wrapper));
     add_binding_into_environment(builtin_bindings, "byte-vector?", mkNativeProcedure(byte_vectorp));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));

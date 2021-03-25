@@ -24,6 +24,8 @@ extern Value *builtin_atom_dereference(Value *value);
 extern Value *builtin_atom_dereference_wrapped(Value *value, Value *env);
 extern Value *builtin_atom_swap_bang(Value *atom, Value *f, Value *env);
 extern Value *builtin_atom_swap_bang_wrapped(Value *parameters, Value *env);
+extern Value *builtin_booleanp(Value *parameters);
+extern Value *builtin_booleanp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_wrapper(Value *parameters, Value *env);
 extern Value *builtin_cons(Value *car, Value *cdr);
 extern Value *builtin_cons_wrapped(Value *parameters, Value *env);

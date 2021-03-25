@@ -29,6 +29,7 @@ SRC_OBJECTS=\
 	src/builtin/atomp.o \
 	src/builtin/atom-dereference.o \
 	src/builtin/atom-swap-bang.o \
+	src/builtin/booleanp.o \
 	src/builtin/byte-vector.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \

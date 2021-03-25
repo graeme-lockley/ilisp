@@ -270,17 +270,6 @@ static Value *assoc_bang(Value *parameters, Value *env)
     }
 }
 
-static Value *booleanp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "boolean?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_BOOLEAN(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *byte_vectorp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -2130,7 +2119,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
     add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(assoc));
     add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(assoc_bang));
-    add_binding_into_environment(root_bindings, "boolean?", mkNativeProcedure(booleanp));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));
@@ -2182,6 +2170,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(builtin_atom_dereference_wrapped));
     add_binding_into_environment(builtin_bindings, "atom-swap!", mkNativeProcedure(builtin_atom_swap_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector", mkNativeProcedure(builtin_byte_vector_wrapper));
+    add_binding_into_environment(builtin_bindings, "boolean?", mkNativeProcedure(builtin_booleanp_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector?", mkNativeProcedure(byte_vectorp));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));

@@ -251,13 +251,6 @@ static Lexer initialise_lexer(char *source_name, char *content)
     return lexer;
 }
 
-static void append_to_list(Value *item, Value ***cursor)
-{
-    Value *cons = mkPair(item, VNil);
-    **cursor = cons;
-    *cursor = &CDR(cons);
-}
-
 static Value *parse(Lexer *lexer)
 {
     switch (lexer->token)
@@ -402,7 +395,7 @@ static Value *parse(Lexer *lexer)
                 Value *root = VNil;
                 Value **root_cursor = &root;
 
-                append_to_list(mkSymbol("map-get"), &root_cursor);
+                Value_append_to_list(mkSymbol("map-get"), &root_cursor);
 
                 int is_first = 1;
                 char *s_cursor = s;
@@ -412,7 +405,7 @@ static Value *parse(Lexer *lexer)
                     *rest = '\0';
                     if (strcmp(s_cursor, "") != 0)
                     {
-                        append_to_list(
+                        Value_append_to_list(
                             is_first ? mkSymbol(s_cursor) : mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
                             &root_cursor);
                         is_first = 0;
@@ -421,7 +414,7 @@ static Value *parse(Lexer *lexer)
                     rest = strchr(s_cursor, '.');
                 }
                 if (strcmp(s_cursor, "") != 0)
-                    append_to_list(
+                    Value_append_to_list(
                         mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
                         &root_cursor);
                 free(s);

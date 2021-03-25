@@ -146,6 +146,7 @@ extern Value *mkPair(Value *car, Value *cdr);
 #define PAIR(v) ((v)->pairV)
 #define CAR(v) ((v)->pairV.car)
 #define CDR(v) ((v)->pairV.cdr)
+extern Value *Value_append_to_list(Value *item, Value ***cursor);
 
 extern Value *mkVector(Value **items, int length);
 extern Value *mkVectorUse(Value **items, int length);

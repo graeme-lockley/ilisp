@@ -94,6 +94,15 @@ Value *mkPair(Value *car, Value *cdr)
     return value;
 }
 
+Value *Value_append_to_list(Value *item, Value ***cursor)
+{
+    Value *cons = mkPair(item, VNil);
+    **cursor = cons;
+    *cursor = &CDR(cons);
+
+    return cons;
+}
+
 Value *mkVector(Value *items[], int length)
 {
     Value *value = mkValue(VT_VECTOR);

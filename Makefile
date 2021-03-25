@@ -32,6 +32,7 @@ SRC_OBJECTS=\
 	src/builtin/booleanp.o \
 	src/builtin/byte-vector.o \
 	src/builtin/byte-vectorp.o \
+	src/builtin/byte-vector-to-list.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \

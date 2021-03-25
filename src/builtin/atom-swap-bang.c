@@ -2,6 +2,7 @@
 
 #include "../builtins.h"
 #include "../exceptions.h"
+#include "../repl.h"
 #include "../value.h"
 
 Value *builtin_atom_swap_bang(Value *atom, Value *f, Value *env)

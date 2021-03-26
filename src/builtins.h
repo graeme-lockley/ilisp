@@ -28,6 +28,7 @@ extern Value *builtin_booleanp(Value *parameters);
 extern Value *builtin_booleanp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_to_list_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_to_mutable_byte_vector_wrapped(Value *parameters, Value *env);
+extern Value *builtin_byte_vector_to_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_wrapper(Value *parameters, Value *env);
 extern Value *builtin_byte_vectorp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_cons(Value *car, Value *cdr);

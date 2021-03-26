@@ -1,0 +1,22 @@
+(import "../lib/unit.scm" :as Unit)
+
+(Unit.test "atom?"
+    (Unit.assert-truthy (*builtin*.atom? (*builtin*.atom 123)))
+    
+    (Unit.assert-falsy (*builtin*.atom? ()))
+    (Unit.assert-falsy (*builtin*.atom? #t))
+    (Unit.assert-falsy (*builtin*.atom? #f))
+    (Unit.assert-falsy (*builtin*.atom? #\A))
+    (Unit.assert-falsy (*builtin*.atom? 1))
+    (Unit.assert-falsy (*builtin*.atom? "name"))
+    (Unit.assert-falsy (*builtin*.atom? 'name))
+    (Unit.assert-falsy (*builtin*.atom? :name))
+    (Unit.assert-falsy (*builtin*.atom? '(1 2 3)))
+    (Unit.assert-falsy (*builtin*.atom? []))
+    (Unit.assert-falsy (*builtin*.atom? [1 2 3]))
+    (Unit.assert-falsy (*builtin*.atom? {}))
+    (Unit.assert-falsy (*builtin*.atom? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (*builtin*.atom? (proc (n) (+ n 1))))
+    (Unit.assert-falsy (*builtin*.atom? car))
+    (Unit.assert-falsy (*builtin*.atom? and))
+)

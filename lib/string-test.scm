@@ -79,23 +79,23 @@
 )
 
 (Unit.test "fold"
-    (const (join a b) (str (char->string b) a))
+    (const (join a b) (str (*builtin*.character->string b) a))
 
     (Unit.assert-equals (S.fold "" "" join) "")
     (Unit.assert-equals (S.fold "h" "" join) "h")
     (Unit.assert-equals (S.fold "hello" "" join) "olleh")
 
-   (Unit.assert-equals (S.fold "hello" "0" (proc (a v) (str "(" a " + " (char->string v) ")"))) "(((((0 + h) + e) + l) + l) + o)")
+   (Unit.assert-equals (S.fold "hello" "0" (proc (a v) (str "(" a " + " (*builtin*.character->string v) ")"))) "(((((0 + h) + e) + l) + l) + o)")
 )
 
 (Unit.test "fold-right"
-   (const (join a b) (str (char->string a) b))
+   (const (join a b) (str (*builtin*.character->string a) b))
 
    (Unit.assert-equals (S.fold-right "" "" join) "")
    (Unit.assert-equals (S.fold-right "h" "" join) "h")
    (Unit.assert-equals (S.fold-right "hello" "" join) "hello")
 
-   (Unit.assert-equals (S.fold-right "hello" "0" (proc (v a) (str "(" (char->string v) " + " a ")"))) "(h + (e + (l + (l + (o + 0)))))")
+   (Unit.assert-equals (S.fold-right "hello" "0" (proc (v a) (str "(" (*builtin*.character->string v) " + " a ")"))) "(h + (e + (l + (l + (o + 0)))))")
 )
 
 (Unit.test "nth"

@@ -40,6 +40,7 @@ SRC_OBJECTS=\
 	src/builtin/byte-vector-nth.o \
 	src/builtin/byte-vector-nth-bang.o \
 	src/builtin/characterp.o \
+	src/builtin/character-to-string.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \

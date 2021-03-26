@@ -96,7 +96,7 @@
 
         (proc ()
             (*builtin*.atom-swap! c inc)
-            (char->string (*builtin*.atom-dereference c))
+            (*builtin*.character->string (*builtin*.atom-dereference c))
         )
     )
 

@@ -1,6 +1,6 @@
 (const (char->int n)
     (if (<= 48 n 57) (- n 48)
-        (raise 'InvalidArgument {:procedure 'char->int :arg-number 0 :expected "0..9" :received (char->string n)})
+        (raise 'InvalidArgument {:procedure 'char->int :arg-number 0 :expected "0..9" :received (*builtin*.character->string n)})
     )
 )
 

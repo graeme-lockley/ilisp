@@ -146,7 +146,7 @@
                 )
             )
         )
-        char->string
+        *builtin*.character->string
     )
 )
 (const- *STRING-SEPARATOR*

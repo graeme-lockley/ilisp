@@ -1,7 +1,7 @@
 (import "../lib/unit.scm" :as Unit)
 
-(Unit.test "char->string"
-    (Unit.assert-equals (char->string #\A) "A")
+(Unit.test "character->string"
+    (Unit.assert-equals (*builtin*.character->string #\A) "A")
 )
 
 (Unit.test "printer"

@@ -35,6 +35,7 @@ SRC_OBJECTS=\
 	src/builtin/byte-vector-to-list.o \
 	src/builtin/byte-vector-to-mutable-byte-vector.o \
 	src/builtin/byte-vector-to-mutable-vector.o \
+	src/builtin/byte-vector-to-vector.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \

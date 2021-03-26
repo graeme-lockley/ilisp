@@ -2164,6 +2164,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector->list", mkNativeProcedure(builtin_byte_vector_to_list_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector->mutable-byte-vector", mkNativeProcedure(builtin_byte_vector_to_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector->mutable-vector", mkNativeProcedure(builtin_byte_vector_to_mutable_vector_wrapped));
+    add_binding_into_environment(builtin_bindings, "byte-vector->vector", mkNativeProcedure(builtin_byte_vector_to_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(byte_vector_count));
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(byte_vector_nth));

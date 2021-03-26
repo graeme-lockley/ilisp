@@ -45,6 +45,7 @@ SRC_OBJECTS=\
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
 	src/builtin/integerp.o \
+	src/builtin/integer-to-character.o \
 	src/builtin/keyword.o \
 	src/builtin/keywordp.o \
 	src/builtin/map-find.o \

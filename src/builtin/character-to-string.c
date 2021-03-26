@@ -18,7 +18,7 @@ Value *builtin_character_to_string_wrapped(Value *parameters, Value *env)
     else if (IS_CHARACTER(parameter[0]))
         value = (int)CHARACTER(parameter[0]);
     else
-        return exceptions_invalid_argument(mkSymbol("*builtin*.character-string"), 0, mkSymbol("number"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.character->string"), 0, mkSymbol("number"), parameter[0]);
 
     char result[] = {'X', '\0'};
     result[0] = (char)value;

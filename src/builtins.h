@@ -45,6 +45,7 @@ extern Value *builtin_file_name_relative_to_file_name(char *base_file_name, char
 extern Value *builtin_file_name_relative_to_file_name_wrapped(Value *parameters, Value *env);
 extern Value *builtin_import_source_wrapped(Value *parameters, Value *env);
 extern Value *builtin_integerp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_integer_to_character_wrapped(Value *parameters, Value *env);
 extern Value *builtin_keyword_wrapped(Value *parameters, Value *env);
 extern Value *builtin_keywordp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_count(Value *list);

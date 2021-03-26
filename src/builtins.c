@@ -380,17 +380,6 @@ Value *char_to_string(Value *parameters, Value *env)
     return mkString(result);
 }
 
-static Value *characterp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "character?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_CHARACTER(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *concat(Value *parameters, Value *env)
 {
     Value *result = VNil;
@@ -2041,7 +2030,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "char->string", mkNativeProcedure(char_to_string));
-    add_binding_into_environment(root_bindings, "character?", mkNativeProcedure(characterp));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
@@ -2099,6 +2087,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(builtin_byte_vector_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(builtin_byte_vector_nth_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "character?", mkNativeProcedure(builtin_characterp_wrapped));
     add_binding_into_environment(builtin_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));

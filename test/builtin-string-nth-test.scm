@@ -9,7 +9,7 @@
 )
 
 (Unit.test "result is character"
-    (Unit.assert-truthy (character? (*builtin*.string-nth "Hello world" 0)))
+    (Unit.assert-truthy (*builtin*.character? (*builtin*.string-nth "Hello world" 0)))
 )
 
 (Unit.test "out of range index"

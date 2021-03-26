@@ -4,25 +4,6 @@
     (Unit.assert-equals (char->string #\A) "A")
 )
 
-(Unit.test "character?"
-    (Unit.assert-falsy (character? ()))
-    (Unit.assert-falsy (character? #t))
-    (Unit.assert-falsy (character? #f))
-    (Unit.assert-truthy (character? #\A))
-    (Unit.assert-falsy (character? 1))
-    (Unit.assert-falsy (character? "name"))
-    (Unit.assert-falsy (character? 'name))
-    (Unit.assert-falsy (character? :name))
-    (Unit.assert-falsy (character? '(1 2 3)))
-    (Unit.assert-falsy (character? []))
-    (Unit.assert-falsy (character? [1 2 3]))
-    (Unit.assert-falsy (character? {}))
-    (Unit.assert-falsy (character? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (character? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (character? car))
-    (Unit.assert-falsy (character? and))
-)
-
 (Unit.test "printer"
     (Unit.assert-equals (str #\A) "A")
     (Unit.assert-equals (str #x20;) " ")

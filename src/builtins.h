@@ -35,6 +35,7 @@ extern Value *builtin_byte_vectorp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_nth_wrapped(Value *parameters, Value *env);
 extern Value *builtin_byte_vector_nth_bang_wrapped(Value *parameters, Value *env);
+extern Value *builtin_characterp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_cons(Value *car, Value *cdr);
 extern Value *builtin_cons_wrapped(Value *parameters, Value *env);
 extern Value *builtin_eval(Value *v, Value *env);

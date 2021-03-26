@@ -12,6 +12,12 @@
     (Unit.assert-equals (*builtin*.byte-vector-nth bv' 1) 100)
 )
 
+(Unit.test "mutability signal"
+    (const bv' (*builtin*.byte-vector 1 #\2 3))
+
+    (Unit.assert-signal-name (*builtin*.byte-vector-nth! bv' 1 1) 'ValueIsImmutable)
+)
+
 (Unit.test "out of range index signal"
     (const bv' (*builtin*.byte-vector-mutable (*builtin*.byte-vector 1 #\2 3)))
 

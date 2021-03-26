@@ -36,6 +36,9 @@ SRC_OBJECTS=\
 	src/builtin/byte-vector-to-mutable-byte-vector.o \
 	src/builtin/byte-vector-to-mutable-vector.o \
 	src/builtin/byte-vector-to-vector.o \
+	src/builtin/byte-vector-count.o \
+	src/builtin/byte-vector-nth.o \
+	src/builtin/byte-vector-nth-bang.o \
 	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
@@ -43,6 +46,7 @@ SRC_OBJECTS=\
 	src/builtin/keywordp.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
+	src/builtin/mutable-byte-vector.o \
 	src/builtin/import-source.o \
 	src/builtin/list-count.o \
 	src/builtin/load-source.o \

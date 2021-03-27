@@ -402,35 +402,6 @@ static Value *fnp(Value *parameters, Value *env)
     return IS_PROCEDURE(parameter[0]) || IS_NATIVE_PROCEDURE(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *hash_map(Value *parameters, Value *env)
-{
-    Value *result = map_create(0);
-
-    int parameter_count = 0;
-
-    while (1)
-    {
-        if (IS_NIL(parameters))
-            return result;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_key = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("hash-map"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_value = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        map_set_bang(result, mi_key, mi_value);
-    }
-}
-
 static Value *integer_plus(Value *parameters, Value *env)
 {
     int argument_number = 0;
@@ -1838,7 +1809,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
-    add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
@@ -1907,6 +1877,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "map-assoc!", mkNativeProcedure(builtin_map_assoc_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "map-dissoc", mkNativeProcedure(builtin_map_dissoc_wrapped));
     add_binding_into_environment(builtin_bindings, "map-dissoc!", mkNativeProcedure(builtin_map_dissoc_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "mk-map", mkNativeProcedure(builtin_mk_map_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));

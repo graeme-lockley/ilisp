@@ -489,20 +489,20 @@ fred
 (map [1 2 3 4] (proc (n) (+ n 1)))
 > (2 3 4 5)
 
-(hash-map)
+(*builtin*.mk-map)
 > {}
 
-(*builtin*.map? (hash-map))
+(*builtin*.map? (*builtin*.mk-map))
 > #t
 
-(hash-map :a 1 :b 2 :c 3)
+(*builtin*.mk-map :a 1 :b 2 :c 3)
 > {:a 1 :b 2 :c 3}
 
-(*builtin*.map? (hash-map :a 1 :b 2 :c 3))
+(*builtin*.map? (*builtin*.mk-map :a 1 :b 2 :c 3))
 > #t
 
-(hash-map :a 1 :b 2 :c)
-> (:exception (InvalidArgument . {:arg-number 5 :expected-type pair :procedure hash-map :received ()}))
+(*builtin*.mk-map :a 1 :b 2 :c)
+> (:exception (InvalidArgument . {:arg-number 5 :expected-type pair :procedure *builtin*.mk-map :received ()}))
 
 (*builtin*.map-assoc {})
 > {}

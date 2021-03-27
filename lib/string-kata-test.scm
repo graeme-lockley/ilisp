@@ -146,7 +146,9 @@
                 )
             )
         )
-        *builtin*.character->string
+        (proc (i)
+            (*builtin*.character->string (*builtin*.integer->character i))
+        )
     )
 )
 (const- *STRING-SEPARATOR*

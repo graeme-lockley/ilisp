@@ -12,13 +12,8 @@ Value *builtin_integer_to_character_wrapped(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    int value;
-    if (IS_NUMBER(parameter[0]))
-        value = NUMBER(parameter[0]);
-    else if (IS_CHARACTER(parameter[0]))
-        value = (int)CHARACTER(parameter[0]);
-    else
+    if (!IS_NUMBER(parameter[0]))
         return exceptions_invalid_argument(mkSymbol("*builtin*.integer->character"), 0, mkSymbol("number"), parameter[0]);
 
-    return mkCharacter((unsigned char) value);
+    return mkCharacter((unsigned char) NUMBER(parameter[0]));
 }

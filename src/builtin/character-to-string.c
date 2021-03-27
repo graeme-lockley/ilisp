@@ -13,9 +13,7 @@ Value *builtin_character_to_string_wrapped(Value *parameters, Value *env)
         return extract_result;
 
     int value;
-    if (IS_NUMBER(parameter[0]))
-        value = NUMBER(parameter[0]);
-    else if (IS_CHARACTER(parameter[0]))
+    if (IS_CHARACTER(parameter[0]))
         value = (int)CHARACTER(parameter[0]);
     else
         return exceptions_invalid_argument(mkSymbol("*builtin*.character->string"), 0, mkSymbol("number"), parameter[0]);

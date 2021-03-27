@@ -16,6 +16,7 @@
         "builtins.h": "c",
         "reader.h": "c",
         "value.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "repl.h": "c"
     }
 }

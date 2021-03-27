@@ -34,23 +34,6 @@
     (Unit.assert-falsy (list? and))
 )
 
-(Unit.test "mutable?"
-    (Unit.assert-falsy (mutable? ()))
-    (Unit.assert-falsy (mutable? 1))
-    (Unit.assert-falsy (mutable? #\A))
-    (Unit.assert-falsy (mutable? "name"))
-    (Unit.assert-falsy (mutable? 'name))
-    (Unit.assert-falsy (mutable? :name))
-    (Unit.assert-falsy (mutable? '(1 2 3)))
-    (Unit.assert-falsy (mutable? []))
-    (Unit.assert-falsy (mutable? [1 2 3]))
-    (Unit.assert-falsy (mutable? {}))
-    (Unit.assert-falsy (mutable? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (mutable? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (mutable? car))
-    (Unit.assert-falsy (mutable? and))
-)
-
 (Unit.test "nil?"
     (Unit.assert-truthy (nil? ()))
     (Unit.assert-falsy (nil? 1))

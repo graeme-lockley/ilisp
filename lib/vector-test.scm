@@ -5,7 +5,7 @@
 
 (Unit.test "->mutable"
     (Unit.assert-equals (Vector.->mutable []) [])
-    (Unit.assert-truthy (mutable? (Vector.->mutable [])))
+    (Unit.assert-truthy (*builtin*.mutable? (Vector.->mutable [])))
 )
 
 (Unit.test "car"
@@ -105,7 +105,7 @@
     (Unit.assert-equals (Vector.nth! (Vector.->mutable [1 2]) 1 5) [1 5])
     (Unit.assert-equals (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3) [1 2 3 4 5])
 
-    (Unit.assert-truthy (mutable? (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3)))
+    (Unit.assert-truthy (*builtin*.mutable? (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3)))
 
     (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (proc (signal) (do
         (Unit.assert-equals (car signal) 'OutOfRange)

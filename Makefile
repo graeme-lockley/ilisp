@@ -59,6 +59,7 @@ SRC_OBJECTS=\
 	src/builtin/map-to-list.o \
 	src/builtin/mapp.o \
 	src/builtin/mk-map.o \
+	src/builtin/mutablep.o \
 	src/builtin/mutable-byte-vector.o \
 	src/builtin/mutable-map.o \
 	src/builtin/numberp.o \

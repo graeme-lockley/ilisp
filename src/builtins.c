@@ -977,17 +977,6 @@ static Value *mcons(Value *parameters, Value *env)
     return result;
 }
 
-static Value *mutablep(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "mutable?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_IMMUTABLE(parameter[0]) ? VFalse : VTrue;
-}
-
 static Value *nilp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1814,7 +1803,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
     add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
-    add_binding_into_environment(root_bindings, "mutable?", mkNativeProcedure(mutablep));
     add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pair?", mkNativeProcedure(pairp));
@@ -1878,6 +1866,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "map-dissoc", mkNativeProcedure(builtin_map_dissoc_wrapped));
     add_binding_into_environment(builtin_bindings, "map-dissoc!", mkNativeProcedure(builtin_map_dissoc_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "mk-map", mkNativeProcedure(builtin_mk_map_wrapped));
+    add_binding_into_environment(builtin_bindings, "mutable?", mkNativeProcedure(builtin_mutablep_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));

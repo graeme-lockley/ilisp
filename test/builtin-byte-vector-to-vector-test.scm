@@ -4,12 +4,12 @@
     (const mbv1 (*builtin*.byte-vector->vector (*builtin*.byte-vector)))
 
     (Unit.assert-equals mbv1 [])
-    (Unit.assert-falsy (mutable? mbv1))
+    (Unit.assert-falsy (*builtin*.mutable? mbv1))
 
     (const mbv2 (*builtin*.byte-vector->vector (*builtin*.byte-vector 1 2 3 4 5)))
 
     (Unit.assert-equals mbv2 [1 2 3 4 5])
-    (Unit.assert-falsy (mutable? mbv2))
+    (Unit.assert-falsy (*builtin*.mutable? mbv2))
 )
 
 (Unit.test "arg count signal"

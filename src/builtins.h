@@ -67,6 +67,7 @@ extern Value *builtin_mapp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mk_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_byte_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_map_wrapped(Value *parameters, Value *env);
+extern Value *builtin_mutablep_wrapped(Value *parameters, Value *env);
 extern Value *builtin_numberp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);

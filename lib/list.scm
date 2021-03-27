@@ -15,13 +15,13 @@
 (const filter *builtin*.list-filter)
 
  (const (fold xs z f)
-    (if (nil? xs) z
+    (if (*builtin*.null? xs) z
         (fold (cdr xs) (f z (car xs)) f)
     )
 )
 
 (const (fold-right xs z f)
-    (if (nil? xs) z
+    (if (*builtin*.null? xs) z
         (f (car xs) (fold-right (cdr xs) z f))
     )
 )
@@ -33,8 +33,8 @@
 )
 
 (const (separate lst sep)
-    (if (nil? lst) ()
-        (nil? (cdr lst)) lst
+    (if (*builtin*.null? lst) ()
+        (*builtin*.null? (cdr lst)) lst
         (do
             (const s (if (fn? sep) (sep) sep))
 
@@ -54,8 +54,8 @@
 )
 
 (const (starts-with lst prefix)
-    (if (nil? prefix) #t
-        (nil? lst) #f
+    (if (*builtin*.null? prefix) #t
+        (*builtin*.null? lst) #f
         (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
     )
 )
@@ -67,7 +67,7 @@
 )
 
 (const (->list s)
-    (if (nil? s) s
+    (if (*builtin*.null? s) s
         (list? s) s
         (or (vector? s) (string? s)) (map s (proc (n) n))
         (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})

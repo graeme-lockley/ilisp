@@ -1,7 +1,7 @@
 (const- *top-level* :t)
 
 (macro (and . terms)
-  (if (nil? terms) 
+  (if (*builtin*.null? terms) 
     #t
     (if (= ((map-get *builtin* 'list-count) terms) 1)
       (first terms) 
@@ -14,7 +14,7 @@
 )
 
 (macro (or . terms)
-  (if (nil? terms) 
+  (if (*builtin*.null? terms) 
     #f
     (if (= ((map-get *builtin* 'list-count) terms) 1)
       (first terms)
@@ -55,7 +55,7 @@
 (const take-right Sequence.take-right)
 
 (const- (type-of v)
-  (if (nil? v) "nil"
+  (if (*builtin*.null? v) "nil"
       (boolean? v) "boolean"
       (pair? v) "pair"
       (vector? v) "vector"

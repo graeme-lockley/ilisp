@@ -24,7 +24,7 @@ Value *builtin_import_source(char *source_name, Value *env)
 
     EVAL_ASSIGN(mapped_value, map_find(imports, absolute_source_name));
 
-    if (IS_NIL(mapped_value))
+    if (IS_NULL(mapped_value))
     {
         EVAL_ASSIGN(content, builtin_slurp(STRING(absolute_source_name)));
         EVAL_ASSIGN(expressions, Reader_read_many(STRING(absolute_source_name), STRING(content)));
@@ -39,7 +39,7 @@ Value *builtin_import_source(char *source_name, Value *env)
 
         while (1)
         {
-            if (IS_NIL(expressions))
+            if (IS_NULL(expressions))
                 break;
 
             Value *eval_result = builtin_eval(CAR(expressions), import_inner_env);

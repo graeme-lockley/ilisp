@@ -23,13 +23,13 @@ Value *Repl_evalValue(Value *v, Value *env)
 
         if (IS_SUCCESSFUL(car))
         {
-            Value *root = mkPair(car, VNil);
+            Value *root = mkPair(car, VNull);
             Value *srcCursor = CDR(v);
             Value *resultCursor = root;
 
             while (1)
             {
-                if (IS_NIL(srcCursor))
+                if (IS_NULL(srcCursor))
                     return root;
                 else if (IS_PAIR(srcCursor))
                 {
@@ -37,7 +37,7 @@ Value *Repl_evalValue(Value *v, Value *env)
 
                     if (IS_SUCCESSFUL(cdr))
                     {
-                        Value *pair = mkPair(cdr, VNil);
+                        Value *pair = mkPair(cdr, VNull);
                         CDR(resultCursor) = pair;
 
                         resultCursor = pair;
@@ -94,7 +94,7 @@ Value *Repl_evalValue(Value *v, Value *env)
 
         while (1)
         {
-            if (IS_NIL(assoc))
+            if (IS_NULL(assoc))
                 return map;
 
             Value *v = CAR(assoc);
@@ -123,12 +123,12 @@ static Value *eval_quasiquote(Value *v, Value *env);
 
 Value *quasiquote_loop(Value *v, Value *env)
 {
-    Value *result = VNil;
+    Value *result = VNull;
     Value **result_cursor = &result;
 
     while (1)
     {
-        if (IS_NIL(v))
+        if (IS_NULL(v))
             return result;
 
         if (!IS_PAIR(v))
@@ -136,8 +136,8 @@ Value *quasiquote_loop(Value *v, Value *env)
 
         Value *item =
             startsWith(CAR(v), "splice-unquote")
-                ? mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNil, VNil)))
-                : mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNil, VNil)));
+                ? mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNull, VNull)))
+                : mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNull, VNull)));
 
             /* leaving this here - it is what a replace cons would like if wanted to map cons onto *builtin*.cons
              * huge performance wack
@@ -162,7 +162,7 @@ Value *quasiquote_loop(Value *v, Value *env)
 static Value *eval_quasiquote(Value *v, Value *env)
 {
     if (IS_SYMBOL(v))
-        return mkPair(mkSymbol("quote"), mkPair(v, VNil));
+        return mkPair(mkSymbol("quote"), mkPair(v, VNull));
 
     if (IS_PAIR(v))
     {
@@ -181,7 +181,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
     }
 
     if (IS_VECTOR(v))
-        return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNil));
+        return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNull));
 
     if (IS_MAP(v))
     {
@@ -190,7 +190,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
 
         while (1)
         {
-            if (IS_NIL(assoc))
+            if (IS_NULL(assoc))
                 return map;
 
             Value *v = CAR(assoc);
@@ -224,10 +224,10 @@ static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_
 
         while (1)
         {
-            if (IS_NIL(argument_cursor) && IS_NIL(parameter_cursor))
+            if (IS_NULL(argument_cursor) && IS_NULL(parameter_cursor))
                 return new_env;
 
-            if (IS_NIL(parameter_cursor))
+            if (IS_NULL(parameter_cursor))
                 return exceptions_incorrect_number_of_arguments(params, args);
 
             if (strcmp(SYMBOL(CAR(parameter_cursor)), ".") == 0)
@@ -236,7 +236,7 @@ static Value *mk_new_env_for_apply(Value *params, Value *args, Value *enclosing_
                 return new_env;
             }
 
-            if (IS_NIL(argument_cursor))
+            if (IS_NULL(argument_cursor))
                 return exceptions_incorrect_number_of_arguments(params, args);
 
             argument_index += 1;
@@ -259,11 +259,11 @@ static Value *find_macro_binding_from_apply(Value *v, Value *env)
     Value *cursor = env;
     while (1)
     {
-        if (IS_NIL(cursor))
+        if (IS_NULL(cursor))
             return NULL;
 
         Value *binding = map_find(CAR(cursor), n);
-        if (!IS_NIL(binding))
+        if (!IS_NULL(binding))
         {
             Value *value = CDR(binding);
 
@@ -314,7 +314,7 @@ Value *Repl_eval_procedure(Value *p, Value *args, Value *env)
 
     if (IS_KEYWORD(p))
     {
-        if (!IS_NIL(args))
+        if (!IS_NULL(args))
             return exceptions_expected_argument_count(p, 0, args);
 
         return p;
@@ -327,7 +327,7 @@ Value *Repl_eval(Value *v, Value *env)
 {
     while (1)
     {
-        if (IS_NIL(v))
+        if (IS_NULL(v))
             return v;
 
         if (IS_PAIR(v))
@@ -337,14 +337,14 @@ Value *Repl_eval(Value *v, Value *env)
                 char *symbol_name = SYMBOL(CAR(v));
                 if (strcmp(symbol_name, "do") == 0)
                 {
-                    Value *result = VNil;
+                    Value *result = VNull;
                     v = CDR(v);
 
-                    if (IS_NIL(v))
-                        return VNil;
+                    if (IS_NULL(v))
+                        return VNull;
                     while (1)
                     {
-                        if (IS_NIL(CDR(v)))
+                        if (IS_NULL(CDR(v)))
                         {
                             v = CAR(v);
                             break;
@@ -371,9 +371,9 @@ Value *Repl_eval(Value *v, Value *env)
                     if (!IS_PAIR(arguments))
                         return exceptions_invalid_argument(mkSymbol(symbol_name), 1, mkSymbol("pair"), arguments);
 
-                    Value *body = IS_NIL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
+                    Value *body = IS_NULL(CDR(arguments)) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
-                    int is_not_top_level = IS_NIL(CDR(env)) || strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || strcmp(symbol_name, "macro-") == 0 || !Value_truthy(map_containsp(CAR(env), mkSymbol("*top-level*")));
+                    int is_not_top_level = IS_NULL(CDR(env)) || strcmp(symbol_name, "const-") == 0 || strcmp(symbol_name, "let-") == 0 || strcmp(symbol_name, "macro-") == 0 || !Value_truthy(map_containsp(CAR(env), mkSymbol("*top-level*")));
                     Value *binding_scope = is_not_top_level ? CAR(env) : CAR(CDR(env));
 
                     if (IS_PAIR(signature))
@@ -382,12 +382,12 @@ Value *Repl_eval(Value *v, Value *env)
                             return exceptions_duplicate_binding(CAR(signature));
 
                         if (strcmp(symbol_name, "macro") == 0 || strcmp(symbol_name, "macro-") == 0)
-                            body = mkPair(mkSymbol("mo"), mkPair(CDR(signature), mkPair(body, VNil)));
+                            body = mkPair(mkSymbol("mo"), mkPair(CDR(signature), mkPair(body, VNull)));
                         else
-                            body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNil)));
+                            body = mkPair(mkSymbol("proc"), mkPair(CDR(signature), mkPair(body, VNull)));
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
-                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNull)), VNull))), mkPair(body, VNull));
 
                         Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))
@@ -401,7 +401,7 @@ Value *Repl_eval(Value *v, Value *env)
                             return exceptions_duplicate_binding(signature);
 
                         if (strcmp(symbol_name, "let") == 0 || strcmp(symbol_name, "let-") == 0)
-                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNil)), VNil))), mkPair(body, VNil));
+                            body = mkPair(mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(mkPair(mkSymbol("quote"), mkPair(mkSymbol("atom"), VNull)), VNull))), mkPair(body, VNull));
 
                         Value *proc = Repl_eval(body, env);
                         if (IS_EXCEPTION(proc))
@@ -412,7 +412,7 @@ Value *Repl_eval(Value *v, Value *env)
                     else
                         return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("symbol"), signature);
 
-                    return VNil;
+                    return VNull;
                 }
                 else if (strcmp(symbol_name, "proc") == 0 || strcmp(symbol_name, "mo") == 0)
                 {
@@ -428,7 +428,7 @@ Value *Repl_eval(Value *v, Value *env)
                         int parameter_number = 0;
                         while (1)
                         {
-                            if (IS_NIL(cursor))
+                            if (IS_NULL(cursor))
                                 break;
 
                             if (!IS_PAIR(cursor))
@@ -441,7 +441,7 @@ Value *Repl_eval(Value *v, Value *env)
                             {
                                 Value *rest = CDR(cursor);
 
-                                if (!IS_PAIR(rest) || !IS_NIL(CDR(rest)))
+                                if (!IS_PAIR(rest) || !IS_NULL(CDR(rest)))
                                     return exceptions_invalid_fn_form(cursor);
                             }
 
@@ -454,7 +454,7 @@ Value *Repl_eval(Value *v, Value *env)
                     if (!IS_PAIR(arguments))
                         return exceptions_invalid_argument(mkSymbol(symbol_name), 0, mkSymbol("pair"), arguments);
 
-                    Value *body = (IS_NIL(CDR(arguments))) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
+                    Value *body = (IS_NULL(CDR(arguments))) ? CAR(arguments) : mkPair(mkSymbol("do"), arguments);
 
                     return strcmp(symbol_name, "proc") == 0
                                ? mkProcedure(body, signature, env)
@@ -471,8 +471,8 @@ Value *Repl_eval(Value *v, Value *env)
                     Value *cursor = Repl_eval(arguments[0], env);
                     if (IS_EXCEPTION(cursor))
                         return cursor;
-                    if (!IS_PAIR(cursor) && !IS_NIL(cursor))
-                        return exceptions_invalid_argument(mkSymbol("for-each"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), cursor);
+                    if (!IS_PAIR(cursor) && !IS_NULL(cursor))
+                        return exceptions_invalid_argument(mkSymbol("for-each"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), cursor);
 
                     Value *proc = Repl_eval(arguments[1], env);
                     if (IS_EXCEPTION(proc))
@@ -482,13 +482,13 @@ Value *Repl_eval(Value *v, Value *env)
 
                     while (1)
                     {
-                        if (IS_NIL(cursor))
-                            return VNil;
+                        if (IS_NULL(cursor))
+                            return VNull;
 
                         if (!IS_PAIR(cursor))
-                            cursor = mkPair(cursor, VNil);
+                            cursor = mkPair(cursor, VNull);
 
-                        Value *v = Repl_eval_procedure(proc, mkPair(CAR(cursor), VNil), env);
+                        Value *v = Repl_eval_procedure(proc, mkPair(CAR(cursor), VNull), env);
                         if (IS_EXCEPTION(v))
                             return v;
 
@@ -501,15 +501,15 @@ Value *Repl_eval(Value *v, Value *env)
 
                     while (1)
                     {
-                        if (IS_NIL(c))
-                            return VNil;
+                        if (IS_NULL(c))
+                            return VNull;
 
                         Value *e = Repl_eval(CAR(c), env);
                         if (!IS_SUCCESSFUL(e))
                             return e;
 
                         c = CDR(c);
-                        if (IS_NIL(c))
+                        if (IS_NULL(c))
                             return e;
 
                         if (Value_truthy(e))
@@ -579,7 +579,7 @@ Value *Repl_eval(Value *v, Value *env)
                     if (!IS_SUCCESSFUL(f))
                         return f;
 
-                    Value *args = mkPair(EXCEPTION(e), VNil);
+                    Value *args = mkPair(EXCEPTION(e), VNull);
 
                     if (IS_PROCEDURE(f))
                     {
@@ -594,7 +594,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     if (IS_KEYWORD(f))
                     {
-                        if (!IS_NIL(args))
+                        if (!IS_NULL(args))
                             return exceptions_expected_argument_count(f, 0, args);
 
                         return f;
@@ -635,7 +635,7 @@ Value *Repl_eval(Value *v, Value *env)
 
                     if (IS_KEYWORD(f))
                     {
-                        if (!IS_NIL(args))
+                        if (!IS_NULL(args))
                             return exceptions_expected_argument_count(f, 0, args);
 
                         return f;

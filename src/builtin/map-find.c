@@ -11,7 +11,7 @@ Value *builtin_map_find(Value *map, Value *keys)
 
     while (1)
     {
-        if (IS_NIL(keys))
+        if (IS_NULL(keys))
             return map;
 
         if (!IS_PAIR(keys))
@@ -22,7 +22,7 @@ Value *builtin_map_find(Value *map, Value *keys)
             return exceptions_invalid_argument(mkSymbol("map-find"), 0, mkSymbol("map"), map);
 
         map = map_find(map, key);
-        if (!IS_NIL(map))
+        if (!IS_NULL(map))
             map = CDR(map);
 
         keys = CDR(keys);

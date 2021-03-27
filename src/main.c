@@ -75,7 +75,7 @@ int main(int argc, char *argv[], char *envp[])
     {
         if (arg_idx >= argc)
         {
-            env_add_binding(env, mkSymbol("*args*"), VNil);
+            env_add_binding(env, mkSymbol("*args*"), VNull);
             run_prelude(prelude_file_name, env);
             return Repl_repl(env);
         }
@@ -106,11 +106,11 @@ int main(int argc, char *argv[], char *envp[])
             exit(-1);
         }
 
-        Value *args = VNil;
+        Value *args = VNull;
         Value **args_cursor = &args;
         for (int lp = 2; lp < argc; lp += 1)
         {
-            Value *a = mkPair(mkString(argv[lp]), VNil);
+            Value *a = mkPair(mkString(argv[lp]), VNull);
             *args_cursor = a;
             args_cursor = &CDR(a);
         }

@@ -17,7 +17,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
 
     switch (TAG_TO_VT(v))
     {
-    case VT_NIL:
+    case VT_NULL:
         string_builder_append(sb, "()");
         break;
 
@@ -49,7 +49,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
 
     case VT_PAIR:
     {
-        if (IS_NIL(v))
+        if (IS_NULL(v))
             string_builder_append(sb, "()");
         else if (v_in_set)
             string_builder_append(sb, "(...)");
@@ -63,7 +63,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
                 {
                     Printer_pr(s, sb, CAR(v), readable, separator);
                     v = CDR(v);
-                    if (IS_NIL(v))
+                    if (IS_NULL(v))
                     {
                         string_builder_append(sb, ")");
                         break;

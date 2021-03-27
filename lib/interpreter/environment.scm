@@ -14,7 +14,7 @@
             (do (const frame (first-frame env))
                 (const binding (Frame.binding frame var))
 
-                (if (nil? binding)
+                (if (*builtin*.null? binding)
                     (env-lookup (enclosing-environment env))
                     (cdr binding)
                 )
@@ -33,7 +33,7 @@
             (do (const frame (first-frame env))
                 (const binding (Frame.binding frame var))
 
-                (if (nil? binding)
+                (if (*builtin*.null? binding)
                     (env-set! (enclosing-environment env))
                     (Frame.add-binding! frame var val)
                 )

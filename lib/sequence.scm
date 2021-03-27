@@ -3,7 +3,7 @@
 (import "./vector.scm" :as Vector)
 
 (const (empty? seq)
-  (if (nil? seq) #t
+  (if (*builtin*.null? seq) #t
       (pair? seq) #f
       (vector? seq) (= (Vector.count seq) 0)
       (string? seq) (= seq "")
@@ -12,7 +12,7 @@
 )
 
 (const (count seq)
-  (if (nil? seq) 0
+  (if (*builtin*.null? seq) 0
       (pair? seq) (List.count seq)
       (vector? seq) (Vector.count seq)
       (string? seq) (String.count seq)
@@ -21,7 +21,7 @@
 )
 
 (const (starts-with seq prefix)
-  (if (nil? seq) #f
+  (if (*builtin*.null? seq) #f
       (pair? seq) (List.starts-with seq prefix)
       (vector? seq) (Vector.starts-with seq prefix)
       (string? seq) (String.starts-with seq prefix)
@@ -30,7 +30,7 @@
 )
 
 (const (ends-with seq prefix)
-  (if (nil? seq) #f
+  (if (*builtin*.null? seq) #f
       (pair? seq) (List.ends-with seq prefix)
       (vector? seq) (Vector.ends-with seq prefix)
       (string? seq) (String.ends-with seq prefix)
@@ -39,7 +39,7 @@
 )
 
 (const (filter seq predicate)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.filter seq predicate)
       (vector? seq) (Vector.filter seq predicate)
       (string? seq) (String.filter seq predicate)
@@ -48,7 +48,7 @@
 )
 
 (const (nth seq n)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.nth seq n)
       (vector? seq) (Vector.nth seq n)
       (string? seq) (String.nth seq n)
@@ -57,7 +57,7 @@
 )
 
 (const (slice seq from to)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.slice seq from to)
       (vector? seq) (Vector.slice seq from to)
       (string? seq) (String.slice seq from to)
@@ -66,7 +66,7 @@
 )
 
 (const (take seq n)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.take seq n)
       (vector? seq) (Vector.take seq n)
       (string? seq) (String.take seq n)
@@ -75,7 +75,7 @@
 )
 
 (const (take-right seq n)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.take-right seq n)
       (vector? seq) (Vector.take-right seq n)
       (string? seq) (String.take-right seq n)
@@ -84,7 +84,7 @@
 )
 
 (const (drop seq n)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.drop seq n)
       (vector? seq) (Vector.drop seq n)
       (string? seq) (String.drop seq n)
@@ -93,7 +93,7 @@
 )
 
 (const (drop-right seq n)
-  (if (nil? seq) ()
+  (if (*builtin*.null? seq) ()
       (pair? seq) (List.drop-right seq n)
       (vector? seq) (Vector.drop-right seq n)
       (string? seq) (String.drop-right seq n)
@@ -102,7 +102,7 @@
 )
 
 (const (fold seq z p)
-  (if (nil? seq) z
+  (if (*builtin*.null? seq) z
       (pair? seq) (List.fold seq z p)
       (vector? seq) (Vector.fold seq z p)
       (string? seq) (String.fold seq z p)
@@ -111,7 +111,7 @@
 )
 
 (const (fold-right seq z p)
-  (if (nil? seq) z
+  (if (*builtin*.null? seq) z
       (pair? seq) (List.fold-right seq z p)
       (vector? seq) (Vector.fold-right seq z p)
       (string? seq) (String.fold-right seq z p)
@@ -132,7 +132,7 @@
         (const r 
             (fold needles' ()
                 (proc (acc needle)
-                    (if (not (nil? acc)) acc
+                    (if (not (*builtin*.null? acc)) acc
                         (starts-with haystackp needle) (list idx needle)
                         ()
                     )
@@ -141,7 +141,7 @@
         )
 
         (if (empty? haystackp) ()
-            (nil? r) (find-needle (+ idx 1))
+            (*builtin*.null? r) (find-needle (+ idx 1))
             r
         )
     )
@@ -152,7 +152,7 @@
 (const (split s seps)
     (const index-of-result (index-of s seps))
 
-    (if (nil? index-of-result) (list s)
+    (if (*builtin*.null? index-of-result) (list s)
         (do
             (const index-of-sep (nth index-of-result 0))
             (const sep (nth index-of-result 1))

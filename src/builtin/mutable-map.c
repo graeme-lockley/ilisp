@@ -14,7 +14,7 @@ Value *builtin_mutable_map_wrapped(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return result;
 
         if (!IS_PAIR(parameters))

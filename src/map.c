@@ -44,7 +44,7 @@ Value *map_set_bang(Value *map, Value *key, Value *value)
             snode->key = key;
             snode->value = value;
             *node = snode;
-            return VNil;
+            return VNull;
         }
 
         int c = Value_compare(snode->key, key);
@@ -75,7 +75,7 @@ Value *map_remove_bang(Value *map, Value *key)
         MapNode *snode = *node;
 
         if (snode == NULL)
-            return VNil;
+            return VNull;
 
         int c = Value_compare(snode->key, key);
 
@@ -143,7 +143,7 @@ Value *map_find(Value *map, Value *key)
     while (1)
     {
         if (snode == NULL)
-            return VNil;
+            return VNull;
 
         int c = Value_compare(snode->key, key);
 
@@ -212,13 +212,13 @@ static void assoc_list(Value **buffer, int *idx, MapNode *map)
 
 static Value *buffer_to_list(Value **buffer, int size)
 {
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     for (int l = 0; l < size; l += 1)
     {
         Value *i = buffer[l];
 
-        Value *v = mkPair(i, VNil);
+        Value *v = mkPair(i, VNull);
         *root_cursor = v;
         root_cursor = &CDR(v);
     }
@@ -291,7 +291,7 @@ static Value *values(Value *tail, MapNode *map)
 
 Value *map_vals(Value *map)
 {
-    Value *result = VNil;
+    Value *result = VNull;
 
     for (int i = 0; i < MAP(map).hash_size; i += 1)
         result = values(result, MAP(map).nodes[i]);
@@ -361,7 +361,7 @@ void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int reada
 {
     Value *assoc = map_assoc_list(v);
 
-    if (IS_NIL(assoc))
+    if (IS_NULL(assoc))
         string_builder_append(sb, "{}");
     else if (v_in_set)
         string_builder_append(sb, "{...}");
@@ -378,7 +378,7 @@ void map_pr(int v_in_set, struct Set **s, StringBuilder *sb, Value *v, int reada
             Printer_pr(s, sb, CDR(v), readable, separator);
 
             assoc = CDR(assoc);
-            if (IS_NIL(assoc))
+            if (IS_NULL(assoc))
                 break;
 
             string_builder_append(sb, " ");

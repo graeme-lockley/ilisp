@@ -62,6 +62,7 @@ SRC_OBJECTS=\
 	src/builtin/mutablep.o \
 	src/builtin/mutable-byte-vector.o \
 	src/builtin/mutable-map.o \
+	src/builtin/nullp.o \
 	src/builtin/numberp.o \
 	src/builtin/import-source.o \
 	src/builtin/list-count.o \

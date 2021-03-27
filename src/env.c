@@ -14,11 +14,11 @@ Value *env_get_binding(Value *env, Value *key)
 
 Value *env_find_binding(Value *env, Value *key)
 {
-    Value *binding = VNil;
+    Value *binding = VNull;
     Value *cursor = env;
     while (1)
     {
-        if (IS_NIL(cursor))
+        if (IS_NULL(cursor))
         {
             if (IS_SYMBOL(key) && strcmp(SYMBOL(key), "**scope**") == 0)
                 return env;
@@ -28,7 +28,7 @@ Value *env_find_binding(Value *env, Value *key)
 
         binding = map_find(CAR(cursor), key);
 
-        if (!IS_NIL(binding))
+        if (!IS_NULL(binding))
             return CDR(binding);
 
         cursor = CDR(cursor);
@@ -41,7 +41,7 @@ Value *env_get_toplevel(Value *env)
     {
         Value *cdr = CDR(env);
 
-        if (IS_NIL(cdr))
+        if (IS_NULL(cdr))
             return env;
 
         env = cdr;
@@ -67,7 +67,7 @@ Value *env_update_binding(Value *env, Value *key, Value *value)
 {
     while (1)
     {
-        if (IS_NIL(env))
+        if (IS_NULL(env))
             return exceptions_unknown_symbol(key);
 
         Value *scope = CAR(env);

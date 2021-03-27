@@ -1,9 +1,9 @@
 (const (mk vars vals)
     (const (interleve vars' vals')
-        (if (and (nil? vars') (nil? vals'))
+        (if (and (*builtin*.null? vars') (*builtin*.null? vals'))
                 ()
 
-            (or (nil? vars') (nil? vals'))
+            (or (*builtin*.null? vars') (*builtin*.null? vals'))
                 (raise 'ListsNotSameLength {:procedure 'make-frame :vars vars :vals :vals})
 
             (*builtin*.cons (car vars') (*builtin*.cons (car vals') (interleve (cdr vars') (cdr vals'))))

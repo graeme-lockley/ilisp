@@ -259,28 +259,28 @@ static Value *parse(Lexer *lexer)
     {
         next_token(lexer);
         Value *v = parse(lexer);
-        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quote"), mkPair(v, VNil)) : v;
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quote"), mkPair(v, VNull)) : v;
     }
 
     case BACKQUOTE:
     {
         next_token(lexer);
         Value *v = parse(lexer);
-        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quasiquote"), mkPair(v, VNil)) : v;
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("quasiquote"), mkPair(v, VNull)) : v;
     }
 
     case TILDE:
     {
         next_token(lexer);
         Value *v = parse(lexer);
-        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("unquote"), mkPair(v, VNil)) : v;
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("unquote"), mkPair(v, VNull)) : v;
     }
 
     case TILDE_AMPERSAND:
     {
         next_token(lexer);
         Value *v = parse(lexer);
-        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("splice-unquote"), mkPair(v, VNil)) : v;
+        return (IS_SUCCESSFUL(v)) ? mkPair(mkSymbol("splice-unquote"), mkPair(v, VNull)) : v;
     }
 
     case LITERAL_STRING:
@@ -392,7 +392,7 @@ static Value *parse(Lexer *lexer)
 
             if (strcmp(s, ".") != 0 && strchr(s, '.') != NULL)
             {
-                Value *root = VNil;
+                Value *root = VNull;
                 Value **root_cursor = &root;
 
                 Value_append_to_list(mkSymbol("map-get"), &root_cursor);
@@ -406,7 +406,7 @@ static Value *parse(Lexer *lexer)
                     if (strcmp(s_cursor, "") != 0)
                     {
                         Value_append_to_list(
-                            is_first ? mkSymbol(s_cursor) : mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
+                            is_first ? mkSymbol(s_cursor) : mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNull)),
                             &root_cursor);
                         is_first = 0;
                     }
@@ -415,7 +415,7 @@ static Value *parse(Lexer *lexer)
                 }
                 if (strcmp(s_cursor, "") != 0)
                     Value_append_to_list(
-                        mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNil)),
+                        mkPair(mkSymbol("quote"), mkPair(mkSymbol(s_cursor), VNull)),
                         &root_cursor);
                 free(s);
                 return root;
@@ -467,14 +467,14 @@ static Value *parse(Lexer *lexer)
         if (lexer->token == RPAREN)
         {
             next_token(lexer);
-            return VNil;
+            return VNull;
         }
 
         Value *car = parse(lexer);
         if (!IS_SUCCESSFUL(car))
             return car;
 
-        Value *head = mkPair(car, VNil);
+        Value *head = mkPair(car, VNull);
         Value *cursor = head;
 
         while (1)
@@ -497,7 +497,7 @@ static Value *parse(Lexer *lexer)
             if (!IS_SUCCESSFUL(next))
                 return next;
 
-            cursor->pairV.cdr = mkPair(next, VNil);
+            cursor->pairV.cdr = mkPair(next, VNull);
             cursor = CDR(cursor);
         }
     }
@@ -619,7 +619,7 @@ static Value *parse(Lexer *lexer)
     default:
     {
         next_token(lexer);
-        return VNil;
+        return VNull;
     }
     }
 }
@@ -645,7 +645,7 @@ Value *Reader_read_many(char *source_name, char *content)
 {
     struct LexerState lexer = initialise_lexer(source_name, content);
 
-    Value *result = VNil;
+    Value *result = VNull;
     Value **cursor = &result;
 
     while (1)
@@ -658,7 +658,7 @@ Value *Reader_read_many(char *source_name, char *content)
         if (IS_EXCEPTION(term))
             return term;
 
-        Value *term_pair = mkPair(term, VNil);
+        Value *term_pair = mkPair(term, VNull);
         *cursor = term_pair;
         cursor = &(CDR(term_pair));
     }

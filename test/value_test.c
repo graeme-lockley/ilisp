@@ -8,7 +8,7 @@
 
 static char *test_ordinal_values()
 {
-    mu_assert_label(VT_NIL == 0);
+    mu_assert_label(VT_NULL == 0);
     mu_assert_label(VT_BOOLEAN == 1);
     mu_assert_label(VT_SYMBOL == 2);
     mu_assert_label(VT_KEYWORD == 3);
@@ -30,9 +30,9 @@ static char *test_ordinal_values()
 
 static char *test_unit_values()
 {
-    mu_assert_label(IS_IMMUTABLE(mkNil()));
-    mu_assert_label(IS_IMMUTABLE(VNil));
-    mu_assert_label(IS_NIL(VNil));
+    mu_assert_label(IS_IMMUTABLE(mkNull()));
+    mu_assert_label(IS_IMMUTABLE(VNull));
+    mu_assert_label(IS_NULL(VNull));
 
     return NULL;
 }
@@ -112,12 +112,12 @@ static char *test_pair_values()
 {
     Value *car = mkString("car");
 
-    Value *value = mkPair(car, VNil);
+    Value *value = mkPair(car, VNull);
 
     mu_assert_label(IS_IMMUTABLE(value));
     mu_assert_label(IS_PAIR(value));
     mu_assert_label(strcmp(STRING(CAR(value)), STRING(car)) == 0);
-    mu_assert_label(IS_NIL(CDR(value)));
+    mu_assert_label(IS_NULL(CDR(value)));
 
     return NULL;
 }
@@ -231,14 +231,14 @@ static char *test_equals()
     Value *vector2Items[] = {symbol2, symbol2};
     Value *vector2 = mkVector(vector2Items, 2);
 
-    mu_assert_truthy_equals_label(VNil, VNil);
-    mu_assert_truthy_not_equals_label(VNil, keyword1);
-    mu_assert_truthy_not_equals_label(VNil, symbol1);
-    mu_assert_truthy_not_equals_label(VNil, string1);
-    mu_assert_truthy_not_equals_label(VNil, character1);
-    mu_assert_truthy_not_equals_label(VNil, number1);
-    mu_assert_truthy_not_equals_label(VNil, pair1);
-    mu_assert_truthy_not_equals_label(VNil, vector1);
+    mu_assert_truthy_equals_label(VNull, VNull);
+    mu_assert_truthy_not_equals_label(VNull, keyword1);
+    mu_assert_truthy_not_equals_label(VNull, symbol1);
+    mu_assert_truthy_not_equals_label(VNull, string1);
+    mu_assert_truthy_not_equals_label(VNull, character1);
+    mu_assert_truthy_not_equals_label(VNull, number1);
+    mu_assert_truthy_not_equals_label(VNull, pair1);
+    mu_assert_truthy_not_equals_label(VNull, vector1);
 
     mu_assert_truthy_equals_label(keyword1, keyword1);
     mu_assert_truthy_equals_label(keyword2, keyword2);

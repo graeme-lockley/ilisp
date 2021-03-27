@@ -16,7 +16,7 @@ Value *builtin_keyword_wrapped(Value *parameters, Value *env)
         return parameter[0];
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("keyword"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("keyword"), VNil)), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("keyword"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("keyword"), VNull)), parameter[0]);
 
     return mkKeyword(STRING(parameter[0]));
 }

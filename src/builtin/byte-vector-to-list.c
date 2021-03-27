@@ -6,7 +6,7 @@
 
 Value *builtin_byte_vector_to_list(Value *byte_vector)
 {
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     for (int l = 0; l < BYTE_VECTOR(byte_vector).length; l += 1)
     {

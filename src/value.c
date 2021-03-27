@@ -13,15 +13,15 @@ static Value VEmptyString_Value = {VT_TO_TAG(VT_STRING), {""}};
 static Value *VEmptyVector_Value_Buffer = {0};
 static Value VEmptyVector_Value = {VT_TO_TAG(VT_VECTOR) | VP_IMMUTABLE, {0, &VEmptyVector_Value_Buffer}};
 
-Value *VNil = &VNil_Value;
+Value *VNull = &VNil_Value;
 Value *VTrue = &VTrue_Value;
 Value *VFalse = &VFalse_Value;
 Value *VEmptyString = &VEmptyString_Value;
 Value *VEmptyVector = &VEmptyVector_Value;
 
-Value *mkNil()
+Value *mkNull()
 {
-    return VNil;
+    return VNull;
 }
 
 static Value *mkValue(enum ValueType type)
@@ -96,7 +96,7 @@ Value *mkPair(Value *car, Value *cdr)
 
 Value *Value_append_to_list(Value *item, Value ***cursor)
 {
-    Value *cons = mkPair(item, VNil);
+    Value *cons = mkPair(item, VNull);
     **cursor = cons;
     *cursor = &CDR(cons);
 
@@ -220,7 +220,7 @@ int Value_compare(Value *a, Value *b)
     if (tag_compare == 0)
         switch (TAG_TO_VT(a))
         {
-        case VT_NIL:
+        case VT_NULL:
             return 0;
 
         case VT_SYMBOL:
@@ -237,7 +237,7 @@ int Value_compare(Value *a, Value *b)
         case VT_PAIR:
             while (1)
             {
-                if (IS_NIL(a) || IS_NIL(b))
+                if (IS_NULL(a) || IS_NULL(b))
                     return Value_compare(a, b);
 
                 if (!IS_PAIR(a) || !IS_PAIR(b))
@@ -347,7 +347,7 @@ unsigned long Value_hash(Value *v)
         unsigned long hash = 5381;
         while (1)
         {
-            if (IS_NIL(v))
+            if (IS_NULL(v))
                 return hash;
 
             if (!IS_PAIR(v))

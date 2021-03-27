@@ -25,7 +25,7 @@ Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number
     {
         if (index == number)
         {
-            if (IS_NIL(cursor))
+            if (IS_NULL(cursor))
                 return NULL;
 
             return exceptions_expected_argument_count(mkSymbol(procedure_name), number, arguments);
@@ -50,16 +50,16 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     {
         if (index == max_number)
         {
-            if (IS_NIL(cursor))
+            if (IS_NULL(cursor))
                 return NULL;
 
             return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
         }
 
-        if (IS_NIL(cursor) && index < min_number)
+        if (IS_NULL(cursor) && index < min_number)
             return exceptions_expected_range_argument_count(mkSymbol(procedure_name), min_number, max_number, arguments);
 
-        if (IS_NIL(cursor))
+        if (IS_NULL(cursor))
         {
             while (index < max_number)
             {
@@ -83,7 +83,7 @@ static Value *list_to_vector(Value *v)
     int list_length = 0;
     while (1)
     {
-        if (IS_NIL(cursor))
+        if (IS_NULL(cursor))
             break;
 
         if (IS_PAIR(cursor))
@@ -115,13 +115,13 @@ static int starts_with(const char *restrict string, const char *restrict prefix)
 
 Value *string_to_list(Value *v)
 {
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     char *string = STRING(v);
     int string_length = strlen(string);
     for (int l = 0; l < string_length; l += 1)
     {
-        Value *v = mkPair(mkNumber(string[l]), VNil);
+        Value *v = mkPair(mkNumber(string[l]), VNull);
         *root_cursor = v;
         root_cursor = &CDR(v);
     }
@@ -130,13 +130,13 @@ Value *string_to_list(Value *v)
 
 Value *vector_to_list(Value *v)
 {
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     for (int l = 0; l < VECTOR(v).length; l += 1)
     {
         Value *i = VECTOR(v).items[l];
 
-        Value *v = mkPair(i, VNil);
+        Value *v = mkPair(i, VNull);
         *root_cursor = v;
         root_cursor = &CDR(v);
     }
@@ -158,28 +158,28 @@ static Value *apply(Value *parameters, Value *env)
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("apply"), 1, mkSymbol("pair"), parameters);
 
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     int parameter_count = 1;
 
     while (1)
     {
-        if (IS_NIL(CDR(parameters)))
+        if (IS_NULL(CDR(parameters)))
         {
             parameters = CAR(parameters);
 
             if (IS_VECTOR(parameters))
                 parameters = vector_to_list(parameters);
 
-            if (!IS_PAIR(parameters) && !IS_NIL(parameters))
+            if (!IS_PAIR(parameters) && !IS_NULL(parameters))
                 return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkSymbol("pair"), parameters);
 
             while (1)
             {
-                if (IS_NIL(parameters))
+                if (IS_NULL(parameters))
                     return Repl_eval_procedure(f, root, env);
 
-                Value *v = mkPair(CAR(parameters), VNil);
+                Value *v = mkPair(CAR(parameters), VNull);
                 *root_cursor = v;
                 root_cursor = &CDR(v);
 
@@ -187,7 +187,7 @@ static Value *apply(Value *parameters, Value *env)
             }
         }
 
-        Value *v = mkPair(CAR(parameters), VNil);
+        Value *v = mkPair(CAR(parameters), VNull);
         *root_cursor = v;
         root_cursor = &CDR(v);
 
@@ -195,7 +195,7 @@ static Value *apply(Value *parameters, Value *env)
         parameter_count += 1;
     }
 
-    return VNil;
+    return VNull;
 }
 
 static Value *byte_vector_mutable(Value *parameters, Value *env)
@@ -289,13 +289,13 @@ Value *cdr(Value *parameters, Value *env)
 
 static Value *concat(Value *parameters, Value *env)
 {
-    Value *result = VNil;
+    Value *result = VNull;
     Value **result_cursor = &result;
     int argument_number = 0;
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return result;
 
         if (!IS_PAIR(parameters))
@@ -308,7 +308,7 @@ static Value *concat(Value *parameters, Value *env)
             for (int l = 0; l < length; l += 1)
             {
                 Value *i = VECTOR(car).items[l];
-                Value *v = mkPair(i, VNil);
+                Value *v = mkPair(i, VNull);
                 *result_cursor = v;
                 result_cursor = &CDR(v);
             }
@@ -316,13 +316,13 @@ static Value *concat(Value *parameters, Value *env)
         else
             while (1)
             {
-                if (IS_NIL(car))
+                if (IS_NULL(car))
                     break;
 
                 if (!IS_PAIR(car))
                     return exceptions_invalid_argument(mkSymbol("concat"), argument_number, mkSymbol("pair"), CAR(parameters));
 
-                Value *v = mkPair(CAR(car), VNil);
+                Value *v = mkPair(CAR(car), VNull);
                 *result_cursor = v;
                 result_cursor = &CDR(v);
                 car = CDR(car);
@@ -349,7 +349,7 @@ static Value *containp(Value *parameters, Value *env)
 
 static Value *equal(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return VTrue;
 
     Value *operand = CAR(parameters);
@@ -357,7 +357,7 @@ static Value *equal(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return VTrue;
 
         if (IS_PAIR(parameters))
@@ -384,11 +384,11 @@ static Value *first(Value *parameters, Value *env)
         return extract_result;
 
     if (IS_VECTOR(parameter[0]))
-        return VECTOR(parameter[0]).length > 0 ? VECTOR(parameter[0]).items[0] : VNil;
+        return VECTOR(parameter[0]).length > 0 ? VECTOR(parameter[0]).items[0] : VNull;
     else if (IS_STRING(parameter[0]))
-        return strlen(STRING(parameter[0])) > 0 ? mkNumber(STRING(parameter[0])[0]) : VNil;
+        return strlen(STRING(parameter[0])) > 0 ? mkNumber(STRING(parameter[0])[0]) : VNull;
     else
-        return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNil;
+        return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNull;
 }
 
 static Value *fnp(Value *parameters, Value *env)
@@ -409,7 +409,7 @@ static Value *integer_plus(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return mkNumber(result);
 
         if (IS_PAIR(parameters))
@@ -433,7 +433,7 @@ static Value *integer_plus(Value *parameters, Value *env)
                 return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-plus"), argument_number, mkSymbol("number"), VNull);
     }
 }
 
@@ -444,7 +444,7 @@ Value *integer_multiply(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return mkNumber(result);
 
         if (IS_PAIR(parameters))
@@ -468,13 +468,13 @@ Value *integer_multiply(Value *parameters, Value *env)
                 return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-multiply"), argument_number, mkSymbol("number"), VNull);
     }
 }
 
 static Value *integer_minus(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return mkNumber(0);
 
     int argument_number = 0;
@@ -491,7 +491,7 @@ static Value *integer_minus(Value *parameters, Value *env)
         else
             return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), v);
 
-        if (IS_NIL(CDR(parameters)))
+        if (IS_NULL(CDR(parameters)))
             return mkNumber(-result);
         else
         {
@@ -502,7 +502,7 @@ static Value *integer_minus(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return mkNumber(result);
 
         if (IS_PAIR(parameters))
@@ -526,13 +526,13 @@ static Value *integer_minus(Value *parameters, Value *env)
                 return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-minus"), argument_number, mkSymbol("number"), VNull);
     }
 }
 
 static Value *integer_divide(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return mkNumber(1);
 
     int argument_number = 0;
@@ -549,7 +549,7 @@ static Value *integer_divide(Value *parameters, Value *env)
         else
             return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), v);
 
-        if (IS_NIL(CDR(parameters)))
+        if (IS_NULL(CDR(parameters)))
         {
             if (result == 0)
                 return exceptions_divide_by_zero(0);
@@ -565,7 +565,7 @@ static Value *integer_divide(Value *parameters, Value *env)
 
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return mkNumber(result);
 
         if (IS_PAIR(parameters))
@@ -601,13 +601,13 @@ static Value *integer_divide(Value *parameters, Value *env)
                 return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), car);
         }
         else
-            return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), VNil);
+            return exceptions_invalid_argument(mkSymbol("integer-divide"), argument_number, mkSymbol("number"), VNull);
     }
 }
 
 static Value *integer_less_than(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return VTrue;
 
     int operand;
@@ -625,7 +625,7 @@ static Value *integer_less_than(Value *parameters, Value *env)
     int argument_count = 1;
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return VTrue;
 
         if (!IS_PAIR(parameters))
@@ -652,7 +652,7 @@ static Value *integer_less_than(Value *parameters, Value *env)
 
 static Value *integer_less_equal(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return VTrue;
 
     int operand;
@@ -670,7 +670,7 @@ static Value *integer_less_equal(Value *parameters, Value *env)
     int argument_count = 1;
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return VTrue;
 
         if (!IS_PAIR(parameters))
@@ -696,7 +696,7 @@ static Value *integer_less_equal(Value *parameters, Value *env)
 
 static Value *integer_greater_than(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return VTrue;
 
     int operand;
@@ -714,7 +714,7 @@ static Value *integer_greater_than(Value *parameters, Value *env)
     int argument_count = 1;
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return VTrue;
 
         if (!IS_PAIR(parameters))
@@ -740,7 +740,7 @@ static Value *integer_greater_than(Value *parameters, Value *env)
 
 static Value *integer_greater_equal(Value *parameters, Value *env)
 {
-    if (IS_NIL(parameters))
+    if (IS_NULL(parameters))
         return VTrue;
 
     int operand;
@@ -758,7 +758,7 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
     int argument_count = 1;
     while (1)
     {
-        if (IS_NIL(parameters))
+        if (IS_NULL(parameters))
             return VTrue;
 
         if (!IS_PAIR(parameters))
@@ -791,19 +791,19 @@ static Value *list_drop(Value *parameters, Value *env)
         return extract_result;
 
     Value *lst = parameter[0];
-    if (!IS_PAIR(lst) && !IS_NIL(lst))
-        return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+    if (!IS_PAIR(lst) && !IS_NULL(lst))
+        return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
     if (!IS_NUMBER(parameter[1]))
         return exceptions_invalid_argument(mkSymbol("list-drop"), 1, mkSymbol("number"), parameter[1]);
 
     int drop_count = NUMBER(parameter[1]);
     while (1)
     {
-        if (drop_count <= 0 || IS_NIL(lst))
+        if (drop_count <= 0 || IS_NULL(lst))
             return lst;
 
         if (!IS_PAIR(lst))
-            return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+            return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
 
         lst = CDR(lst);
         drop_count -= 1;
@@ -821,26 +821,26 @@ static Value *list_filter(Value *parameters, Value *env)
     Value *args = parameter[0];
     Value *f = parameter[1];
 
-    if (!IS_PAIR(args) && !IS_NIL(args))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), f);
+    if (!IS_PAIR(args) && !IS_NULL(args))
+        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), f);
 
     if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
         return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkSymbol("procedure"), f);
 
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     while (1)
     {
-        if (IS_NIL(args) || !IS_PAIR(args))
+        if (IS_NULL(args) || !IS_PAIR(args))
             return root;
 
-        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNil), env);
+        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNull), env);
         if (IS_EXCEPTION(v))
             return v;
 
         if (Value_truthy(v))
         {
-            Value *r = mkPair(CAR(args), VNil);
+            Value *r = mkPair(CAR(args), VNull);
             *root_cursor = r;
             root_cursor = &CDR(r);
         }
@@ -857,8 +857,8 @@ static Value *list_nth(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    if (!IS_PAIR(parameter[0]) && !IS_NIL(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("list-nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
+    if (!IS_PAIR(parameter[0]) && !IS_NULL(parameter[0]))
+        return exceptions_invalid_argument(mkSymbol("list-nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), parameter[0]);
     if (!IS_NUMBER(parameter[1]))
         return exceptions_invalid_argument(mkSymbol("list-nth"), 1, mkSymbol("number"), parameter[1]);
 
@@ -867,8 +867,8 @@ static Value *list_nth(Value *parameters, Value *env)
     Value *cursor = parameter[0];
     while (1)
     {
-        if (IS_NIL(cursor) || !IS_PAIR(cursor))
-            return VNil;
+        if (IS_NULL(cursor) || !IS_PAIR(cursor))
+            return VNull;
 
         if (nth == 0)
             return CAR(cursor);
@@ -887,24 +887,24 @@ static Value *list_take(Value *parameters, Value *env)
         return extract_result;
 
     Value *lst = parameter[0];
-    if (!IS_PAIR(lst) && !IS_NIL(lst))
-        return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+    if (!IS_PAIR(lst) && !IS_NULL(lst))
+        return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
     if (!IS_NUMBER(parameter[1]))
         return exceptions_invalid_argument(mkSymbol("list-take"), 1, mkSymbol("number"), parameter[1]);
 
     int take_count = NUMBER(parameter[1]);
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
 
     while (1)
     {
-        if (take_count <= 0 || IS_NIL(lst))
+        if (take_count <= 0 || IS_NULL(lst))
             return root;
 
         if (!IS_PAIR(lst))
-            return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNil)), lst);
+            return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
 
-        Value *item = mkPair(CAR(lst), VNil);
+        Value *item = mkPair(CAR(lst), VNull);
         *root_cursor = item;
         root_cursor = &CDR(item);
 
@@ -921,7 +921,7 @@ static Value *listp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VFalse;
+    return IS_PAIR(parameter[0]) || IS_NULL(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *map(Value *parameters, Value *env)
@@ -937,25 +937,25 @@ static Value *map(Value *parameters, Value *env)
         : IS_STRING(parameter[0]) ? string_to_list(parameter[0])
                                   : parameter[0];
 
-    if (!IS_NIL(args) && !IS_PAIR(args))
-        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), mkPair(mkSymbol("string"), VNil)))), parameter[0]);
+    if (!IS_NULL(args) && !IS_PAIR(args))
+        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), mkPair(mkSymbol("string"), VNull)))), parameter[0]);
 
     Value *f = parameter[1];
     if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
         return exceptions_invalid_argument(mkSymbol("map"), 1, mkSymbol("procedure"), f);
 
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     while (1)
     {
-        if (IS_NIL(args) || !IS_PAIR(args))
+        if (IS_NULL(args) || !IS_PAIR(args))
             return root;
 
-        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNil), env);
+        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNull), env);
         if (IS_EXCEPTION(v))
             return v;
 
-        Value *r = mkPair(v, VNil);
+        Value *r = mkPair(v, VNull);
         *root_cursor = r;
         root_cursor = &CDR(r);
 
@@ -975,17 +975,6 @@ static Value *mcons(Value *parameters, Value *env)
     result->tag &= ~VP_IMMUTABLE;
 
     return result;
-}
-
-static Value *nilp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "nil?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_NIL(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *numberp(Value *parameters, Value *env)
@@ -1032,7 +1021,7 @@ static Value *print(Value *parameters, Value *env)
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
         printf("%s", s->strV);
-    return VNil;
+    return VNull;
 }
 
 Value *println(Value *parameters, Value *env)
@@ -1040,7 +1029,7 @@ Value *println(Value *parameters, Value *env)
     Value *s = value_to_str(parameters, 0, "");
     if (IS_STRING(s))
         printf("%s\n", s->strV);
-    return VNil;
+    return VNull;
 }
 
 Value *prn(Value *parameters, Value *env)
@@ -1048,7 +1037,7 @@ Value *prn(Value *parameters, Value *env)
     Value *s = Printer_prStr(parameters, 1, " ");
     if (IS_STRING(s))
         printf("%s\n", s->strV);
-    return VNil;
+    return VNull;
 }
 
 static Value *str(Value *parameters, Value *env)
@@ -1087,7 +1076,7 @@ static Value *random_number(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("random"), 0, mkSymbol("number"), arguments[0]);
 
     init_genrand(NUMBER(arguments[0]));
-    return VNil;
+    return VNull;
 }
 
 static Value *read_string(Value *parameters, Value *env)
@@ -1141,7 +1130,7 @@ static Value *read_dir(Value *parameters, Value *env)
         return exceptions_system_error(mkSymbol("read-dir"), parameter[0]);
 
     struct dirent *de;
-    Value *root = VNil;
+    Value *root = VNull;
     Value **root_cursor = &root;
     while (1)
     {
@@ -1159,7 +1148,7 @@ static Value *read_dir(Value *parameters, Value *env)
         map_set_bang(h, mkKeyword(":file?"), (de->d_type & DT_REG) ? VTrue : VFalse);
         map_set_bang(h, mkKeyword(":name"), mkString(de->d_name));
 
-        Value *v = mkPair(h, VNil);
+        Value *v = mkPair(h, VNull);
         *root_cursor = v;
         root_cursor = &CDR(v);
     }
@@ -1181,7 +1170,7 @@ static Value *rest(Value *parameters, Value *env)
     if (IS_VECTOR(parameter[0]))
     {
         if (VECTOR(parameter[0]).length == 0)
-            return VNil;
+            return VNull;
 
         if (VECTOR(parameter[0]).length == 1)
             return VEmptyVector;
@@ -1193,9 +1182,9 @@ static Value *rest(Value *parameters, Value *env)
         return mkVectorUse(result, result_size);
     }
     else if (IS_STRING(parameter[0]))
-        return strlen(STRING(parameter[0])) > 0 ? mkStringUse(strdup(STRING(parameter[0]) + 1)) : VNil;
+        return strlen(STRING(parameter[0])) > 0 ? mkStringUse(strdup(STRING(parameter[0]) + 1)) : VNull;
     else
-        return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNil;
+        return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNull;
 }
 
 static Value *sequentialp(Value *parameters, Value *env)
@@ -1206,7 +1195,7 @@ static Value *sequentialp(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    return IS_NIL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
+    return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
 static Value *set_car_bang(Value *parameters, Value *env)
@@ -1324,7 +1313,7 @@ static Value *string_filter(Value *parameters, Value *env)
     for (int lp = 0; lp < length; lp += 1)
     {
         int c = str[lp];
-        Value *v = Repl_eval_procedure(f, mkPair(mkNumber(c), VNil), env);
+        Value *v = Repl_eval_procedure(f, mkPair(mkNumber(c), VNull), env);
         if (IS_EXCEPTION(v))
             return v;
 
@@ -1473,14 +1462,14 @@ static Value *vec(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    if (IS_NIL(parameter[0]))
+    if (IS_NULL(parameter[0]))
         return VEmptyVector;
 
     if (IS_VECTOR(parameter[0]))
         return parameter[0];
 
     if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("pair"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("()"), VNil)), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("pair"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("()"), VNull)), parameter[0]);
 
     return list_to_vector(parameter[0]);
 }
@@ -1528,7 +1517,7 @@ static Value *vector_filter(Value *parameters, Value *env)
     for (int lp = 0; lp < number_of_items; lp += 1)
     {
         Value *element = items[lp];
-        Value *v = Repl_eval_procedure(f, mkPair(element, VNil), env);
+        Value *v = Repl_eval_procedure(f, mkPair(element, VNull), env);
         if (IS_EXCEPTION(v))
             return v;
 
@@ -1559,7 +1548,7 @@ static Value *vector_mutable(Value *parameters, Value *env)
     }
 
     if (!IS_VECTOR(args))
-        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkPair(mkSymbol("vector"), mkPair(mkSymbol("pair"), VNil)), args);
+        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkPair(mkSymbol("vector"), mkPair(mkSymbol("pair"), VNull)), args);
 
     int number_of_items = VECTOR(args).length;
     Value **items = VECTOR(args).items;
@@ -1587,7 +1576,7 @@ static Value *vector_nth(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("vector-nth"), 0, mkSymbol("vector"), parameter[0]);
 
     if (nth < 0 || nth >= VECTOR(parameter[0]).length)
-        return VNil;
+        return VNull;
 
     return VECTOR(parameter[0]).items[nth];
 }
@@ -1772,7 +1761,7 @@ Value *builtins_initialise_environment()
 {
     Value *root_bindings = map_create(0);
     root_bindings->tag &= ~VP_IMMUTABLE;
-    Value *root_scope = mkPair(root_bindings, VNil);
+    Value *root_scope = mkPair(root_bindings, VNull);
     Value *builtin_bindings = map_create(0);
     builtin_bindings->tag &= ~VP_IMMUTABLE;
 
@@ -1803,7 +1792,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
     add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
-    add_binding_into_environment(root_bindings, "nil?", mkNativeProcedure(nilp));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pair?", mkNativeProcedure(pairp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
@@ -1869,6 +1857,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "mutable?", mkNativeProcedure(builtin_mutablep_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
+    add_binding_into_environment(builtin_bindings, "null?", mkNativeProcedure(builtin_nullp_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));

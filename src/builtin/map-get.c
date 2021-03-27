@@ -11,7 +11,7 @@ Value *builtin_map_get(Value *map, Value *keys)
 
     while (1)
     {
-        if (IS_NIL(keys))
+        if (IS_NULL(keys))
             return map;
 
         if (!IS_PAIR(keys))
@@ -24,7 +24,7 @@ Value *builtin_map_get(Value *map, Value *keys)
         map = map_get(map, key);
         if (IS_EXCEPTION(map))
             return map;
-        if (!IS_NIL(map))
+        if (!IS_NULL(map))
             map = CDR(map);
 
         keys = CDR(keys);

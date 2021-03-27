@@ -9,7 +9,7 @@ Value *builtin_list_count(Value *list)
     int list_length = 0;
     while (1)
     {
-        if (IS_NIL(list))
+        if (IS_NULL(list))
             return mkNumber(list_length);
 
         if (IS_PAIR(list))

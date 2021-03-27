@@ -125,7 +125,7 @@
 )
 
 (const- (self-evaluating? exp)
-    (or (number? exp) (string? exp) (nil? exp) (*builtin*.boolean? exp))
+    (or (number? exp) (string? exp) (*builtin*.null? exp) (*builtin*.boolean? exp))
 )
 
 (const- (variable? exp)
@@ -210,8 +210,8 @@
     (cdr exp)
 )
 
-(const- (do-actions-empty? exps) (nil? exps))
-(const- (do-actions-last? exps) (nil? (cdr exps)))
+(const- (do-actions-empty? exps) (*builtin*.null? exps))
+(const- (do-actions-last? exps) (*builtin*.null? (cdr exps)))
 (const- (do-actions-first exps) (car exps))
 (const- (do-actions-rest exps) (cdr exps))
 
@@ -228,7 +228,7 @@
 )
 
 (const- (no-operands? ops) 
-    (nil? ops)
+    (*builtin*.null? ops)
 )
 
 (const- (first-operand ops)

@@ -7,7 +7,7 @@
 
 Value *builtin_atom_swap_bang(Value *atom, Value *f, Value *env)
 {
-    Value *v = Repl_eval_procedure(f, mkPair(ATOM(atom), VNil), env);
+    Value *v = Repl_eval_procedure(f, mkPair(ATOM(atom), VNull), env);
     if (IS_EXCEPTION(v))
         return v;
 

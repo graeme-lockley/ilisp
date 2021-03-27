@@ -18,10 +18,10 @@ Value *builtin_load_source(char *source_name, Value *env)
 
     EVAL_ASSIGN(update_binding_1, env_update_binding(env, source_name_symbol, absolute_source_name));
 
-    Value *eval_result = VNil;
+    Value *eval_result = VNull;
     while (1)
     {
-        if (IS_NIL(expressions))
+        if (IS_NULL(expressions))
             break;
 
         eval_result = builtin_eval(CAR(expressions), env);

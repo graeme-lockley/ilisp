@@ -10,7 +10,7 @@
         )
     )
 
-    (apply hash-map (interleve vars vals))
+    (apply *builtin*.mutable-map (interleve vars vals))
 )
 
 (const (frame-variables frame)
@@ -22,7 +22,7 @@
 )
 
 (const (add-binding! frame var val)
-    (assoc! frame var val)
+    (*builtin*.map-assoc! frame var val)
 )
 
 (const (binding frame var)

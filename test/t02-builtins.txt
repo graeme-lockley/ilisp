@@ -29,44 +29,43 @@
 (cdr '(1 2 3 4 5))
 > (2 3 4 5)
 
-
-(do (assoc! (car **root**) 'fred {}) fred)
+(do (*builtin*.map-assoc! (car **root**) 'fred (*builtin*.mutable-map)) fred)
 > {}
 
-(assoc! fred 'a 1)
+(*builtin*.map-assoc! fred 'a 1)
 > {a 1}
 
 fred
 > {a 1}
 
-(assoc! fred 'b 2)
+(*builtin*.map-assoc! fred 'b 2)
 > {a 1 b 2}
 
 fred
 > {a 1 b 2}
 
-(assoc! fred)
+(*builtin*.map-assoc! fred)
 > {a 1 b 2}
 
-(assoc! fred 'b 3)
+(*builtin*.map-assoc! fred 'b 3)
 > {a 1 b 3}
 
 fred
 > {a 1 b 3}
 
-(assoc! fred :b 4)
+(*builtin*.map-assoc! fred :b 4)
 > {a 1 b 3 :b 4}
 
 fred
 > {a 1 b 3 :b 4}
 
-(assoc! fred a 1)
+(*builtin*.map-assoc! fred a 1)
 > (:exception (UnknownSymbol . {name a}))
 
-(dissoc! fred)
+(*builtin*.map-dissoc! fred)
 > {a 1 b 3 :b 4}
 
-(dissoc! fred 'a)
+(*builtin*.map-dissoc! fred 'a)
 > {b 3 :b 4}
 
 fred
@@ -505,22 +504,22 @@ fred
 (hash-map :a 1 :b 2 :c)
 > (:exception (InvalidArgument . {:arg-number 5 :expected-type pair :procedure hash-map :received ()}))
 
-(assoc {})
+(*builtin*.map-assoc {})
 > {}
 
-(assoc {} :a 1 :b 2 :c 3)
+(*builtin*.map-assoc {} :a 1 :b 2 :c 3)
 > {:a 1 :b 2 :c 3}
 
-(do (assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (assoc a :a 2 :b 3) a))
+(do (*builtin*.map-assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-assoc a :a 2 :b 3) a))
 > ({:a 2 :b 3 :c 3} {:a 1 :b 2 :c 3})
 
-(dissoc {:a 1 :b 2 :c 3} :a :b)
+(*builtin*.map-dissoc {:a 1 :b 2 :c 3} :a :b)
 > {:c 3}
 
-(dissoc {:a 1 :b 2 :c 3} :a :b :d)
+(*builtin*.map-dissoc {:a 1 :b 2 :c 3} :a :b :d)
 > {:c 3}
 
-(do (assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (dissoc a :a :b) a))
+(do (*builtin*.map-assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-dissoc a :a :b) a))
 > ({:c 3} {:a 1 :b 2 :c 3})
 
 (map-get)
@@ -586,7 +585,7 @@ fred
 ((map-get *builtin* 'list-count) (map ((map-get *builtin* 'read-dir) "./test/my_test_dir") (proc (n) (map-get n :name))))
 > 3
 
-(do (assoc! (car **root**) 'file-name-relative-to-file-name (map-get *builtin* 'file-name-relative-to-file-name)) ())
+(do (*builtin*.map-assoc! (car **root**) 'file-name-relative-to-file-name (map-get *builtin* 'file-name-relative-to-file-name)) ())
 > ()
 
 (file-name-relative-to-file-name "/home/ilisp/prelude.scm" "/dir/bob.scm")

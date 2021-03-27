@@ -8,7 +8,7 @@
 (*builtin*.cons (list 1) (list 2 3))
 >((1) 2 3)
 
-(do (assoc! (car **root**) 'a (list 2 3)) (*builtin*.cons 1 a))
+(do (const a (list 2 3)) (*builtin*.cons 1 a))
 >(1 2 3)
 a
 >(2 3)
@@ -27,7 +27,7 @@ a
 (concat (list) (list))
 >()
 
-(do (assoc! (car **root**) 'a (list 1 2)) (assoc! (car **root**) 'b (list 3 4)) (concat a b (list 5 6)))
+(do (*builtin*.map-assoc! (car **root**) 'a (list 1 2)) (*builtin*.map-assoc! (car **root**) 'b (list 3 4)) (concat a b (list 5 6)))
 >(1 2 3 4 5 6)
 a
 >(1 2)
@@ -77,27 +77,27 @@ b
 ;; Testing unquote
 (quasiquote (unquote 7))
 >7
-(do (assoc! (car **root**) 'a 8) a)
+(do (*builtin*.map-assoc! (car **root**) 'a 8) a)
 >8
-(do (assoc! (car **root**) 'a 8) (quasiquote a))
+(do (*builtin*.map-assoc! (car **root**) 'a 8) (quasiquote a))
 >a
-(do (assoc! (car **root**) 'a 8) (quasiquote (unquote a)))
+(do (*builtin*.map-assoc! (car **root**) 'a 8) (quasiquote (unquote a)))
 >8
-(do (assoc! (car **root**) 'a 8) (quasiquote (1 a 3)))
+(do (*builtin*.map-assoc! (car **root**) 'a 8) (quasiquote (1 a 3)))
 >(1 a 3)
-(do (assoc! (car **root**) 'a 8) (quasiquote (1 (unquote a) 3)))
+(do (*builtin*.map-assoc! (car **root**) 'a 8) (quasiquote (1 (unquote a) 3)))
 >(1 8 3)
-(do (assoc! (car **root**) 'b (quote (1 "b" "d"))) b)
+(do (*builtin*.map-assoc! (car **root**) 'b (quote (1 "b" "d"))) b)
 >(1 "b" "d")
-(do (assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote (1 b 3)))
+(do (*builtin*.map-assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote (1 b 3)))
 >(1 b 3)
-(do (assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote (1 (unquote b) 3)))
+(do (*builtin*.map-assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote (1 (unquote b) 3)))
 >(1 (1 "b" "d") 3)
-(do (assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote ((unquote 1) (unquote 2))))
+(do (*builtin*.map-assoc! (car **root**) 'b (quote (1 "b" "d"))) (quasiquote ((unquote 1) (unquote 2))))
 >(1 2)
 
 ;; Testing splice-unquote
-(do (assoc! (car **root**) 'c (quote (1 "b" "d"))) c)
+(do (*builtin*.map-assoc! (car **root**) 'c (quote (1 "b" "d"))) c)
 >(1 "b" "d")
 c
 >(1 "b" "d")
@@ -162,11 +162,11 @@ c
 ;; Testing ~ (unquote) reader macro
 `~7
 >7
-(do (assoc! (car **root**) 'a 8) a)
+(do (*builtin*.map-assoc! (car **root**) 'a 8) a)
 >8
 `(1 ~a 3)
 >(1 8 3)
-(do (assoc! (car **root**) 'b '(1 "b" "d")) b)
+(do (*builtin*.map-assoc! (car **root**) 'b '(1 "b" "d")) b)
 >(1 "b" "d")
 `(1 b 3)
 >(1 b 3)
@@ -174,7 +174,7 @@ c
 >(1 (1 "b" "d") 3)
 
 ;; Testing ~@ (splice-unquote) reader macro
-(do (assoc! (car **root**) 'c '(1 "b" "d")) c)
+(do (*builtin*.map-assoc! (car **root**) 'c '(1 "b" "d")) c)
 >(1 "b" "d")
 `(1 c 3)
 >(1 c 3)
@@ -194,7 +194,7 @@ c
 >[1 2]
 
 ;; Testing that vec does not mutate the original list
-(do (assoc! (car **root**) 'a (list 1 2)) (vec a))
+(do (*builtin*.map-assoc! (car **root**) 'a (list 1 2)) (vec a))
 >[1 2]
 a
 >(1 2)
@@ -208,7 +208,7 @@ a
 >[()]
 (quasiquote ([]))
 >([])
-(do (assoc! (car **root**) 'a 8) a)
+(do (*builtin*.map-assoc! (car **root**) 'a 8) a)
 >8
 `[1 a 3]
 >[1 a 3]
@@ -230,7 +230,7 @@ a
 >[(a 8 a)]
 
 ;; Testing splice-unquote with vectors
-(do (assoc! (car **root** ) 'c '(1 "b" "d")) c)
+(do (*builtin*.map-assoc! (car **root** ) 'c '(1 "b" "d")) c)
 >(1 "b" "d")
 `[~@c]
 >[1 "b" "d"]
@@ -336,20 +336,20 @@ a
 >(vec (cons (quote a) (cons (vec ()) (cons (quote b) (cons (vec (cons (quote c) ())) (cons (quote d) (cons (vec (cons (quote e) (cons (quote f) ()))) (cons (quote g) ()))))))))
 
 ;; Testing trivial macros
-(do (assoc! (car **root**) 'one (mo () 1)) (one))
+(do (*builtin*.map-assoc! (car **root**) 'one (mo () 1)) (one))
 >1
-(do (assoc! (car **root**) 'two (mo () 2)) (two))
+(do (*builtin*.map-assoc! (car **root**) 'two (mo () 2)) (two))
 >2
 
 ;; Testing unless macros
-(do (assoc! (car **root**) 'unless (mo (pred a b) `(if ~pred ~b ~a))) (unless #f 7 8))
+(do (*builtin*.map-assoc! (car **root**) 'unless (mo (pred a b) `(if ~pred ~b ~a))) (unless #f 7 8))
 >7
 (unless #t 7 8)
 >8
 
 (do 
-    (assoc! (car **root**) 'not (proc (x) (if x #f #t)))
-    (assoc! (car **root**) 'unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) 
+    (const not (proc (x) (if x #f #t)))
+    (const unless2 (mo (pred a b) (list 'if (list 'not pred) a b))) 
     (unless2 #f 7 8)
 )
 >7

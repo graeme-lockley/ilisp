@@ -198,78 +198,6 @@ static Value *apply(Value *parameters, Value *env)
     return VNil;
 }
 
-static Value *assoc(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkSymbol("pair"), parameters);
-
-    Value *assoc = CAR(parameters);
-    if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("assoc"), 0, mkSymbol("map"), parameters);
-
-    Value *result = map_clone(assoc);
-
-    int parameter_count = 1;
-    parameters = CDR(parameters);
-
-    while (1)
-    {
-        if (IS_NIL(parameters))
-            return result;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_key = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_value = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        map_set_bang(result, mi_key, mi_value);
-    }
-}
-
-static Value *assoc_bang(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkSymbol("pair"), parameters);
-
-    Value *assoc = CAR(parameters);
-    if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("assoc!"), 0, mkSymbol("map"), parameters);
-
-    int parameter_count = 1;
-    parameters = CDR(parameters);
-
-    while (1)
-    {
-        if (IS_NIL(parameters))
-            return assoc;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_key = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("assoc!"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *mi_value = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        map_set_bang(assoc, mi_key, mi_value);
-    }
-}
-
 static Value *byte_vector_mutable(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -417,64 +345,6 @@ static Value *containp(Value *parameters, Value *env)
         return exceptions_invalid_argument(mkSymbol("contains?"), 0, mkSymbol("map"), parameters);
 
     return map_containsp(parameter[0], parameter[1]);
-}
-
-static Value *dissoc(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkSymbol("pair"), parameters);
-
-    Value *assoc = CAR(parameters);
-    if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("dissoc"), 0, mkSymbol("map"), parameters);
-
-    int parameter_count = 1;
-    parameters = CDR(parameters);
-
-    Value *result = map_clone(assoc);
-
-    while (1)
-    {
-        if (IS_NIL(parameters))
-            return result;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("dissoc"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *key = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        map_remove_bang(result, key);
-    }
-}
-
-static Value *dissoc_bang(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkSymbol("pair"), parameters);
-
-    Value *assoc = CAR(parameters);
-    if (!IS_MAP(assoc))
-        return exceptions_invalid_argument(mkSymbol("dissoc!"), 0, mkSymbol("map"), parameters);
-
-    int parameter_count = 1;
-    parameters = CDR(parameters);
-
-    while (1)
-    {
-        if (IS_NIL(parameters))
-            return assoc;
-
-        if (!IS_PAIR(parameters))
-            return exceptions_invalid_argument(mkSymbol("dissoc!"), parameter_count, mkSymbol("pair"), parameters);
-
-        Value *key = CAR(parameters);
-        parameters = CDR(parameters);
-        parameter_count += 1;
-
-        map_remove_bang(assoc, key);
-    }
 }
 
 static Value *equal(Value *parameters, Value *env)
@@ -1927,19 +1797,9 @@ static Value *vectorp(Value *parameters, Value *env)
     return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static void define(char *name, char *s, Value *env)
+static Value *list(Value *parameters, Value *env)
 {
-    char *p = (char *)malloc(strlen(name) + strlen(s) + 29);
-    sprintf(p, "(assoc! (car **root**) '%s %s)", name, s);
-    Value *v = Repl_rep("**string**", p, env);
-    free(p);
-
-    if (!IS_SUCCESSFUL(v))
-    {
-        Value *e = Printer_prStr(v, 1, " ");
-
-        printf("Error: %s\n", IS_SUCCESSFUL(e) ? e->strV : "unable to show output");
-    }
+    return parameters;
 }
 
 static void add_binding_into_environment(Value *env, char *name, Value *value)
@@ -1951,8 +1811,10 @@ static void add_binding_into_environment(Value *env, char *name, Value *value)
 Value *builtins_initialise_environment()
 {
     Value *root_bindings = map_create(0);
+    root_bindings->tag &= ~VP_IMMUTABLE;
     Value *root_scope = mkPair(root_bindings, VNil);
     Value *builtin_bindings = map_create(0);
+    builtin_bindings->tag &= ~VP_IMMUTABLE;
 
     add_binding_into_environment(root_bindings, "**root**", root_scope);
     add_binding_into_environment(root_bindings, "+", mkNativeProcedure(integer_plus));
@@ -1968,15 +1830,11 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(integer_greater_equal));
 
     add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
-    add_binding_into_environment(root_bindings, "assoc", mkNativeProcedure(assoc));
-    add_binding_into_environment(root_bindings, "assoc!", mkNativeProcedure(assoc_bang));
     add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
     add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "cons", mkNativeProcedure(builtin_cons_wrapped));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
-    add_binding_into_environment(root_bindings, "dissoc", mkNativeProcedure(dissoc));
-    add_binding_into_environment(root_bindings, "dissoc!", mkNativeProcedure(dissoc_bang));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
@@ -2045,7 +1903,12 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "macro?", mkNativeProcedure(builtin_macrop_wrapped));
     add_binding_into_environment(builtin_bindings, "map?", mkNativeProcedure(builtin_mapp_wrapped));
     add_binding_into_environment(builtin_bindings, "map->list", mkNativeProcedure(builtin_map_to_list_wrapped));
+    add_binding_into_environment(builtin_bindings, "map-assoc", mkNativeProcedure(builtin_map_assoc_wrapped));
+    add_binding_into_environment(builtin_bindings, "map-assoc!", mkNativeProcedure(builtin_map_assoc_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "map-dissoc", mkNativeProcedure(builtin_map_dissoc_wrapped));
+    add_binding_into_environment(builtin_bindings, "map-dissoc!", mkNativeProcedure(builtin_map_dissoc_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
+    add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));
@@ -2067,8 +1930,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
 
-    define("list", "(proc x x)", root_scope);
-    define("load-file", "(map-get *builtin* 'load-source)", root_scope);
+    add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
+    add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));
 
     return root_scope;
 }

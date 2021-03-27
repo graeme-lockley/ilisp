@@ -1,5 +1,5 @@
 CC=clang-9 -Ofast
-CFLAGS=-g -Wall -Wunused-parameter -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
+CFLAGS=-g -Wall -Wextra -pedantic -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-parameter
 LDFLAGS=-g
 
 # CC=gcc
@@ -50,11 +50,16 @@ SRC_OBJECTS=\
 	src/builtin/keywordp.o \
 	src/builtin/keyword-to-string.o \
 	src/builtin/macrop.o \
+	src/builtin/map-assoc.o \
+	src/builtin/map-assoc-bang.o \
+	src/builtin/map-dissoc.o \
+	src/builtin/map-dissoc-bang.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
 	src/builtin/map-to-list.o \
 	src/builtin/mapp.o \
 	src/builtin/mutable-byte-vector.o \
+	src/builtin/mutable-map.o \
 	src/builtin/numberp.o \
 	src/builtin/import-source.o \
 	src/builtin/list-count.o \

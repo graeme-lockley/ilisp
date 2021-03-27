@@ -49,6 +49,7 @@ SRC_OBJECTS=\
 	src/builtin/keyword.o \
 	src/builtin/keywordp.o \
 	src/builtin/keyword-to-string.o \
+	src/builtin/macrop.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
 	src/builtin/mutable-byte-vector.o \

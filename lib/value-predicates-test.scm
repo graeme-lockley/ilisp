@@ -34,23 +34,6 @@
     (Unit.assert-falsy (list? and))
 )
 
-(Unit.test "macro?"
-    (Unit.assert-falsy (macro? ()))
-    (Unit.assert-falsy (macro? 1))
-    (Unit.assert-falsy (macro? #\A))
-    (Unit.assert-falsy (macro? "name"))
-    (Unit.assert-falsy (macro? 'name))
-    (Unit.assert-falsy (macro? :name))
-    (Unit.assert-falsy (macro? '(1 2 3)))
-    (Unit.assert-falsy (macro? []))
-    (Unit.assert-falsy (macro? [1 2 3]))
-    (Unit.assert-falsy (macro? {}))
-    (Unit.assert-falsy (macro? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (macro? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (macro? car))
-    (Unit.assert-truthy (macro? and))
-)
-
 (Unit.test "map?"
     (Unit.assert-falsy (map? ()))
     (Unit.assert-falsy (map? 1))

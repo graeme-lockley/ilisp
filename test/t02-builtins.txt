@@ -493,13 +493,13 @@ fred
 (hash-map)
 > {}
 
-(map? (hash-map))
+(*builtin*.map? (hash-map))
 > #t
 
 (hash-map :a 1 :b 2 :c 3)
 > {:a 1 :b 2 :c 3}
 
-(map? (hash-map :a 1 :b 2 :c 3))
+(*builtin*.map? (hash-map :a 1 :b 2 :c 3))
 > #t
 
 (hash-map :a 1 :b 2 :c)

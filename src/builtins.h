@@ -58,6 +58,7 @@ extern Value *builtin_map_find(Value *map, Value *keys);
 extern Value *builtin_map_find_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_get(Value *map, Value *keys);
 extern Value *builtin_map_get_wrapped(Value *parameters, Value *env);
+extern Value *builtin_mapp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_byte_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_numberp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);

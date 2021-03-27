@@ -1136,17 +1136,6 @@ static Value *map(Value *parameters, Value *env)
     }
 }
 
-static Value *mapp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "map?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_MAP(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *mcons(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -2009,7 +1998,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map->list", mkNativeProcedure(map_to_list));
-    add_binding_into_environment(root_bindings, "map?", mkNativeProcedure(mapp));
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
     add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
@@ -2070,6 +2058,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(list_take));
     add_binding_into_environment(builtin_bindings, "load-source", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(builtin_bindings, "macro?", mkNativeProcedure(builtin_macrop_wrapped));
+    add_binding_into_environment(builtin_bindings, "map?", mkNativeProcedure(builtin_mapp_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));

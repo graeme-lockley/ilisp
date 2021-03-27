@@ -61,7 +61,7 @@
       (vector? v) "vector"
       (string? v) "string"
       (number? v) "number"
-      (map? v) "map"
+      (*builtin*.map? v) "map"
       (fn? v) "fn"
       (macro? v) "macro"
       (keyword? v) "keyword"

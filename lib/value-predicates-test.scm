@@ -34,23 +34,6 @@
     (Unit.assert-falsy (list? and))
 )
 
-(Unit.test "map?"
-    (Unit.assert-falsy (map? ()))
-    (Unit.assert-falsy (map? 1))
-    (Unit.assert-falsy (map? #\A))
-    (Unit.assert-falsy (map? "name"))
-    (Unit.assert-falsy (map? 'name))
-    (Unit.assert-falsy (map? :name))
-    (Unit.assert-falsy (map? '(1 2 3)))
-    (Unit.assert-falsy (map? []))
-    (Unit.assert-falsy (map? [1 2 3]))
-    (Unit.assert-truthy (map? {}))
-    (Unit.assert-truthy (map? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (map? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (map? car))
-    (Unit.assert-falsy (map? and))
-)
-
 (Unit.test "mutable?"
     (Unit.assert-falsy (mutable? ()))
     (Unit.assert-falsy (mutable? 1))

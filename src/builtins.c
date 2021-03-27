@@ -1083,20 +1083,6 @@ static Value *listp(Value *parameters, Value *env)
     return IS_PAIR(parameter[0]) || IS_NIL(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *map_to_list(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "map->list");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_MAP(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("map->list"), 0, mkSymbol("map"), parameter[0]);
-
-    return map_assoc_list(parameter[0]);
-}
-
 static Value *map(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1997,7 +1983,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "hash-map", mkNativeProcedure(hash_map));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
-    add_binding_into_environment(root_bindings, "map->list", mkNativeProcedure(map_to_list));
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
     add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
@@ -2059,6 +2044,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "load-source", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(builtin_bindings, "macro?", mkNativeProcedure(builtin_macrop_wrapped));
     add_binding_into_environment(builtin_bindings, "map?", mkNativeProcedure(builtin_mapp_wrapped));
+    add_binding_into_environment(builtin_bindings, "map->list", mkNativeProcedure(builtin_map_to_list_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));

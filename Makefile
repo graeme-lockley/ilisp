@@ -52,6 +52,7 @@ SRC_OBJECTS=\
 	src/builtin/macrop.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
+	src/builtin/map-to-list.o \
 	src/builtin/mapp.o \
 	src/builtin/mutable-byte-vector.o \
 	src/builtin/numberp.o \

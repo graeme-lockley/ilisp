@@ -577,18 +577,6 @@ fred
 (contains? {:a 1 :b () :c 3} :b)
 > #t
 
-(map->list)
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure map->list}))
-
-(map->list [])
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure map->list :received []}))
-
-(map->list {})
-> ()
-
-(map->list {:a 1 :b 2 :c 3})
-> ((:a . 1) (:b . 2) (:c . 3))
-
 ((map-get *builtin* 'read-dir) "./test/my_dir_that_does_not_exist")
 > (:exception (SystemError . {:code 2 :error "No such file or directory" :parameters "./test/my_dir_that_does_not_exist" :procedure read-dir}))
 

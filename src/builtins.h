@@ -48,6 +48,7 @@ extern Value *builtin_integerp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_integer_to_character_wrapped(Value *parameters, Value *env);
 extern Value *builtin_keyword_wrapped(Value *parameters, Value *env);
 extern Value *builtin_keywordp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_keyword_to_string_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_count(Value *list);
 extern Value *builtin_list_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_load_source(char *source_name, Value *env);
@@ -57,6 +58,7 @@ extern Value *builtin_map_find_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_get(Value *map, Value *keys);
 extern Value *builtin_map_get_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_byte_vector_wrapped(Value *parameters, Value *env);
+extern Value *builtin_numberp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 

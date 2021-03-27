@@ -48,9 +48,11 @@ SRC_OBJECTS=\
 	src/builtin/integer-to-character.o \
 	src/builtin/keyword.o \
 	src/builtin/keywordp.o \
+	src/builtin/keyword-to-string.o \
 	src/builtin/map-find.o \
 	src/builtin/map-get.o \
 	src/builtin/mutable-byte-vector.o \
+	src/builtin/numberp.o \
 	src/builtin/import-source.o \
 	src/builtin/list-count.o \
 	src/builtin/load-source.o \

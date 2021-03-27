@@ -34,23 +34,6 @@
     (Unit.assert-falsy (list? and))
 )
 
-(Unit.test "*builtin*.null?"
-    (Unit.assert-truthy (*builtin*.null? ()))
-    (Unit.assert-falsy (*builtin*.null? 1))
-    (Unit.assert-falsy (*builtin*.null? #\A))
-    (Unit.assert-falsy (*builtin*.null? "name"))
-    (Unit.assert-falsy (*builtin*.null? 'name))
-    (Unit.assert-falsy (*builtin*.null? :name))
-    (Unit.assert-falsy (*builtin*.null? '(1 2 3)))
-    (Unit.assert-falsy (*builtin*.null? []))
-    (Unit.assert-falsy (*builtin*.null? [1 2 3]))
-    (Unit.assert-falsy (*builtin*.null? {}))
-    (Unit.assert-falsy (*builtin*.null? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (*builtin*.null? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.null? car))
-    (Unit.assert-falsy (*builtin*.null? and))
-)
-
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))

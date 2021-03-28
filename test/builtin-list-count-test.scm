@@ -4,8 +4,8 @@
     (Unit.assert-equals (*builtin*.list-count ()) 0)
 )
 
-(Unit.test "set-car! on immutable pair signal"
-    (Unit.assert-signal-name (*builtin*.set-car! (*builtin*.pair 1 2) 3) 'ValueIsImmutable)
+(Unit.test "pair-car! on immutable pair signal"
+    (Unit.assert-signal-name (*builtin*.pair-car! (*builtin*.pair 1 2) 3) 'ValueIsImmutable)
 )
 
 (Unit.test "arg count signal"

@@ -1781,6 +1781,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "keyword", mkNativeProcedure(builtin_keyword_wrapped));
     add_binding_into_environment(builtin_bindings, "keyword?", mkNativeProcedure(builtin_keywordp_wrapped));
     add_binding_into_environment(builtin_bindings, "keyword->string", mkNativeProcedure(builtin_keyword_to_string_wrapped));
+    add_binding_into_environment(builtin_bindings, "list->mutable-vector", mkNativeProcedure(builtin_list_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "list->vector", mkNativeProcedure(builtin_list_to_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));

@@ -50,6 +50,7 @@ SRC_OBJECTS=\
 	src/builtin/keywordp.o \
 	src/builtin/keyword-to-string.o \
 	src/builtin/list-count.o \
+	src/builtin/list-to-vector.o \
 	src/builtin/load-source.o \
 	src/builtin/macrop.o \
 	src/builtin/map-assoc.o \

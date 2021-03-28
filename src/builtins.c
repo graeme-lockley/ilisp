@@ -76,32 +76,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-static Value *list_to_vector(Value *v)
-{
-    Value *cursor = v;
-
-    int list_length = 0;
-    while (1)
-    {
-        if (IS_NULL(cursor))
-            break;
-
-        if (IS_PAIR(cursor))
-            cursor = CDR(cursor);
-        else
-            return exceptions_invalid_argument(mkSymbol("count"), 0, mkSymbol("pair"), v);
-
-        list_length += 1;
-    }
-
-    Value **items = (Value **)malloc(sizeof(Value *) * list_length);
-    cursor = v;
-    for (int lp = 0; lp < list_length; lp += 1, cursor = CDR(cursor))
-        items[lp] = CAR(cursor);
-
-    return mkVector(items, list_length);
-}
-
 static int starts_with(const char *restrict string, const char *restrict prefix)
 {
     while (*prefix)
@@ -1443,29 +1417,9 @@ static Value *symbolp(Value *parameters, Value *env)
     return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vec(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vec");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (IS_NULL(parameter[0]))
-        return VEmptyVector;
-
-    if (IS_VECTOR(parameter[0]))
-        return parameter[0];
-
-    if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("pair"), 0, mkPair(mkSymbol("string"), mkPair(mkSymbol("()"), VNull)), parameter[0]);
-
-    return list_to_vector(parameter[0]);
-}
-
 static Value *vector(Value *parameters, Value *env)
 {
-    return list_to_vector(parameters);
+    return builtin_list_to_vector(parameters);
 }
 
 static Value *vector_count(Value *parameters, Value *env)
@@ -1531,7 +1485,7 @@ static Value *vector_mutable(Value *parameters, Value *env)
 
     if (IS_PAIR(args))
     {
-        Value *result = list_to_vector(args);
+        Value *result = builtin_list_to_vector(args);
         result->tag &= ~VP_IMMUTABLE;
         return result;
     }
@@ -1797,7 +1751,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "string?", mkNativeProcedure(stringp));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
-    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(vec));
+    add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
     add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));
 
@@ -1827,6 +1781,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "keyword", mkNativeProcedure(builtin_keyword_wrapped));
     add_binding_into_environment(builtin_bindings, "keyword?", mkNativeProcedure(builtin_keywordp_wrapped));
     add_binding_into_environment(builtin_bindings, "keyword->string", mkNativeProcedure(builtin_keyword_to_string_wrapped));
+    add_binding_into_environment(builtin_bindings, "list->vector", mkNativeProcedure(builtin_list_to_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));

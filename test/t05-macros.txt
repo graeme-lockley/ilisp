@@ -182,19 +182,15 @@ c
 >(1 1 "b" "d" 3)
 
 ;; Testing vec function
-(vec (list))
+(*builtin*.list->vector (list))
 >[]
-(vec (list 1))
+(*builtin*.list->vector (list 1))
 >[1]
-(vec (list 1 2))
->[1 2]
-(vec [])
->[]
-(vec [1 2])
+(*builtin*.list->vector (list 1 2))
 >[1 2]
 
 ;; Testing that vec does not mutate the original list
-(do (*builtin*.map-assoc! (car **root**) 'a (list 1 2)) (vec a))
+(do (*builtin*.map-assoc! (car **root**) 'a (list 1 2)) (*builtin*.list->vector a))
 >[1 2]
 a
 >(1 2)

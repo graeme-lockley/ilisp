@@ -53,7 +53,12 @@
     (iter (count v) z)
 )
 
-(const ->mutable *builtin*.vector->mutable-vector)
+(const (->mutable seq)
+    (if (*builtin*.null? seq) (*builtin*.vector->mutable-vector [])
+        (*builtin*.pair? seq) (*builtin*.list->mutable-vector seq)
+        (*builtin*.vector->mutable-vector seq)
+    )
+)
 
 (const nth *builtin*.vector-nth)
 

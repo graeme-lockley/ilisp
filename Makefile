@@ -92,6 +92,7 @@ SRC_OBJECTS=\
 	src/builtin/vector-count.o \
 	src/builtin/vector-filter.o \
 	src/builtin/vector-to-list.o \
+	src/builtin/vector-to-mutable-vector.o \
 	src/builtin/vectorp.o
 
 SRC_TARGETS=\

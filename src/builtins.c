@@ -1019,35 +1019,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vector_mutable(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-mutable");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *args = parameter[0];
-
-    if (IS_PAIR(args))
-    {
-        Value *result = builtin_list_to_vector(args);
-        result->tag &= ~VP_IMMUTABLE;
-        return result;
-    }
-
-    if (!IS_VECTOR(args))
-        return exceptions_invalid_argument(mkSymbol("vector-mutable"), 0, mkPair(mkSymbol("vector"), mkPair(mkSymbol("pair"), VNull)), args);
-
-    int number_of_items = VECTOR(args).length;
-    Value **items = VECTOR(args).items;
-    Value **buffer = (Value **)malloc(number_of_items * sizeof(Value *));
-    memcpy(buffer, items, number_of_items * sizeof(Value *));
-    Value *result = mkVectorUse(buffer, number_of_items);
-    result->tag &= ~VP_IMMUTABLE;
-    return result;
-}
-
 static Value *vector_nth(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1353,7 +1324,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector->list", mkNativeProcedure(builtin_vector_to_list_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(builtin_vector_count_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(builtin_vector_filter_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(vector_mutable));
+    add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(builtin_vector_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
     add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(vector_nth_bang));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));

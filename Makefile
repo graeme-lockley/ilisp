@@ -90,6 +90,7 @@ SRC_OBJECTS=\
 	src/builtin/slurp.o \
 	src/builtin/vector.o \
 	src/builtin/vector-count.o \
+	src/builtin/vector-filter.o \
 	src/builtin/vector-to-list.o \
 	src/builtin/vectorp.o
 

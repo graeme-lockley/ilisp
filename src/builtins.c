@@ -902,20 +902,6 @@ static Value *map(Value *parameters, Value *env)
     }
 }
 
-static Value *mcons(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "pair");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *result = mkPair(parameter[0], IS_VECTOR(parameter[1]) ? vector_to_list(parameter[1]) : parameter[1]);
-    result->tag &= ~VP_IMMUTABLE;
-
-    return result;
-}
-
 static Value *numberp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1698,7 +1684,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "map-find", mkNativeProcedure(builtin_map_find_wrapped));
     add_binding_into_environment(root_bindings, "map-get", mkNativeProcedure(builtin_map_get_wrapped));
-    add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
@@ -1765,6 +1750,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "mutable?", mkNativeProcedure(builtin_mutablep_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
+    add_binding_into_environment(builtin_bindings, "mutable-pair", mkNativeProcedure(builtin_mutable_pair_wrapped));
     add_binding_into_environment(builtin_bindings, "null?", mkNativeProcedure(builtin_nullp_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));

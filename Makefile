@@ -71,6 +71,8 @@ SRC_OBJECTS=\
 	src/builtin/nullp.o \
 	src/builtin/numberp.o \
 	src/builtin/pair.o \
+	src/builtin/pair-car.o \
+	src/builtin/pair-cdr.o \
 	src/builtin/pairp.o \
 	src/builtin/slurp.o
 

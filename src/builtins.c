@@ -194,73 +194,6 @@ static Value *byte_vector_mutable(Value *parameters, Value *env)
     return result;
 }
 
-static Value *car(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.pair-car");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (IS_VECTOR(parameter[0]))
-    {
-        if (VECTOR(parameter[0]).length == 0)
-            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("vector"), parameter[0]);
-
-        return VECTOR(parameter[0]).items[0];
-    }
-
-    if (IS_STRING(parameter[0]))
-    {
-        if (strlen(STRING(parameter[0])) == 0)
-            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("string"), parameter[0]);
-
-        return mkNumber(STRING(parameter[0])[0]);
-    }
-
-    if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("pair"), parameter[0]);
-
-    return CAR(parameter[0]);
-}
-
-Value *cdr(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.pair-cdr");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (IS_VECTOR(parameter[0]))
-    {
-        if (VECTOR(parameter[0]).length == 0)
-            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("vector"), parameter[0]);
-
-        if (VECTOR(parameter[0]).length == 1)
-            return VEmptyVector;
-
-        int result_size = VECTOR(parameter[0]).length - 1;
-        Value **result = malloc(result_size * sizeof(Value *));
-        memcpy(result, VECTOR(parameter[0]).items + 1, result_size * sizeof(Value *));
-
-        return mkVectorUse(result, result_size);
-    }
-
-    if (IS_STRING(parameter[0]))
-    {
-        if (strlen(STRING(parameter[0])) == 0)
-            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("string"), parameter[0]);
-
-        return mkStringUse(strdup(STRING(parameter[0]) + 1));
-    }
-
-    if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("pair"), parameter[0]);
-
-    return CDR(parameter[0]);
-}
-
 static Value *concat(Value *parameters, Value *env)
 {
     Value *result = VNull;
@@ -1753,8 +1686,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(builtin_bindings, "pair?", mkNativeProcedure(builtin_pairp_wrapped));
-    add_binding_into_environment(builtin_bindings, "pair-car", mkNativeProcedure(car));
-    add_binding_into_environment(builtin_bindings, "pair-cdr", mkNativeProcedure(cdr));
+    add_binding_into_environment(builtin_bindings, "pair-car", mkNativeProcedure(builtin_pair_car_wrapped));
+    add_binding_into_environment(builtin_bindings, "pair-cdr", mkNativeProcedure(builtin_pair_cdr_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));
     add_binding_into_environment(builtin_bindings, "set-cdr!", mkNativeProcedure(set_cdr_bang));

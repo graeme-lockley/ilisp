@@ -70,6 +70,7 @@ extern Value *builtin_mk_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_byte_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutable_pair_wrapped(Value *parameters, Value *env);
+extern Value *builtin_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_mutablep_wrapped(Value *parameters, Value *env);
 extern Value *builtin_nullp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_numberp_wrapped(Value *parameters, Value *env);

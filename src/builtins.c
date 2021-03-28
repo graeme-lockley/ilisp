@@ -1412,6 +1412,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-map", mkNativeProcedure(builtin_mutable_map_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-pair", mkNativeProcedure(builtin_mutable_pair_wrapped));
+    add_binding_into_environment(builtin_bindings, "mutable-vector", mkNativeProcedure(builtin_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "null?", mkNativeProcedure(builtin_nullp_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));

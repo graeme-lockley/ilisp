@@ -51,23 +51,6 @@
     (Unit.assert-falsy (number? and))
 )
 
-(Unit.test "*builtin*.pair?"
-    (Unit.assert-falsy (*builtin*.pair? ()))
-    (Unit.assert-falsy (*builtin*.pair? 1))
-    (Unit.assert-falsy (*builtin*.pair? #\A))
-    (Unit.assert-falsy (*builtin*.pair? "name"))
-    (Unit.assert-falsy (*builtin*.pair? 'name))
-    (Unit.assert-falsy (*builtin*.pair? :name))
-    (Unit.assert-truthy (*builtin*.pair? '(1 2 3)))
-    (Unit.assert-falsy (*builtin*.pair? []))
-    (Unit.assert-falsy (*builtin*.pair? [1 2 3]))
-    (Unit.assert-falsy (*builtin*.pair? {}))
-    (Unit.assert-falsy (*builtin*.pair? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (*builtin*.pair? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.pair? car))
-    (Unit.assert-falsy (*builtin*.pair? and))
-)
-
 (Unit.test "sequential?"
     (Unit.assert-truthy (sequential? ()))
     (Unit.assert-falsy (sequential? 1))

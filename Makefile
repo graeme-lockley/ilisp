@@ -88,7 +88,8 @@ SRC_OBJECTS=\
 	src/builtin/symbol.o \
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \
-	src/builtin/vector.o
+	src/builtin/vector.o \
+	src/builtin/vectorp.o
 
 SRC_TARGETS=\
 	src/main

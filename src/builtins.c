@@ -1290,17 +1290,6 @@ static Value *vector_sort_bang(Value *parameters, Value *env)
     return parameter[0];
 }
 
-static Value *vectorp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_VECTOR(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *list(Value *parameters, Value *env)
 {
     return parameters;
@@ -1435,7 +1424,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
     add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(vectorp));
+    add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(builtin_vectorp_wrapped));
 
     add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));

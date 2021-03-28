@@ -60,7 +60,7 @@
 (const- (list-of-values env exps) 
     (if (no-operands? exps)
         ()
-        (*builtin*.cons
+        (*builtin*.pair
             (eval env (first-operand exps))
             (list-of-values env (rest-operands exps))
         )
@@ -109,7 +109,7 @@
 )
 
 (const- (make-lambda parameters body) 
-    (*builtin*.cons 'lambda (*builtin*.cons parameters body))
+    (*builtin*.pair 'lambda (*builtin*.pair parameters body))
 )
 
 (const- (make-if predicate consequent alternative)

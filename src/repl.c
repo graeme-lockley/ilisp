@@ -137,9 +137,9 @@ Value *quasiquote_loop(Value *v, Value *env)
         Value *item =
             startsWith(CAR(v), "splice-unquote")
                 ? mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNull, VNull)))
-                : mkPair(mkSymbol("cons"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNull, VNull)));
+                : mkPair(mkSymbol("pair"), mkPair(eval_quasiquote(CAR(v), env), mkPair(VNull, VNull)));
 
-            /* leaving this here - it is what a replace cons would like if wanted to map cons onto *builtin*.cons
+            /* leaving this here - it is what a replace cons would like if wanted to map cons onto *builtin*.pair
              * huge performance wack
              */
             /*
@@ -147,7 +147,7 @@ Value *quasiquote_loop(Value *v, Value *env)
                 ? mkPair(mkSymbol("concat"), mkPair(CAR(CDR(CAR(v))), mkPair(VNil, VNil)))
                 : mkPair(
                     mkPair(mkSymbol("map-get"), mkPair(mkSymbol("*builtin*"), mkPair(
-                        mkPair(mkSymbol("quote"), mkPair(mkSymbol("cons"), VNil)),
+                        mkPair(mkSymbol("quote"), mkPair(mkSymbol("pair"), VNil)),
                         VNil))), 
                     mkPair(eval_quasiquote(CAR(v), env), mkPair(VNil, VNil)));
             */

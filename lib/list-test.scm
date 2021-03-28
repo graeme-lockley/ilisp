@@ -52,7 +52,7 @@
 )
 
 (Unit.test "fold"
-    (const (icons a b) (*builtin*.cons b a))
+    (const (icons a b) (*builtin*.pair b a))
 
     (Unit.assert-equals (List.fold () () icons) ())
     (Unit.assert-equals (List.fold '(1) () icons) '(1))
@@ -62,9 +62,9 @@
 )
 
 (Unit.test "fold-right"
-   (Unit.assert-equals (List.fold-right () () *builtin*.cons) ())
-   (Unit.assert-equals (List.fold-right '(1) () *builtin*.cons) '(1))
-   (Unit.assert-equals (List.fold-right '(1 2 3 4 5) () *builtin*.cons) '(1 2 3 4 5))
+   (Unit.assert-equals (List.fold-right () () *builtin*.pair) ())
+   (Unit.assert-equals (List.fold-right '(1) () *builtin*.pair) '(1))
+   (Unit.assert-equals (List.fold-right '(1 2 3 4 5) () *builtin*.pair) '(1 2 3 4 5))
 
    (Unit.assert-equals (List.fold-right '(1 2 3 4 5) "0" (proc (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )

@@ -38,7 +38,7 @@
         (do
             (const s (if (fn? sep) (sep) sep))
 
-            (*builtin*.cons (car lst) (*builtin*.cons s (separate (cdr lst) sep)))
+            (*builtin*.pair (car lst) (*builtin*.pair s (separate (cdr lst) sep)))
         )
     )
 )

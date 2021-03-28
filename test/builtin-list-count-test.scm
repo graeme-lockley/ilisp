@@ -5,7 +5,7 @@
 )
 
 (Unit.test "set-car! on immutable pair signal"
-    (Unit.assert-signal-name (*builtin*.set-car! (*builtin*.cons 1 2) 3) 'ValueIsImmutable)
+    (Unit.assert-signal-name (*builtin*.set-car! (*builtin*.pair 1 2) 3) 'ValueIsImmutable)
 )
 
 (Unit.test "arg count signal"

@@ -4,5 +4,5 @@
 (Unit.test "binding"
     (Unit.assert-equals (Frame.binding (Frame.mk () ()) "x") ())
 
-    (Unit.assert-equals (Frame.binding (Frame.mk (list "x") (list 10)) "x") (*builtin*.cons "x" 10))
+    (Unit.assert-equals (Frame.binding (Frame.mk (list "x") (list 10)) "x") (*builtin*.pair "x" 10))
 )

@@ -43,7 +43,7 @@
 
             (const (gen-list n)
                 (if (<= n 0) ()
-                    (*builtin*.cons (g) (gen-list (- n 1)))
+                    (*builtin*.pair (g) (gen-list (- n 1)))
                 )
             )
 
@@ -56,7 +56,7 @@
     (if (= 0 number-of-options) (list-of 0 10)
         (= 1 number-of-options) (list-of (car options) 10)
         (= 2 number-of-options) (list-of (car options) (nth options 1))
-        (raise 'ExpectedArgumentCount {:procedure 'gen:list-of :min-arg-count: 1 :max-arg-count 3 :arguments (*builtin*.cons g opitions) :usage "(gen:list-of gen [min [max]])"})
+        (raise 'ExpectedArgumentCount {:procedure 'gen:list-of :min-arg-count: 1 :max-arg-count 3 :arguments (*builtin*.pair g opitions) :usage "(gen:list-of gen [min [max]])"})
     )
 )
 
@@ -86,7 +86,7 @@
 (const- (sample gen)
     (const (ntimes n)
         (if (= 0 n) ()
-            (*builtin*.cons (gen) (ntimes (- n 1)))
+            (*builtin*.pair (gen) (ntimes (- n 1)))
         )
     )
 

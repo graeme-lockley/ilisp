@@ -453,7 +453,7 @@ static Value *parse(Lexer *lexer)
             }
             else
             {
-                if (strcmp(s, "cons") == 0)
+                if (strcmp(s, "pair") == 0)
                     printf("%s:%d:%d\n", lexer->source_name, lexer->start.line, lexer->start.column);
 
                 return mkSymbolUse(s);

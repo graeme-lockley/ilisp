@@ -2,7 +2,7 @@
 
 (Unit.test "map->list"
     (Unit.assert-equals (*builtin*.map->list {}) ())
-    (Unit.assert-equals (*builtin*.map->list {:a 1 :b 2 :c 3}) (list (*builtin*.cons :a 1) (*builtin*.cons :b 2) (*builtin*.cons :c 3)))
+    (Unit.assert-equals (*builtin*.map->list {:a 1 :b 2 :c 3}) (list (*builtin*.pair :a 1) (*builtin*.pair :b 2) (*builtin*.pair :c 3)))
 )
 
 (Unit.test "arg count signal"

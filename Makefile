@@ -41,14 +41,16 @@ SRC_OBJECTS=\
 	src/builtin/byte-vector-nth-bang.o \
 	src/builtin/characterp.o \
 	src/builtin/character-to-string.o \
-	src/builtin/cons.o \
 	src/builtin/eval.o \
 	src/builtin/file-name-relative-to-file-name.o \
+	src/builtin/import-source.o \
 	src/builtin/integerp.o \
 	src/builtin/integer-to-character.o \
 	src/builtin/keyword.o \
 	src/builtin/keywordp.o \
 	src/builtin/keyword-to-string.o \
+	src/builtin/list-count.o \
+	src/builtin/load-source.o \
 	src/builtin/macrop.o \
 	src/builtin/map-assoc.o \
 	src/builtin/map-assoc-bang.o \
@@ -64,9 +66,7 @@ SRC_OBJECTS=\
 	src/builtin/mutable-map.o \
 	src/builtin/nullp.o \
 	src/builtin/numberp.o \
-	src/builtin/import-source.o \
-	src/builtin/list-count.o \
-	src/builtin/load-source.o \
+	src/builtin/pair.o \
 	src/builtin/slurp.o
 
 SRC_TARGETS=\

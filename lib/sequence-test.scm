@@ -7,9 +7,9 @@
   (Unit.assert-equals (count "hello world") 11)
 
   (Unit.assert-signal (count 123) (proc (signal) (do
-    (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (map-get (cdr signal) :procedure) 'count)
+    (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'count)
   )))
 )
 
@@ -21,9 +21,9 @@
   (Unit.assert-equals (drop "hello world" 2) "llo world")
   
   (Unit.assert-signal (drop 123 2) (proc (signal) (do
-    (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (map-get (cdr signal) :procedure) 'drop)
+    (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'drop)
   )))
 )
 
@@ -35,9 +35,9 @@
   (Unit.assert-equals (drop-right "hello world" 2) "hello wor")
   
   (Unit.assert-signal (drop-right 123 2) (proc (signal) (do
-    (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (map-get (cdr signal) :procedure) 'drop-right)
+    (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'drop-right)
   )))
 )
 
@@ -52,9 +52,9 @@
   (Unit.assert-falsy (empty? "hello"))
 
   (Unit.assert-signal (empty? 123) (proc (signal) (do
-    (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (map-get (cdr signal) :procedure) 'empty?)
+    (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'empty?)
   )))
 )
 
@@ -69,9 +69,9 @@
   (Unit.assert-falsy (ends-with "hello world" "worl"))
 
   (Unit.assert-signal (ends-with 123 1) (proc (signal) (do
-    (Unit.assert-equals (car signal) 'InvalidArgument)
-    (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-    (Unit.assert-equals (map-get (cdr signal) :procedure) 'ends-with)
+    (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+    (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'ends-with)
   )))
 )
 
@@ -84,9 +84,9 @@
 
   (Unit.assert-signal (filter 123 1) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'filter)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'filter)
     )
   )
 )
@@ -98,9 +98,9 @@
 
   (Unit.assert-signal (nth 123 1) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'nth)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'nth)
     )
   )
 )
@@ -114,9 +114,9 @@
   
   (Unit.assert-signal (slice 123 1 2) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'slice)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'slice)
     )
   )
 )
@@ -133,9 +133,9 @@
 
   (Unit.assert-signal (starts-with 123 1) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'starts-with)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'starts-with)
     )
   )
 )
@@ -149,9 +149,9 @@
   
   (Unit.assert-signal (take 123 2) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'take)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'take)
     )
   )
 )
@@ -165,9 +165,9 @@
   
   (Unit.assert-signal (take-right 123 2) 
     (proc (signal)
-      (Unit.assert-equals (car signal) 'InvalidArgument)
-      (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-      (Unit.assert-equals (map-get (cdr signal) :procedure) 'take-right)
+      (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+      (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'take-right)
     )
   )
 )

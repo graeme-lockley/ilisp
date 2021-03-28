@@ -3,7 +3,7 @@
 > 100
 
 ; Increment
-(do (*builtin*.map-assoc! (car **root**) 'inc (proc (x) (+ x 1)))
+(do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'inc (proc (x) (+ x 1)))
     (inc 100))
 > 101
 

@@ -9,24 +9,24 @@
 )
 
 (Unit.test "car"
-    (Unit.assert-equals (car [1]) 1)
-    (Unit.assert-equals (car [1 2 3]) 1)
+    (Unit.assert-equals (*builtin*.pair-car [1]) 1)
+    (Unit.assert-equals (*builtin*.pair-car [1 2 3]) 1)
 
-    (Unit.assert-signal (car []) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'car)
+    (Unit.assert-signal (*builtin*.pair-car []) (proc (signal) (do
+        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-car"))
     )))
 )
 
 (Unit.test "cdr"
-    (Unit.assert-equals (cdr [1]) [])
-    (Unit.assert-equals (cdr [1 2 3]) [2 3])
+    (Unit.assert-equals (*builtin*.pair-cdr [1]) [])
+    (Unit.assert-equals (*builtin*.pair-cdr [1 2 3]) [2 3])
 
-    (Unit.assert-signal (cdr []) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'cdr)
+    (Unit.assert-signal (*builtin*.pair-cdr []) (proc (signal) (do
+        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-cdr"))
     )))
 )
 
@@ -108,22 +108,22 @@
     (Unit.assert-truthy (*builtin*.mutable? (Vector.nth! (Vector.->mutable [1 2 () 4 5]) 2 3)))
 
     (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) 2 0) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'OutOfRange)
-        (Unit.assert-equals (map-get (cdr signal) :index) 2)
-        (Unit.assert-equals (map-get (cdr signal) :operand) [1])
+        (Unit.assert-equals (*builtin*.pair-car signal) 'OutOfRange)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :index) 2)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :operand) [1])
     )))
 
     (Unit.assert-signal (Vector.nth! (Vector.->mutable [1]) (- 3) 0) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'OutOfRange)
-        (Unit.assert-equals (map-get (cdr signal) :index) (- 3))
-        (Unit.assert-equals (map-get (cdr signal) :operand) [1])
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'vector-nth!)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'OutOfRange)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :index) (- 3))
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :operand) [1])
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'vector-nth!)
     )))
 
     (Unit.assert-signal (Vector.nth! [1 2 3] 2 0) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'ValueIsImmutable)
-        (Unit.assert-equals (map-get (cdr signal) :operand) [1 2 3])
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'vector-nth!)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'ValueIsImmutable)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :operand) [1 2 3])
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'vector-nth!)
     )))
 )
 

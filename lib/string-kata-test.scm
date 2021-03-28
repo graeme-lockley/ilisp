@@ -18,7 +18,7 @@
             (proc () (random))
 
         (= (count range) 2) 
-            (proc () (integer-in-range (car range) (car (cdr range))))
+            (proc () (integer-in-range (*builtin*.pair-car range) (*builtin*.pair-car (*builtin*.pair-cdr range))))
 
         (raise 'ExpectedArgumentCount {:procedure 'gen:integer :min-arg-count: 0 :max-arg-count 2 :arguments range :usage "(gen:integer [min max])"})
     )
@@ -54,8 +54,8 @@
     (const number-of-options (count options))
 
     (if (= 0 number-of-options) (list-of 0 10)
-        (= 1 number-of-options) (list-of (car options) 10)
-        (= 2 number-of-options) (list-of (car options) (nth options 1))
+        (= 1 number-of-options) (list-of (*builtin*.pair-car options) 10)
+        (= 2 number-of-options) (list-of (*builtin*.pair-car options) (nth options 1))
         (raise 'ExpectedArgumentCount {:procedure 'gen:list-of :min-arg-count: 1 :max-arg-count 3 :arguments (*builtin*.pair g opitions) :usage "(gen:list-of gen [min [max]])"})
     )
 )
@@ -101,8 +101,8 @@
             (try
                 (test arguments)
                 (proc (e)
-                    (if (and (*builtin*.pair? e) (*builtin*.map? (cdr e)))
-                            (raise (car e) (*builtin*.map-assoc (cdr e) :gen-arguments arguments))
+                    (if (and (*builtin*.pair? e) (*builtin*.map? (*builtin*.pair-cdr e)))
+                            (raise (*builtin*.pair-car e) (*builtin*.map-assoc (*builtin*.pair-cdr e) :gen-arguments arguments))
                         (raise e {:gen-arguments arguments})
                     )
                 )
@@ -119,8 +119,8 @@
             (try
                 (apply test arguments)
                 (proc (e)
-                    (if (and (*builtin*.pair? e) (*builtin*.map? (cdr e)))
-                            (raise (car e) (*builtin*.map-assoc (cdr e) :gen-arguments arguments))
+                    (if (and (*builtin*.pair? e) (*builtin*.map? (*builtin*.pair-cdr e)))
+                            (raise (*builtin*.pair-car e) (*builtin*.map-assoc (*builtin*.pair-cdr e) :gen-arguments arguments))
                         (raise e {:gen-arguments arguments})
                     )
                 )

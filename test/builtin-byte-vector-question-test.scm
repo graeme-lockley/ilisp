@@ -15,6 +15,6 @@
     (Unit.assert-falsy (*builtin*.byte-vector? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.byte-vector? (*builtin*.atom 1)))
     (Unit.assert-falsy (*builtin*.byte-vector? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.byte-vector? car))
+    (Unit.assert-falsy (*builtin*.byte-vector? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.byte-vector? and))
 )

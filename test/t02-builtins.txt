@@ -1,35 +1,35 @@
-(car)
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure car}))
+(*builtin*.pair-car)
+> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure *builtin*.pair-car}))
 
-(car 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure car :received 1}))
+(*builtin*.pair-car 1)
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure *builtin*.pair-car :received 1}))
 
-(car '(1 2) '(3 4))
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure car}))
+(*builtin*.pair-car '(1 2) '(3 4))
+> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure *builtin*.pair-car}))
 
-(car '())
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure car :received ()}))
+(*builtin*.pair-car '())
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure *builtin*.pair-car :received ()}))
 
-(car '(1 2 3 4 5))
+(*builtin*.pair-car '(1 2 3 4 5))
 > 1
 
 
-(cdr)
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure cdr}))
+(*builtin*.pair-cdr)
+> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments () :procedure *builtin*.pair-cdr}))
 
-(cdr 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure cdr :received 1}))
+(*builtin*.pair-cdr 1)
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure *builtin*.pair-cdr :received 1}))
 
-(cdr '(1 2) '(3 4))
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure cdr}))
+(*builtin*.pair-cdr '(1 2) '(3 4))
+> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure *builtin*.pair-cdr}))
 
-(cdr '())
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure cdr :received ()}))
+(*builtin*.pair-cdr '())
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure *builtin*.pair-cdr :received ()}))
 
-(cdr '(1 2 3 4 5))
+(*builtin*.pair-cdr '(1 2 3 4 5))
 > (2 3 4 5)
 
-(do (*builtin*.map-assoc! (car **root**) 'fred (*builtin*.mutable-map)) fred)
+(do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'fred (*builtin*.mutable-map)) fred)
 > {}
 
 (*builtin*.map-assoc! fred 'a 1)
@@ -368,7 +368,7 @@ fred
 (eval '(+ 1 2))
 > 3
 
-(eval (read-string "(cdr '(1 2 3 4 5))"))
+(eval (read-string "(*builtin*.pair-cdr '(1 2 3 4 5))"))
 > (2 3 4 5)
 
 (do (load-file "./test/basic.sc") (caar '((1 2) (3 4))))
@@ -510,7 +510,7 @@ fred
 (*builtin*.map-assoc {} :a 1 :b 2 :c 3)
 > {:a 1 :b 2 :c 3}
 
-(do (*builtin*.map-assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-assoc a :a 2 :b 3) a))
+(do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-assoc a :a 2 :b 3) a))
 > ({:a 2 :b 3 :c 3} {:a 1 :b 2 :c 3})
 
 (*builtin*.map-dissoc {:a 1 :b 2 :c 3} :a :b)
@@ -519,7 +519,7 @@ fred
 (*builtin*.map-dissoc {:a 1 :b 2 :c 3} :a :b :d)
 > {:c 3}
 
-(do (*builtin*.map-assoc! (car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-dissoc a :a :b) a))
+(do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'a {:a 1 :b 2 :c 3}) (list (*builtin*.map-dissoc a :a :b) a))
 > ({:c 3} {:a 1 :b 2 :c 3})
 
 (map-get)
@@ -585,7 +585,7 @@ fred
 ((map-get *builtin* 'list-count) (map ((map-get *builtin* 'read-dir) "./test/my_test_dir") (proc (n) (map-get n :name))))
 > 3
 
-(do (*builtin*.map-assoc! (car **root**) 'file-name-relative-to-file-name (map-get *builtin* 'file-name-relative-to-file-name)) ())
+(do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'file-name-relative-to-file-name (map-get *builtin* 'file-name-relative-to-file-name)) ())
 > ()
 
 (file-name-relative-to-file-name "/home/ilisp/prelude.scm" "/dir/bob.scm")

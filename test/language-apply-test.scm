@@ -6,7 +6,7 @@
     (Unit.assert-equals (((:bob))) :bob)
 
     (Unit.assert-signal (:bob 1 2) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'ExpectedArgumentCount)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'ExpectedArgumentCount)
     )))
 )
 
@@ -14,6 +14,6 @@
     (Unit.assert-equals (apply :bob '()) :bob)
 
     (Unit.assert-signal (apply :bob '(1 2)) (proc (signal) (do
-        (Unit.assert-equals (car signal) 'ExpectedArgumentCount)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'ExpectedArgumentCount)
     )))
 )

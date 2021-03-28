@@ -13,7 +13,7 @@
     (Unit.assert-falsy (*builtin*.macro? {}))
     (Unit.assert-falsy (*builtin*.macro? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.macro? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.macro? car))
+    (Unit.assert-falsy (*builtin*.macro? *builtin*.pair-car))
     (Unit.assert-truthy (*builtin*.macro? and))
 )
 

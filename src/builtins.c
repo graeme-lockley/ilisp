@@ -198,14 +198,14 @@ static Value *car(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "car");
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.pair-car");
     if (extract_result != NULL)
         return extract_result;
 
     if (IS_VECTOR(parameter[0]))
     {
         if (VECTOR(parameter[0]).length == 0)
-            return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("vector"), parameter[0]);
+            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("vector"), parameter[0]);
 
         return VECTOR(parameter[0]).items[0];
     }
@@ -213,13 +213,13 @@ static Value *car(Value *parameters, Value *env)
     if (IS_STRING(parameter[0]))
     {
         if (strlen(STRING(parameter[0])) == 0)
-            return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("string"), parameter[0]);
+            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("string"), parameter[0]);
 
         return mkNumber(STRING(parameter[0])[0]);
     }
 
     if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("car"), 0, mkSymbol("pair"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.pair-car"), 0, mkSymbol("pair"), parameter[0]);
 
     return CAR(parameter[0]);
 }
@@ -228,14 +228,14 @@ Value *cdr(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "cdr");
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.pair-cdr");
     if (extract_result != NULL)
         return extract_result;
 
     if (IS_VECTOR(parameter[0]))
     {
         if (VECTOR(parameter[0]).length == 0)
-            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("vector"), parameter[0]);
+            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("vector"), parameter[0]);
 
         if (VECTOR(parameter[0]).length == 1)
             return VEmptyVector;
@@ -250,13 +250,13 @@ Value *cdr(Value *parameters, Value *env)
     if (IS_STRING(parameter[0]))
     {
         if (strlen(STRING(parameter[0])) == 0)
-            return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("string"), parameter[0]);
+            return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("string"), parameter[0]);
 
         return mkStringUse(strdup(STRING(parameter[0]) + 1));
     }
 
     if (!IS_PAIR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("cdr"), 0, mkSymbol("pair"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.pair-cdr"), 0, mkSymbol("pair"), parameter[0]);
 
     return CDR(parameter[0]);
 }
@@ -1673,8 +1673,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(integer_greater_equal));
 
     add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
-    add_binding_into_environment(root_bindings, "car", mkNativeProcedure(car));
-    add_binding_into_environment(root_bindings, "cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
@@ -1755,6 +1753,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(builtin_bindings, "pair?", mkNativeProcedure(builtin_pairp_wrapped));
+    add_binding_into_environment(builtin_bindings, "pair-car", mkNativeProcedure(car));
+    add_binding_into_environment(builtin_bindings, "pair-cdr", mkNativeProcedure(cdr));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));
     add_binding_into_environment(builtin_bindings, "set-cdr!", mkNativeProcedure(set_cdr_bang));

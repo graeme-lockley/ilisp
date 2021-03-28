@@ -13,7 +13,7 @@
     (Unit.assert-truthy (*builtin*.map? {}))
     (Unit.assert-truthy (*builtin*.map? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.map? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.map? car))
+    (Unit.assert-falsy (*builtin*.map? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.map? and))
 )
 

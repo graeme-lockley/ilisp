@@ -21,9 +21,9 @@
     (Unit.assert-equals (Interpreter.eval env 'x) 10)
 
     (Unit.assert-signal (Interpreter.eval env 'y) (proc (s) (do
-        (Unit.assert-equals (car signal) 'UnboundVariable)
-        (Unit.assert-equals (map-get (cdr signal) :name) 'y)
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'lookup-variable-name)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'UnboundVariable)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :name) 'y)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'lookup-variable-name)
     )))
 )
 
@@ -40,9 +40,9 @@
     (Unit.assert-equals (Environment.lookup-variable-value env 'a) "bye")
 
     (Unit.assert-signal (Interpreter.eval env (list 'set! 'b "bye")) (proc (s) (do
-        (Unit.assert-equals (car signal) 'UnboundVariable)
-        (Unit.assert-equals (map-get (cdr signal) :name) 'b)
-        (Unit.assert-equals (map-get (cdr signal) :procedure) 'set-variable-value!)
+        (Unit.assert-equals (*builtin*.pair-car signal) 'UnboundVariable)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :name) 'b)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'set-variable-value!)
     )))
 )
 

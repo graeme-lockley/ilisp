@@ -17,6 +17,6 @@
     (Unit.assert-falsy (*builtin*.atom? {}))
     (Unit.assert-falsy (*builtin*.atom? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.atom? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.atom? car))
+    (Unit.assert-falsy (*builtin*.atom? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.atom? and))
 )

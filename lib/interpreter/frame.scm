@@ -6,7 +6,7 @@
             (or (*builtin*.null? vars') (*builtin*.null? vals'))
                 (raise 'ListsNotSameLength {:procedure 'make-frame :vars vars :vals :vals})
 
-            (*builtin*.pair (car vars') (*builtin*.pair (car vals') (interleve (cdr vars') (cdr vals'))))
+            (*builtin*.pair (*builtin*.pair-car vars') (*builtin*.pair (*builtin*.pair-car vals') (interleve (*builtin*.pair-cdr vars') (*builtin*.pair-cdr vals'))))
         )
     )
 

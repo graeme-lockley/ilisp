@@ -16,13 +16,13 @@
 
  (const (fold xs z f)
     (if (*builtin*.null? xs) z
-        (fold (cdr xs) (f z (car xs)) f)
+        (fold (*builtin*.pair-cdr xs) (f z (*builtin*.pair-car xs)) f)
     )
 )
 
 (const (fold-right xs z f)
     (if (*builtin*.null? xs) z
-        (f (car xs) (fold-right (cdr xs) z f))
+        (f (*builtin*.pair-car xs) (fold-right (*builtin*.pair-cdr xs) z f))
     )
 )
 
@@ -34,11 +34,11 @@
 
 (const (separate lst sep)
     (if (*builtin*.null? lst) ()
-        (*builtin*.null? (cdr lst)) lst
+        (*builtin*.null? (*builtin*.pair-cdr lst)) lst
         (do
             (const s (if (fn? sep) (sep) sep))
 
-            (*builtin*.pair (car lst) (*builtin*.pair s (separate (cdr lst) sep)))
+            (*builtin*.pair (*builtin*.pair-car lst) (*builtin*.pair s (separate (*builtin*.pair-cdr lst) sep)))
         )
     )
 )
@@ -56,7 +56,7 @@
 (const (starts-with lst prefix)
     (if (*builtin*.null? prefix) #t
         (*builtin*.null? lst) #f
-        (and (= (car lst) (car prefix)) (starts-with (cdr lst) (cdr prefix)))
+        (and (= (*builtin*.pair-car lst) (*builtin*.pair-car prefix)) (starts-with (*builtin*.pair-cdr lst) (*builtin*.pair-cdr prefix)))
     )
 )
 

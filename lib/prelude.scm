@@ -33,7 +33,7 @@
 ; and is used to bootstrap the module mechanism.
 (load-file "./module.scm")
 
-(*builtin*.map-assoc! (car **root**) :unit (module-import "./unit.scm"))
+(*builtin*.map-assoc! (*builtin*.pair-car **root**) :unit (module-import "./unit.scm"))
 
 (import "./number.scm" :as Number)
 (import "./sequence.scm" :as Sequence)

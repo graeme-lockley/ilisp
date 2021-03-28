@@ -2,9 +2,9 @@
 
 (const the-empty-environment ())
 
-(const (enclosing-environment env) (cdr env))
+(const (enclosing-environment env) (*builtin*.pair-cdr env))
 
-(const (first-frame env) (car env))
+(const (first-frame env) (*builtin*.pair-car env))
 
 (const (lookup-variable-value env var)
     (const (env-lookup env)
@@ -16,7 +16,7 @@
 
                 (if (*builtin*.null? binding)
                     (env-lookup (enclosing-environment env))
-                    (cdr binding)
+                    (*builtin*.pair-cdr binding)
                 )
             )
         )

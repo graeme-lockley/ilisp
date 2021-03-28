@@ -8,8 +8,8 @@
 
 ; do with many
 (do 
-  (*builtin*.map-assoc! (car **root**) 'x 10) 
-  (*builtin*.map-assoc! (car **root**) 'x (+ x 1)) 
+  (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'x 10) 
+  (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'x (+ x 1)) 
   x)
 > 11
 

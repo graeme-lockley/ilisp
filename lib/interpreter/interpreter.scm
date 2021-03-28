@@ -118,7 +118,7 @@
 
 (const- (tagged-list? exp tag)
     (if (*builtin*.pair? exp)
-            (= (car exp) tag)
+            (= (*builtin*.pair-car exp) tag)
 
         #f
     )
@@ -137,7 +137,7 @@
 )
 
 (const- (text-of-quotation exp)
-    (car (cdr exp))
+    (*builtin*.pair-car (*builtin*.pair-cdr exp))
 )
 
 (const- (assignment? exp)
@@ -159,14 +159,14 @@
 (const- (definition-variable exp)
     (if (symbol? (nth exp 1))
           (nth exp 1)
-        (car (nth exp 1))
+        (*builtin*.pair-car (nth exp 1))
     )
 )
 
 (const- (definition-value exp)
     (if (symbol? (nth exp 1))
             (nth exp 2)
-        (make-lambda (cdr (nth exp 1)) (drop exp 2))
+        (make-lambda (*builtin*.pair-cdr (nth exp 1)) (drop exp 2))
     )
 )
 
@@ -207,24 +207,24 @@
 )
 
 (const- (do-actions exp)
-    (cdr exp)
+    (*builtin*.pair-cdr exp)
 )
 
 (const- (do-actions-empty? exps) (*builtin*.null? exps))
-(const- (do-actions-last? exps) (*builtin*.null? (cdr exps)))
-(const- (do-actions-first exps) (car exps))
-(const- (do-actions-rest exps) (cdr exps))
+(const- (do-actions-last? exps) (*builtin*.null? (*builtin*.pair-cdr exps)))
+(const- (do-actions-first exps) (*builtin*.pair-car exps))
+(const- (do-actions-rest exps) (*builtin*.pair-cdr exps))
 
 (const- (application? exp)
     (*builtin*.pair? exp)
 )
 
 (const- (operator exp) 
-    (car exp)
+    (*builtin*.pair-car exp)
 )
 
 (const- (operands exp) 
-    (cdr exp)
+    (*builtin*.pair-cdr exp)
 )
 
 (const- (no-operands? ops) 
@@ -232,11 +232,11 @@
 )
 
 (const- (first-operand ops)
-    (car ops)
+    (*builtin*.pair-car ops)
 )
 
 (const- (rest-operands ops)
-    (cdr ops)
+    (*builtin*.pair-cdr ops)
 )
 
 (const- (make-procedure env parameters body)
@@ -252,7 +252,7 @@
 )
 
 (const- (primitive-implementation proc) 
-    (car (cdr proc))
+    (*builtin*.pair-car (*builtin*.pair-cdr proc))
 )
 
 (const- (procedure-parameters p)

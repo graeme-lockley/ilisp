@@ -15,6 +15,6 @@
     (Unit.assert-falsy (*builtin*.character? {}))
     (Unit.assert-falsy (*builtin*.character? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.character? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.character? car))
+    (Unit.assert-falsy (*builtin*.character? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.character? and))
 )

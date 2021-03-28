@@ -13,7 +13,7 @@
     (Unit.assert-falsy (fn? {}))
     (Unit.assert-falsy (fn? {:a 1 :b 2 :c 3}))
     (Unit.assert-truthy (fn? (proc (n) (+ n 1))))
-    (Unit.assert-truthy (fn? car))
+    (Unit.assert-truthy (fn? *builtin*.pair-car))
     (Unit.assert-falsy (fn? and))
 )
 
@@ -30,7 +30,7 @@
     (Unit.assert-falsy (list? {}))
     (Unit.assert-falsy (list? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (list? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (list? car))
+    (Unit.assert-falsy (list? *builtin*.pair-car))
     (Unit.assert-falsy (list? and))
 )
 
@@ -47,7 +47,7 @@
     (Unit.assert-falsy (number? {}))
     (Unit.assert-falsy (number? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (number? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (number? car))
+    (Unit.assert-falsy (number? *builtin*.pair-car))
     (Unit.assert-falsy (number? and))
 )
 
@@ -64,7 +64,7 @@
     (Unit.assert-falsy (sequential? {}))
     (Unit.assert-falsy (sequential? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (sequential? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (sequential? car))
+    (Unit.assert-falsy (sequential? *builtin*.pair-car))
     (Unit.assert-falsy (sequential? and))
 )
 
@@ -81,7 +81,7 @@
     (Unit.assert-falsy (string? {}))
     (Unit.assert-falsy (string? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (string? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (string? car))
+    (Unit.assert-falsy (string? *builtin*.pair-car))
     (Unit.assert-falsy (string? and))
 )
 
@@ -98,7 +98,7 @@
     (Unit.assert-falsy (symbol? {}))
     (Unit.assert-falsy (symbol? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (symbol? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (symbol? car))
+    (Unit.assert-falsy (symbol? *builtin*.pair-car))
     (Unit.assert-falsy (symbol? and))
 )
 
@@ -115,6 +115,6 @@
     (Unit.assert-falsy (vector? {}))
     (Unit.assert-falsy (vector? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (vector? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (vector? car))
+    (Unit.assert-falsy (vector? *builtin*.pair-car))
     (Unit.assert-falsy (vector? and))
 )

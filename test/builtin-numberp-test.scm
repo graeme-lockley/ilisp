@@ -17,7 +17,7 @@
     (Unit.assert-falsy (*builtin*.number? {}))
     (Unit.assert-falsy (*builtin*.number? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.number? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.number? car))
+    (Unit.assert-falsy (*builtin*.number? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.number? and))
 )
 

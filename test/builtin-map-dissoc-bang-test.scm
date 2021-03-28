@@ -22,7 +22,7 @@
 )
 
 (Unit.test "arg 0 incorrect type signal"
-    (for-each (list () '(1 2 3) #t #f 1 #\Q 'hello "hello" :name [] [1 2 3] (proc (n) (+ n 1)) car and (*builtin*.byte-vector) (*builtin*.byte-vector 1 2 3))
+    (for-each (list () '(1 2 3) #t #f 1 #\Q 'hello "hello" :name [] [1 2 3] (proc (n) (+ n 1)) *builtin*.pair-car and (*builtin*.byte-vector) (*builtin*.byte-vector 1 2 3))
         (proc (v) 
             (Unit.assert-signal-name (*builtin*.map-dissoc! v) 'InvalidArgument)
         )

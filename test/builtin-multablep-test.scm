@@ -13,7 +13,7 @@
     (Unit.assert-falsy (*builtin*.mutable? {}))
     (Unit.assert-falsy (*builtin*.mutable? {:a 1 :b 2 :c 3}))
     (Unit.assert-falsy (*builtin*.mutable? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (*builtin*.mutable? car))
+    (Unit.assert-falsy (*builtin*.mutable? *builtin*.pair-car))
     (Unit.assert-falsy (*builtin*.mutable? and))
 )
 

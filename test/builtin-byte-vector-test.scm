@@ -17,7 +17,7 @@
 
 (Unit.test "incorrect argument type signal"
     (const inputs
-        (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) car and)
+        (list () #t #f 'hello "hello" :name '(1 2 3) [] [1 2 3] {} {:a 1 :b 2 :c 3} (proc (n) (+ n 1)) *builtin*.pair-car and)
     )
 
     (for-each inputs (proc (input)

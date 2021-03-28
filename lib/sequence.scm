@@ -2,6 +2,22 @@
 (import "./string.scm" :as String)
 (import "./vector.scm" :as Vector)
 
+(const (car seq)
+  (if (*builtin*.pair? seq) (*builtin*.pair-car seq)
+      (vector? seq) (*builtin*.vector-nth seq 0)
+      (string? seq) (*builtin*.string-nth seq 0)
+      (raise 'InvalidArgument {:procedure 'car :arg-number 0 :expected-type (list 'pair 'vector 'string) :received seq})
+  )
+)
+
+(const (cdr seq)
+  (if (*builtin*.pair? seq) (*builtin*.pair-cdr seq)
+      (vector? seq) (*builtin*.vector-slice seq 1 (*builtin*.vector-count seq))
+      (string? seq) (*builtin*.string-slice seq 1 (*builtin*.string-count seq))
+      (raise 'InvalidArgument {:procedure 'cdr :arg-number 0 :expected-type (list 'pair 'vector 'string) :received seq})
+  )
+)
+
 (const (empty? seq)
   (if (*builtin*.null? seq) #t
       (*builtin*.pair? seq) #f

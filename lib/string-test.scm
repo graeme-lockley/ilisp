@@ -2,28 +2,6 @@
 
 (import "./unit.scm" :as Unit)
 
-(Unit.test "car"
-    (Unit.assert-equals (*builtin*.pair-car "h") 104)
-    (Unit.assert-equals (*builtin*.pair-car "hello") 104)
-
-    (Unit.assert-signal (*builtin*.pair-car "") (proc (signal) (do
-        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-car"))
-    )))
-)
-
-(Unit.test "cdr"
-    (Unit.assert-equals (*builtin*.pair-cdr "h") "")
-    (Unit.assert-equals (*builtin*.pair-cdr "hello") "ello")
-
-    (Unit.assert-signal (*builtin*.pair-cdr "") (proc (signal) (do
-        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-cdr"))
-    )))
-)
-
 (Unit.test "count"
     (Unit.assert-equals (S.count "") 0)
     (Unit.assert-equals (S.count "hello") 5)

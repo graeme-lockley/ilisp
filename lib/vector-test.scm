@@ -8,28 +8,6 @@
     (Unit.assert-truthy (*builtin*.mutable? (Vector.->mutable [])))
 )
 
-(Unit.test "car"
-    (Unit.assert-equals (*builtin*.pair-car [1]) 1)
-    (Unit.assert-equals (*builtin*.pair-car [1 2 3]) 1)
-
-    (Unit.assert-signal (*builtin*.pair-car []) (proc (signal) (do
-        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-car"))
-    )))
-)
-
-(Unit.test "cdr"
-    (Unit.assert-equals (*builtin*.pair-cdr [1]) [])
-    (Unit.assert-equals (*builtin*.pair-cdr [1 2 3]) [2 3])
-
-    (Unit.assert-signal (*builtin*.pair-cdr []) (proc (signal) (do
-        (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.pair-cdr"))
-    )))
-)
-
 (Unit.test "count"
     (Unit.assert-equals (Vector.count []) 0)
     (Unit.assert-equals (Vector.count [1]) 1)

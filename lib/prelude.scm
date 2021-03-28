@@ -39,6 +39,8 @@
 (import "./sequence.scm" :as Sequence)
 
 (const any Sequence.any)
+(const car Sequence.car)
+(const cdr Sequence.cdr)
 (const count Sequence.count)
 (const drop Sequence.drop)
 (const drop-right Sequence.drop-right)

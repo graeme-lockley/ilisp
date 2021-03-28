@@ -89,6 +89,7 @@ SRC_OBJECTS=\
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \
 	src/builtin/vector.o \
+	src/builtin/vector-count.o \
 	src/builtin/vector-to-list.o \
 	src/builtin/vectorp.o
 

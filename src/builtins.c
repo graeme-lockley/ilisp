@@ -1019,20 +1019,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vector_count(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "count");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_VECTOR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-count"), 0, mkSymbol("vector"), parameter[0]);
-
-    return mkNumber(VECTOR(parameter[0]).length);
-}
-
 static Value *vector_filter(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1402,7 +1388,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(builtin_vectorp_wrapped));
     add_binding_into_environment(builtin_bindings, "vector->list", mkNativeProcedure(builtin_vector_to_list_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
+    add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(builtin_vector_count_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));

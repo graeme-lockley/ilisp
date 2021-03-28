@@ -4,7 +4,7 @@
 
 (const (empty? seq)
   (if (*builtin*.null? seq) #t
-      (pair? seq) #f
+      (*builtin*.pair? seq) #f
       (vector? seq) (= (Vector.count seq) 0)
       (string? seq) (= seq "")
       (raise 'InvalidArgument {:procedure 'empty? :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -13,7 +13,7 @@
 
 (const (count seq)
   (if (*builtin*.null? seq) 0
-      (pair? seq) (List.count seq)
+      (*builtin*.pair? seq) (List.count seq)
       (vector? seq) (Vector.count seq)
       (string? seq) (String.count seq)
       (raise 'InvalidArgument {:procedure 'count :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -22,7 +22,7 @@
 
 (const (starts-with seq prefix)
   (if (*builtin*.null? seq) #f
-      (pair? seq) (List.starts-with seq prefix)
+      (*builtin*.pair? seq) (List.starts-with seq prefix)
       (vector? seq) (Vector.starts-with seq prefix)
       (string? seq) (String.starts-with seq prefix)
       (raise 'InvalidArgument {:procedure 'starts-with :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -31,7 +31,7 @@
 
 (const (ends-with seq prefix)
   (if (*builtin*.null? seq) #f
-      (pair? seq) (List.ends-with seq prefix)
+      (*builtin*.pair? seq) (List.ends-with seq prefix)
       (vector? seq) (Vector.ends-with seq prefix)
       (string? seq) (String.ends-with seq prefix)
       (raise 'InvalidArgument {:procedure 'ends-with :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -40,7 +40,7 @@
 
 (const (filter seq predicate)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.filter seq predicate)
+      (*builtin*.pair? seq) (List.filter seq predicate)
       (vector? seq) (Vector.filter seq predicate)
       (string? seq) (String.filter seq predicate)
       (raise 'InvalidArgument {:procedure 'filter :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -49,7 +49,7 @@
 
 (const (nth seq n)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.nth seq n)
+      (*builtin*.pair? seq) (List.nth seq n)
       (vector? seq) (Vector.nth seq n)
       (string? seq) (String.nth seq n)
       (raise 'InvalidArgument {:procedure 'nth :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -58,7 +58,7 @@
 
 (const (slice seq from to)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.slice seq from to)
+      (*builtin*.pair? seq) (List.slice seq from to)
       (vector? seq) (Vector.slice seq from to)
       (string? seq) (String.slice seq from to)
       (raise 'InvalidArgument {:procedure 'slice :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -67,7 +67,7 @@
 
 (const (take seq n)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.take seq n)
+      (*builtin*.pair? seq) (List.take seq n)
       (vector? seq) (Vector.take seq n)
       (string? seq) (String.take seq n)
       (raise 'InvalidArgument {:procedure 'take :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -76,7 +76,7 @@
 
 (const (take-right seq n)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.take-right seq n)
+      (*builtin*.pair? seq) (List.take-right seq n)
       (vector? seq) (Vector.take-right seq n)
       (string? seq) (String.take-right seq n)
       (raise 'InvalidArgument {:procedure 'take-right :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -85,7 +85,7 @@
 
 (const (drop seq n)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.drop seq n)
+      (*builtin*.pair? seq) (List.drop seq n)
       (vector? seq) (Vector.drop seq n)
       (string? seq) (String.drop seq n)
       (raise 'InvalidArgument {:procedure 'drop :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -94,7 +94,7 @@
 
 (const (drop-right seq n)
   (if (*builtin*.null? seq) ()
-      (pair? seq) (List.drop-right seq n)
+      (*builtin*.pair? seq) (List.drop-right seq n)
       (vector? seq) (Vector.drop-right seq n)
       (string? seq) (String.drop-right seq n)
       (raise 'InvalidArgument {:procedure 'drop-right :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -103,7 +103,7 @@
 
 (const (fold seq z p)
   (if (*builtin*.null? seq) z
-      (pair? seq) (List.fold seq z p)
+      (*builtin*.pair? seq) (List.fold seq z p)
       (vector? seq) (Vector.fold seq z p)
       (string? seq) (String.fold seq z p)
       (raise 'InvalidArgument {:procedure 'fold :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -112,7 +112,7 @@
 
 (const (fold-right seq z p)
   (if (*builtin*.null? seq) z
-      (pair? seq) (List.fold-right seq z p)
+      (*builtin*.pair? seq) (List.fold-right seq z p)
       (vector? seq) (Vector.fold-right seq z p)
       (string? seq) (String.fold-right seq z p)
       (raise 'InvalidArgument {:procedure 'fold-right :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
@@ -121,7 +121,7 @@
 
 (const (index-of haystack needles)
     (const needles'
-        (if (pair? needles) needles
+        (if (*builtin*.pair? needles) needles
             (list needles)
         )
     )

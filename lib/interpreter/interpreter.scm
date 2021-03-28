@@ -117,7 +117,7 @@
 )
 
 (const- (tagged-list? exp tag)
-    (if (pair? exp)
+    (if (*builtin*.pair? exp)
             (= (car exp) tag)
 
         #f
@@ -216,7 +216,7 @@
 (const- (do-actions-rest exps) (cdr exps))
 
 (const- (application? exp)
-    (pair? exp)
+    (*builtin*.pair? exp)
 )
 
 (const- (operator exp) 

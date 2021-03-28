@@ -101,7 +101,7 @@
             (try
                 (test arguments)
                 (proc (e)
-                    (if (and (pair? e) (*builtin*.map? (cdr e)))
+                    (if (and (*builtin*.pair? e) (*builtin*.map? (cdr e)))
                             (raise (car e) (*builtin*.map-assoc (cdr e) :gen-arguments arguments))
                         (raise e {:gen-arguments arguments})
                     )
@@ -119,7 +119,7 @@
             (try
                 (apply test arguments)
                 (proc (e)
-                    (if (and (pair? e) (*builtin*.map? (cdr e)))
+                    (if (and (*builtin*.pair? e) (*builtin*.map? (cdr e)))
                             (raise (car e) (*builtin*.map-assoc (cdr e) :gen-arguments arguments))
                         (raise e {:gen-arguments arguments})
                     )

@@ -92,7 +92,7 @@
         )
         (proc (e)
             (do
-                (if (and (pair? e) (*builtin*.map? (cdr e)))
+                (if (and (*builtin*.pair? e) (*builtin*.map? (cdr e)))
                         (raise (car e) (*builtin*.map-assoc (cdr e) :src *source-name* :test-name ~name))
                     (raise e {:src *source-name* :test-name ~name})
                 )

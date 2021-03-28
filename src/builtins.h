@@ -69,6 +69,7 @@ extern Value *builtin_mutablep_wrapped(Value *parameters, Value *env);
 extern Value *builtin_nullp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_numberp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_pair_wrapped(Value *parameters, Value *env);
+extern Value *builtin_pairp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 

@@ -67,6 +67,7 @@ SRC_OBJECTS=\
 	src/builtin/nullp.o \
 	src/builtin/numberp.o \
 	src/builtin/pair.o \
+	src/builtin/pairp.o \
 	src/builtin/slurp.o
 
 SRC_TARGETS=\

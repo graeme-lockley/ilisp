@@ -57,7 +57,7 @@
 (const- (type-of v)
   (if (*builtin*.null? v) "nil"
       (boolean? v) "boolean"
-      (pair? v) "pair"
+      (*builtin*.pair? v) "pair"
       (vector? v) "vector"
       (string? v) "string"
       (number? v) "number"

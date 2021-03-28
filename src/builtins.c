@@ -988,17 +988,6 @@ static Value *numberp(Value *parameters, Value *env)
     return IS_NUMBER(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *pairp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "pair?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_PAIR(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -1793,7 +1782,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "mcons", mkNativeProcedure(mcons));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
-    add_binding_into_environment(root_bindings, "pair?", mkNativeProcedure(pairp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
@@ -1859,6 +1847,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "null?", mkNativeProcedure(builtin_nullp_wrapped));
     add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
+    add_binding_into_environment(builtin_bindings, "pair?", mkNativeProcedure(builtin_pairp_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "set-car!", mkNativeProcedure(set_car_bang));
     add_binding_into_environment(builtin_bindings, "set-cdr!", mkNativeProcedure(set_cdr_bang));

@@ -76,6 +76,13 @@ SRC_OBJECTS=\
 	src/builtin/pair-cdr.o \
 	src/builtin/pair-cdr-bang.o \
 	src/builtin/pairp.o \
+	src/builtin/string-count.o \
+	src/builtin/string-ends-with.o \
+	src/builtin/string-filter.o \
+	src/builtin/string-nth.o \
+	src/builtin/string-reverse.o \
+	src/builtin/string-slice.o \
+	src/builtin/string-starts-with.o \
 	src/builtin/slurp.o
 
 SRC_TARGETS=\

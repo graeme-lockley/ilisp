@@ -76,17 +76,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-static int starts_with(const char *restrict string, const char *restrict prefix)
-{
-    while (*prefix)
-    {
-        if (*prefix++ != *string++)
-            return 0;
-    }
-
-    return 1;
-}
-
 Value *string_to_list(Value *v)
 {
     Value *root = VNull;
@@ -1056,184 +1045,6 @@ static Value *stringp(Value *parameters, Value *env)
     return IS_STRING(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *string_count(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string-count");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-count"), 0, mkSymbol("string"), parameter[0]);
-
-    return mkNumber(strlen(STRING(parameter[0])));
-}
-
-static Value *string_ends_with(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-ends-with");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-ends-with"), 0, mkSymbol("string"), parameter[0]);
-    if (!IS_STRING(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("string-ends-with"), 1, mkSymbol("string"), parameter[1]);
-
-    char *haystack = STRING(parameter[0]);
-    char *needle = STRING(parameter[1]);
-
-    int haystack_length = strlen(haystack);
-    int needle_length = strlen(needle);
-
-    if (haystack_length < needle_length)
-        return VFalse;
-
-    return (memcmp(haystack + (haystack_length - needle_length), needle, needle_length) == 0) ? VTrue : VFalse;
-}
-
-static Value *string_filter(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-filter");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *f = parameter[1];
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-filter"), 0, mkSymbol("string"), parameter[0]);
-
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("string-filter"), 1, mkSymbol("procedure"), f);
-
-    StringBuilder *buffer = string_builder_init();
-
-    char *str = STRING(parameter[0]);
-    int length = strlen(str);
-    for (int lp = 0; lp < length; lp += 1)
-    {
-        int c = str[lp];
-        Value *v = Repl_eval_procedure(f, mkPair(mkNumber(c), VNull), env);
-        if (IS_EXCEPTION(v))
-            return v;
-
-        if (Value_truthy(v))
-            string_builder_append_char(buffer, (char)c);
-    }
-
-    return mkStringUse(string_builder_free_use(buffer));
-}
-
-static Value *string_nth(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-nth");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-nth"), 0, mkSymbol("string"), parameter[0]);
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("string-nth"), 1, mkSymbol("number"), parameter[1]);
-
-    char *string = STRING(parameter[0]);
-    int string_length = strlen(string);
-    int n = NUMBER(parameter[1]);
-
-    return (n < 0) || (n >= string_length) ? mkCharacter(0) : mkCharacter(string[n]);
-}
-
-static Value *string_reverse(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string-reverse");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-reverse"), 0, mkSymbol("string"), parameter[0]);
-
-    char *string = STRING(parameter[0]);
-    int string_length = strlen(STRING(parameter[0]));
-    if (string_length <= 1)
-        return parameter[0];
-
-    char *result = (char *)malloc(string_length + 1);
-    for (int i = 0, reverse_i = string_length - 1; i <= reverse_i; i += 1, reverse_i -= 1)
-    {
-        result[i] = string[reverse_i];
-        result[reverse_i] = string[i];
-    }
-    result[string_length] = 0;
-    return mkStringUse(result);
-}
-
-static Value *string_slice(Value *parameters, Value *env)
-{
-    Value *parameter[3];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "string-slice");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-slice"), 0, mkSymbol("string"), parameter[0]);
-
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("string-slice"), 1, mkSymbol("number"), parameter[1]);
-
-    if (!IS_NUMBER(parameter[2]))
-        return exceptions_invalid_argument(mkSymbol("string-slice"), 2, mkSymbol("number"), parameter[2]);
-
-    char *string = STRING(parameter[0]);
-    int string_count = strlen(string);
-    int start = NUMBER(parameter[1]);
-    int end = NUMBER(parameter[2]);
-
-    if (start < 0)
-        start = 0;
-
-    if (end >= string_count)
-        end = string_count - 1;
-
-    if (start > end)
-        return VEmptyString;
-
-    int result_count = end - start + 1;
-    char *result = malloc(result_count + 1);
-
-    memcpy(result, string + start, result_count);
-    result[result_count] = 0;
-
-    return mkStringUse(result);
-}
-
-static Value *string_starts_with(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "string-starts-with");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("string-starts-with"), 0, mkSymbol("string"), parameter[0]);
-    if (!IS_STRING(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("string-starts-with"), 1, mkSymbol("string"), parameter[1]);
-
-    char *haystack = STRING(parameter[0]);
-    char *needle = STRING(parameter[1]);
-
-    return starts_with(haystack, needle) ? VTrue : VFalse;
-}
-
 static Value *symbol(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1649,13 +1460,13 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(builtin_pair_car_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(builtin_pair_cdr_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
-    add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));
-    add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));
-    add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(string_filter));
-    add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(string_nth));
-    add_binding_into_environment(builtin_bindings, "string-reverse", mkNativeProcedure(string_reverse));
-    add_binding_into_environment(builtin_bindings, "string-slice", mkNativeProcedure(string_slice));
-    add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(string_starts_with));
+    add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(builtin_string_filter_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(builtin_string_nth_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-reverse", mkNativeProcedure(builtin_string_reverse_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-slice", mkNativeProcedure(builtin_string_slice_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(builtin_string_starts_with_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));

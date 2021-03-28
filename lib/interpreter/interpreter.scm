@@ -129,7 +129,7 @@
 )
 
 (const- (variable? exp)
-    (symbol? exp)
+    (*builtin*.symbol? exp)
 )
 
 (const- (quoted? exp)
@@ -157,14 +157,14 @@
 )
 
 (const- (definition-variable exp)
-    (if (symbol? (nth exp 1))
+    (if (*builtin*.symbol? (nth exp 1))
           (nth exp 1)
         (*builtin*.pair-car (nth exp 1))
     )
 )
 
 (const- (definition-value exp)
-    (if (symbol? (nth exp 1))
+    (if (*builtin*.symbol? (nth exp 1))
             (nth exp 2)
         (make-lambda (*builtin*.pair-cdr (nth exp 1)) (drop exp 2))
     )

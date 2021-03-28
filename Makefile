@@ -84,6 +84,8 @@ SRC_OBJECTS=\
 	src/builtin/string-reverse.o \
 	src/builtin/string-slice.o \
 	src/builtin/string-starts-with.o \
+	src/builtin/symbol.o \
+	src/builtin/symbolp.o \
 	src/builtin/slurp.o
 
 SRC_TARGETS=\

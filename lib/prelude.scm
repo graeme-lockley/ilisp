@@ -67,7 +67,7 @@
       (fn? v) "fn"
       (macro? v) "macro"
       (keyword? v) "keyword"
-      (symbol? v) "symbol"
+      (*builtin*.symbol? v) "symbol"
       "don't know"
   )
 )

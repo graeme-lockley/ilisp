@@ -33,13 +33,13 @@
     (Unit.assert-signal (S.ends-with 1 "abv") (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.string-ends-with"))
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.string-ends-with"))
     )))
 
     (Unit.assert-signal (S.ends-with "asd" 2) (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 1)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.string-ends-with"))
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.string-ends-with"))
     )))
 )
 
@@ -109,13 +109,13 @@
     (Unit.assert-signal (S.starts-with 1 "abv") (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.string-starts-with"))
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.string-starts-with"))
     )))
 
     (Unit.assert-signal (S.starts-with "asd" 2) (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 1)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (symbol "*builtin*.string-starts-with"))
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.string-starts-with"))
     )))
 )
 

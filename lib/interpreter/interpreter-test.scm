@@ -58,7 +58,7 @@
     (const env (mk-env))
     
     (Interpreter.eval env (list 'define (list 'b 'x) 'x))
-    (Unit.assert-equals (Environment.lookup-variable-value env (symbol "b")) (list 'procedure (list 'x) (list 'x) env))
+    (Unit.assert-equals (Environment.lookup-variable-value env (*builtin*.symbol "b")) (list 'procedure (list 'x) (list 'x) env))
 )
 
 (Unit.test "eval if"

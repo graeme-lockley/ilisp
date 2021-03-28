@@ -1034,31 +1034,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *symbol(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "symbol");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("symbol"), 0, mkSymbol("string"), parameter[0]);
-
-    return mkSymbol(STRING(parameter[0]));
-}
-
-static Value *symbolp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "symbol?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_SYMBOL(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *vector(Value *parameters, Value *env)
 {
     return builtin_list_to_vector(parameters);
@@ -1387,8 +1362,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
-    add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
-    add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
     add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));
@@ -1456,6 +1429,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-reverse", mkNativeProcedure(builtin_string_reverse_wrapped));
     add_binding_into_environment(builtin_bindings, "string-slice", mkNativeProcedure(builtin_string_slice_wrapped));
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(builtin_string_starts_with_wrapped));
+    add_binding_into_environment(builtin_bindings, "symbol", mkNativeProcedure(builtin_symbol_wrapped));
+    add_binding_into_environment(builtin_bindings, "symbol?", mkNativeProcedure(builtin_symbolp_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));

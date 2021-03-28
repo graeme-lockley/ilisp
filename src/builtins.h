@@ -87,6 +87,8 @@ extern Value *builtin_string_reverse_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_slice_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_starts_with_wrapped(Value *parameters, Value *env);
 extern Value *builtin_stringp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_symbol_wrapped(Value *parameters, Value *env);
+extern Value *builtin_symbolp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 

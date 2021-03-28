@@ -1034,11 +1034,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vector(Value *parameters, Value *env)
-{
-    return builtin_list_to_vector(parameters);
-}
-
 static Value *vector_count(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1363,7 +1358,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
-    add_binding_into_environment(root_bindings, "vector", mkNativeProcedure(vector));
     add_binding_into_environment(root_bindings, "vector?", mkNativeProcedure(vectorp));
 
     map_set_bang(root_bindings, mkSymbol("*builtin*"), builtin_bindings);
@@ -1441,6 +1435,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
+    add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
 
     add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));

@@ -92,6 +92,7 @@ extern Value *builtin_symbol_wrapped(Value *parameters, Value *env);
 extern Value *builtin_symbolp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_vector_wrapped(Value *parameters, Value *env);
 
 extern Value *builtins_initialise_environment();
 

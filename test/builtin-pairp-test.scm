@@ -1,10 +1,10 @@
 (import "../lib/unit.scm" :as Unit)
 
 (Unit.test "null?"
-    (Unit.assert-truthy (*builtin*.null? ()))
-    
+
     (Unit.assert-falsy (*builtin*.null? (*builtin*.atom 123)))
     (Unit.assert-falsy (*builtin*.null? 1))
+    (Unit.assert-truthy (*builtin*.null? ()))
     (Unit.assert-falsy (*builtin*.null? #t))
     (Unit.assert-falsy (*builtin*.null? #f))
     (Unit.assert-falsy (*builtin*.null? #\A))

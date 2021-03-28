@@ -1045,48 +1045,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *set_car_bang(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "pair-car!");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *pair = parameter[0];
-    Value *value = parameter[1];
-
-    if (!IS_PAIR(pair))
-        return exceptions_invalid_argument(mkSymbol("pair-car!"), 0, mkSymbol("pair"), pair);
-    if (IS_IMMUTABLE(pair))
-        return exceptions_value_is_immutable(mkSymbol("pair-car!"), pair);
-
-    PAIR(pair).car = value;
-
-    return pair;
-}
-
-static Value *set_cdr_bang(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "pair-cdr!");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *pair = parameter[0];
-    Value *value = parameter[1];
-
-    if (!IS_PAIR(pair))
-        return exceptions_invalid_argument(mkSymbol("pair-cdr!"), 0, mkSymbol("pair"), pair);
-    if (IS_IMMUTABLE(pair))
-        return exceptions_value_is_immutable(mkSymbol("pair-cdr!"), pair);
-
-    PAIR(pair).cdr = value;
-
-    return pair;
-}
-
 static Value *stringp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1688,8 +1646,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "pair?", mkNativeProcedure(builtin_pairp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-car", mkNativeProcedure(builtin_pair_car_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-cdr", mkNativeProcedure(builtin_pair_cdr_wrapped));
-    add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(set_car_bang));
-    add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(set_cdr_bang));
+    add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(builtin_pair_car_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(builtin_pair_cdr_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(string_count));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(string_ends_with));

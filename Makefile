@@ -72,7 +72,9 @@ SRC_OBJECTS=\
 	src/builtin/numberp.o \
 	src/builtin/pair.o \
 	src/builtin/pair-car.o \
+	src/builtin/pair-car-bang.o \
 	src/builtin/pair-cdr.o \
+	src/builtin/pair-cdr-bang.o \
 	src/builtin/pairp.o \
 	src/builtin/slurp.o
 

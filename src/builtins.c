@@ -852,41 +852,6 @@ static Value *list_nth(Value *parameters, Value *env)
     }
 }
 
-static Value *list_take(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-take");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *lst = parameter[0];
-    if (!IS_PAIR(lst) && !IS_NULL(lst))
-        return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("list-take"), 1, mkSymbol("number"), parameter[1]);
-
-    int take_count = NUMBER(parameter[1]);
-    Value *root = VNull;
-    Value **root_cursor = &root;
-
-    while (1)
-    {
-        if (take_count <= 0 || IS_NULL(lst))
-            return root;
-
-        if (!IS_PAIR(lst))
-            return exceptions_invalid_argument(mkSymbol("list-take"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
-
-        Value *item = mkPair(CAR(lst), VNull);
-        *root_cursor = item;
-        root_cursor = &CDR(item);
-
-        lst = CDR(lst);
-        take_count -= 1;
-    }
-}
-
 static Value *listp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1787,7 +1752,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
-    add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(list_take));
+    add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(builtin_list_take_wrapped));
     add_binding_into_environment(builtin_bindings, "load-source", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(builtin_bindings, "macro?", mkNativeProcedure(builtin_macrop_wrapped));
     add_binding_into_environment(builtin_bindings, "map?", mkNativeProcedure(builtin_mapp_wrapped));

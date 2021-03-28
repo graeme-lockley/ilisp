@@ -60,7 +60,7 @@
   (if (*builtin*.null? v) "nil"
       (boolean? v) "boolean"
       (*builtin*.pair? v) "pair"
-      (vector? v) "vector"
+      (*builtin*.vector? v) "vector"
       (*builtin*.string? v) "string"
       (number? v) "number"
       (*builtin*.map? v) "map"

@@ -91,21 +91,6 @@ Value *string_to_list(Value *v)
     return root;
 }
 
-Value *vector_to_list(Value *v)
-{
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    for (int l = 0; l < VECTOR(v).length; l += 1)
-    {
-        Value *i = VECTOR(v).items[l];
-
-        Value *v = mkPair(i, VNull);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
-    }
-    return root;
-}
-
 static Value *apply(Value *parameters, Value *env)
 {
     if (!IS_PAIR(parameters))
@@ -132,7 +117,7 @@ static Value *apply(Value *parameters, Value *env)
             parameters = CAR(parameters);
 
             if (IS_VECTOR(parameters))
-                parameters = vector_to_list(parameters);
+                parameters = builtin_vector_to_list(parameters);
 
             if (!IS_PAIR(parameters) && !IS_NULL(parameters))
                 return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkSymbol("pair"), parameters);
@@ -794,7 +779,7 @@ static Value *map(Value *parameters, Value *env)
         return extract_result;
 
     Value *args =
-        IS_VECTOR(parameter[0])   ? vector_to_list(parameter[0])
+        IS_VECTOR(parameter[0])   ? builtin_vector_to_list(parameter[0])
         : IS_STRING(parameter[0]) ? string_to_list(parameter[0])
                                   : parameter[0];
 
@@ -1414,6 +1399,9 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(builtin_string_starts_with_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol", mkNativeProcedure(builtin_symbol_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol?", mkNativeProcedure(builtin_symbolp_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(builtin_vectorp_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector->list", mkNativeProcedure(builtin_vector_to_list_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(vector_count));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(vector_filter));
     add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));
@@ -1423,8 +1411,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
-    add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(builtin_vectorp_wrapped));
 
     add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));

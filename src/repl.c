@@ -181,7 +181,7 @@ static Value *eval_quasiquote(Value *v, Value *env)
     }
 
     if (IS_VECTOR(v))
-        return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(vector_to_list(v), env), VNull));
+        return mkPair(mkSymbol("vec"), mkPair(quasiquote_loop(builtin_vector_to_list(v), env), VNull));
 
     if (IS_MAP(v))
     {

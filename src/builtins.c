@@ -1353,7 +1353,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector->list", mkNativeProcedure(builtin_vector_to_list_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(builtin_vector_count_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(builtin_vector_filter_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector-mutable", mkNativeProcedure(vector_mutable));
+    add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(vector_mutable));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(vector_nth));
     add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(vector_nth_bang));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));

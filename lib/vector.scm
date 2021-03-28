@@ -53,7 +53,7 @@
     (iter (count v) z)
 )
 
-(const ->mutable *builtin*.vector-mutable)
+(const ->mutable *builtin*.vector->mutable-vector)
 
 (const nth *builtin*.vector-nth)
 

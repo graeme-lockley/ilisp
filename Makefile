@@ -76,6 +76,7 @@ SRC_OBJECTS=\
 	src/builtin/pair-cdr.o \
 	src/builtin/pair-cdr-bang.o \
 	src/builtin/pairp.o \
+	src/builtin/stringp.o \
 	src/builtin/string-count.o \
 	src/builtin/string-ends-with.o \
 	src/builtin/string-filter.o \

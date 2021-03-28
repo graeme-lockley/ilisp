@@ -1034,17 +1034,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *stringp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "string?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_STRING(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *symbol(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1398,7 +1387,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
-    add_binding_into_environment(root_bindings, "string?", mkNativeProcedure(stringp));
     add_binding_into_environment(root_bindings, "symbol", mkNativeProcedure(symbol));
     add_binding_into_environment(root_bindings, "symbol?", mkNativeProcedure(symbolp));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
@@ -1460,6 +1448,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(builtin_pair_car_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(builtin_pair_cdr_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
+    add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(builtin_string_filter_wrapped));

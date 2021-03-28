@@ -61,7 +61,7 @@
       (boolean? v) "boolean"
       (*builtin*.pair? v) "pair"
       (vector? v) "vector"
-      (string? v) "string"
+      (*builtin*.string? v) "string"
       (number? v) "number"
       (*builtin*.map? v) "map"
       (fn? v) "fn"

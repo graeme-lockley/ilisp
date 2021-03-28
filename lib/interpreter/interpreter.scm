@@ -125,7 +125,7 @@
 )
 
 (const- (self-evaluating? exp)
-    (or (number? exp) (string? exp) (*builtin*.null? exp) (*builtin*.boolean? exp))
+    (or (number? exp) (*builtin*.string? exp) (*builtin*.null? exp) (*builtin*.boolean? exp))
 )
 
 (const- (variable? exp)

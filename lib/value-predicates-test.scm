@@ -68,23 +68,6 @@
     (Unit.assert-falsy (sequential? and))
 )
 
-(Unit.test "string?"
-    (Unit.assert-falsy (string? ()))
-    (Unit.assert-falsy (string? 1))
-    (Unit.assert-falsy (string? #\A))
-    (Unit.assert-truthy (string? "name"))
-    (Unit.assert-falsy (string? 'name))
-    (Unit.assert-falsy (string? :name))
-    (Unit.assert-falsy (string? '(1 2 3)))
-    (Unit.assert-falsy (string? []))
-    (Unit.assert-falsy (string? [1 2 3]))
-    (Unit.assert-falsy (string? {}))
-    (Unit.assert-falsy (string? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (string? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (string? *builtin*.pair-car))
-    (Unit.assert-falsy (string? and))
-)
-
 (Unit.test "symbol?"
     (Unit.assert-falsy (symbol? ()))
     (Unit.assert-falsy (symbol? 1))

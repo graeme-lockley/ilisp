@@ -1019,32 +1019,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vector_nth_bang(Value *parameters, Value *env)
-{
-    Value *parameter[3];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "vector-nth!");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_VECTOR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-nth!"), 0, mkSymbol("vector"), parameter[0]);
-    if (IS_IMMUTABLE(parameter[0]))
-        return exceptions_value_is_immutable(mkSymbol("vector-nth!"), parameter[0]);
-
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-nth!"), 1, mkSymbol("number"), parameter[1]);
-
-    int nth = NUMBER(parameter[1]);
-
-    if (nth < 0 || nth >= VECTOR(parameter[0]).length)
-        return exceptions_out_of_range(mkSymbol("vector-nth!"), parameter[0], parameter[1]);
-
-    VECTOR(parameter[0]).items[nth] = parameter[2];
-
-    return parameter[0];
-}
-
 static Value *vector_range(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -1304,7 +1278,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(builtin_vector_filter_wrapped));
     add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(builtin_vector_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(builtin_vector_nth_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(vector_nth_bang));
+    add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(builtin_vector_nth_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));

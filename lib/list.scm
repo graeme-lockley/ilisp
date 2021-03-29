@@ -36,7 +36,7 @@
     (if (*builtin*.null? lst) ()
         (*builtin*.null? (*builtin*.pair-cdr lst)) lst
         (do
-            (const s (if (fn? sep) (sep) sep))
+            (const s (if (*builtin*.proc? sep) (sep) sep))
 
             (*builtin*.pair (*builtin*.pair-car lst) (*builtin*.pair s (separate (*builtin*.pair-cdr lst) sep)))
         )

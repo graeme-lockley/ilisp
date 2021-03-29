@@ -82,6 +82,7 @@ extern Value *builtin_pair_cdr_wrapped(Value *parameters, Value *env);
 extern Value *builtin_pair_cdr_bang_wrapped(Value *parameters, Value *env);
 extern Value *builtin_pair_wrapped(Value *parameters, Value *env);
 extern Value *builtin_pairp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_procp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_ends_with_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_filter_wrapped(Value *parameters, Value *env);

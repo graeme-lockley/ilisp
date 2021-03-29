@@ -88,7 +88,7 @@
       (*builtin*.string? v) "string"
       (number? v) "number"
       (*builtin*.map? v) "map"
-      (fn? v) "fn"
+      (*builtin*.proc? v) "fn"
       (macro? v) "macro"
       (keyword? v) "keyword"
       (*builtin*.symbol? v) "symbol"

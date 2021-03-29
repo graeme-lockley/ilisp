@@ -663,17 +663,6 @@ static Value *list_nth(Value *parameters, Value *env)
     }
 }
 
-static Value *listp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "list?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_PAIR(parameter[0]) || IS_NULL(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *map(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -933,7 +922,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
 
-    add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));

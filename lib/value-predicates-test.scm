@@ -17,23 +17,6 @@
     (Unit.assert-falsy (*builtin*.proc? and))
 )
 
-(Unit.test "list?"
-    (Unit.assert-truthy (list? ()))
-    (Unit.assert-falsy (list? 1))
-    (Unit.assert-falsy (list? #\A))
-    (Unit.assert-falsy (list? "name"))
-    (Unit.assert-falsy (list? 'name))
-    (Unit.assert-falsy (list? :name))
-    (Unit.assert-truthy (list? '(1 2 3)))
-    (Unit.assert-falsy (list? []))
-    (Unit.assert-falsy (list? [1 2 3]))
-    (Unit.assert-falsy (list? {}))
-    (Unit.assert-falsy (list? {:a 1 :b 2 :c 3}))
-    (Unit.assert-falsy (list? (proc (n) (+ n 1))))
-    (Unit.assert-falsy (list? *builtin*.pair-car))
-    (Unit.assert-falsy (list? and))
-)
-
 (Unit.test "number?"
     (Unit.assert-falsy (number? ()))
     (Unit.assert-truthy (number? 1))

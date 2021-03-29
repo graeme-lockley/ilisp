@@ -74,39 +74,6 @@ fred
 (list 1 2 3)
 > (1 2 3)
 
-(list? 0)
-> #f
-
-(list? "hello")
-> #f
-
-(list? 'fred)
-> #f
-
-(list? :at)
-> #f
-
-(list? [1])
-> #f
-
-(list? {:a 1})
-> #f
-
-(list? list)
-> #f
-
-(list? list?)
-> #f
-
-(list? ())
-> #t
-
-(list? '(1 2 3))
-> #t
-
-(list? '(1 2) '(3 4))
-> (:exception (ExpectedArgumentCount . {:arg-count 1 :arguments ((1 2) (3 4)) :procedure list?}))
-
 (pr-str)
 > ""
 

@@ -362,13 +362,13 @@ fred
 (read-string "(1 2 \"hello\")")
 > (1 2 "hello")
 
-(eval '1)
+(*builtin*.eval '1)
 > 1
 
-(eval '(+ 1 2))
+(*builtin*.eval '(+ 1 2))
 > 3
 
-(eval (read-string "(*builtin*.pair-cdr '(1 2 3 4 5))"))
+(*builtin*.eval (read-string "(*builtin*.pair-cdr '(1 2 3 4 5))"))
 > (2 3 4 5)
 
 (do (load-file "./test/basic.sc") (caar '((1 2) (3 4))))

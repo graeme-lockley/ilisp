@@ -988,7 +988,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
 
-    add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
@@ -1027,6 +1026,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(builtin_byte_vector_nth_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "character?", mkNativeProcedure(builtin_characterp_wrapped));
     add_binding_into_environment(builtin_bindings, "character->string", mkNativeProcedure(builtin_character_to_string_wrapped));
+    add_binding_into_environment(builtin_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
     add_binding_into_environment(builtin_bindings, "integer?", mkNativeProcedure(builtin_integerp_wrapped));

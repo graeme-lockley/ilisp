@@ -552,28 +552,28 @@ fred
 (map-get {:a 1 :b {"a" 1 "b" 2} :c 3} :a "a")
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure map-get :received 1}))
 
-(contains?)
+(*builtin*.map-contains?)
 > (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments () :procedure contains?}))
 
-(contains? {})
+(*builtin*.map-contains? {})
 > (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments ({}) :procedure contains?}))
 
-(contains? [] :a)
+(*builtin*.map-contains? [] :a)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure contains? :received ([] :a)}))
 
-(contains? {} :a)
+(*builtin*.map-contains? {} :a)
 > #f
 
-(contains? {:a 1 :b 2 :c 3} :a)
+(*builtin*.map-contains? {:a 1 :b 2 :c 3} :a)
 > #t
 
-(contains? {:a 1 :b 2 :c 3} :c)
+(*builtin*.map-contains? {:a 1 :b 2 :c 3} :c)
 > #t
 
-(contains? {:a 1 :b 2 :c 3} :d)
+(*builtin*.map-contains? {:a 1 :b 2 :c 3} :d)
 > #f
 
-(contains? {:a 1 :b () :c 3} :b)
+(*builtin*.map-contains? {:a 1 :b () :c 3} :b)
 > #t
 
 ((map-get *builtin* 'read-dir) "./test/my_dir_that_does_not_exist")

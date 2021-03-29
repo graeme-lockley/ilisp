@@ -1,5 +1,5 @@
 (const (module-use module name)
-    (if (contains? module name) 
+    (if (*builtin*.map-contains? module name) 
         (map-get module name)
         (raise 'UnknownSymbolInModule {:name name})
     )

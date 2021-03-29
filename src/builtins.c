@@ -997,7 +997,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(integer_greater_equal));
 
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
-    add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
     add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
@@ -1063,6 +1062,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "map-assoc!", mkNativeProcedure(builtin_map_assoc_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "map-dissoc", mkNativeProcedure(builtin_map_dissoc_wrapped));
     add_binding_into_environment(builtin_bindings, "map-dissoc!", mkNativeProcedure(builtin_map_dissoc_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "map-contains?", mkNativeProcedure(containp));
     add_binding_into_environment(builtin_bindings, "mk-map", mkNativeProcedure(builtin_mk_map_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable?", mkNativeProcedure(builtin_mutablep_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-byte-vector", mkNativeProcedure(builtin_mutable_byte_vector_wrapped));

@@ -26,7 +26,7 @@
 )
 
 (const (binding frame var)
-    (if (contains? frame var)
+    (if (*builtin*.map-contains? frame var)
         (*builtin*.pair var (map-get frame var))
 
         ()

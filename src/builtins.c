@@ -187,22 +187,6 @@ static Value *equal(Value *parameters, Value *env)
     }
 }
 
-static Value *first(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "first");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (IS_VECTOR(parameter[0]))
-        return VECTOR(parameter[0]).length > 0 ? VECTOR(parameter[0]).items[0] : VNull;
-    else if (IS_STRING(parameter[0]))
-        return strlen(STRING(parameter[0])) > 0 ? mkNumber(STRING(parameter[0])[0]) : VNull;
-    else
-        return IS_PAIR(parameter[0]) ? CAR(parameter[0]) : VNull;
-}
-
 static Value *fnp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -911,34 +895,6 @@ static Value *read_dir(Value *parameters, Value *env)
     return root;
 }
 
-static Value *rest(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "rest");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (IS_VECTOR(parameter[0]))
-    {
-        if (VECTOR(parameter[0]).length == 0)
-            return VNull;
-
-        if (VECTOR(parameter[0]).length == 1)
-            return VEmptyVector;
-
-        int result_size = VECTOR(parameter[0]).length - 1;
-        Value **result = malloc(result_size * sizeof(Value *));
-        memcpy(result, VECTOR(parameter[0]).items + 1, result_size * sizeof(Value *));
-
-        return mkVectorUse(result, result_size);
-    }
-    else if (IS_STRING(parameter[0]))
-        return strlen(STRING(parameter[0])) > 0 ? mkStringUse(strdup(STRING(parameter[0]) + 1)) : VNull;
-    else
-        return IS_PAIR(parameter[0]) ? CDR(parameter[0]) : VNull;
-}
-
 static Value *sequentialp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -988,7 +944,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
 
-    add_binding_into_environment(root_bindings, "first", mkNativeProcedure(first));
     add_binding_into_environment(root_bindings, "fn?", mkNativeProcedure(fnp));
     add_binding_into_environment(root_bindings, "list?", mkNativeProcedure(listp));
     add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
@@ -1000,7 +955,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "random", mkNativeProcedure(random_number));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
     add_binding_into_environment(root_bindings, "read-string-many", mkNativeProcedure(read_string_many));
-    add_binding_into_environment(root_bindings, "rest", mkNativeProcedure(rest));
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));

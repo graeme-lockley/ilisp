@@ -52,8 +52,8 @@
 
 (Unit.test "first"
     (Unit.assert-equals (first "") ())
-    (Unit.assert-equals (first "h") 104)
-    (Unit.assert-equals (first "hello") 104)
+    (Unit.assert-equals (first "h") #\h)
+    (Unit.assert-equals (first "hello") #\h)
 )
 
 (Unit.test "fold"

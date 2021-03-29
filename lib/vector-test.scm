@@ -114,7 +114,7 @@
 (Unit.test "rest"
     (Unit.assert-equals (rest [1]) [])
     (Unit.assert-equals (rest [1 2 3]) [2 3])
-    (Unit.assert-equals (rest []) ())
+    (Unit.assert-equals (rest []) [])
 )
 
 (Unit.test "reverse"

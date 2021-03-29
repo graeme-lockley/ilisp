@@ -41,7 +41,7 @@
 (Unit.test "first"
   (Unit.assert-equals (first [1 2 3 4]) 1)
   (Unit.assert-equals (first '(1 2 3 4 5 6)) 1)
-  (Unit.assert-equals (first "hello world") 104)
+  (Unit.assert-equals (first "hello world") #\h)
   (Unit.assert-equals (first 123) ())
 )
 

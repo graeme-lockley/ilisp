@@ -59,6 +59,7 @@ extern Value *builtin_load_source_wrapped(Value *parameters, Value *env);
 extern Value *builtin_macrop_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_assoc_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_assoc_bang_wrapped(Value *parameters, Value *env);
+extern Value *builtin_map_containsp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_dissoc_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_dissoc_bang_wrapped(Value *parameters, Value *env);
 extern Value *builtin_map_find(Value *map, Value *keys);

@@ -553,13 +553,13 @@ fred
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure map-get :received 1}))
 
 (*builtin*.map-contains?)
-> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments () :procedure contains?}))
+> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments () :procedure *builtin*.map-contains?}))
 
 (*builtin*.map-contains? {})
-> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments ({}) :procedure contains?}))
+> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments ({}) :procedure *builtin*.map-contains?}))
 
 (*builtin*.map-contains? [] :a)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure contains? :received ([] :a)}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type map :procedure *builtin*.map-contains? :received ([] :a)}))
 
 (*builtin*.map-contains? {} :a)
 > #f

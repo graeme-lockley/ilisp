@@ -58,6 +58,7 @@ SRC_OBJECTS=\
 	src/builtin/macrop.o \
 	src/builtin/map-assoc.o \
 	src/builtin/map-assoc-bang.o \
+	src/builtin/map-containsp.o \
 	src/builtin/map-dissoc.o \
 	src/builtin/map-dissoc-bang.o \
 	src/builtin/map-find.o \

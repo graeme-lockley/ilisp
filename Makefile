@@ -51,6 +51,7 @@ SRC_OBJECTS=\
 	src/builtin/keywordp.o \
 	src/builtin/keyword-to-string.o \
 	src/builtin/list-count.o \
+	src/builtin/list-map.o \
 	src/builtin/list-take.o \
 	src/builtin/list-to-mutable-vector.o \
 	src/builtin/list-to-vector.o \
@@ -84,6 +85,7 @@ SRC_OBJECTS=\
 	src/builtin/string-count.o \
 	src/builtin/string-ends-with.o \
 	src/builtin/string-filter.o \
+	src/builtin/string-map.o \
 	src/builtin/string-nth.o \
 	src/builtin/string-reverse.o \
 	src/builtin/string-slice.o \
@@ -94,6 +96,7 @@ SRC_OBJECTS=\
 	src/builtin/vector.o \
 	src/builtin/vector-count.o \
 	src/builtin/vector-filter.o \
+	src/builtin/vector-map.o \
 	src/builtin/vector-nth.o \
 	src/builtin/vector-nth-bang.o \
 	src/builtin/vector-range.o \

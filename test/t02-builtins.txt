@@ -404,27 +404,6 @@ fred
 (*builtin*.apply + 1 2 3 [])
 > 6
 
-(map)
-> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments () :procedure map}))
-
-(map (proc (n) (+ n 1)))
-> (:exception (ExpectedArgumentCount . {:arg-count 2 :arguments ((#PROCEDURE (n) (+ n 1))) :procedure map}))
-
-(map 1 (proc (n) (+ n 1)))
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type (pair vector () string) :procedure map :received 1}))
-
-(map '() (proc (n) (+ n 1)))
-> ()
-
-(map '(1 2 3 4) (proc (n) (+ n 1)))
-> (2 3 4 5)
-
-(map [] (proc (n) (+ n 1)))
-> ()
-
-(map [1 2 3 4] (proc (n) (+ n 1)))
-> (2 3 4 5)
-
 (*builtin*.mk-map)
 > {}
 
@@ -516,9 +495,6 @@ fred
 > (:exception (SystemError . {:code 2 :error "No such file or directory" :parameters "./test/my_dir_that_does_not_exist" :procedure read-dir}))
 
 ((map-get *builtin* 'list-count) ((map-get *builtin* 'read-dir) "./test/my_test_dir"))
-> 3
-
-((map-get *builtin* 'list-count) (map ((map-get *builtin* 'read-dir) "./test/my_test_dir") (proc (n) (map-get n :name))))
 > 3
 
 (do (*builtin*.map-assoc! (*builtin*.pair-car **root**) 'file-name-relative-to-file-name (map-get *builtin* 'file-name-relative-to-file-name)) ())

@@ -8,12 +8,12 @@
 
     (const contents (FS.read-dir (FS.absolute-name-relative-to-file-name *source-name* dir)))
 
-    (const directories (map (filter contents file-is-dir?) format-name))
-    (const files-in-directories (map directories directory))
+    (const directories (*builtin*.list-map (filter contents file-is-dir?) format-name))
+    (const files-in-directories (*builtin*.list-map directories directory))
 
-    (const files (map (filter contents file-is-test?) format-name))
+    (const files (*builtin*.list-map (filter contents file-is-test?) format-name))
 
-    (const files-with-absolute-name (map files (proc (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
+    (const files-with-absolute-name (*builtin*.list-map files (proc (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
     
     (*builtin*.apply concat (*builtin*.pair files-with-absolute-name files-in-directories))
 )

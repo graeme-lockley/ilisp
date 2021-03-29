@@ -32,7 +32,7 @@
 
 (const- (gen:tuple . gens)
     (proc () 
-        (map gens (proc (g) (g)))
+        (*builtin*.list-map gens (proc (g) (g)))
     )
 )
 

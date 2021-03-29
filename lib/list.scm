@@ -69,7 +69,8 @@
 (const (->list s)
     (if (*builtin*.null? s) s
         (*builtin*.pair? s) s
-        (or (*builtin*.vector? s) (*builtin*.string? s)) (map s (proc (n) n))
+        (*builtin*.vector? s) (*builtin*.vector->list s)
+        (*builtin*.string? s) (*builtin*.string->list s)
         (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})
     )
 )

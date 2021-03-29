@@ -14,11 +14,11 @@
 )
 
 (const (frame-variables frame)
-    (map (map->list frame) car)
+    (*builtin*.list-map (map->list frame) car)
 )
 
 (const (frame-values frame)
-    (map (map->list frame) cdr)
+    (*builtin*.list-map (map->list frame) cdr)
 )
 
 (const (add-binding! frame var val)

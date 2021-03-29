@@ -1,7 +1,7 @@
 (import "./environment.scm" :as Environment)
 (import "./frame.scm" :as Frame)
 
-(const- builtin-apply apply)
+(const- builtin-apply *builtin*.apply)
 
 (const (eval env exp)
     (if (self-evaluating? exp) 

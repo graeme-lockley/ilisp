@@ -16,6 +16,7 @@ extern Value *vector_to_list(Value *v);
 extern Value *extract_range_parameters(Value **parameters, Value *arguments, int min_number, int max_number, char *procedure_name);
 extern Value *extract_fixed_parameters(Value **parameters, Value *arguments, int number, char *procedure_name);
 
+extern Value *builtin_apply_wrapped(Value *parameters, Value *env);
 extern Value *builtin_atom(Value *value);
 extern Value *builtin_atom_wrapped(Value *parameters, Value *env);
 extern Value *builtin_atomp(Value *value);

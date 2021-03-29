@@ -5,7 +5,7 @@
 
     (const content (list 1 2 3))
 
-    (Unit.assert-equals (*builtin*.byte-vector->list (apply *builtin*.byte-vector content)) content)
+    (Unit.assert-equals (*builtin*.byte-vector->list (*builtin*.apply *builtin*.byte-vector content)) content)
 )
 
 (Unit.test "arg count signal"

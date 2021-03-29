@@ -10,7 +10,7 @@
         )
     )
 
-    (apply *builtin*.mutable-map (interleve vars vals))
+    (*builtin*.apply *builtin*.mutable-map (interleve vars vals))
 )
 
 (const (frame-variables frame)

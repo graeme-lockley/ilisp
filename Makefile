@@ -25,6 +25,7 @@ SRC_OBJECTS=\
 	src/set.o \
 	src/string_builder.o \
 	src/value.o \
+	src/builtin/apply.o \
 	src/builtin/atom.o \
 	src/builtin/atomp.o \
 	src/builtin/atom-dereference.o \

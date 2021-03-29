@@ -435,37 +435,37 @@ fred
 (rest (*builtin*.pair 10 [11 12]))
 >[11 12]
 
-(apply)
+(*builtin*.apply)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure apply :received ()}))
 
-(apply 1)
+(*builtin*.apply 1)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type procedure :procedure apply :received 1}))
 
-(apply +)
+(*builtin*.apply +)
 > (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure apply :received ()}))
 
-(apply + '(1 2 3))
+(*builtin*.apply + '(1 2 3))
 > 6
 
-(apply + 1 2 '(3 4))
+(*builtin*.apply + 1 2 '(3 4))
 > 10
 
-(apply + 1 2 3)
+(*builtin*.apply + 1 2 3)
 > (:exception (InvalidArgument . {:arg-number 3 :expected-type pair :procedure apply :received 3}))
 
-(apply + 1 2 3 '())
+(*builtin*.apply + 1 2 3 '())
 > 6
 
-(apply + [1 2 3])
+(*builtin*.apply + [1 2 3])
 > 6
 
-(apply + 1 2 [3 4])
+(*builtin*.apply + 1 2 [3 4])
 > 10
 
-(apply + 1 2 3 [])
+(*builtin*.apply + 1 2 3 [])
 > 6
 
-(apply + 1 2 3 [])
+(*builtin*.apply + 1 2 3 [])
 > 6
 
 (map)

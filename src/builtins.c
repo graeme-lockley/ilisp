@@ -91,61 +91,6 @@ Value *string_to_list(Value *v)
     return root;
 }
 
-static Value *apply(Value *parameters, Value *env)
-{
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("pair"), parameters);
-
-    Value *f = CAR(parameters);
-
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f) && !IS_KEYWORD(f))
-        return exceptions_invalid_argument(mkSymbol("apply"), 0, mkSymbol("procedure"), f);
-
-    parameters = CDR(parameters);
-
-    if (!IS_PAIR(parameters))
-        return exceptions_invalid_argument(mkSymbol("apply"), 1, mkSymbol("pair"), parameters);
-
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    int parameter_count = 1;
-
-    while (1)
-    {
-        if (IS_NULL(CDR(parameters)))
-        {
-            parameters = CAR(parameters);
-
-            if (IS_VECTOR(parameters))
-                parameters = builtin_vector_to_list(parameters);
-
-            if (!IS_PAIR(parameters) && !IS_NULL(parameters))
-                return exceptions_invalid_argument(mkSymbol("apply"), parameter_count, mkSymbol("pair"), parameters);
-
-            while (1)
-            {
-                if (IS_NULL(parameters))
-                    return Repl_eval_procedure(f, root, env);
-
-                Value *v = mkPair(CAR(parameters), VNull);
-                *root_cursor = v;
-                root_cursor = &CDR(v);
-
-                parameters = CDR(parameters);
-            }
-        }
-
-        Value *v = mkPair(CAR(parameters), VNull);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
-
-        parameters = CDR(parameters);
-        parameter_count += 1;
-    }
-
-    return VNull;
-}
-
 static Value *byte_vector_mutable(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -1051,7 +996,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, ">", mkNativeProcedure(integer_greater_than));
     add_binding_into_environment(root_bindings, ">=", mkNativeProcedure(integer_greater_equal));
 
-    add_binding_into_environment(root_bindings, "apply", mkNativeProcedure(apply));
     add_binding_into_environment(root_bindings, "concat", mkNativeProcedure(concat));
     add_binding_into_environment(root_bindings, "contains?", mkNativeProcedure(containp));
     add_binding_into_environment(root_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
@@ -1079,6 +1023,7 @@ Value *builtins_initialise_environment()
 
     map_set_bang(root_bindings, mkSymbol("*builtin*"), builtin_bindings);
 
+    add_binding_into_environment(builtin_bindings, "apply", mkNativeProcedure(builtin_apply_wrapped));
     add_binding_into_environment(builtin_bindings, "atom", mkNativeProcedure(builtin_atom_wrapped));
     add_binding_into_environment(builtin_bindings, "atom?", mkNativeProcedure(builtin_atomp_wrapped));
     add_binding_into_environment(builtin_bindings, "atom-dereference", mkNativeProcedure(builtin_atom_dereference_wrapped));

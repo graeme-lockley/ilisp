@@ -117,7 +117,7 @@
             (const arguments (gen))
 
             (try
-                (apply test arguments)
+                (*builtin*.apply test arguments)
                 (proc (e)
                     (if (and (*builtin*.pair? e) (*builtin*.map? (*builtin*.pair-cdr e)))
                             (raise (*builtin*.pair-car e) (*builtin*.map-assoc (*builtin*.pair-cdr e) :gen-arguments arguments))
@@ -152,7 +152,7 @@
     )
 )
 (const- *STRING-SEPARATOR*
-    (gen:map (gen:list-of *SEPARATOR* 1) (proc (seps) (apply str seps)))
+    (gen:map (gen:list-of *SEPARATOR* 1) (proc (seps) (*builtin*.apply str seps)))
 )
 
 
@@ -163,7 +163,7 @@
 (Unit.test "given positive integers separated with a comma or newline should return the sum of all less than 1001"
     (gen:for-all (gen:list-of *POSITIVE-INTEGER*) 
         (proc (ns)
-            (Unit.assert-equals (SK.add (apply str (List.separate ns (gen:one-of '("," "\n"))))) (test-sum ns))
+            (Unit.assert-equals (SK.add (*builtin*.apply str (List.separate ns (gen:one-of '("," "\n"))))) (test-sum ns))
         )
     )
 )
@@ -171,7 +171,7 @@
 (Unit.test "given positive integers separated with a single character custom separator should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) *SEPARATOR*) 
         (proc (ns sep)
-            (const input (str "//" sep "\n" (apply str (List.separate ns sep))))
+            (const input (str "//" sep "\n" (*builtin*.apply str (List.separate ns sep))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
     )
@@ -180,7 +180,7 @@
 (Unit.test "given positive integers separated with multiple multi-character custom separators should return the sum of all less than 1001"
     (gen:for-each (gen:tuple (gen:list-of *POSITIVE-INTEGER*) (gen:list-of *STRING-SEPARATOR* 1)) 
         (proc (ns seps)
-            (const input (str "//[" (apply str (List.separate seps "][")) "]\n" (apply str (List.separate ns (gen:one-of seps)))))
+            (const input (str "//[" (*builtin*.apply str (List.separate seps "][")) "]\n" (*builtin*.apply str (List.separate ns (gen:one-of seps)))))
             (Unit.assert-equals (SK.add input) (test-sum ns))
         )
     )
@@ -189,7 +189,7 @@
 (Unit.test "given integers with at least one negative should report an error with all of the negatives"
     (gen:for-all (gen:filter (gen:list-of *INTEGER*) (proc (ns) (any ns Number.negative?))) 
         (proc (ns)
-            (Unit.assert-signal (SK.add (apply str (List.separate ns ",")))
+            (Unit.assert-signal (SK.add (*builtin*.apply str (List.separate ns ",")))
                 (proc (n) (Unit.assert-equals n (filter ns Number.negative?)))
             )
         )

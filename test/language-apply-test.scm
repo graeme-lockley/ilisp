@@ -11,9 +11,9 @@
 )
 
 (Unit.test "explicit apply keyword"
-    (Unit.assert-equals (apply :bob '()) :bob)
+    (Unit.assert-equals (*builtin*.apply :bob '()) :bob)
 
-    (Unit.assert-signal (apply :bob '(1 2)) (proc (signal) (do
+    (Unit.assert-signal (*builtin*.apply :bob '(1 2)) (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'ExpectedArgumentCount)
     )))
 )

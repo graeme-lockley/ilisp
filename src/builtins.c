@@ -1019,134 +1019,6 @@ static Value *sequentialp(Value *parameters, Value *env)
     return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
 }
 
-static Value *vector_range(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "vector-range");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_NUMBER(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-range"), 0, mkSymbol("number"), parameter[0]);
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-range"), 1, mkSymbol("number"), parameter[1]);
-
-    int start = NUMBER(parameter[0]);
-    int end = NUMBER(parameter[1]);
-
-    int length, step;
-    if (start > end)
-    {
-        length = start - end + 1;
-        step = -1;
-    }
-    else
-    {
-        length = end - start + 1;
-        step = 1;
-    }
-
-    Value **buffer = (Value **)malloc(length * sizeof(Value *));
-    for (int l = 0; l < length; l += 1, start += step)
-        buffer[l] = mkNumber(start);
-
-    return mkVectorUse(buffer, length);
-}
-
-static Value *vector_reverse(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-reverse");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_VECTOR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-reverse"), 0, mkSymbol("vector"), parameter[0]);
-
-    int length = VECTOR(parameter[0]).length;
-    if (length <= 1)
-        return parameter[0];
-
-    Value **src_items = VECTOR(parameter[0]).items;
-    Value **target_items = (Value **)malloc(length * sizeof(Value *));
-    for (int l = 0; l < length; l += 1)
-        target_items[l] = src_items[length - l - 1];
-
-    return mkVectorUse(target_items, length);
-}
-
-static Value *vector_slice(Value *parameters, Value *env)
-{
-    Value *parameter[3];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 3, "vector-slice");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_VECTOR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-slice"), 0, mkSymbol("vector"), parameter[0]);
-
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("vector-slice"), 1, mkSymbol("number"), parameter[1]);
-
-    if (!IS_NUMBER(parameter[2]))
-        return exceptions_invalid_argument(mkSymbol("vector-slice"), 2, mkSymbol("number"), parameter[2]);
-
-    Value **items = VECTOR(parameter[0]).items;
-    int vector_size = VECTOR(parameter[0]).length;
-
-    int start = NUMBER(parameter[1]);
-    int end = NUMBER(parameter[2]);
-
-    if (start < 0)
-        start = 0;
-
-    if (end >= vector_size)
-        end = vector_size - 1;
-
-    if (start > end)
-        return VEmptyVector;
-
-    int result_size = end - start + 1;
-    Value **result = malloc(result_size * sizeof(Value *));
-
-    memcpy(result, items + start, result_size * sizeof(Value *));
-
-    return mkVectorUse(result, result_size);
-}
-
-static int vector_value_compare(const void *a, const void *b)
-{
-    Value *va = *(Value **)a;
-    Value *vb = *(Value **)b;
-
-    return Value_compare(va, vb);
-}
-
-static Value *vector_sort_bang(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "vector-sort");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_VECTOR(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-sort"), 0, mkSymbol("vector!"), parameter[0]);
-
-    if (IS_IMMUTABLE(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("vector-sort"), 0, mkSymbol("vector!"), parameter[0]);
-
-    Value **items = VECTOR(parameter[0]).items;
-    int vector_size = VECTOR(parameter[0]).length;
-
-    qsort(items, vector_size, sizeof(Value *), &vector_value_compare);
-
-    return parameter[0];
-}
-
 static Value *list(Value *parameters, Value *env)
 {
     return parameters;
@@ -1279,10 +1151,10 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(builtin_vector_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(builtin_vector_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(builtin_vector_nth_bang_wrapped));
-    add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(vector_range));
-    add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(vector_reverse));
-    add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(vector_slice));
-    add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(vector_sort_bang));
+    add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(builtin_vector_range_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(builtin_vector_reverse_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(builtin_vector_slice_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(builtin_vector_sort_bang_wrapped));
 
     add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));

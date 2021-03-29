@@ -17,6 +17,8 @@
         "reader.h": "c",
         "value.h": "c",
         "typeinfo": "c",
-        "repl.h": "c"
+        "repl.h": "c",
+        "stdio.h": "c",
+        "string.h": "c"
     }
 }

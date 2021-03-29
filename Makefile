@@ -93,6 +93,10 @@ SRC_OBJECTS=\
 	src/builtin/vector-filter.o \
 	src/builtin/vector-nth.o \
 	src/builtin/vector-nth-bang.o \
+	src/builtin/vector-range.o \
+	src/builtin/vector-reverse.o \
+	src/builtin/vector-slice.o \
+	src/builtin/vector-sort-bang.o \
 	src/builtin/vector-to-list.o \
 	src/builtin/vector-to-mutable-vector.o \
 	src/builtin/vectorp.o

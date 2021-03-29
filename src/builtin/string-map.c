@@ -1,10 +1,25 @@
 #include <stdlib.h>
-#include <malloc.h>
+#include <string.h>
 
 #include "../builtins.h"
 #include "../exceptions.h"
 #include "../repl.h"
 #include "../value.h"
+
+Value *string_to_list(Value *v)
+{
+    Value *root = VNull;
+    Value **root_cursor = &root;
+    char *string = STRING(v);
+    int string_length = strlen(string);
+    for (int l = 0; l < string_length; l += 1)
+    {
+        Value *v = mkPair(mkNumber(string[l]), VNull);
+        *root_cursor = v;
+        root_cursor = &CDR(v);
+    }
+    return root;
+}
 
 Value *builtin_string_map_wrapped(Value *parameters, Value *env)
 {

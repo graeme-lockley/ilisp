@@ -76,21 +76,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-Value *string_to_list(Value *v)
-{
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    char *string = STRING(v);
-    int string_length = strlen(string);
-    for (int l = 0; l < string_length; l += 1)
-    {
-        Value *v = mkPair(mkNumber(string[l]), VNull);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
-    }
-    return root;
-}
-
 static Value *byte_vector_mutable(Value *parameters, Value *env)
 {
     Value *parameter[1];

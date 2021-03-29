@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <malloc.h>
+#include <stdio.h>
 
 #include "../builtins.h"
 #include "../exceptions.h"

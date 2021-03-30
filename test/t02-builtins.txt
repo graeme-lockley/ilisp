@@ -372,13 +372,13 @@ fred
 > (1 2 3 4 5 6 7 8 9)
 
 (*builtin*.apply)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure apply :received ()}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type pair :procedure *builtin*.apply :received ()}))
 
 (*builtin*.apply 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type procedure :procedure apply :received 1}))
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type procedure :procedure *builtin*.apply :received 1}))
 
 (*builtin*.apply +)
-> (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure apply :received ()}))
+> (:exception (InvalidArgument . {:arg-number 1 :expected-type pair :procedure *builtin*.apply :received ()}))
 
 (*builtin*.apply + '(1 2 3))
 > 6

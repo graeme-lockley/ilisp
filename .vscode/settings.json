@@ -19,6 +19,7 @@
         "typeinfo": "c",
         "repl.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "malloc.h": "c"
     }
 }

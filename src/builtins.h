@@ -50,6 +50,7 @@ extern Value *builtin_keywordp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_keyword_to_string_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_count(Value *list);
 extern Value *builtin_list_count_wrapped(Value *parameters, Value *env);
+extern Value *builtin_list_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_take_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_to_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_to_vector(Value *list);
@@ -86,6 +87,7 @@ extern Value *builtin_procp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_ends_with_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_filter_wrapped(Value *parameters, Value *env);
+extern Value *builtin_string_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_nth_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_reverse_wrapped(Value *parameters, Value *env);
 extern Value *builtin_string_slice_wrapped(Value *parameters, Value *env);
@@ -97,6 +99,7 @@ extern Value *builtin_slurp(char *file_name);
 extern Value *builtin_slurp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_filter_wrapped(Value *parameters, Value *env);
+extern Value *builtin_vector_map_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_nth_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_nth_bang_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_range_wrapped(Value *parameters, Value *env);
@@ -108,7 +111,6 @@ extern Value *builtin_vector_to_list_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_to_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vectorp_wrapped(Value *parameters, Value *env);
-
 
 extern Value *builtins_initialise_environment();
 

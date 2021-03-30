@@ -76,21 +76,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-Value *string_to_list(Value *v)
-{
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    char *string = STRING(v);
-    int string_length = strlen(string);
-    for (int l = 0; l < string_length; l += 1)
-    {
-        Value *v = mkPair(mkNumber(string[l]), VNull);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
-    }
-    return root;
-}
-
 static Value *byte_vector_mutable(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -663,45 +648,6 @@ static Value *list_nth(Value *parameters, Value *env)
     }
 }
 
-static Value *map(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "map");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *args =
-        IS_VECTOR(parameter[0])   ? builtin_vector_to_list(parameter[0])
-        : IS_STRING(parameter[0]) ? string_to_list(parameter[0])
-                                  : parameter[0];
-
-    if (!IS_NULL(args) && !IS_PAIR(args))
-        return exceptions_invalid_argument(mkSymbol("map"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("vector"), mkPair(mkSymbol("()"), mkPair(mkSymbol("string"), VNull)))), parameter[0]);
-
-    Value *f = parameter[1];
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("map"), 1, mkSymbol("procedure"), f);
-
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    while (1)
-    {
-        if (IS_NULL(args) || !IS_PAIR(args))
-            return root;
-
-        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNull), env);
-        if (IS_EXCEPTION(v))
-            return v;
-
-        Value *r = mkPair(v, VNull);
-        *root_cursor = r;
-        root_cursor = &CDR(r);
-
-        args = CDR(args);
-    }
-}
-
 static Value *numberp(Value *parameters, Value *env)
 {
     Value *parameter[1];
@@ -922,7 +868,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
 
-    add_binding_into_environment(root_bindings, "map", mkNativeProcedure(map));
     add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
@@ -969,6 +914,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
+    add_binding_into_environment(builtin_bindings, "list-map", mkNativeProcedure(builtin_list_map_wrapped));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
     add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(builtin_list_take_wrapped));
     add_binding_into_environment(builtin_bindings, "load-source", mkNativeProcedure(builtin_load_source_wrapped));
@@ -1000,6 +946,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(builtin_string_filter_wrapped));
+    add_binding_into_environment(builtin_bindings, "string-map", mkNativeProcedure(builtin_string_map_wrapped));
     add_binding_into_environment(builtin_bindings, "string-nth", mkNativeProcedure(builtin_string_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "string-reverse", mkNativeProcedure(builtin_string_reverse_wrapped));
     add_binding_into_environment(builtin_bindings, "string-slice", mkNativeProcedure(builtin_string_slice_wrapped));
@@ -1012,6 +959,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-count", mkNativeProcedure(builtin_vector_count_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-filter", mkNativeProcedure(builtin_vector_filter_wrapped));
     add_binding_into_environment(builtin_bindings, "vector->mutable-vector", mkNativeProcedure(builtin_vector_to_mutable_vector_wrapped));
+    add_binding_into_environment(builtin_bindings, "vector-map", mkNativeProcedure(builtin_vector_map_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth", mkNativeProcedure(builtin_vector_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-nth!", mkNativeProcedure(builtin_vector_nth_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-range", mkNativeProcedure(builtin_vector_range_wrapped));

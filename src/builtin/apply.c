@@ -34,17 +34,13 @@ Value *builtin_apply(Value *f, Value *rest, Value *env)
                 if (IS_NULL(rest))
                     return Repl_eval_procedure(f, root, env);
 
-                Value *v = mkPair(CAR(rest), VNull);
-                *root_cursor = v;
-                root_cursor = &CDR(v);
+                Value_append_to_list(CAR(rest), &root_cursor);
 
                 rest = CDR(rest);
             }
         }
 
-        Value *v = mkPair(CAR(rest), VNull);
-        *root_cursor = v;
-        root_cursor = &CDR(v);
+        Value_append_to_list(CAR(rest), &root_cursor);
 
         rest = CDR(rest);
         parameter_count += 1;
@@ -58,7 +54,5 @@ Value *builtin_apply_wrapped(Value *parameters, Value *env)
     if (!IS_PAIR(parameters))
         return exceptions_invalid_argument(mkSymbol("*builtin*.apply"), 0, mkSymbol("pair"), parameters);
 
-    Value *f = CAR(parameters);
-    Value *rest = CDR(parameters);
-    return builtin_apply(f, rest, env);
+    return builtin_apply(CAR(parameters), CDR(parameters), env);
 }

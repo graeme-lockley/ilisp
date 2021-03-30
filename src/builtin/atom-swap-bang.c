@@ -7,9 +7,13 @@
 
 Value *builtin_atom_swap_bang(Value *atom, Value *f, Value *env)
 {
-    Value *v = Repl_eval_procedure(f, mkPair(ATOM(atom), VNull), env);
-    if (IS_EXCEPTION(v))
-        return v;
+    if (!IS_ATOM(atom))
+        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-swap!"), 0, mkSymbol("atom"), atom);
+
+    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
+        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-swap!"), 1, mkSymbol("procedure"), f);
+
+    EVAL_ASSIGN(v, Repl_eval_procedure(f, mkPair(ATOM(atom), VNull), env));
 
     ATOM(atom) = v;
 
@@ -24,13 +28,5 @@ Value *builtin_atom_swap_bang_wrapped(Value *parameters, Value *env)
     if (extract_result != NULL)
         return extract_result;
 
-    Value *atom = parameter[0];
-    if (!IS_ATOM(atom))
-        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-swap!"), 0, mkSymbol("atom"), atom);
-
-    Value *f = parameter[1];
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("*builtin*.atom-swap!"), 1, mkSymbol("procedure"), f);
-
-    return builtin_atom_swap_bang(atom, f, env);
+    return builtin_atom_swap_bang(parameter[0], parameter[1], env);
 }

@@ -24,8 +24,6 @@
   )
 )
 
-(const number? *builtin*.integer?)
-
 (macro (and . terms)
   (if (*builtin*.null? terms) 
     #t
@@ -49,6 +47,16 @@
         (or ~@(rest terms)) 
       )
     )
+  )
+)
+
+(const number? *builtin*.integer?)
+
+(const (sequential? s)
+  (or
+    (*builtin*.null? s)
+    (*builtin*.pair? s)
+    (*builtin*.vector? s)
   )
 )
 

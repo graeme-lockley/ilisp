@@ -789,17 +789,6 @@ static Value *read_dir(Value *parameters, Value *env)
     return root;
 }
 
-static Value *sequentialp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "sequential?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_NULL(parameter[0]) || IS_PAIR(parameter[0]) || IS_VECTOR(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *list(Value *parameters, Value *env)
 {
     return parameters;
@@ -844,7 +833,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(prn));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
     add_binding_into_environment(root_bindings, "read-string-many", mkNativeProcedure(read_string_many));
-    add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));

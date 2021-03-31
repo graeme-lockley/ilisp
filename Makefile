@@ -73,7 +73,6 @@ SRC_OBJECTS=\
 	src/builtin/mutable-pair.o \
 	src/builtin/mutable-vector.o \
 	src/builtin/nullp.o \
-	src/builtin/numberp.o \
 	src/builtin/pair.o \
 	src/builtin/pair-car.o \
 	src/builtin/pair-car-bang.o \

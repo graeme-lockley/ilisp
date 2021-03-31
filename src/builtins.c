@@ -648,17 +648,6 @@ static Value *list_nth(Value *parameters, Value *env)
     }
 }
 
-static Value *numberp(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "number?");
-    if (extract_result != NULL)
-        return extract_result;
-
-    return IS_NUMBER(parameter[0]) ? VTrue : VFalse;
-}
-
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -868,7 +857,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(root_bindings, "raise", mkNativeProcedure(raise));
 
-    add_binding_into_environment(root_bindings, "number?", mkNativeProcedure(numberp));
     add_binding_into_environment(root_bindings, "pr-str", mkNativeProcedure(pr_str));
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
@@ -933,7 +921,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "mutable-pair", mkNativeProcedure(builtin_mutable_pair_wrapped));
     add_binding_into_environment(builtin_bindings, "mutable-vector", mkNativeProcedure(builtin_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "null?", mkNativeProcedure(builtin_nullp_wrapped));
-    add_binding_into_environment(builtin_bindings, "number?", mkNativeProcedure(builtin_numberp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair", mkNativeProcedure(builtin_pair_wrapped));
     add_binding_into_environment(builtin_bindings, "pair?", mkNativeProcedure(builtin_pairp_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-car", mkNativeProcedure(builtin_pair_car_wrapped));

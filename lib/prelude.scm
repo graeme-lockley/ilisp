@@ -24,6 +24,8 @@
   )
 )
 
+(const number? *builtin*.integer?)
+
 (macro (and . terms)
   (if (*builtin*.null? terms) 
     #t

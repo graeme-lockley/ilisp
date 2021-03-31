@@ -8,7 +8,6 @@
 #include "buffer.h"
 #include "exceptions.h"
 #include "map.h"
-#include "mt19937.h"
 #include "printer.h"
 #include "reader.h"
 #include "repl.h"
@@ -710,24 +709,6 @@ static Value *raise(Value *parameters, Value *env)
                : mkException(mkPair(arguments[0], arguments[1]));
 }
 
-static Value *random_number(Value *parameters, Value *env)
-{
-    Value *arguments[1];
-
-    Value *error = extract_range_parameters(arguments, parameters, 0, 1, "random");
-    if (error != NULL)
-        return error;
-
-    if (arguments[0] == NULL)
-        return mkNumber((int)genrand_int32());
-
-    if (!IS_NUMBER(arguments[0]))
-        return exceptions_invalid_argument(mkSymbol("random"), 0, mkSymbol("number"), arguments[0]);
-
-    init_genrand(NUMBER(arguments[0]));
-    return VNull;
-}
-
 static Value *read_string(Value *parameters, Value *env)
 {
     Value *parameter[2];
@@ -927,7 +908,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(builtin_pair_car_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(builtin_pair_cdr_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "proc?", mkNativeProcedure(builtin_procp_wrapped));
-    add_binding_into_environment(builtin_bindings, "random", mkNativeProcedure(random_number));
+    add_binding_into_environment(builtin_bindings, "random", mkNativeProcedure(builtin_random_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));

@@ -9,13 +9,13 @@
     (proc (min max)
         (const range (+ (- max min) 1))
 
-        (+ min (Number.modulo (Number.abs (random)) range))
+        (+ min (Number.modulo (Number.abs (*builtin*.random)) range))
     )
 )
 
 (const- (gen:integer . range)
     (if (empty? range) 
-            (proc () (random))
+            (proc () (*builtin*.random))
 
         (= (count range) 2) 
             (proc () (integer-in-range (*builtin*.pair-car range) (*builtin*.pair-car (*builtin*.pair-cdr range))))

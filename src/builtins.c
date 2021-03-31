@@ -861,7 +861,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(prn));
-    add_binding_into_environment(root_bindings, "random", mkNativeProcedure(random_number));
     add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
     add_binding_into_environment(root_bindings, "read-string-many", mkNativeProcedure(read_string_many));
     add_binding_into_environment(root_bindings, "sequential?", mkNativeProcedure(sequentialp));
@@ -928,6 +927,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "pair-car!", mkNativeProcedure(builtin_pair_car_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "pair-cdr!", mkNativeProcedure(builtin_pair_cdr_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "proc?", mkNativeProcedure(builtin_procp_wrapped));
+    add_binding_into_environment(builtin_bindings, "random", mkNativeProcedure(random_number));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(read_dir));
     add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));

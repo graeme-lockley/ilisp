@@ -8,21 +8,15 @@
 #include "../map.h"
 #include "../value.h"
 
-Value *builtin_read_dir_wrapped(Value *parameters, Value *env)
+Value *builtin_read_dir(Value *dir_name, Value *env)
 {
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-dir");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("read-dir"), 0, mkSymbol("string"), parameter[0]);
+    if (!IS_STRING(dir_name))
+        return exceptions_invalid_argument(mkSymbol("read-dir"), 0, mkSymbol("string"), dir_name);
 
     errno = 0;
-    DIR *dir = opendir(STRING(parameter[0]));
+    DIR *dir = opendir(STRING(dir_name));
     if (dir == NULL)
-        return exceptions_system_error(mkSymbol("read-dir"), parameter[0]);
+        return exceptions_system_error(mkSymbol("read-dir"), dir_name);
 
     struct dirent *de;
     Value *root = VNull;
@@ -48,9 +42,20 @@ Value *builtin_read_dir_wrapped(Value *parameters, Value *env)
         root_cursor = &CDR(v);
     }
     if (errno != 0)
-        root = exceptions_system_error(mkSymbol("read-dir"), parameter[0]);
+        root = exceptions_system_error(mkSymbol("read-dir"), dir_name);
     closedir(dir);
 
     return root;
+}
+
+Value *builtin_read_dir_wrapped(Value *parameters, Value *env)
+{
+    Value *parameter[1];
+
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-dir");
+    if (extract_result != NULL)
+        return extract_result;
+
+    return builtin_read_dir(parameter[0], env);
 }
 

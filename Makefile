@@ -82,6 +82,8 @@ SRC_OBJECTS=\
 	src/builtin/procp.o \
 	src/builtin/random.o \
 	src/builtin/read-dir.o \
+	src/builtin/read-string.o \
+	src/builtin/read-string-many.o \
 	src/builtin/stringp.o \
 	src/builtin/string-count.o \
 	src/builtin/string-ends-with.o \

@@ -633,7 +633,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(prn));
-    add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
 
@@ -699,6 +698,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir_wrapped));
     add_binding_into_environment(builtin_bindings, "read-string", mkNativeProcedure(builtin_read_string_wrapped));
     add_binding_into_environment(builtin_bindings, "read-string-many", mkNativeProcedure(builtin_read_string_many_wrapped));
+    add_binding_into_environment(builtin_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));

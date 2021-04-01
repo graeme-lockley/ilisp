@@ -51,6 +51,7 @@ extern Value *builtin_keyword_to_string_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_count(Value *list);
 extern Value *builtin_list_count_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_map_wrapped(Value *parameters, Value *env);
+extern Value *builtin_list_nth_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_take_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_to_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_list_to_vector(Value *list);

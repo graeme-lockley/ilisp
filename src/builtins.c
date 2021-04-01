@@ -618,35 +618,6 @@ static Value *list_filter(Value *parameters, Value *env)
     }
 }
 
-static Value *list_nth(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-nth");
-    if (extract_result != NULL)
-        return extract_result;
-
-    if (!IS_PAIR(parameter[0]) && !IS_NULL(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("list-nth"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), parameter[0]);
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("list-nth"), 1, mkSymbol("number"), parameter[1]);
-
-    int nth = NUMBER(parameter[1]);
-
-    Value *cursor = parameter[0];
-    while (1)
-    {
-        if (IS_NULL(cursor) || !IS_PAIR(cursor))
-            return VNull;
-
-        if (nth == 0)
-            return CAR(cursor);
-
-        nth -= 1;
-        cursor = CDR(cursor);
-    }
-}
-
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -789,7 +760,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
     add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
     add_binding_into_environment(builtin_bindings, "list-map", mkNativeProcedure(builtin_list_map_wrapped));
-    add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(list_nth));
+    add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(builtin_list_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(builtin_list_take_wrapped));
     add_binding_into_environment(builtin_bindings, "load-source", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(builtin_bindings, "macro?", mkNativeProcedure(builtin_macrop_wrapped));

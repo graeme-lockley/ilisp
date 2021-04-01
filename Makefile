@@ -52,6 +52,7 @@ SRC_OBJECTS=\
 	src/builtin/keyword-to-string.o \
 	src/builtin/list-count.o \
 	src/builtin/list-map.o \
+	src/builtin/list-nth.o \
 	src/builtin/list-take.o \
 	src/builtin/list-to-mutable-vector.o \
 	src/builtin/list-to-vector.o \

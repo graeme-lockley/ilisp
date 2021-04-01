@@ -41,7 +41,7 @@
     (Unit.assert-signal (List.filter [2 4 6 8 10 12] even?) (proc (signal) (do
         (Unit.assert-equals (*builtin*.pair-car signal) 'InvalidArgument)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 0)
-        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'list-filter)
+        (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.list-filter"))
     )))
 )
 

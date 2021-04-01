@@ -17,10 +17,10 @@ Value *builtin_list_filter_wrapped(Value *parameters, Value *env)
     Value *f = parameter[1];
 
     if (!IS_PAIR(args) && !IS_NULL(args))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), f);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), f);
 
     if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkSymbol("procedure"), f);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.list-filter"), 1, mkSymbol("procedure"), f);
 
     Value *root = VNull;
     Value **root_cursor = &root;
@@ -34,11 +34,7 @@ Value *builtin_list_filter_wrapped(Value *parameters, Value *env)
             return v;
 
         if (Value_truthy(v))
-        {
-            Value *r = mkPair(CAR(args), VNull);
-            *root_cursor = r;
-            root_cursor = &CDR(r);
-        }
+            Value_append_to_list(CAR(args), &root_cursor);
 
         args = CDR(args);
     }

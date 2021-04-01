@@ -713,15 +713,15 @@ static Value *read_string(Value *parameters, Value *env)
 {
     Value *parameter[2];
 
-    Value *extract_result = extract_range_parameters(parameter, parameters, 1, 2, "read-string");
+    Value *extract_result = extract_range_parameters(parameter, parameters, 1, 2, "*builtin*.read-string");
     if (extract_result != NULL)
         return extract_result;
 
     if (!IS_STRING(parameter[0]))
-        return exceptions_invalid_argument(mkSymbol("read-string"), 0, mkSymbol("string"), parameter[0]);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.read-string"), 0, mkSymbol("string"), parameter[0]);
 
     if (parameter[1] != NULL && !IS_STRING(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("read-string"), 1, mkSymbol("string"), parameter[1]);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.read-string"), 1, mkSymbol("string"), parameter[1]);
 
     return Reader_read(parameter[1] == NULL ? "**string**" : STRING(parameter[1]), STRING(parameter[0]));
 }
@@ -785,8 +785,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(root_bindings, "print", mkNativeProcedure(print));
     add_binding_into_environment(root_bindings, "println", mkNativeProcedure(println));
     add_binding_into_environment(root_bindings, "prn", mkNativeProcedure(prn));
-    add_binding_into_environment(root_bindings, "read-string", mkNativeProcedure(read_string));
-    add_binding_into_environment(root_bindings, "read-string-many", mkNativeProcedure(read_string_many));
     add_binding_into_environment(root_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
     add_binding_into_environment(root_bindings, "str", mkNativeProcedure(str));
     add_binding_into_environment(root_bindings, "vec", mkNativeProcedure(builtin_list_to_vector_wrapped));
@@ -852,6 +850,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "proc?", mkNativeProcedure(builtin_procp_wrapped));
     add_binding_into_environment(builtin_bindings, "random", mkNativeProcedure(builtin_random_wrapped));
     add_binding_into_environment(builtin_bindings, "read-dir", mkNativeProcedure(builtin_read_dir_wrapped));
+    add_binding_into_environment(builtin_bindings, "read-string", mkNativeProcedure(read_string));
+    add_binding_into_environment(builtin_bindings, "read-string-many", mkNativeProcedure(read_string_many));
     add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));

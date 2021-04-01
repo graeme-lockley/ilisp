@@ -314,19 +314,19 @@ fred
 (>= "hello" 1)
 > (:exception (InvalidArgument . {:arg-number 0 :expected-type number :procedure integer-greater-equal :received "hello"}))
 
-(read-string)
-> (:exception (ExpectedArgumentCount . {:arguments () :max-arg-count 2 :min-arg-count 1 :procedure read-string}))
+(*builtin*.read-string)
+> (:exception (ExpectedArgumentCount . {:arguments () :max-arg-count 2 :min-arg-count 1 :procedure *builtin*.read-string}))
 
-(read-string 1)
-> (:exception (InvalidArgument . {:arg-number 0 :expected-type string :procedure read-string :received 1}))
+(*builtin*.read-string 1)
+> (:exception (InvalidArgument . {:arg-number 0 :expected-type string :procedure *builtin*.read-string :received 1}))
 
-(read-string "1")
+(*builtin*.read-string "1")
 > 1
 
-(read-string "(1 2 3)")
+(*builtin*.read-string "(1 2 3)")
 > (1 2 3)
 
-(read-string "(1 2 \"hello\")")
+(*builtin*.read-string "(1 2 \"hello\")")
 > (1 2 "hello")
 
 (*builtin*.eval '1)
@@ -335,7 +335,7 @@ fred
 (*builtin*.eval '(+ 1 2))
 > 3
 
-(*builtin*.eval (read-string "(*builtin*.pair-cdr '(1 2 3 4 5))"))
+(*builtin*.eval (*builtin*.read-string "(*builtin*.pair-cdr '(1 2 3 4 5))"))
 > (2 3 4 5)
 
 (do (load-file "./test/basic.sc") (caar '((1 2) (3 4))))

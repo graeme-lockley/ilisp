@@ -492,7 +492,7 @@ fred
 > #t
 
 ((map-get *builtin* 'read-dir) "./test/my_dir_that_does_not_exist")
-> (:exception (SystemError . {:code 2 :error "No such file or directory" :parameters "./test/my_dir_that_does_not_exist" :procedure read-dir}))
+> (:exception (SystemError . {:code 2 :error "No such file or directory" :parameters "./test/my_dir_that_does_not_exist" :procedure *builtin*.read-dir}))
 
 ((map-get *builtin* 'list-count) ((map-get *builtin* 'read-dir) "./test/my_test_dir"))
 > 3

@@ -11,12 +11,12 @@
 Value *builtin_read_dir(Value *dir_name, Value *env)
 {
     if (!IS_STRING(dir_name))
-        return exceptions_invalid_argument(mkSymbol("read-dir"), 0, mkSymbol("string"), dir_name);
+        return exceptions_invalid_argument(mkSymbol("*builtin*.read-dir"), 0, mkSymbol("string"), dir_name);
 
     errno = 0;
     DIR *dir = opendir(STRING(dir_name));
     if (dir == NULL)
-        return exceptions_system_error(mkSymbol("read-dir"), dir_name);
+        return exceptions_system_error(mkSymbol("*builtin*.read-dir"), dir_name);
 
     struct dirent *de;
     Value *root = VNull;
@@ -42,7 +42,7 @@ Value *builtin_read_dir(Value *dir_name, Value *env)
         root_cursor = &CDR(v);
     }
     if (errno != 0)
-        root = exceptions_system_error(mkSymbol("read-dir"), dir_name);
+        root = exceptions_system_error(mkSymbol("*builtin*.read-dir"), dir_name);
     closedir(dir);
 
     return root;
@@ -52,7 +52,7 @@ Value *builtin_read_dir_wrapped(Value *parameters, Value *env)
 {
     Value *parameter[1];
 
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "read-dir");
+    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "*builtin*.read-dir");
     if (extract_result != NULL)
         return extract_result;
 

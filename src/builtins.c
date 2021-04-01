@@ -551,73 +551,6 @@ static Value *integer_greater_equal(Value *parameters, Value *env)
     }
 }
 
-static Value *list_drop(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-drop");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *lst = parameter[0];
-    if (!IS_PAIR(lst) && !IS_NULL(lst))
-        return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
-    if (!IS_NUMBER(parameter[1]))
-        return exceptions_invalid_argument(mkSymbol("list-drop"), 1, mkSymbol("number"), parameter[1]);
-
-    int drop_count = NUMBER(parameter[1]);
-    while (1)
-    {
-        if (drop_count <= 0 || IS_NULL(lst))
-            return lst;
-
-        if (!IS_PAIR(lst))
-            return exceptions_invalid_argument(mkSymbol("list-drop"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), lst);
-
-        lst = CDR(lst);
-        drop_count -= 1;
-    }
-}
-
-static Value *list_filter(Value *parameters, Value *env)
-{
-    Value *parameter[2];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 2, "list-filter");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *args = parameter[0];
-    Value *f = parameter[1];
-
-    if (!IS_PAIR(args) && !IS_NULL(args))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 0, mkPair(mkSymbol("pair"), mkPair(mkSymbol("()"), VNull)), f);
-
-    if (!IS_PROCEDURE(f) && !IS_NATIVE_PROCEDURE(f))
-        return exceptions_invalid_argument(mkSymbol("list-filter"), 1, mkSymbol("procedure"), f);
-
-    Value *root = VNull;
-    Value **root_cursor = &root;
-    while (1)
-    {
-        if (IS_NULL(args) || !IS_PAIR(args))
-            return root;
-
-        Value *v = Repl_eval_procedure(f, mkPair(CAR(args), VNull), env);
-        if (IS_EXCEPTION(v))
-            return v;
-
-        if (Value_truthy(v))
-        {
-            Value *r = mkPair(CAR(args), VNull);
-            *root_cursor = r;
-            root_cursor = &CDR(r);
-        }
-
-        args = CDR(args);
-    }
-}
-
 static Value *value_to_str(Value *parameters, int readable, char *separator)
 {
     Value *result = Printer_prStr(parameters, readable, separator);
@@ -757,8 +690,8 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "list->mutable-vector", mkNativeProcedure(builtin_list_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "list->vector", mkNativeProcedure(builtin_list_to_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "list-count", mkNativeProcedure(builtin_list_count_wrapped));
-    add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(list_drop));
-    add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(list_filter));
+    add_binding_into_environment(builtin_bindings, "list-drop", mkNativeProcedure(builtin_list_drop_wrapped));
+    add_binding_into_environment(builtin_bindings, "list-filter", mkNativeProcedure(builtin_list_filter_wrapped));
     add_binding_into_environment(builtin_bindings, "list-map", mkNativeProcedure(builtin_list_map_wrapped));
     add_binding_into_environment(builtin_bindings, "list-nth", mkNativeProcedure(builtin_list_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "list-take", mkNativeProcedure(builtin_list_take_wrapped));

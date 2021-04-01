@@ -75,28 +75,6 @@ Value *extract_range_parameters(Value **parameters, Value *arguments, int min_nu
     }
 }
 
-static Value *byte_vector_mutable(Value *parameters, Value *env)
-{
-    Value *parameter[1];
-
-    Value *extract_result = extract_fixed_parameters(parameter, parameters, 1, "byte-vector-mutable");
-    if (extract_result != NULL)
-        return extract_result;
-
-    Value *args = parameter[0];
-
-    if (!IS_BYTE_VECTOR(args))
-        return exceptions_invalid_argument(mkSymbol("byte-vector-mutable"), 0, mkSymbol("byte-vector"), args);
-
-    int number_of_items = BYTE_VECTOR(args).length;
-    unsigned char *items = BYTE_VECTOR(args).items;
-    unsigned char *buffer = (unsigned char *)malloc(number_of_items * sizeof(unsigned char));
-    memcpy(buffer, items, number_of_items * sizeof(unsigned char));
-    Value *result = mkByteVectorUse(buffer, number_of_items);
-    result->tag &= ~VP_IMMUTABLE;
-    return result;
-}
-
 static Value *concat(Value *parameters, Value *env)
 {
     Value *result = VNull;
@@ -674,7 +652,6 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector->mutable-vector", mkNativeProcedure(builtin_byte_vector_to_mutable_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector->vector", mkNativeProcedure(builtin_byte_vector_to_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(builtin_byte_vector_count_wrapped));
-    add_binding_into_environment(builtin_bindings, "byte-vector-mutable", mkNativeProcedure(byte_vector_mutable));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(builtin_byte_vector_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(builtin_byte_vector_nth_bang_wrapped));
     add_binding_into_environment(builtin_bindings, "character?", mkNativeProcedure(builtin_characterp_wrapped));

@@ -7,6 +7,9 @@
  *   - bits 1-6 - the type of the value
  */
 
+#include <pthread.h>
+#include <stdio.h>
+
 enum ValueProperties
 {
     VP_IMMUTABLE = 1,
@@ -29,7 +32,11 @@ enum ValueType
     VT_NATIVE_PROCEDURE,
     VT_PROCEDURE,
     VT_MACRO,
-    VT_EXCEPTION // == 15
+    VT_EXCEPTION, // == 15
+    VT_THREAD,
+    VT_SOCKET,
+    VT_FILE_HANDLE,
+    VT_MUTEX
 };
 
 #define VALUE_SHIFT_WIDTH 1
@@ -44,7 +51,8 @@ struct MapStruct
     struct ValueStruct *value;
 };
 
-struct MapValueRoot {
+struct MapValueRoot
+{
     int hash_size;
     struct MapStruct **nodes;
 };
@@ -86,6 +94,10 @@ struct ValueStruct
             struct ValueStruct *env;
         } procedure;
         struct ValueStruct *exceptionV;
+        pthread_t threadV;
+        int socketV;
+        FILE *file_handleV;
+        pthread_mutex_t *mutexV;
     };
 };
 
@@ -109,6 +121,10 @@ typedef struct ValueStruct Value;
 #define IS_PROCEDURE(v) ((TAG_TO_VT(v) == VT_PROCEDURE))
 #define IS_MACRO(v) ((TAG_TO_VT(v) == VT_MACRO))
 #define IS_EXCEPTION(v) ((TAG_TO_VT(v) == VT_EXCEPTION))
+#define IS_THREAD(v) ((TAG_TO_VT(v) == VT_THREAD))
+#define IS_SOCKET(v) ((TAG_TO_VT(v) == VT_SOCKET))
+#define IS_FILE_HANDLE(v) ((TAG_TO_VT(v) == VT_FILE_HANDLE))
+#define IS_MUTEX(v) ((TAG_TO_VT(v) == VT_MUTEX))
 
 extern int Value_truthy(Value *v);
 extern Value *Value_equals(Value *a, Value *b);
@@ -175,6 +191,18 @@ extern Value *mkMacro(Value *body, Value *parameters, Value *env);
 
 extern Value *mkException(Value *exception);
 #define EXCEPTION(v) ((v)->exceptionV)
+
+extern Value *mkThread(pthread_t thread);
+#define THREAD(v) ((v)->threadV)
+
+extern Value *mkSocket(int socket);
+#define SOCKET(v) ((v)->socketV)
+
+extern Value *mkFileHandle(FILE *file);
+#define FILE_HANDLE(v) ((v)->file_handleV)
+
+extern Value *mkMutex(pthread_mutex_t *mutex);
+#define MUTEX(v) ((v)->mutexV)
 
 #define IS_SUCCESSFUL(v) (!IS_EXCEPTION(v))
 

@@ -710,6 +710,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(builtin_string_starts_with_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol", mkNativeProcedure(builtin_symbol_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol?", mkNativeProcedure(builtin_symbolp_wrapped));
+    add_binding_into_environment(builtin_bindings, "thread-create", mkNativeProcedure(builtin_thread_create_wrapped));
     add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "vector?", mkNativeProcedure(builtin_vectorp_wrapped));
     add_binding_into_environment(builtin_bindings, "vector->list", mkNativeProcedure(builtin_vector_to_list_wrapped));

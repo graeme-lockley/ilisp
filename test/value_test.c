@@ -24,6 +24,10 @@ static char *test_ordinal_values()
     mu_assert_label(VT_PROCEDURE == 13);
     mu_assert_label(VT_MACRO == 14);
     mu_assert_label(VT_EXCEPTION == 15);
+    mu_assert_label(VT_THREAD == 16);
+    mu_assert_label(VT_SOCKET == 17);
+    mu_assert_label(VT_FILE_HANDLE == 18);
+    mu_assert_label(VT_MUTEX == 19);
 
     return NULL;
 }

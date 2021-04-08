@@ -191,6 +191,34 @@ Value *mkException(Value *exception)
     return value;
 }
 
+Value *mkThread(pthread_t thread)
+{
+    Value *value = mkValue(VT_THREAD);
+    value->threadV = thread;
+    return value;
+}
+
+Value *mkSocket(int socket)
+{
+    Value *value = mkValue(VT_SOCKET);
+    value->socketV = socket;
+    return value;
+}
+
+Value *mkFileHandle(FILE *file_handle)
+{
+    Value *value = mkValue(VT_FILE_HANDLE);
+    value->file_handleV = file_handle;
+    return value;
+}
+
+Value *mkMutex(pthread_mutex_t *mutex)
+{
+    Value *value = mkValue(VT_MUTEX);
+    value->mutexV = mutex;
+    return value;
+}
+
 int Value_truthy(Value *v)
 {
     return (v == VFalse) ? 0 : 1;
@@ -287,7 +315,7 @@ int Value_compare(Value *a, Value *b)
 
                 for (int loop = 0; loop < length; loop += 1)
                 {
-                    compare = sgn(((int) as[loop]) - ((int) bs[loop]));
+                    compare = sgn(((int)as[loop]) - ((int)bs[loop]));
 
                     if (compare != 0)
                         return compare;
@@ -308,6 +336,19 @@ int Value_compare(Value *a, Value *b)
         case VT_NATIVE_PROCEDURE:
         case VT_PROCEDURE:
             return 0;
+
+        case VT_THREAD:
+            return THREAD(a) == THREAD(b) ? 0 : THREAD(a) < THREAD(b) ? -1
+                                                                      : 1;
+
+        case VT_SOCKET:
+            return sgn(SOCKET(a) - SOCKET(b));
+
+        case VT_FILE_HANDLE:
+            return sgn(FILE_HANDLE(a) - FILE_HANDLE(b));
+
+        case VT_MUTEX:
+            return sgn(MUTEX(a) - MUTEX(b));
         }
 
     return tag_compare;
@@ -374,6 +415,18 @@ unsigned long Value_hash(Value *v)
 
     case VT_MAP:
         return 1;
+
+    case VT_THREAD:
+        return (int)THREAD(v);
+
+    case VT_SOCKET:
+        return SOCKET(v);
+
+    case VT_FILE_HANDLE:
+        return FILE_HANDLE(v);
+
+    case VT_MUTEX:
+        return MUTEX(v);
     }
 
     return 0;

@@ -100,6 +100,7 @@ SRC_OBJECTS=\
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \
 	src/builtin/thread-create.o \
+	src/builtin/thread-join.o \
 	src/builtin/vector.o \
 	src/builtin/vector-count.o \
 	src/builtin/vector-filter.o \

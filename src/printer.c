@@ -244,7 +244,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
     case VT_THREAD:
     {
         char buffer[20];
-        sprintf(buffer, "%ul", THREAD(v));
+        sprintf(buffer, "%lu", THREAD(v));
 
         string_builder_append(sb, "(#THREAD ");
         string_builder_append(sb, buffer);
@@ -266,7 +266,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
     case VT_FILE_HANDLE:
     {
         char buffer[20];
-        sprintf(buffer, "%ul", FILE_HANDLE(v));
+        sprintf(buffer, "%p", (void *)FILE_HANDLE(v));
 
         string_builder_append(sb, "(#FILE_HANDLE ");
         string_builder_append(sb, buffer);
@@ -277,7 +277,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
     case VT_MUTEX:
     {
         char buffer[20];
-        sprintf(buffer, "%ul", MUTEX(v));
+        sprintf(buffer, "%p", (void *)MUTEX(v));
 
         string_builder_append(sb, "(#MUTEX ");
         string_builder_append(sb, buffer);

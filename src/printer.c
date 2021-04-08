@@ -129,12 +129,12 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
                 if (lp > 0)
                     string_builder_append(sb, separator);
 
-                if (lp > 255) 
+                if (lp > 255)
                 {
                     string_builder_append(sb, "...");
                     break;
                 }
-                
+
                 char buffer[10];
 
                 sprintf(buffer, "%x", BYTE_VECTOR(v).items[lp]);
@@ -240,6 +240,50 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
         Printer_pr(s, sb, v->exceptionV, readable, separator);
         string_builder_append(sb, ")");
         break;
+
+    case VT_THREAD:
+    {
+        char buffer[20];
+        sprintf(buffer, "%ul", THREAD(v));
+
+        string_builder_append(sb, "(#THREAD ");
+        string_builder_append(sb, buffer);
+        string_builder_append(sb, ")");
+        break;
+    }
+
+    case VT_SOCKET:
+    {
+        char buffer[20];
+        sprintf(buffer, "%d", SOCKET(v));
+
+        string_builder_append(sb, "(#SOCKET ");
+        string_builder_append(sb, buffer);
+        string_builder_append(sb, ")");
+        break;
+    }
+
+    case VT_FILE_HANDLE:
+    {
+        char buffer[20];
+        sprintf(buffer, "%ul", FILE_HANDLE(v));
+
+        string_builder_append(sb, "(#FILE_HANDLE ");
+        string_builder_append(sb, buffer);
+        string_builder_append(sb, ")");
+        break;
+    }
+
+    case VT_MUTEX:
+    {
+        char buffer[20];
+        sprintf(buffer, "%ul", MUTEX(v));
+
+        string_builder_append(sb, "(#MUTEX ");
+        string_builder_append(sb, buffer);
+        string_builder_append(sb, ")");
+        break;
+    }
 
     default:
     {

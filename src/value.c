@@ -423,10 +423,10 @@ unsigned long Value_hash(Value *v)
         return SOCKET(v);
 
     case VT_FILE_HANDLE:
-        return FILE_HANDLE(v);
+        return (unsigned long) FILE_HANDLE(v);
 
     case VT_MUTEX:
-        return MUTEX(v);
+        return (unsigned long) MUTEX(v);
     }
 
     return 0;

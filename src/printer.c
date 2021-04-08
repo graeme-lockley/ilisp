@@ -244,7 +244,7 @@ void Printer_pr(struct Set **s, StringBuilder *sb, Value *v, int readable, char 
     case VT_THREAD:
     {
         char buffer[20];
-        sprintf(buffer, "%lu", THREAD(v));
+        sprintf(buffer, "%p", (void *) THREAD(v));
 
         string_builder_append(sb, "(#THREAD ");
         string_builder_append(sb, buffer);

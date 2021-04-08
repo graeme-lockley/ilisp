@@ -1,6 +1,6 @@
 CC=clang-9 -Ofast
 CFLAGS=-g -Wall -Wextra -pedantic -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-parameter
-LDFLAGS=-g
+LDFLAGS=-g -lpthread
 
 # CC=gcc
 # CFLAGS=-g -pg -Wall -Wextra -pedantic  -Wno-gnu-zero-variadic-macro-arguments
@@ -99,6 +99,7 @@ SRC_OBJECTS=\
 	src/builtin/symbol.o \
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \
+	src/builtin/thread-create.o \
 	src/builtin/vector.o \
 	src/builtin/vector-count.o \
 	src/builtin/vector-filter.o \

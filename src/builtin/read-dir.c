@@ -16,7 +16,7 @@ Value *builtin_read_dir(Value *dir_name, Value *env)
     errno = 0;
     DIR *dir = opendir(STRING(dir_name));
     if (dir == NULL)
-        return exceptions_system_error(mkSymbol("*builtin*.read-dir"), dir_name);
+        return exceptions_system_error("*builtin*.read-dir", dir_name);
 
     struct dirent *de;
     Value *root = VNull;
@@ -42,7 +42,7 @@ Value *builtin_read_dir(Value *dir_name, Value *env)
         root_cursor = &CDR(v);
     }
     if (errno != 0)
-        root = exceptions_system_error(mkSymbol("*builtin*.read-dir"), dir_name);
+        root = exceptions_system_error("*builtin*.read-dir", dir_name);
     closedir(dir);
 
     return root;

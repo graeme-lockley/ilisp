@@ -147,13 +147,16 @@ Value *exceptions_out_of_range(Value *procedure_name, Value *operand, Value *ind
     return mkException(mkPair(exception_name, exception_payload));
 }
 
-Value *exceptions_system_error(Value *procedure, Value *parameters) {
+Value *exceptions_system_error(char *procedure_name, Value *parameters) {
+    int error_number = errno;
+    char *error_messsage = strerror(error_number);
+
     Value *exception_name = mkSymbol("SystemError");
     Value *exception_payload = map_create(EXCEPTION_HASH_SIZE);
-    map_set_bang(exception_payload, mkKeyword(":procedure"), procedure);
+    map_set_bang(exception_payload, mkKeyword(":procedure"), mkSymbol(procedure_name));
     map_set_bang(exception_payload, mkKeyword(":parameters"), parameters);
-    map_set_bang(exception_payload, mkKeyword(":code"), mkNumber(errno));
-    map_set_bang(exception_payload, mkKeyword(":error"), mkString(strerror(errno)));
+    map_set_bang(exception_payload, mkKeyword(":code"), mkNumber(error_number));
+    map_set_bang(exception_payload, mkKeyword(":error"), mkString(error_messsage));
 
     return mkException(mkPair(exception_name, exception_payload));
  }

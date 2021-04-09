@@ -20,7 +20,7 @@ Value *builtin_thread_join(Value *thread, Value *env)
 
     int rc = pthread_join(thread_id, &result);
     if (rc)
-        return exceptions_system_error(mkSymbol("*builtin*.thread-join"), thread);
+        return exceptions_system_error("*builtin*.thread-join", thread);
 
     return (Value *)result;
 }

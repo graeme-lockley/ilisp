@@ -32,7 +32,7 @@ Value *builtin_thread_create(Value *proc, Value *env)
 
     int rc = pthread_create(&thread_id, NULL, thread_proc, (void *)ta);
     if (rc)
-        return exceptions_system_error(mkSymbol("*builtin*.thread-create"), proc);
+        return exceptions_system_error("*builtin*.thread-create", proc);
 
     return mkThread(thread_id);
 }

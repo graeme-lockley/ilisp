@@ -700,6 +700,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "read-string", mkNativeProcedure(builtin_read_string_wrapped));
     add_binding_into_environment(builtin_bindings, "read-string-many", mkNativeProcedure(builtin_read_string_many_wrapped));
     add_binding_into_environment(builtin_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket?", mkNativeProcedure(builtin_socketp_wrapped));
     add_binding_into_environment(builtin_bindings, "socket-close", mkNativeProcedure(builtin_socket_close_wrapped));
     add_binding_into_environment(builtin_bindings, "socket-listen", mkNativeProcedure(builtin_socket_listen_wrapped));
     add_binding_into_environment(builtin_bindings, "socket-open", mkNativeProcedure(builtin_socket_open_wrapped));
@@ -717,6 +718,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "string-starts-with", mkNativeProcedure(builtin_string_starts_with_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol", mkNativeProcedure(builtin_symbol_wrapped));
     add_binding_into_environment(builtin_bindings, "symbol?", mkNativeProcedure(builtin_symbolp_wrapped));
+    add_binding_into_environment(builtin_bindings, "thread?", mkNativeProcedure(builtin_threadp_wrapped));
     add_binding_into_environment(builtin_bindings, "thread-create", mkNativeProcedure(builtin_thread_create_wrapped));
     add_binding_into_environment(builtin_bindings, "thread-join", mkNativeProcedure(builtin_thread_join_wrapped));
     add_binding_into_environment(builtin_bindings, "vector", mkNativeProcedure(builtin_vector_wrapped));

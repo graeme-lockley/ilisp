@@ -88,6 +88,7 @@ SRC_OBJECTS=\
 	src/builtin/read-dir.o \
 	src/builtin/read-string.o \
 	src/builtin/read-string-many.o \
+	src/builtin/socketp.o \
 	src/builtin/socket-close.o \
 	src/builtin/socket-listen.o \
 	src/builtin/socket-open.o \
@@ -106,6 +107,7 @@ SRC_OBJECTS=\
 	src/builtin/symbol.o \
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \
+	src/builtin/threadp.o \
 	src/builtin/thread-create.o \
 	src/builtin/thread-join.o \
 	src/builtin/vector.o \

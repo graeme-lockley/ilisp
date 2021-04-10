@@ -653,6 +653,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "byte-vector-count", mkNativeProcedure(builtin_byte_vector_count_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth", mkNativeProcedure(builtin_byte_vector_nth_wrapped));
     add_binding_into_environment(builtin_bindings, "byte-vector-nth!", mkNativeProcedure(builtin_byte_vector_nth_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "byte-vector->string", mkNativeProcedure(builtin_byte_vector_to_string_wrapped));
     add_binding_into_environment(builtin_bindings, "character?", mkNativeProcedure(builtin_characterp_wrapped));
     add_binding_into_environment(builtin_bindings, "character->string", mkNativeProcedure(builtin_character_to_string_wrapped));
     add_binding_into_environment(builtin_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
@@ -699,7 +700,13 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "read-string", mkNativeProcedure(builtin_read_string_wrapped));
     add_binding_into_environment(builtin_bindings, "read-string-many", mkNativeProcedure(builtin_read_string_many_wrapped));
     add_binding_into_environment(builtin_bindings, "slurp", mkNativeProcedure(builtin_slurp_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket-close", mkNativeProcedure(builtin_socket_close_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket-listen", mkNativeProcedure(builtin_socket_listen_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket-open", mkNativeProcedure(builtin_socket_open_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket-read-all", mkNativeProcedure(builtin_socket_read_all_wrapped));
+    add_binding_into_environment(builtin_bindings, "socket-write-all", mkNativeProcedure(builtin_socket_write_all_wrapped));
     add_binding_into_environment(builtin_bindings, "string?", mkNativeProcedure(builtin_stringp_wrapped));
+    add_binding_into_environment(builtin_bindings, "string->byte-vector", mkNativeProcedure(builtin_string_to_byte_vector_wrapped));
     add_binding_into_environment(builtin_bindings, "string-count", mkNativeProcedure(builtin_string_count_wrapped));
     add_binding_into_environment(builtin_bindings, "string-ends-with", mkNativeProcedure(builtin_string_ends_with_wrapped));
     add_binding_into_environment(builtin_bindings, "string-filter", mkNativeProcedure(builtin_string_filter_wrapped));

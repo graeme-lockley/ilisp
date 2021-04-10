@@ -15,6 +15,7 @@ extern Buffer *buffer_init(int item_size);
 extern void buffer_free(Buffer *b);
 extern void *buffer_free_use(Buffer *b);
 extern void *buffer_content(Buffer *b);
+extern int buffer_count(Buffer *sb);
 extern void buffer_append(Buffer *b, void *v, int count);
 
 #endif

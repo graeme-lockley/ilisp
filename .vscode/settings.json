@@ -20,6 +20,7 @@
         "repl.h": "c",
         "stdio.h": "c",
         "string.h": "c",
-        "malloc.h": "c"
+        "malloc.h": "c",
+        "buffer.h": "c"
     }
 }

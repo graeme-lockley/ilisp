@@ -32,6 +32,11 @@ void *buffer_content(Buffer *sb)
     return sb->buffer;
 }
 
+int buffer_count(Buffer *sb)
+{
+    return sb->items_count;
+}
+
 void buffer_append(Buffer *sb, void *v, int count)
 {
     if (sb->items_count + count >= sb->buffer_count)

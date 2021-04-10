@@ -36,6 +36,7 @@ SRC_OBJECTS=\
 	src/builtin/byte-vector-to-list.o \
 	src/builtin/byte-vector-to-mutable-byte-vector.o \
 	src/builtin/byte-vector-to-mutable-vector.o \
+	src/builtin/byte-vector-to-string.o \
 	src/builtin/byte-vector-to-vector.o \
 	src/builtin/byte-vector-count.o \
 	src/builtin/byte-vector-nth.o \
@@ -87,6 +88,11 @@ SRC_OBJECTS=\
 	src/builtin/read-dir.o \
 	src/builtin/read-string.o \
 	src/builtin/read-string-many.o \
+	src/builtin/socket-close.o \
+	src/builtin/socket-listen.o \
+	src/builtin/socket-open.o \
+	src/builtin/socket-read-all.o \
+	src/builtin/socket-write-all.o \
 	src/builtin/stringp.o \
 	src/builtin/string-count.o \
 	src/builtin/string-ends-with.o \
@@ -96,6 +102,7 @@ SRC_OBJECTS=\
 	src/builtin/string-reverse.o \
 	src/builtin/string-slice.o \
 	src/builtin/string-starts-with.o \
+	src/builtin/string-to-byte-vector.o \
 	src/builtin/symbol.o \
 	src/builtin/symbolp.o \
 	src/builtin/slurp.o \

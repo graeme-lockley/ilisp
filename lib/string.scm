@@ -1,3 +1,5 @@
+(import "./character.scm" :as Character)
+
 (const count *builtin*.string-count)
 
 (const (drop v n)
@@ -6,6 +8,32 @@
 
 (const (drop-right v n)
     (slice v 0 (- (count v) n 1))
+)
+
+(const (drop-right-while s p)
+    (const s-count (count s))
+
+    (const (gobble idx)
+        (if (<= idx 0) ""
+            (p (nth s (- idx 1))) (gobble (- idx 1))
+            (slice s 0 (- idx 1))
+        )
+    )
+
+    (gobble s-count)
+)
+
+(const (drop-while s p)
+    (const s-count (count s))
+
+    (const (gobble idx)
+        (if (>= idx s-count) ""
+            (p (nth s idx)) (gobble (+ idx 1))
+            (slice s idx s-count)
+        )
+    )
+
+    (gobble 0)
 )
 
 (const ends-with *builtin*.string-ends-with)
@@ -52,4 +80,29 @@
 
 (const (take-right s n)
     (slice s (- (count s) n) (count s))
+)
+
+(const (take-while s p)
+    (const s-count (count s))
+
+    (const (gobble idx)
+        (if (>= idx s-count) s
+            (p (nth s idx)) (gobble (+ idx 1))
+            (slice s 0 (- idx 1))
+        )
+    )
+
+    (gobble 0)
+)
+
+(const (trim s)
+    (trim-left (trim-right s))
+)
+
+(const (trim-left s)
+    (drop-while s Character.whitespace?)
+)
+
+(const (trim-right s)
+    (drop-right-while s Character.whitespace?)
 )

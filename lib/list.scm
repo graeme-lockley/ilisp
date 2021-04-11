@@ -26,6 +26,8 @@
     )
 )
 
+(const map *builtin*.list-map)
+
 (const nth *builtin*.list-nth)
 
 (const (reverse lst)

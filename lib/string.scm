@@ -1,5 +1,9 @@
 (import "./character.scm" :as Character)
 
+(const (any s p)
+    (fold s #f (proc (a c) (or a (p c))))
+)
+
 (const count *builtin*.string-count)
 
 (const (drop v n)
@@ -73,6 +77,8 @@
 (const slice *builtin*.string-slice)
 
 (const starts-with *builtin*.string-starts-with)
+
+(const (string->list s) (fold-right s () pair))
 
 (const (take s n)
     (slice s 0 (- n 1))

@@ -2,6 +2,16 @@
 
 (import "./unit.scm" :as Unit)
 
+(Unit.test "any"
+    (const (p c) (= c #\0))
+
+    (Unit.assert-equals (S.any "" p) #f)
+    (Unit.assert-equals (S.any "hello" p) #f)
+    (Unit.assert-equals (S.any "0123" p) #t)
+    (Unit.assert-equals (S.any "101" p) #t)
+    (Unit.assert-equals (S.any "210" p) #t)
+)
+
 (Unit.test "count"
     (Unit.assert-equals (S.count "") 0)
     (Unit.assert-equals (S.count "hello") 5)
@@ -117,6 +127,11 @@
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :arg-number) 1)
         (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) (*builtin*.symbol "*builtin*.string-starts-with"))
     )))
+)
+
+(Unit.test "string->list"
+    (Unit.assert-equals (S.string->list "") ())
+    (Unit.assert-equals (S.string->list "abc") '(#\a #\b #\c))
 )
 
 (Unit.test "take"

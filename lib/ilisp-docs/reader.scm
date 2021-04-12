@@ -107,7 +107,6 @@
 
     (for-each (Sequence.split content "\x0a;")
         (proc (line)
-            ;; (println state " " line)
             (if (starts-with line ";")
                     (if (= (@ state) 'IN-BETWEEN)
                             (do (@= state 'IN-DOC)

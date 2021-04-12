@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <sys/socket.h>
@@ -13,7 +14,6 @@
 
 static Value *builtin_socket_open(Value *parameters, Value *name, Value *port, Value *env)
 {
-    long valread;
     struct sockaddr_in serv_addr;
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)

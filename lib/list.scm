@@ -1,3 +1,4 @@
+(import "./string.scm" :as String)
 (import "./vector.scm" :as Vector)
 
 (const count *builtin*.list-count)
@@ -72,7 +73,7 @@
     (if (*builtin*.null? s) s
         (*builtin*.pair? s) s
         (*builtin*.vector? s) (*builtin*.vector->list s)
-        (*builtin*.string? s) (*builtin*.string->list s)
+        (*builtin*.string? s) (String.string->list s)
         (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})
     )
 )

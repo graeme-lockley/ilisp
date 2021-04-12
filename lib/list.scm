@@ -27,6 +27,12 @@
     )
 )
 
+(const (list? l)
+    (if (*builtin*.null? l) #t
+        (and (*builtin*.pair? l) (list? (cdr l)))
+    )
+)
+
 (const (list->string l) (*builtin*.apply str l))
 
 (const map *builtin*.list-map)

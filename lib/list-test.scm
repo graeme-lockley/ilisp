@@ -75,6 +75,14 @@
     (Unit.assert-equals (List.list->string '(#\a 2 "hello" fred :bob #f (1 2 3) [a b c])) "a2hellofred:bob#f(123)[abc]")
 )
 
+(Unit.test "list?"
+    (Unit.assert-truthy (List.list? ()))
+    (Unit.assert-truthy (List.list? '(1)))
+    (Unit.assert-truthy (List.list? '(1 2 3)))
+
+    (Unit.assert-falsy (List.list? (pair 1 (pair 2 3))))
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (List.nth () 5) ())
     (Unit.assert-equals (List.nth (list 1 2 3) (- 1)) ())

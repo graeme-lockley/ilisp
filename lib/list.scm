@@ -27,6 +27,8 @@
     )
 )
 
+(const (list->string l) (*builtin*.apply str l))
+
 (const map *builtin*.list-map)
 
 (const nth *builtin*.list-nth)

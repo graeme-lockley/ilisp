@@ -69,6 +69,12 @@
    (Unit.assert-equals (List.fold-right '(1 2 3 4 5) "0" (proc (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
+(Unit.test "list->string"
+    (Unit.assert-equals (List.list->string ()) "")
+    (Unit.assert-equals (List.list->string '(1 2 3)) "123")
+    (Unit.assert-equals (List.list->string '(#\a 2 "hello" fred :bob #f (1 2 3) [a b c])) "a2hellofred:bob#f(123)[abc]")
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (List.nth () 5) ())
     (Unit.assert-equals (List.nth (list 1 2 3) (- 1)) ())

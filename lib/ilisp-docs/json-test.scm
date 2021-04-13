@@ -11,14 +11,24 @@
     (Unit.assert-equals (JSON.->string 123) "123")
 )
 
+(Unit.test "->string - boolean value"
+    (Unit.assert-equals (JSON.->string #t) "true")
+    (Unit.assert-equals (JSON.->string #f) "false")
+)
+
 (Unit.test "->string - list value"
     (Unit.assert-equals (JSON.->string '()) "[]")
     (Unit.assert-equals (JSON.->string '(1)) "[1]")
-    (Unit.assert-equals (JSON.->string '(1 2 3)) "[1 2 3]")
+    (Unit.assert-equals (JSON.->string '(1 2 3)) "[1, 2, 3]")
 )
 
 (Unit.test "->string - vector value"
     (Unit.assert-equals (JSON.->string []) "[]")
     (Unit.assert-equals (JSON.->string [1]) "[1]")
-    (Unit.assert-equals (JSON.->string [1 2 3]) "[1 2 3]")
+    (Unit.assert-equals (JSON.->string [1 2 3]) "[1, 2, 3]")
+)
+
+(Unit.test "->string - map value"
+    (Unit.assert-equals (JSON.->string {}) "{}")
+    (Unit.assert-equals (JSON.->string {'a 10 'b "hello"}) "{\"a\": 10, \"b\": \"hello\"}");
 )

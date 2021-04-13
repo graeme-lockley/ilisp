@@ -18,8 +18,10 @@
 (const (->string v) 
     (if (*builtin*.string? v) (string->string v)
         (*builtin*.integer? v) (str v)
+        (*builtin*.boolean? v) (boolean->string v)
         (List.list? v) (list->string v)
         (*builtin*.vector? v) (vector->string v)
+        (*builtin*.map? v) (map->string v)
         (raise 'UnableToRepresentAsJson v)
     )
 )
@@ -44,26 +46,41 @@
     )
 )
 
-(const- (interpolate ss)
+(const- (boolean->string b)
+    (if b "true" "false")
+)
+
+(const- (interpolate ss sep)
     (if (*builtin*.null? ss) ""
         (do (const h (car ss))
             (const r (cdr ss))
 
             (if (*builtin*.null? r)
                 h
-                (List.fold r h (proc (acc v) (str acc " " v)))
+                (List.fold r h (proc (acc v) (str acc sep v)))
             )
         )
     )
 )
 
 (const- (list->string v)
-    (str "[" (interpolate (List.map v ->string)) "]")
+    (str "[" (interpolate (List.map v ->string) ", ") "]")
 )
 
 (const- (vector->string v)
     (list->string (List.->list v))
 )
+
+(const- (map->string v)
+    (const pairs (*builtin*.map->list v))
+
+    (const (pair->string p)
+        (str "\"" (car p) "\": " (->string (cdr p)))
+    )
+
+    (str "{" (interpolate (List.map pairs pair->string) ", ") "}")
+)
+
 
 ; Parses the JSON string `s` and returning an iLisp representation of the
 ; underlying value.

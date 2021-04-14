@@ -52,7 +52,7 @@
 )
 
 (Unit.test "parse - no document"
-    (Unit.assert-equals (Reader.parse "(const thread? *builtin*.thread?)\x0a;")
+    (Unit.assert-equals (Reader.parse "(const thread? *builtin*.thread?)\n")
         (list 
             {   'description () 
                 'name "thread?" 
@@ -63,11 +63,34 @@
 )
 
 (Unit.test "parse - just a description"
-    (Unit.assert-equals (Reader.parse "; This is the description\x0a;(const thread? *builtin*.thread?)\x0a;")
+    (Unit.assert-equals (Reader.parse "; This is the description\n(const thread? *builtin*.thread?)\n")
         (list 
             {   'description '("This is the description") 
                 'name "thread?" 
                 'properties ()
+            }
+        )
+    )
+)
+
+(Unit.test "parse - description with a property"
+    (const input "; This is the description\n;\n; :usage (thread? socket)\n; :parameter socket socket?\n;   The value to test whether it is a socket\n(const thread? *builtin*.thread?)\n")
+
+    (Unit.assert-equals (Reader.parse input)
+        (list 
+            {   'description '("This is the description") 
+                'name "thread?" 
+                'properties '(
+                    {   type "usage"
+                        signature "(thread? socket)"
+                        description ()
+                    }
+                    {   type "parameter"
+                        name "socket"
+                        signature "socket?"
+                        description ("  The value to test whether it is a socket")
+                    }
+                )
             }
         )
     )

@@ -20,6 +20,19 @@
     (gobble 0)
 )
 
+(const- (drop-right-while s p)
+    (const s-count (count s))
+
+    (const (gobble idx)
+        (if (= idx 0) ()
+            (p (nth s (- idx 1))) (gobble (- idx 1))
+            (slice s 0 (- idx 1))
+        )
+    )
+
+    (gobble s-count)
+)
+
 (const- (take-while s p)
     (const s-count (count s))
 
@@ -49,7 +62,10 @@
 
             (if (starts-with line ":") (pair () lines)
                 (do (const rest (parse-property-description (cdr lines)))
-                    (pair (pair line (car rest)) (cdr rest))
+                    (if (and (*builtin*.null? (car rest)) (= "" line))
+                        (pair () (cdr rest))
+                        (pair (pair line (car rest)) (cdr rest))
+                    )
                 )
             )
         )
@@ -86,12 +102,11 @@
     (const (procedure-description? line) (not (starts-with line ":")))
 
     (const property-comments
-        (const pc (parse-property-comments (drop-while comments procedure-description?)))
-        (if (= '(()) pc) () pc)
+        (car (parse-property-comments (drop-while comments procedure-description?)))
     )
 
     {   'name name
-        'description (take-while comments procedure-description?)
+        'description (drop-right-while (take-while comments procedure-description?) (proc (l) (= l "")))
         'properties property-comments
     }
 )

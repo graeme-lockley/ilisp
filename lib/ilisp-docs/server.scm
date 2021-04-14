@@ -27,8 +27,10 @@
     (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
         "HTTP/1.1 200 OK\n"
         "Content-Type: application/json\n"
+        "Content-Length: " (count result) "\n"
         "\n"
         result
+        "\n"
     )))
 
     (*builtin*.socket-close p) 
@@ -67,6 +69,7 @@
     (pair (car lines) (parse-value-properties (cdr lines)))
 )
 
-;; (const ss (*builtin*.socket-listen listener 8080))
-;;
-;; (*builtin*.thread-join (car ss))
+(const (main)
+    (const ss (*builtin*.socket-listen listener 8080))
+    (*builtin*.thread-join (car ss))
+)

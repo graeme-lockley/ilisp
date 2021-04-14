@@ -8,11 +8,11 @@
 Value *builtin_string_to_byte_vector(Value *string)
 {
     int count = strlen(STRING(string));
-    char *buffer = (char *)malloc(count + 1);
+    char *buffer = (char *)malloc(count);
 
-    strcpy(buffer, STRING(string));
+    strncpy(buffer, STRING(string), count);
 
-    return mkByteVectorUse((unsigned char *) buffer, count + 1);
+    return mkByteVectorUse((unsigned char *) buffer, count);
 }
 
 Value *builtin_string_to_byte_vector_wrapped(Value *parameters, Value *env)

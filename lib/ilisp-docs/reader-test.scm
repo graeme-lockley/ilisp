@@ -88,7 +88,7 @@
                     {   type "parameter"
                         name "socket"
                         signature "socket?"
-                        description ("  The value to test whether it is a socket")
+                        description ("The value to test whether it is a socket")
                     }
                 )
             }

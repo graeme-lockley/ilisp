@@ -73,6 +73,29 @@
 )
 
 (const (parse-property-comments lines)
+    (const (strip-left-whitespace lines)
+        (const (calculate-left-indent line)
+            (const (loop idx)
+                (if (Character.whitespace? (nth line idx)) (loop (+ idx 1)) idx)
+            )
+
+            (if (= line "") 0 (loop 0))
+        )
+
+        (const (min values)
+            (if (*builtin*.null? values) 0
+                (fold (cdr values) (car values) (proc (a b) (if (< a b) a b)))
+            )
+        )
+
+        (const left-indent (min (List.map lines calculate-left-indent)))
+
+        (if (> left-indent 0)
+            (List.map lines (proc (line) (drop line left-indent)))
+            lines
+        )
+    )
+
     (if (*builtin*.null? lines) '(())
         (do (const line (car lines))
             (const first-word (take-while line Character.not-whitespace?))
@@ -84,14 +107,14 @@
                         (const remainder (parse-property-description (cdr lines)))
                         (const other-properties (parse-property-comments (cdr remainder)))
                         
-                        (pair (pair {'type "parameter" 'name name 'signature signature 'description (car remainder)} (car other-properties)) (cdr other-properties))
+                        (pair (pair {'type "parameter" 'name name 'signature signature 'description (strip-left-whitespace (car remainder))} (car other-properties)) (cdr other-properties))
                     )
 
                 (do (const signature (String.trim (drop-while line Character.not-whitespace?)))
                     (const remainder (parse-property-description (cdr lines)))
                     (const other-properties (parse-property-comments (cdr remainder)))
 
-                    (pair (pair {'type (drop first-word 1) 'signature signature 'description (car remainder)} (car other-properties)) (cdr other-properties))
+                    (pair (pair {'type (drop first-word 1) 'signature signature 'description (strip-left-whitespace (car remainder))} (car other-properties)) (cdr other-properties))
                 )
             )
         )

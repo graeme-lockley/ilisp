@@ -76,7 +76,7 @@
     (find-needle 0)
 )
 
-(const (parse-url line)
+(const (parse-request-line line)
     (const words (Sequence.split line " "))
 
     (const index-of-question (index-of (nth words 1) #\?))
@@ -96,7 +96,7 @@
         (*builtin*.apply *builtin*.mk-map values)
     )
 
-    (pair (parse-url (car lines)) (parse-value-properties (cdr lines)))
+    (pair (parse-request-line (car lines)) (parse-value-properties (cdr lines)))
 )
 
 (const (main)

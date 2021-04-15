@@ -28,9 +28,9 @@ Connection: keep-alive")
     (Unit.assert-equals (Server.parse-value-property "Host: localhost:8080") (list "Host" "localhost:8080"))
 )
 
-(Unit.test "parse-property-url"
-    (Unit.assert-equals (Server.parse-url "GET /api/doc HTTP/1.1") ['GET "/api/doc" () "HTTP/1.1"])
-    (Unit.assert-equals (Server.parse-url "GET /api/doc?/workspace/ilisp/lib/ilisp-docs/reader.scm HTTP/1.1") ['GET "/api/doc" "/workspace/ilisp/lib/ilisp-docs/reader.scm" "HTTP/1.1"])
+(Unit.test "parse-request-line"
+    (Unit.assert-equals (Server.parse-request-line "GET /api/doc HTTP/1.1") ['GET "/api/doc" () "HTTP/1.1"])
+    (Unit.assert-equals (Server.parse-request-line "GET /api/doc?/workspace/ilisp/lib/ilisp-docs/reader.scm HTTP/1.1") ['GET "/api/doc" "/workspace/ilisp/lib/ilisp-docs/reader.scm" "HTTP/1.1"])
 )
 
 (Unit.test "header-properties"

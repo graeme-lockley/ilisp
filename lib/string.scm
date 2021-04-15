@@ -76,6 +76,19 @@
 
 (const slice *builtin*.string-slice)
 
+(const (split-with s p)
+    (const s-count (count s))
+
+    (const (gobble idx)
+        (if (>= idx s-count) s
+            (p (nth s idx)) (gobble (+ idx 1))
+            (pair (slice s 0 (- idx 1)) (slice s idx s-count))
+        )
+    )
+
+    (gobble 0)
+)
+
 (const starts-with *builtin*.string-starts-with)
 
 (const (string->list s) (fold-right s () pair))

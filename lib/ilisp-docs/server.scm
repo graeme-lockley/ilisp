@@ -1,5 +1,7 @@
 (import "./json.scm" :as JSON)
+(import "../list.scm" :as List)
 (import "./reader.scm" :as Reader)
+(import "../string.scm" :as String)
 ;; (import "../sequence.scm" :as Sequence)
 
 ;; --- CONTENT -----------------------
@@ -55,18 +57,46 @@
     )
 )
 
+(const (parse-value-property line)
+    (const values (String.split-with line (proc (c) (not (= c #\:)))))
+
+    (list (car values) (String.drop (cdr values) 2))
+)
+
+(const (index-of haystack needle)
+    (const s-haystack (count haystack))
+
+    (const (find-needle idx)
+        (if (= idx s-haystack) ()
+            (= (nth haystack idx) needle) idx
+            (find-needle (+ idx 1))
+        )
+    )
+
+    (find-needle 0)
+)
+
+(const (parse-url line)
+    (const words (Sequence.split line " "))
+
+    (const index-of-question (index-of (nth words 1) #\?))
+
+    (if (*builtin*.null? index-of-question) [(*builtin*.symbol (car words)) (nth words 1) () (nth words 2)]
+        [(*builtin*.symbol (car words)) (take (nth words 1) index-of-question) (drop (nth words 1) (+ index-of-question 1)) (nth words 2)]
+    )
+)
+
 (const (header-properties content)
     (const hc (header-content content))
     (const lines (Sequence.split hc "\x0a;"))
 
-    (const (parse-value-property line)
-    )
-
     (const (parse-value-properties lines)
-        (fold lines {} (proc ))
+        (const values (*builtin*.apply concat (List.map lines parse-value-property)))
+
+        (*builtin*.apply *builtin*.mk-map values)
     )
 
-    (pair (car lines) (parse-value-properties (cdr lines)))
+    (pair (parse-url (car lines)) (parse-value-properties (cdr lines)))
 )
 
 (const (main)

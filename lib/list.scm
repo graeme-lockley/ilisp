@@ -1,4 +1,3 @@
-(import "./string.scm" :as String)
 (import "./vector.scm" :as Vector)
 
 (const count *builtin*.list-count)
@@ -24,6 +23,32 @@
 (const (fold-right xs z f)
     (if (*builtin*.null? xs) z
         (f (*builtin*.pair-car xs) (fold-right (*builtin*.pair-cdr xs) z f))
+    )
+)
+
+; Accepts a list of values and a separator and returns a list consisting of 
+; each element from `ss` with `sep` in between.
+;
+; :usage (interpolate-with ss sep)
+; :parameter ss list?
+;   A list of elements
+; :parameter sep any?
+;   The element to be used as separator between `elements`
+; :return list?
+;
+; :assert-equals (interpolate-with () ", ") ()
+; :assert-equals (interpolate-with '(1) ", ") '(1)
+; :assert-equals (interpolate-with '(1 2 3) ", ") '(1 ", " 2 "," 3)
+(const (interpolate-with ss sep)
+    (if (*builtin*.null? ss) ()
+        (do (const h (car ss))
+            (const r (cdr ss))
+
+            (if (*builtin*.null? r)
+                (list h)
+                (*builtin*.pair h (*builtin*.pair sep (interpolate-with r sep)))
+            )
+        )
     )
 )
 
@@ -81,7 +106,7 @@
     (if (*builtin*.null? s) s
         (*builtin*.pair? s) s
         (*builtin*.vector? s) (*builtin*.vector->list s)
-        (*builtin*.string? s) (String.string->list s)
+        (*builtin*.string? s) (fold-right s () pair)
         (raise 'InvalidArgument {:received s :expected-type (list 'pair 'vector () 'string) :arg-number 0 :procedure '->list})
     )
 )

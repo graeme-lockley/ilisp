@@ -69,6 +69,12 @@
    (Unit.assert-equals (List.fold-right '(1 2 3 4 5) "0" (proc (v a) (str "(" v " + " a ")"))) "(1 + (2 + (3 + (4 + (5 + 0)))))")
 )
 
+(Unit.test "interpolate-with"
+   (Unit.assert-equals (List.interpolate-with () ", ") ())
+   (Unit.assert-equals (List.interpolate-with '(1) ", ") '(1))
+   (Unit.assert-equals (List.interpolate-with '(1 2 3) ", ") '(1 ", " 2 ", " 3))
+)
+
 (Unit.test "list->string"
     (Unit.assert-equals (List.list->string ()) "")
     (Unit.assert-equals (List.list->string '(1 2 3)) "123")

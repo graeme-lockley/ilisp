@@ -86,6 +86,12 @@
    (Unit.assert-equals (S.fold-right "hello" "0" (proc (v a) (str "(" (*builtin*.character->string v) " + " a ")"))) "(h + (e + (l + (l + (o + 0)))))")
 )
 
+(Unit.test "interpolate-with"
+   (Unit.assert-equals (S.interpolate-with () ", ") "")
+   (Unit.assert-equals (S.interpolate-with '(1) ", ") "1")
+   (Unit.assert-equals (S.interpolate-with '(1 2 3) ", ") "1, 2, 3")
+)
+
 (Unit.test "nth"
     (Unit.assert-equals (S.nth "hello" 1) #\e)
     (Unit.assert-equals (S.nth "hello" 2) #\l)

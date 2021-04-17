@@ -1,4 +1,5 @@
 (import "./character.scm" :as Character)
+(import "./list.scm" :as List)
 
 (const (any s p)
     (fold s #f (proc (a c) (or a (p c))))
@@ -68,6 +69,23 @@
     )
     
     (iter (count v) z)
+)
+
+; Accepts a list of values and a separator and returns a string consisting of 
+; each element from `ss` with `sep` in between.
+;
+; :usage (interploate-with ss sep)
+; :parameter ss list?
+;   A list of elements
+; :parameter sep any?
+;   The element to be used as separator between `elements`
+; :return list?
+;
+; :assert-equals (interpolate-with () ", ") ""
+; :assert-equals (interpolate-with '(1) ", ") "1"
+; :assert-equals (interpolate-with '(1 2 3) ", ") "1, 2, 3")
+(const (interpolate-with ss sep)
+    (*builtin*.apply str (List.interpolate-with ss sep))
 )
 
 (const nth *builtin*.string-nth)

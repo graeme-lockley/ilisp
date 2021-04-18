@@ -63,8 +63,8 @@
     (list (car values) (String.drop (cdr values) 2))
 )
 
-; Returns an index into `haystack` of the first occurence of an element within
-; `needles`.
+; Returns an index and needle into `haystack` of the first occurence of an 
+; element within `needles`.
 ;
 ; :usage (first-index-of haystack needles)
 ; :parameter haystack string?
@@ -72,23 +72,23 @@
 ; :parameter needles (or? string? character? (list-of? (or? string? character?)))
 ;   Needles can consist either of a single string or character or a list of 
 ;   strings and characters.
-; :return (or? number? null?)
+; :return (or? (pair-of? number? (or? string? character?)) null?)
 ;   If a needle cannot be found in `haystack` returns `()` otherwise returns the
-;   index into `needle`.
+;   index into `needle` and the specific needle that was used in the match.
 ;
-; :assert-equals (first-index-of "hello world" "") 0
+; :assert-equals (first-index-of "hello world" "") (0 . "")
 ; :assert-equals (first-index-of "hello world" ()) ()
 ; :assert-equals (first-index-of "hello world" #\z) ()
 ; :assert-equals (first-index-of "hello world" '(#\z)) ()
-; :assert-equals (first-index-of "hello world" #\l) 2
-; :assert-equals (first-index-of "hello world" '(#\l)) 2
-; :assert-equals (first-index-of "hello world" "lo") 3
-; :assert-equals (first-index-of "hello world" '("lo")) 3
-; :assert-equals (first-index-of "hello world" "ld") 9
+; :assert-equals (first-index-of "hello world" #\l) (2 . #\l)
+; :assert-equals (first-index-of "hello world" '(#\l)) (2 . #\l)
+; :assert-equals (first-index-of "hello world" "lo") (3 . "lo")
+; :assert-equals (first-index-of "hello world" '("lo")) (3 . "lo")
+; :assert-equals (first-index-of "hello world" "ld") (9 . "ld")
 ; :assert-equals (first-index-of "hello world" "lz") ()
 ; :assert-equals (first-index-of "hello world" '("lz")) ()
-; :assert-equals (first-index-of "hello world" '("lo" "ld" #\l)) 2
-; :assert-equals (first-index-of "hello world" '("lo" "ld")) 3
+; :assert-equals (first-index-of "hello world" '("lo" "ld" #\l)) (2 . #\l)
+; :assert-equals (first-index-of "hello world" '("lo" "ld")) (3 . "lo")
 (const (first-index-of haystack needles)
     (const s-haystack (count haystack))
 
@@ -162,6 +162,32 @@
     )
 )
 
+; Returns an index into `haystack` of the first occurence of an element within
+; `needles`.
+;
+; :usage (first-index-only-of haystack needles)
+; :parameter haystack string?
+;   A string into which we are search for the element from needles
+; :parameter needles (or? string? character? (list-of? (or? string? character?)))
+;   Needles can consist either of a single string or character or a list of 
+;   strings and characters.
+; :return (or? number? null?)
+;   If a needle cannot be found in `haystack` returns `()` otherwise returns the
+;   index into `needle`.
+;
+; :assert-equals (first-index-only-of "hello world" "") 0
+; :assert-equals (first-index-only-of "hello world" ()) ()
+; :assert-equals (first-index-only-of "hello world" #\z) ()
+; :assert-equals (first-index-only-of "hello world" '(#\z)) ()
+; :assert-equals (first-index-only-of "hello world" #\l) 2
+; :assert-equals (first-index-only-of "hello world" '(#\l)) 2
+; :assert-equals (first-index-only-of "hello world" "lo") 3
+; :assert-equals (first-index-only-of "hello world" '("lo")) 3
+; :assert-equals (first-index-only-of "hello world" "ld") 9
+; :assert-equals (first-index-only-of "hello world" "lz") ()
+; :assert-equals (first-index-only-of "hello world" '("lz")) ()
+; :assert-equals (first-index-only-of "hello world" '("lo" "ld" #\l)) 2
+; :assert-equals (first-index-only-of "hello world" '("lo" "ld")) 3
 (const (first-index-only-of haystack needle)
     (const result (first-index-of haystack needle))
     (if (*builtin*.null? result) ()
@@ -220,8 +246,7 @@
     (const (listener p)
         (try
             (do 
-                (const bv (*builtin*.socket-read-all p))
-                (const content (*builtin*.byte-vector->string bv))
+                (const content (*builtin*.byte-vector->string (*builtin*.socket-read-all p)))
 
                 (const header (header-properties content))
 

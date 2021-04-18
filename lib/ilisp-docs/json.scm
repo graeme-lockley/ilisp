@@ -17,9 +17,12 @@
 ;   A component of `v` can not be represented in Json.
 (const (->string v) 
     (if (*builtin*.string? v) (string->string v)
+        (*builtin*.keyword? v) (keyword->string v)
+        (*builtin*.symbol? v) (symbol->string v)
         (*builtin*.integer? v) (str v)
         (*builtin*.boolean? v) (boolean->string v)
         (List.list? v) (list->string v)
+        (*builtin*.pair? v) (pair->string v)
         (*builtin*.vector? v) (vector->string v)
         (*builtin*.map? v) (map->string v)
         (raise 'UnableToRepresentAsJson v)
@@ -28,11 +31,13 @@
 
 (const- (string->string s)
     (const (special? c)
-        (= c #x9)
+        (or (= c #x9) (= c #xa) (= c #xd))
     )
 
     (const (mark-up-character c)
         (if (= c #x9) "\\t"
+            (= c #xa) "\\n"
+            (= c #xd) ""
             c
         )
     )
@@ -46,25 +51,31 @@
     )
 )
 
+(const- (keyword->string k)
+    (string->string (str k))
+)
+
+(const- (symbol->string k)
+    (string->string (str k))
+)
+
 (const- (boolean->string b)
     (if b "true" "false")
 )
 
-(const- (interpolate ss sep)
-    (if (*builtin*.null? ss) ""
-        (do (const h (car ss))
-            (const r (cdr ss))
-
-            (if (*builtin*.null? r)
-                h
-                (List.fold r h (proc (acc v) (str acc sep v)))
-            )
-        )
-    )
+(const- (list->string v)
+    (str "[" (String.interpolate-with (List.map v ->string) ", ") "]")
 )
 
-(const- (list->string v)
-    (str "[" (interpolate (List.map v ->string) ", ") "]")
+(const- (pair->string v)
+    (const (to-list pair')
+        (if (*builtin*.null? pair') ()
+            (*builtin*.pair? pair') (pair (car pair') (to-list (cdr pair')))
+            (pair pair' ())
+        )
+    )
+
+    (list->string (to-list v))
 )
 
 (const- (vector->string v)
@@ -78,7 +89,7 @@
         (str "\"" (car p) "\": " (->string (cdr p)))
     )
 
-    (str "{" (interpolate (List.map pairs pair->string) ", ") "}")
+    (str "{" (String.interpolate-with (List.map pairs pair->string) ", ") "}")
 )
 
 

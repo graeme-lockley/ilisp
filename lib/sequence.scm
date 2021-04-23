@@ -32,7 +32,8 @@
       (*builtin*.pair? seq) (List.count seq)
       (*builtin*.vector? seq) (Vector.count seq)
       (*builtin*.string? seq) (String.count seq)
-      (raise 'InvalidArgument {:procedure 'count :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
+      (*builtin*.byte-vector? seq) (*builtin*.byte-vector-count seq)
+      (raise 'InvalidArgument {:procedure 'count :arg-number 0 :expected-type (list 'pair () 'vector 'string 'byte-vector) :received seq})
   )
 )
 

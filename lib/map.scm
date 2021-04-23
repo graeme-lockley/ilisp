@@ -1,15 +1,15 @@
 (import "./list.scm" :as List)
 
+(const- (flatten ls)
+    (*builtin*.apply concat ls)
+)
+
 (const (union . ms)
     (*builtin*.apply 
         *builtin*.mk-map 
-        (*builtin*.apply 
-            concat 
+        (flatten
             (List.map 
-                (*builtin*.apply 
-                    concat 
-                    (List.map ms *builtin*.map->list)
-                ) 
+                (flatten (List.map ms *builtin*.map->list)) 
                 (proc (a) (list (car a) (cdr a)))
             )
         )

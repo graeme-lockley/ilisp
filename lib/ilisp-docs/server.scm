@@ -218,28 +218,90 @@
     (pair (parse-request-line (car lines)) (parse-value-properties (cdr lines)))
 )
 
-(const (find s p)
-    (if (*builtin*.null? s) ()
-        (p (car s)) (car s)
-        (find (cdr s) p)
-    )
-)
-
 (const (http-server listener port)
     (*builtin*.socket-listen listener port)
 )
 
-(const- (not-found-error p route)
-    (const content (pr-str route))
+(const (request-line-verb request-line) (nth request-line 0))
 
-    (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
-        "HTTP/1.1 404 OK\x0d;\x0a;"
-        "Content-Type: text/plain\x0d;\x0a;"
-        "Content-Length: " (count content) "\x0d;\x0a;"
-        "\x0d;\x0a;"
-        content
+(const (request-line-path request-line) (nth request-line 1))
+
+(const (request-line-query-string request-line) (nth request-line 2))
+
+(const (route-verb route) (nth route 0))
+
+(const (route-path route) (nth route 1))
+
+(const (find-route routes request-line)
+    (const (find-first s p)
+        (if (*builtin*.null? s) ()
+            (p (car s)) (car s)
+            (find-first (cdr s) p)
+        )
+    )
+
+    (const (route-equals route)
+        (const path (request-line-path request-line))
+        (const index-of-lcurley (first-index-only-of (route-path route) "{"))
+
+        (if (*builtin*.null? index-of-lcurley)
+                (and (= (route-verb route) (request-line-verb request-line))
+                     (= (route-path route) path)
+                )
+            (and (= (route-verb route) (request-line-verb request-line))
+                 (= (take path index-of-lcurley) (take (route-path route) index-of-lcurley))
+            )
+        )
+    )
+
+    (find-first routes route-equals)
+)
+
+(const (http-result code content-type content)
+    ['HTTP-RESULT code content-type content]
+)
+
+(const (http-result? v)
+    (and (*builtin*.vector? v)
+         (= (nth v 0) 'HTTP-RESULT)
+    )
+)
+
+(const (http-result-code v) (nth v 1))
+
+(const (http-result-content-type v) (nth v 2))
+
+(const (http-result-content v) (nth v 3))
+
+(const (socket-write-http-result s v)
+    (if (not (*builtin*.socket? s))
+        (raise 'InvalidArgument {:procedure 'socket-write-http-result :arg-number 0 :expected-type (list 'socket) :received s})
+    )
+
+    (if (not (http-result? v))
+        (raise 'InvalidArgument {:procedure 'socket-write-http-result :arg-number 1 :expected-type (list 'http-result) :received v})
+    )
+
+    (const content (http-result-content v))
+    (const raw-content
+        (if (*builtin*.string? content) (*builtin*.string->byte-vector content)
+            content
+        )
+    )
+
+    (*builtin*.socket-write-all s (*builtin*.string->byte-vector (str
+        "HTTP/1.1 " (http-result-code v) " OK\x0d;\x0a;"
+        "Content-Type: " (http-result-content-type v) "\x0d;\x0a;"
+        "Content-Length: " (count raw-content) "\x0d;\x0a;"
         "\x0d;\x0a;"
     )))
+
+    (*builtin*.socket-write-all s raw-content)
+    (*builtin*.socket-write-all s (*builtin*.string->byte-vector "\x0d;\x0a;"))
+)
+
+(const- (not-found-error p route)
+    (socket-write-http-result p (http-result 404 "text/plain" (pr-str route)))
 )
 
 (const (http-listener routes)
@@ -252,51 +314,20 @@
 
                 (const request-line (car header))
 
-                (const (route-equals route)
-                    (and (= (nth route 0) (nth request-line 0))
-                         (= (nth route 1) (nth request-line 1))
-                    )
-                )
-
-                (const route (find routes route-equals))
+                (const route (find-route routes request-line))
 
                 (if (*builtin*.null? route) (not-found-error p request-line)
-                    (do (const result-content ((nth route 2) (nth request-line 2) header))
-                        (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
-                            "HTTP/1.1 200 OK\x0d;\x0a;"
-                            "Content-Type: application/json\x0d;\x0a;"
-                            "Content-Length: " (count result-content) "\x0d;\x0a;"
-                            "\x0d;\x0a;"
-                            result-content
-                            "\x0d;\x0a;"
-                        )))
+                    (do (const r (http-result 200 "application/json" ((nth route 2) (request-line-query-string request-line) header)))
+                        (socket-write-http-result p r)
                     )
                 )
             )
             (proc (signal)
                 (try
-                    (do (const result (JSON.->string signal))
-                        (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
-                            "HTTP/1.1 500 OK\n"
-                            "Content-Type: application/json\n"
-                            "Content-Length: " (count result) "\n"
-                            "\n"
-                            result
-                            "\n"
-                        )))
-                    )
+                    (socket-write-http-result p (http-result 500 "application/json" (JSON.->string signal)))
 
                     (proc (signal')
-                        (const result (pr-str signal'))
-
-                        (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
-                            "HTTP/1.1 500 OK\n"
-                            "Content-Type: text/plain\n"
-                            "Content-Length: " (count result) "\n"
-                            "\n"
-                            result
-                            "\n"
-                        )))
+                        (socket-write-http-result p (http-result 500 "text/plain" result))
                     )
                 )
             )
@@ -313,7 +344,16 @@
         (JSON.->string (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string))))
     )
 
-    (const listener (http-listener (list ['GET "/api/doc" get-api-doc])))
+    (const (get-static-file query-stirng header-fields)
+        (raise "TBD")
+    )
+
+    (const listener 
+        (http-listener (list 
+            ['GET "/api/doc" get-api-doc] 
+            ['GET "/public/{source-name}" get-static-file]
+        ))
+    )
 
     (const ss (http-server listener 8080))
     (*builtin*.thread-join (car ss))

@@ -118,3 +118,14 @@ Connection: keep-alive
         )
     )
 )
+
+(Unit.test "find-route"
+    (const routes (list
+        ['GET "/api/doc" 0] 
+        ['GET "/public/{source-name}" 1]
+    ))
+
+    (Unit.assert-equals (Server.find-route routes ['GET "/" () "HTTP/1.1"]) ())
+    (Unit.assert-equals (Server.find-route routes ['GET "/api/doc" () "HTTP/1.1"]) ['GET "/api/doc" 0])
+    (Unit.assert-equals (Server.find-route routes ['GET "/public/index.html" () "HTTP/1.1"]) ['GET "/public/{source-name}" 1])
+)

@@ -125,7 +125,7 @@ Connection: keep-alive
         ['GET "/public/{source-name}" 1]
     ))
 
-    (Unit.assert-equals (Server.find-route routes ['GET "/" () "HTTP/1.1"]) ())
-    (Unit.assert-equals (Server.find-route routes ['GET "/api/doc" () "HTTP/1.1"]) ['GET "/api/doc" 0])
-    (Unit.assert-equals (Server.find-route routes ['GET "/public/index.html" () "HTTP/1.1"]) ['GET "/public/{source-name}" 1])
+    (Unit.assert-equals (Server.find-route routes ['GET "/" () "HTTP/1.1"]) #f)
+    (Unit.assert-equals (Server.find-route routes ['GET "/api/doc" () "HTTP/1.1"]) (pair ['GET "/api/doc" 0] {}))
+    (Unit.assert-equals (Server.find-route routes ['GET "/public/index.html" () "HTTP/1.1"]) (pair ['GET "/public/{source-name}" 1] {'source-name "index.html"}))
 )

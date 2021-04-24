@@ -4,19 +4,6 @@
 (import "../string.scm" :as String)
 ;; (import "../sequence.scm" :as Sequence)
 
-;; --- CONTENT -----------------------
-;; GET /api/doc?/workspace/ilisp/lib/ilisp-docs/reader.scm HTTP/1.1
-;; Host: localhost:8080
-;; Upgrade-Insecure-Requests: 1
-;; Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-;; User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15
-;; Accept-Language: en-us
-;; Accept-Encoding: gzip, deflate
-;; Connection: keep-alive
-;;
-;; Hello world
-;; -----------------------------------
-
 (const (listener p) 
     (const content (*builtin*.byte-vector->string (*builtin*.socket-read-all p)))
 
@@ -218,6 +205,10 @@
     (pair (parse-request-line (car lines)) (parse-value-properties (cdr lines)))
 )
 
+(const (header-path header)
+    (request-line-path (car header))
+)
+
 (const (http-server listener port)
     (*builtin*.socket-listen listener port)
 )
@@ -232,11 +223,20 @@
 
 (const (route-path route) (nth route 1))
 
+; Locates the first route within `routes` based on the path captured in 
+; `request-line` and returns that route with the parameters extracted out of
+; path and query string.
+;
+; :usage (find-round routes request-line)
+; :parameter routes (list-of? route?)
+; :parameter request-line request-line?
+; :returns (or? (=? #f) (pair-of? route? (map-of? symbol? string?)))
 (const (find-route routes request-line)
     (const (find-first s p)
-        (if (*builtin*.null? s) ()
-            (p (car s)) (car s)
-            (find-first (cdr s) p)
+        (if (*builtin*.null? s) #f
+            (do (const possible-result (p (car s)))
+                (if possible-result possible-result (find-first (cdr s) p))
+            )
         )
     )
 
@@ -245,12 +245,18 @@
         (const index-of-lcurley (first-index-only-of (route-path route) "{"))
 
         (if (*builtin*.null? index-of-lcurley)
-                (and (= (route-verb route) (request-line-verb request-line))
-                     (= (route-path route) path)
+                (if (and (= (route-verb route) (request-line-verb request-line))
+                         (= (route-path route) path)) (pair route {})
+                    #f
                 )
             (and (= (route-verb route) (request-line-verb request-line))
-                 (= (take path index-of-lcurley) (take (route-path route) index-of-lcurley))
-            )
+                 (= (take path index-of-lcurley) (take (route-path route) index-of-lcurley))) 
+                (do (const name (drop-right (drop (route-path route) (+ index-of-lcurley 1)) 1))
+                    (const value (drop path index-of-lcurley))
+
+                    (pair route {(*builtin*.symbol name) value})
+                )
+            #f
         )
     )
 
@@ -314,12 +320,15 @@
 
                 (const request-line (car header))
 
-                (const route (find-route routes request-line))
+                (const route-result (find-route routes request-line))
 
-                (if (*builtin*.null? route) (not-found-error p request-line)
-                    (do (const r (http-result 200 "application/json" ((nth route 2) (request-line-query-string request-line) header)))
-                        (socket-write-http-result p r)
-                    )
+                (if route-result 
+                        (do (const route (car route-result))
+                            (const parameters (cdr route-result))
+                            
+                            (socket-write-http-result p ((nth route 2) parameters (request-line-query-string request-line) header))
+                        )
+                    (not-found-error p request-line)
                 )
             )
             (proc (signal)
@@ -327,7 +336,7 @@
                     (socket-write-http-result p (http-result 500 "application/json" (JSON.->string signal)))
 
                     (proc (signal')
-                        (socket-write-http-result p (http-result 500 "text/plain" result))
+                        (socket-write-http-result p (http-result 500 "text/plain" signal))
                     )
                 )
             )
@@ -339,13 +348,43 @@
     listener
 )
 
+(const mime-types
+    {   ".html" "text/html"
+    }
+)
+
+(const default-mime-type "text/text")
+
+(const (mime-type name)
+    (const index-of-period (first-index-only-of name "."))
+
+    (if (*builtin*.null? index-of-period) default-mime-type
+        (do (const extension (drop name index-of-period))
+            (const mime-type (map-find mime-types extension))
+
+            (if (*builtin*.null? mime-type) default-mime-type
+                mime-type
+            )
+        )
+    )
+)
+
 (const (main)
-    (const (get-api-doc query-string header-fields)
-        (JSON.->string (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string))))
+    (const (get-api-doc parameters query-string header-fields)
+        (println "API: " query-string)
+
+        (const result (JSON.->string (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string)))))
+        (println "API-result:" result)
+
+        (http-result 200 "application/json" result)
     )
 
-    (const (get-static-file query-stirng header-fields)
-        (raise "TBD")
+    (const (get-static-file parameters query-string header)
+        (const source-name parameters.source-name)
+
+        (println "Static: " source-name)
+
+        (http-result 200 (mime-type source-name) (*builtin*.slurp (str "./lib/ilisp-docs/" source-name)))
     )
 
     (const listener 

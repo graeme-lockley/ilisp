@@ -80,18 +80,18 @@
             <div class="header">
                 <a v-bind:id="declaration.name" class="name">{{ declaration.name }}</a>
 
-                <span class="usage" v-if="usageDeclaration(declaration) !== undefined">
-                    {{ usageDeclaration(declaration).signature }}
+                <span class="usage" v-if="usageDeclaration() !== undefined">
+                    {{ usageDeclaration().signature }}
                 </span>
             </div>
 
-            <div class="description"  v-if="hasDescription(declaration)">
+            <div class="description"  v-if="hasDescription()">
                 <span v-html="compileMarkdown(declaration.description)"></span>
             </div>
 
-            <div class="parameters" v-if="hasParameters(declaration)">
+            <div class="parameters" v-if="hasParameters()">
                 <table>
-                    <tr v-for="parameter in parameters(declaration)">
+                    <tr v-for="parameter in parameters()">
                         <td class="name"><code>{{ parameter.name }}</code></td>
                         <td>
                             <div class="signature" v-if="parameter.signature !== undefined">
@@ -105,14 +105,14 @@
                 </table>
             </div>
 
-            <div class="returns" v-if="hasReturns(declaration)">
+            <div class="returns" v-if="hasReturns()">
                 <table>
                     <tr>
-                        <td class="signature" v-if="returns(declaration).signature !== undefined">
-                            <p><code>{{ returns(declaration).signature }}</code></p>
+                        <td class="signature" v-if="returns().signature !== undefined">
+                            <p><code>{{ returns().signature }}</code></p>
                         </td>
                         <td class="description" >
-                            <span v-html="compileMarkdown(returns(declaration).description)"></span>
+                            <span v-html="compileMarkdown(returns().description)"></span>
                         </td>
                     </tr>
                 </table>
@@ -120,28 +120,28 @@
             </div>
             `,
             methods: {
-                usageDeclaration(declaration) {
-                    return declaration.properties.find((p) => p.type === "usage");
+                usageDeclaration() {
+                    return this.declaration.properties.find((p) => p.type === "usage");
                 },
 
-                hasDescription(declaration) {
-                    return declaration.description.length > 0;
+                hasDescription() {
+                    return this.declaration.description.length > 0;
                 },
 
-                hasParameters(declaration) {
-                    return declaration.properties.filter((p) => p.type === "parameter").length > 0;
+                hasParameters() {
+                    return this.declaration.properties.filter((p) => p.type === "parameter").length > 0;
                 },
 
-                parameters(declaration) {
-                    return declaration.properties.filter((p) => p.type === "parameter");
+                parameters() {
+                    return this.declaration.properties.filter((p) => p.type === "parameter");
                 },
 
-                hasReturns(declaration) {
-                    return declaration.properties.filter((p) => p.type === "returns").length > 0;
+                hasReturns() {
+                    return this.declaration.properties.filter((p) => p.type === "returns").length > 0;
                 },
 
-                returns(declaration) {
-                    return declaration.properties.find((p) => p.type === "returns");
+                returns() {
+                    return this.declaration.properties.find((p) => p.type === "returns");
                 }
             }
         });

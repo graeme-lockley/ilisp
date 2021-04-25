@@ -122,16 +122,18 @@
 
                 returns(declaration) {
                     return declaration.properties.find((p) => p.type === "returns");
-                },
-
-                compileMarkdown(txt) {
-                    return marked(txt, { sanitize: true });
                 }
-
             }
         };
 
         const app = Vue.createApp(Main);
+        app.mixin({
+            methods: {
+                compileMarkdown: function (txt) {
+                    return marked(txt, { sanitize: true });
+                }
+            }
+        });
 
         app.mount('#app');
     </script>

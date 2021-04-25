@@ -17,9 +17,10 @@
     <div class="declarations" id="app">
         <div class="name">{{ name }}</div>
 
-        <declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name"></declaration>
+        <declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name">
+        </declaration>
 
-        {{ initialiseName("./server.scm") }}
+        {{ initialiseName("../builtin.scm") }}
     </div>
 
     <script>
@@ -32,7 +33,6 @@
             },
             watch: {
                 name(newName, oldName) {
-                    console.log("watch.name: oldName: ", oldName, ", newName: ", newName);
                     this.declarations = [];
                     this.fetchDeclarations();
                 }
@@ -75,75 +75,59 @@
 
         app.component('Declaration', {
             props: ['declaration'],
-            template: `
-            <div class="declaration">
-            <div class="header">
-                <a v-bind:id="declaration.name" class="name">{{ declaration.name }}</a>
-
-                <span class="usage" v-if="usageDeclaration() !== undefined">
-                    {{ usageDeclaration().signature }}
-                </span>
-            </div>
-
-            <div class="description"  v-if="hasDescription()">
-                <span v-html="compileMarkdown(declaration.description)"></span>
-            </div>
-
-            <div class="parameters" v-if="hasParameters()">
-                <table>
-                    <tr v-for="parameter in parameters()">
-                        <td class="name"><code>{{ parameter.name }}</code></td>
-                        <td>
-                            <div class="signature" v-if="parameter.signature !== undefined">
-                                <code>{{ parameter.signature }}</code>
-                            </div>
-                            <div class="description">
-                                <span v-html="compileMarkdown(parameter.description)"></span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="returns" v-if="hasReturns()">
-                <table>
-                    <tr>
-                        <td class="signature" v-if="returns().signature !== undefined">
-                            <p><code>{{ returns().signature }}</code></p>
-                        </td>
-                        <td class="description" >
-                            <span v-html="compileMarkdown(returns().description)"></span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            </div>
-            `,
-            methods: {
-                usageDeclaration() {
-                    return this.declaration.properties.find((p) => p.type === "usage");
-                },
-
-                hasDescription() {
-                    return this.declaration.description.length > 0;
-                },
-
-                hasParameters() {
-                    return this.declaration.properties.filter((p) => p.type === "parameter").length > 0;
-                },
-
-                parameters() {
-                    return this.declaration.properties.filter((p) => p.type === "parameter");
-                },
-
-                hasReturns() {
-                    return this.declaration.properties.filter((p) => p.type === "returns").length > 0;
-                },
-
-                returns() {
-                    return this.declaration.properties.find((p) => p.type === "returns");
+            data() {
+                return {
+                    name: this.declaration.name,
+                    usage: this.declaration.properties.find((p) => p.type === "usage"),
+                    description: this.declaration.description,
+                    parameters: this.declaration.properties.filter((p) => p.type === "parameter"),
+                    returns: this.declaration.properties.find((p) => p.type === "returns")
                 }
-            }
+            },
+            template: `
+                <div class="declaration">
+                    <div class="header">
+                        <a v-bind:id="name" class="name">{{ name }}</a>
+
+                        <span class="usage" v-if="usage !== undefined">
+                            {{ usage.signature }}
+                        </span>
+                    </div>
+
+                    <div class="description" v-if="description.length > 0">
+                        <span v-html="compileMarkdown(description)"></span>
+                    </div>
+
+                    <div class="parameters" v-if="parameters.length > 0">
+                        <table>
+                            <tr v-for="parameter in this.parameters">
+                                <td class="name"><code>{{ parameter.name }}</code></td>
+                                <td>
+                                    <div class="signature" v-if="parameter.signature !== undefined">
+                                        <code>{{ parameter.signature }}</code>
+                                    </div>
+                                    <div class="description">
+                                        <span v-html="compileMarkdown(parameter.description)"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="returns" v-if="returns !== undefined">
+                        <table>
+                            <tr>
+                                <td class="signature" v-if="returns.signature !== undefined">
+                                    <p><code>{{ returns.signature }}</code></p>
+                                </td>
+                                <td class="description" >
+                                    <span v-html="compileMarkdown(returns.description)"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `
         });
 
         app.mount('#app');

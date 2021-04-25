@@ -51,8 +51,9 @@
 ; the start of a new property.
 ;
 ; :usage (parse-property-description lines)
-; :parameter lines (list? string?)
-; :returns (pair? (list? string?) (list? string?))
+; :parameter lines (list-of? string?)
+;   A list of strings where each string is the literal of what was parsed from the source file.
+; :returns (pair? (list-of? string?) (list-of? string?))
 ;   The first element of the result is a list of the property's description with 
 ;   the second element the remainder of `lines` with the property descriptions
 ;   having been removed.
@@ -138,6 +139,7 @@
     (if (starts-with line "; ") (drop line 2) (drop line 1))
 )
 
+; :assert-equals (first-index-of "hello world" #\z) ()
 (const (parse content)
     (let state 'IN-BETWEEN)
     (let items ())

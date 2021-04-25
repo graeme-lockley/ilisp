@@ -1,7 +1,0 @@
-[
-    "InvalidHTTPHeaderContent",
-    {
-        ":content": "GET / HTTP/1.1\nHost: localhost:8080\nUpgrade-Insecure-Requests: 1\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15\nAccept-Language: en-us\nAccept-Encoding: gzip, deflate\nConnection: keep-alive\n\n",
-        ":reason": "No blank line in content"
-    }
-]

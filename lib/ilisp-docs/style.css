@@ -11,6 +11,7 @@
     border-width: 1pt;
     border-style: solid;
     border-color: rgb(164, 218, 187);
+    background-color: rgb(245, 255, 245);
 }
 
 .declaration > .header {
@@ -85,7 +86,7 @@ pre {
 }
 
 code {
-    background-color: whitesmoke;
+    background-color: rgb(230, 230, 230);
 }
 
 p {

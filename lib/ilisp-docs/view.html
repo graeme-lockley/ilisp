@@ -27,7 +27,7 @@
             </div>
 
             <div class="description"  v-if="hasDescription(declaration)">
-                <span v-html="compileMarkdown(declaration.description.join('\n'))"></span>
+                <span v-html="compileMarkdown(declaration.description)"></span>
             </div>
 
             <div class="parameters" v-if="hasParameters(declaration)">
@@ -39,7 +39,7 @@
                                 <code>{{ parameter.signature }}</code>
                             </div>
                             <div class="description">
-                                <span v-html="compileMarkdown(parameter.description.join('\n'))"></span>
+                                <span v-html="compileMarkdown(parameter.description)"></span>
                             </div>
                         </td>
                     </tr>
@@ -53,14 +53,14 @@
                             <p><code>{{ returns(declaration).signature }}</code></p>
                         </td>
                         <td class="description" >
-                            <span v-html="compileMarkdown(returns(declaration).description.join('\n'))"></span>
+                            <span v-html="compileMarkdown(returns(declaration).description)"></span>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        {{ initialiseName("../builtin.scm") }}
+        {{ initialiseName("./server.scm") }}
     </div>
 
     <script>
@@ -129,8 +129,11 @@
         const app = Vue.createApp(Main);
         app.mixin({
             methods: {
-                compileMarkdown: function (txt) {
-                    return marked(txt, { sanitize: true });
+                compileMarkdown: function (input) {
+                    if (Array.isArray(input))
+                        input = input.join('\n');
+
+                    return marked(input, { sanitize: true });
                 }
             }
         });

@@ -1,0 +1,106 @@
+/* .declarations > .name:before {
+    content: "This text will be added at the beginning of the element"
+ } */
+
+ body {
+    font-family: "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Cantarell, "Helvetica Neue", sans-serif;
+ }
+
+.declaration {
+    margin: 5pt;
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+    margin-left: 5pt;
+    margin-right: 5pt;
+    border-width: 1pt;
+    border-style: solid;
+    border-color: rgb(164, 218, 187);
+}
+
+.declaration > .header {
+    background-color: rgb(164, 218, 187);
+    padding-top: 3pt;
+    padding-bottom: 3pt;
+}
+
+.declaration > .header > .name {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: larger;
+    padding-left: 5pt;
+}
+
+.declaration > .header > span.usage {
+    padding-top: 2pt;
+    padding-right: 10pt;
+    font-family: monospace;
+    float: right;
+}
+
+.declaration > .description {
+    margin-top: 3pt;
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+    padding-left: 5pt;
+    padding-right: 5pt;
+}
+
+.parameters:before {
+    content: "Parameters:";
+    font-size: medium;
+    font-weight: bolder;
+ }
+
+ .parameters {
+    margin-top: 10pt;
+    margin-left: 5pt;
+    margin-right: 5pt;
+ }
+
+.returns:before {
+    content: "Returns:";
+    font-size: medium;
+    font-weight: bolder;
+ }
+
+ .returns {
+    margin-top: 10pt;
+    margin-left: 5pt;
+    margin-right: 5pt;
+ }
+
+.returns > .signature {
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
+.returns > .description {
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
+pre {
+    padding: 8pt;
+    border-style: solid;
+    border-width: 1pt;
+    border-style: solid;
+    border-color: lightgray;
+    background-color: whitesmoke;
+    border-radius: 4.2px;
+}
+
+code {
+    background-color: whitesmoke;
+}
+
+p {
+    margin-top: 5pt;
+    margin-bottom: 5pt;
+}
+
+td {
+    vertical-align: top;
+}
+
+table {
+    margin-left: 7pt;
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="./style.css" rel="stylesheet">
+
+    <title>iLisp Doc</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/marked@0.3.6"></script>
+</head>
+
+<body>
+    <div class="declarations" id="app">
+        <div class="name">{{ name }}</div>
+
+        <div class="declaration" v-for="declaration in declarations">
+            <div class="header">
+                <a v-bind:id="declaration.name" class="name">{{ declaration.name }}</a>
+
+                <span class="usage" v-if="usageDeclaration(declaration) !== undefined">
+                    {{ usageDeclaration(declaration).signature }}
+                </span>
+            </div>
+
+            <div class="description"  v-if="hasDescription(declaration)">
+                <span v-html="compileMarkdown(declaration.description.join('\n'))"></span>
+            </div>
+
+            <div class="parameters" v-if="hasParameters(declaration)">
+                <table>
+                    <tr v-for="parameter in parameters(declaration)">
+                        <td class="name"><code>{{ parameter.name }}</code></td>
+                        <td>
+                            <div class="signature" v-if="parameter.signature !== undefined">
+                                <code>{{ parameter.signature }}</code>
+                            </div>
+                            <div class="description">
+                                <span v-html="compileMarkdown(parameter.description.join('\n'))"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="returns" v-if="hasReturns(declaration)">
+                <table>
+                    <tr>
+                        <td class="signature" v-if="returns(declaration).signature !== undefined">
+                            <p><code>{{ returns(declaration).signature }}</code></p>
+                        </td>
+                        <td class="description" >
+                            <span v-html="compileMarkdown(returns(declaration).description.join('\n'))"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        {{ initialiseName("../builtin.scm") }}
+    </div>
+
+    <script>
+        const Main = {
+            data() {
+                return {
+                    name: "",
+                    declarations: []
+                }
+            },
+            watch: {
+                name(newName, oldName) {
+                    console.log("watch.name: oldName: ", oldName, ", newName: ", newName);
+                    this.declarations = [];
+                    this.fetchDeclarations();
+                }
+            },
+            methods: {
+                initialiseName(newName) {
+                    this.name = newName;
+                },
+
+                fetchDeclarations() {
+                    const myThis = this;
+                    axios.get('http://localhost:8080/api/doc?' + this.name)
+                        .then(function (response) {
+                            console.log("Success: ", response);
+                            myThis.declarations = response.data;
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log("Error: ", error);
+                        })
+                        .then(function () {
+                            // always executed
+                        });
+
+                },
+
+                usageDeclaration(declaration) {
+                    return declaration.properties.find((p) => p.type === "usage");
+                },
+
+                hasDescription(declaration) {
+                    return declaration.description.length > 0;
+                },
+
+                hasParameters(declaration) {
+                    return declaration.properties.filter((p) => p.type === "parameter").length > 0;
+                },
+
+                parameters(declaration) {
+                    return declaration.properties.filter((p) => p.type === "parameter");
+                },
+
+                hasReturns(declaration) {
+                    return declaration.properties.filter((p) => p.type === "returns").length > 0;
+                },
+
+                returns(declaration) {
+                    return declaration.properties.find((p) => p.type === "returns");
+                },
+
+                compileMarkdown(txt) {
+                    return marked(txt, { sanitize: true });
+                }
+
+            }
+        };
+
+        const app = Vue.createApp(Main);
+
+        app.mount('#app');
+    </script>
+</body>
+
+</html>

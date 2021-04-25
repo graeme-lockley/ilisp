@@ -4,27 +4,6 @@
 (import "../string.scm" :as String)
 ;; (import "../sequence.scm" :as Sequence)
 
-(const (listener p) 
-    (const content (*builtin*.byte-vector->string (*builtin*.socket-read-all p)))
-
-    (println "--- CONTENT -----------------------")
-    (println content)
-    (println "-----------------------------------")
-
-    (const result (JSON.->string (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* "../builtin.scm")))))
-
-    (*builtin*.socket-write-all p (*builtin*.string->byte-vector (str
-        "HTTP/1.1 200 OK\n"
-        "Content-Type: application/json\n"
-        "Content-Length: " (count result) "\n"
-        "\n"
-        result
-        "\n"
-    )))
-
-    (*builtin*.socket-close p) 
-)
-
 ; Extracts the header text from `content`.  Should the content not contain a
 ; blank line then the signal `InvalidHTTPHeaderContent` is raised.
 ;
@@ -33,6 +12,7 @@
 ;   The entire content received via an HTTP request.
 ; :returns string?
 ;   The header content excluding the blank line.
+; 
 ; :signal InvalidHTTPHeaderContent
 ;   The content contained no blank line.  The first blank signals the end of
 ;   the header and the start of the body.
@@ -227,6 +207,8 @@
 ; `request-line` and returns that route with the parameters extracted out of
 ; path and query string.
 ;
+; If no route matches against the `request-line` the this procedure returned `#f`.
+;
 ; :usage (find-round routes request-line)
 ; :parameter routes (list-of? route?)
 ; :parameter request-line request-line?
@@ -350,6 +332,7 @@
 
 (const mime-types
     {   ".html" "text/html"
+        ".css" "text/css"
     }
 )
 
@@ -373,8 +356,8 @@
     (const (get-api-doc parameters query-string header-fields)
         (println "API: " query-string)
 
-        (const result (JSON.->string (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string)))))
-        (println "API-result:" result)
+        (const read-value (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string))))
+        (const result (JSON.->string read-value))
 
         (http-result 200 "application/json" result)
     )

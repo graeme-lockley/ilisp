@@ -31,13 +31,15 @@
 
 (const- (string->string s)
     (const (special? c)
-        (or (= c #x9) (= c #xa) (= c #xd))
+        (or (= c #x9) (= c #xa) (= c #xd)(= c #\\) (= c #x22))
     )
 
     (const (mark-up-character c)
         (if (= c #x9) "\\t"
             (= c #xa) "\\n"
             (= c #xd) ""
+            (= c #\\) "\\\\"
+            (= c #x22) "\\\""
             c
         )
     )

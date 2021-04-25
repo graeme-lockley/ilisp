@@ -7,6 +7,7 @@
     (Unit.assert-equals (JSON.->string "he\tllo") "\"he\\tllo\"")
 
     (Unit.assert-equals (JSON.->string "he\nllo") "\"he\\nllo\"")
+    (Unit.assert-equals (JSON.->string "he#\\zllo") "\"he#\\\\zllo\"")
 )
 
 (Unit.test "->string - symbol value"

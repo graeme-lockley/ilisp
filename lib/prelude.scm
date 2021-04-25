@@ -90,17 +90,17 @@
 (const take Sequence.take)
 (const take-right Sequence.take-right)
 
-(const- (type-of v)
+(const (type-of v)
   (if (*builtin*.null? v) "nil"
-      (boolean? v) "boolean"
+      (*builtin*.boolean? v) "boolean"
       (*builtin*.pair? v) "pair"
       (*builtin*.vector? v) "vector"
       (*builtin*.string? v) "string"
-      (number? v) "number"
+      (*builtin*.integer? v) "integer"
       (*builtin*.map? v) "map"
       (*builtin*.proc? v) "fn"
-      (macro? v) "macro"
-      (keyword? v) "keyword"
+      (*builtin*.macro? v) "macro"
+      (*builtin*.keyword? v) "keyword"
       (*builtin*.symbol? v) "symbol"
       "don't know"
   )

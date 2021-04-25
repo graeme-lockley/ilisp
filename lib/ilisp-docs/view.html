@@ -17,7 +17,66 @@
     <div class="declarations" id="app">
         <div class="name">{{ name }}</div>
 
-        <div class="declaration" v-for="declaration in declarations">
+        <declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name"></declaration>
+
+        {{ initialiseName("./server.scm") }}
+    </div>
+
+    <script>
+        const Main = {
+            data() {
+                return {
+                    name: "",
+                    declarations: []
+                }
+            },
+            watch: {
+                name(newName, oldName) {
+                    console.log("watch.name: oldName: ", oldName, ", newName: ", newName);
+                    this.declarations = [];
+                    this.fetchDeclarations();
+                }
+            },
+            methods: {
+                initialiseName(newName) {
+                    this.name = newName;
+                },
+
+                fetchDeclarations() {
+                    const myThis = this;
+                    axios.get('http://localhost:8080/api/doc?' + this.name)
+                        .then(function (response) {
+                            console.log("Success: ", response);
+                            myThis.declarations = response.data;
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log("Error: ", error);
+                        })
+                        .then(function () {
+                            // always executed
+                        });
+
+                }
+            }
+        };
+
+        const app = Vue.createApp(Main);
+        app.mixin({
+            methods: {
+                compileMarkdown: function (input) {
+                    if (Array.isArray(input))
+                        input = input.join('\n');
+
+                    return marked(input, { sanitize: true });
+                }
+            }
+        });
+
+        app.component('Declaration', {
+            props: ['declaration'],
+            template: `
+            <div class="declaration">
             <div class="header">
                 <a v-bind:id="declaration.name" class="name">{{ declaration.name }}</a>
 
@@ -58,48 +117,9 @@
                     </tr>
                 </table>
             </div>
-        </div>
-
-        {{ initialiseName("./server.scm") }}
-    </div>
-
-    <script>
-        const Main = {
-            data() {
-                return {
-                    name: "",
-                    declarations: []
-                }
-            },
-            watch: {
-                name(newName, oldName) {
-                    console.log("watch.name: oldName: ", oldName, ", newName: ", newName);
-                    this.declarations = [];
-                    this.fetchDeclarations();
-                }
-            },
+            </div>
+            `,
             methods: {
-                initialiseName(newName) {
-                    this.name = newName;
-                },
-
-                fetchDeclarations() {
-                    const myThis = this;
-                    axios.get('http://localhost:8080/api/doc?' + this.name)
-                        .then(function (response) {
-                            console.log("Success: ", response);
-                            myThis.declarations = response.data;
-                        })
-                        .catch(function (error) {
-                            // handle error
-                            console.log("Error: ", error);
-                        })
-                        .then(function () {
-                            // always executed
-                        });
-
-                },
-
                 usageDeclaration(declaration) {
                     return declaration.properties.find((p) => p.type === "usage");
                 },
@@ -122,18 +142,6 @@
 
                 returns(declaration) {
                     return declaration.properties.find((p) => p.type === "returns");
-                }
-            }
-        };
-
-        const app = Vue.createApp(Main);
-        app.mixin({
-            methods: {
-                compileMarkdown: function (input) {
-                    if (Array.isArray(input))
-                        input = input.join('\n');
-
-                    return marked(input, { sanitize: true });
                 }
             }
         });

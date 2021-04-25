@@ -1,7 +1,3 @@
-/* .declarations > .name:before {
-    content: "This text will be added at the beginning of the element"
- } */
-
  body {
     font-family: "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Cantarell, "Helvetica Neue", sans-serif;
  }

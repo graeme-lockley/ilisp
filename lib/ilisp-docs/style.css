@@ -2,6 +2,17 @@
     font-family: "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Cantarell, "Helvetica Neue", sans-serif;
  }
 
+ .synopsis {
+    float: right;
+    height: 100%;
+    position: sticky;
+    top: 0;
+ }
+
+ .synopsis > .reference {
+    background-color: lightgray;
+ }
+
 .declaration {
     margin: 5pt;
     padding-top: 0pt;
@@ -12,6 +23,9 @@
     border-style: solid;
     border-color: rgb(164, 218, 187);
     background-color: rgb(245, 255, 245);
+
+    overflow: visible;
+    /* height: 100%; */
 }
 
 .declaration > .header {

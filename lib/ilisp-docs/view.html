@@ -15,12 +15,14 @@
 
 <body>
     <div class="declarations" id="app">
+        <synopsis v-bind:declarations="declarations"></synopsis>
+
         <div class="name">{{ name }}</div>
 
         <declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name">
         </declaration>
 
-        {{ initialiseName("../builtin.scm") }}
+        {{ initialiseName("./server.scm") }}
     </div>
 
     <script>
@@ -128,6 +130,41 @@
                     </div>
                 </div>
             `
+        });
+
+        app.component('synopsis', {
+            props: ['declarations'],
+            data() {
+                return {
+                    open: false
+                }
+            },
+            template: `
+                <div class="synopsis">
+                    <template v-if="open">
+                        <div v-on:click="toggleSynopsis"> Close Synopsis</div>
+                        <div class="reference" v-for="name in names()">
+                            <a v-bind:href="nameHref(name)">{{ name }}</a>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div v-on:click="toggleSynopsis"> Open Synopsis</div>
+                    </template>
+                </div>
+                `,
+            methods: {
+                nameHref(name) {
+                    return "#" + name;
+                },
+
+                names() {
+                    return this.declarations.map((d) => d.name).sort();
+                },
+
+                toggleSynopsis() {
+                    this.open = !this.open;
+                }
+            }
         });
 
         app.mount('#app');

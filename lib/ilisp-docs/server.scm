@@ -1,3 +1,4 @@
+(import "../filesystem.scm" :as FS)
 (import "./json.scm" :as JSON)
 (import "../list.scm" :as List)
 (import "./reader.scm" :as Reader)
@@ -354,7 +355,7 @@
 
 (const (main)
     (const (get-api-doc parameters query-string header-fields)
-        (println "API: " query-string)
+        (println "get-api-doc: " query-string)
 
         (const read-value (Reader.parse (*builtin*.slurp (*builtin*.file-name-relative-to-file-name *source-name* query-string))))
         (const result (JSON.->string read-value))
@@ -362,17 +363,45 @@
         (http-result 200 "application/json" result)
     )
 
+    (const (get-api-index base-dir)
+        (proc (parameters query-string header)
+            (const (directory dir)
+                (const (format-name n) (str dir "/" (map-get n :name)))
+                (const (file-is-dir? n) (map-get n :dir?))
+                (const (file-is-ilisp? n) (and (map-get n :file?) (ends-with (map-get n :name) ".scm")))
+
+                (const contents (FS.read-dir (FS.absolute-name-relative-to-file-name *source-name* dir)))
+
+                (const directories (*builtin*.list-map (filter contents file-is-dir?) format-name))
+                (const files-in-directories (*builtin*.list-map directories directory))
+
+                (const files (*builtin*.list-map (filter contents file-is-ilisp?) format-name))
+
+                (const files-with-absolute-name (*builtin*.list-map files (proc (n) (FS.absolute-name-relative-to-file-name *source-name* n))))
+                
+                (*builtin*.apply concat (*builtin*.pair files-with-absolute-name files-in-directories))
+            )
+
+            (const base-dir-count (count base-dir))
+
+            (println "get-api-index: " base-dir)
+
+            (http-result 200 "application/json" (JSON.->string (*builtin*.list-map (directory base-dir) (proc (n) [n (drop n (+ base-dir-count 1))]))))
+        )        
+    )
+
     (const (get-static-file parameters query-string header)
         (const source-name parameters.source-name)
 
-        (println "Static: " source-name)
+        (println "get-static-file: " source-name)
 
         (http-result 200 (mime-type source-name) (*builtin*.slurp (str "./lib/ilisp-docs/" source-name)))
     )
 
     (const listener 
         (http-listener (list 
-            ['GET "/api/doc" get-api-doc] 
+            ['GET "/api/doc" get-api-doc]
+            ['GET "/api/index" (get-api-index (str *env*.PWD "/lib"))]
             ['GET "/public/{source-name}" get-static-file]
         ))
     )

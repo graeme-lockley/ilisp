@@ -7,7 +7,7 @@
 ;
 ; :usage (->string v)
 ;
-; :parameter v value?
+; :parameter v (or? string? keyword? symbol? integer? boolean? list? pair? vector? map?)
 ;   The value to be converted into a string.
 ;
 ; :returns string?

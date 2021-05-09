@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <link href="./style.css" rel="stylesheet">
+
+    <title>iLisp Doc</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/marked@0.3.6"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">iLispDocs</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <span class="navbar-text">
+                        /workspaces/ilisp/lib/ilisp-docs/server.scm
+                    </span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-link" aria-current="page" href="#" data-bs-toggle="offcanvas"
+                        data-bs-target="#moduleIndex" aria-controls="offcanvasRight" style="outline: none;">Module
+                        Index</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row align-items-start" style="padding-top: 56px;">
+            <div class="col-2">
+                <div class="module-root">
+                    <div class="module-leaf">builtin.scm</div>
+                    <div class="module-leaf">character.scm</div>
+                    <div class="module-leaf">filesystem-test.scm</div>
+                    <div class="module-leaf">filesystem.scm</div>
+                    <div class="module-leaf">list-test.scm</div>
+                    <div class="module-leaf">list.scm</div>
+                    <div class="module-leaf">map-test.scm</div>
+                    <div class="module-leaf">map.scm</div>
+                    <div class="module-leaf">module.scm</div>
+                    <div class="module-leaf">number.scm</div>
+                    <div class="module-leaf">prelude-test.scm</div>
+                    <div class="module-leaf">prelude.scm</div>
+                    <div class="module-leaf">sequence-test.scm</div>
+                    <div class="module-leaf">sequence.scm</div>
+                    <div class="module-leaf">string-kata-test.scm</div>
+                    <div class="module-leaf">string-kata.scm</div>
+                    <div class="module-leaf">string-test.scm</div>
+                    <div class="module-leaf">string.scm</div>
+                    <div class="module-leaf">unit.scm</div>
+                    <div class="module-leaf">value-predicates-test.scm</div>
+                    <div class="module-leaf">vector-test.scm</div>
+                    <div class="module-leaf">vector.scm</div>
+                    <div class="module-node">
+                        <div class="module-name">list-docs</div>
+
+                        <div class="module-leaves">
+                            <div class="module-leaf">json-test.scm</div>
+                            <div class="module-leaf">json.scm</div>
+                            <div class="module-leaf">main.scm</div>
+                            <div class="module-leaf">reader-test.scm</div>
+                            <div class="module-leaf">reader.scm</div>
+                            <div class="module-leaf">server-test.scm</div>
+                            <div class="module-leaf">server.scm</div>
+                        </div>
+                    </div>
+                    <div class="module-node">
+                        <div class="module-name">interpreter</div>
+
+                        <div class="module-leaves">
+                            <div class="module-leaf">environment-test.scm</div>
+                            <div class="module-leaf">environment.scm</div>
+                            <div class="module-leaf">frame-test.scm</div>
+                            <div class="module-leaf">frame.scm</div>
+                            <div class="module-leaf">interpreter-test.scm</div>
+                            <div class="module-leaf">interpreter.scm</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-10">                
+                <div class="declarations">
+                    <div class="declaration">
+                        <div class="header"><a id="header-content" class="name">header-content</a><span
+                                class="usage">(header-content content)</span></div>
+                        <div class="description"><span>
+                                <p>Extracts the header text from <code>content</code>.
+                                    Should the content not contain a
+                                    blank line then the signal
+                                    <code>InvalidHTTPHeaderContent</code> is raised.
+                                </p>
+                            </span></div>
+                        <div class="parameters">
+                            <table>
+                                <tr>
+                                    <td class="name"><code>content</code></td>
+                                    <td>
+                                        <div class="signature"><code>string?</code></div>
+                                        <div class="description"><span>
+                                                <p>The entire content received via an HTTP
+                                                    request.</p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="returns">
+                            <table>
+                                <tr>
+                                    <td class="signature">
+                                        <p><code>string?</code></p>
+                                    </td>
+                                    <td class="description"><span>
+                                            <p>The header content excluding the blank line.
+                                            </p>
+                                        </span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="signals">
+                            <table>
+                                <tr>
+                                    <td class="signature">
+                                        <p><code>InvalidHTTPHeaderContent</code></p>
+                                    </td>
+                                    <td>
+                                        <div class="description"><span>
+                                                <p>The content contained no blank line. The
+                                                    first blank signals the end
+                                                    of
+                                                    the header and the start of the body.
+                                                </p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="parse-value-property" class="name">parse-value-property</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="first-index-of" class="name">first-index-of</a><span
+                                class="usage">(first-index-of haystack needles)</span></div>
+                        <div class="description"><span>
+                                <p>Returns an index and needle into <code>haystack</code> of
+                                    the first occurence of an
+                                    element within <code>needles</code>.</p>
+                            </span></div>
+                        <div class="parameters">
+                            <table>
+                                <tr>
+                                    <td class="name"><code>haystack</code></td>
+                                    <td>
+                                        <div class="signature"><code>string?</code></div>
+                                        <div class="description"><span>
+                                                <p>A string into which we are search for the
+                                                    element from needles</p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name"><code>needles</code></td>
+                                    <td>
+                                        <div class="signature">
+                                            <code>(or? string? character? (list-of? (or? string? character?)))</code>
+                                        </div>
+                                        <div class="description"><span>
+                                                <p>Needles can consist either of a single
+                                                    string or character or a list
+                                                    of
+                                                    strings and characters.</p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="first-index-only-of" class="name">first-index-only-of</a><span
+                                class="usage">(first-index-only-of haystack needles)</span>
+                        </div>
+                        <div class="description"><span>
+                                <p>Returns an index into <code>haystack</code> of the first
+                                    occurence of an element
+                                    within
+                                    <code>needles</code>.
+                                </p>
+                            </span></div>
+                        <div class="parameters">
+                            <table>
+                                <tr>
+                                    <td class="name"><code>haystack</code></td>
+                                    <td>
+                                        <div class="signature"><code>string?</code></div>
+                                        <div class="description"><span>
+                                                <p>A string into which we are search for the
+                                                    element from needles</p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name"><code>needles</code></td>
+                                    <td>
+                                        <div class="signature">
+                                            <code>(or? string? character? (list-of? (or? string? character?)))</code>
+                                        </div>
+                                        <div class="description"><span>
+                                                <p>Needles can consist either of a single
+                                                    string or character or a list
+                                                    of
+                                                    strings and characters.</p>
+                                            </span></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="parse-request-line" class="name">parse-request-line</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="header-properties" class="name">header-properties</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="header-path" class="name">header-path</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-server" class="name">http-server</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="request-line-verb" class="name">request-line-verb</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="request-line-path" class="name">request-line-path</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="request-line-query-string" class="name">request-line-query-string</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="route-verb" class="name">route-verb</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="route-path" class="name">route-path</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="find-route" class="name">find-route</a><span
+                                class="usage">(find-round
+                                routes request-line)</span></div>
+                        <div class="description"><span>
+                                <p>Locates the first route within <code>routes</code> based
+                                    on the path captured in
+                                    <code>request-line</code> and returns that route with
+                                    the parameters extracted out
+                                    of
+                                    path and query string.
+                                </p>
+                                <p>If no route matches against the <code>request-line</code>
+                                    the this procedure returned
+                                    <code>#f</code>.
+                                </p>
+                            </span></div>
+                        <div class="parameters">
+                            <table>
+                                <tr>
+                                    <td class="name"><code>routes</code></td>
+                                    <td>
+                                        <div class="signature">
+                                            <code>(list-of? route?)</code>
+                                        </div>
+                                        <div class="description"><span></span></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name"><code>request-line</code></td>
+                                    <td>
+                                        <div class="signature"><code>request-line?</code>
+                                        </div>
+                                        <div class="description"><span></span></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="returns">
+                            <table>
+                                <tr>
+                                    <td class="signature">
+                                        <p><code>(or? (=? #f) (pair-of? route? (map-of? symbol? string?)))</code>
+                                        </p>
+                                    </td>
+                                    <td class="description"><span></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-result" class="name">http-result</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-result?" class="name">http-result?</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-result-code" class="name">http-result-code</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-result-content-type" class="name">http-result-content-type</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-result-content" class="name">http-result-content</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="socket-write-http-result" class="name">socket-write-http-result</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="http-listener" class="name">http-listener</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="mime-types" class="name">mime-types</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="default-mime-type" class="name">default-mime-type</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="mime-type" class="name">mime-type</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                    <div class="declaration">
+                        <div class="header"><a id="main" class="name">main</a>
+                            <!--v-if-->
+                        </div>
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                        <!--v-if-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="moduleIndex"
+            aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <h5 id="offcanvasRightLabel">Declarations</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <a href="#header-content">
+                    <div class="reference">header-content</div>
+                </a>
+                <a href="#parse-value-property">
+                    <div class="reference">parse-value-property</div>
+                </a>
+                <a href="#first-index-of">
+                    <div class="reference">first-index-of</div>
+                </a>
+                <a href="#first-index-only-of">
+                    <div class="reference">first-index-only-of</div>
+                </a>
+                <a href="#parse-request-line">
+                    <div class="reference">parse-request-line</div>
+                </a>
+                <a href="#header-properties">
+                    <div class="reference">header-properties</div>
+                </a>
+                <a href="#header-path">
+                    <div class="reference">header-path</div>
+                </a>
+                <a href="#http-server">
+                    <div class="reference">http-server</div>
+                </a>
+                <a href="#request-line-verb">
+                    <div class="reference">request-line-verb</div>
+                </a>
+                <a href="#request-line-path">
+                    <div class="reference">request-line-path</div>
+                </a>
+                <a href="#request-line-query-string">
+                    <div class="reference">request-line-query-string</div>
+                </a>
+                <a href="#route-verb">
+                    <div class="reference">route-verb</div>
+                </a>
+                <a href="#route-path">
+                    <div class="reference">route-path</div>
+                </a>
+                <a href="#find-route">
+                    <div class="reference">find-route</div>
+                </a>
+                <a href="#http-result">
+                    <div class="reference">http-result</div>
+                </a>
+                <a href="#http-result?">
+                    <div class="reference">http-result?</div>
+                </a>
+                <a href="#http-result-code">
+                    <div class="reference">http-result-code</div>
+                </a>
+                <a href="#http-result-content-type">
+                    <div class="reference">http-result-content-type</div>
+                </a>
+                <a href="#http-result-content">
+                    <div class="reference">http-result-content</div>
+                </a>
+                <a href="#socket-write-http-result">
+                    <div class="reference">socket-write-http-result</div>
+                </a>
+                <a href="#http-listener">
+                    <div class="reference">http-listener</div>
+                </a>
+                <a href="#mime-types">
+                    <div class="reference">mime-types</div>
+                </a>
+                <a href="#default-mime-type">
+                    <div class="reference">default-mime-type</div>
+                </a>
+                <a href="#mime-type">
+                    <div class="reference">mime-type</div>
+                </a>
+                <a href="#main">
+                    <div class="reference">main</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

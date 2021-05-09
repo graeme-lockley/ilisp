@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <link href="./style.css" rel="stylesheet">
 
     <title>iLisp Doc</title>
@@ -14,51 +16,48 @@
 </head>
 
 <body>
-    <div class="declarations" id="app">
-        <synopsis v-bind:declarations="declarations"></synopsis>
+    <div class="container-fluid" id="app">
+        <navigation-bar v-bind:name="name"></navigation-bar>
 
-        <div class="name">{{ name }}</div>
+        <div class="row align-items-start" style="padding-top: 56px;">
+            <package-index v-on:module-selected="moduleSelected"></package-index>
 
-        <declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name">
-        </declaration>
+            <module-declarations v-bind:name="name" v-bind:declarations="module_declarations" v-bind:key="name">
+            </module-declarations>
+        </div>
 
-        {{ initialiseName("./server.scm") }}
+        <module-index v-bind:declarations="module_declarations"></module-index>
     </div>
 
     <script>
         const Main = {
             data() {
                 return {
-                    name: "",
-                    declarations: []
+                    name: undefined,
+                    module_declarations: undefined
                 }
             },
             watch: {
                 name(newName, oldName) {
-                    this.declarations = [];
+                    this.declarations = undefined;
                     this.fetchDeclarations();
                 }
             },
             methods: {
-                initialiseName(newName) {
-                    this.name = newName;
-                },
-
                 fetchDeclarations() {
                     const myThis = this;
                     axios.get('http://localhost:8080/api/doc?' + this.name)
                         .then(function (response) {
-                            console.log("Success: ", response);
-                            myThis.declarations = response.data;
+                            console.log("Success: doc: ", response);
+                            myThis.module_declarations = response.data;
                         })
                         .catch(function (error) {
-                            // handle error
-                            console.log("Error: ", error);
-                        })
-                        .then(function () {
-                            // always executed
+                            console.log("Error: doc: ", error);
                         });
 
+                },
+                moduleSelected(event) {
+                    this.name = event[0];
                 }
             }
         };
@@ -75,7 +74,77 @@
             }
         });
 
-        app.component('Declaration', {
+        app.component('NavigationBar', {
+            props: ['name'],
+            template: `
+                <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">iLispDocs</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <template v-if="name !== undefined">
+                            <div class="collapse navbar-collapse">
+                                <span class="navbar-text">{{ name }}</span>
+                            </div>
+                            <div class="nav-item">
+                                <span class="nav-link" aria-current="page" href="#" data-bs-toggle="offcanvas"
+                                    data-bs-target="#moduleIndex" aria-controls="offcanvasRight" style="outline: none;">Module
+                                    Index</span>
+                            </div>
+                        </template>
+                    </div>
+                </nav>
+            `
+        });
+
+        app.component('PackageIndex', {
+            emits: ['moduleSelected'],
+            data() {
+                return {
+                    modules: []
+                }
+            },
+            methods: {
+                fetchModules() {
+                    const myThis = this;
+                    axios.get('http://localhost:8080/api/index')
+                        .then(function (response) {
+                            console.log("Success: index: ", response);
+                            myThis.modules = response.data.filter((m) => !m[1].endsWith("-test.scm")).sort();
+                        })
+                        .catch(function (error) {
+                            console.log("Error: index: ", error);
+                        });
+
+                }
+            },
+            created() {
+                this.fetchModules();
+            },
+            template: `
+                <div class="col-2">
+                    <div class="module-root">
+                        <div class="module-leaf" v-for="module in modules" v-on:click="$emit('moduleSelected', module)">
+                            {{ module[1] }}
+                        </div>
+                    </div>
+                </div>
+            `
+        });
+
+        app.component('ModuleDeclarations', {
+            props: ['name', 'declarations'],
+            template: `
+                <div class="col-10 declarations">
+                    <module-declaration v-for="declaration in declarations" v-bind:declaration="declaration" v-bind:key="declaration.name">
+                    </module-declaration>
+                </div>
+            `
+        });
+
+        app.component('ModuleDeclaration', {
             props: ['declaration'],
             data() {
                 return {
@@ -83,7 +152,8 @@
                     usage: this.declaration.properties.find((p) => p.type === "usage"),
                     description: this.declaration.description,
                     parameters: this.declaration.properties.filter((p) => p.type === "parameter"),
-                    returns: this.declaration.properties.find((p) => p.type === "returns")
+                    returns: this.declaration.properties.find((p) => p.type === "returns"),
+                    signals: this.declaration.properties.filter((p) => p.type === "signal")
                 }
             },
             template: `
@@ -102,7 +172,7 @@
 
                     <div class="parameters" v-if="parameters.length > 0">
                         <table>
-                            <tr v-for="parameter in this.parameters">
+                            <tr v-for="parameter in parameters">
                                 <td class="name"><code>{{ parameter.name }}</code></td>
                                 <td>
                                     <div class="signature" v-if="parameter.signature !== undefined">
@@ -128,28 +198,37 @@
                             </tr>
                         </table>
                     </div>
+                    
+                    <div class="signals" v-if="signals.length > 0">
+                        <table>
+                            <tr v-for="signal in signals">
+                                <td class="signature"><p><code>{{ signal.signature }}</code></p></td>
+                                <td>
+                                    <div class="description">
+                                        <span v-html="compileMarkdown(signal.description)"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             `
         });
 
-        app.component('synopsis', {
+        app.component('ModuleIndex', {
             props: ['declarations'],
-            data() {
-                return {
-                    open: false
-                }
-            },
             template: `
-                <div class="synopsis">
-                    <template v-if="open">
-                        <div v-on:click="toggleSynopsis"> Close Synopsis</div>
-                        <div class="reference" v-for="name in names()">
-                            <a v-bind:href="nameHref(name)">{{ name }}</a>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div v-on:click="toggleSynopsis"> Open Synopsis</div>
-                    </template>
+                <div class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="moduleIndex" aria-labelledby="offcanvasRightLabel">
+                    <div class="offcanvas-header">
+                        <h5 id="offcanvasRightLabel">Declarations</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+
+                    <div class="offcanvas-body">
+                        <a v-bind:href="nameHref(name)" class="reference" v-for="name in this.names()">
+                            <div class="reference">{{ name }}</div>
+                        </a>
+                    </div>
                 </div>
                 `,
             methods: {
@@ -158,17 +237,18 @@
                 },
 
                 names() {
-                    return this.declarations.map((d) => d.name).sort();
-                },
-
-                toggleSynopsis() {
-                    this.open = !this.open;
+                    return this.declarations === undefined ? [] : this.declarations.map((d) => d.name).sort();
                 }
             }
         });
 
         app.mount('#app');
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+
 </body>
 
 </html>

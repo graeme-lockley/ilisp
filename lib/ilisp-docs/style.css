@@ -1,31 +1,20 @@
- body {
+body {
     font-family: "PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Cantarell, "Helvetica Neue", sans-serif;
- }
+    background-color: rgb(33, 37, 41);
+}
 
- .synopsis {
-    float: right;
-    height: 100%;
-    position: sticky;
-    top: 0;
- }
-
- .synopsis > .reference {
-    background-color: lightgray;
- }
+.col-10 {
+    background-color: white;
+}
 
 .declaration {
-    margin: 5pt;
+    margin: 5pt 0pt;
     padding-top: 0pt;
     padding-bottom: 0pt;
-    margin-left: 5pt;
-    margin-right: 5pt;
     border-width: 1pt;
     border-style: solid;
     border-color: rgb(164, 218, 187);
     background-color: rgb(245, 255, 245);
-
-    overflow: visible;
-    /* height: 100%; */
 }
 
 .declaration > .header {
@@ -89,6 +78,28 @@
     padding-bottom: 0pt;
 }
 
+.signals:before {
+    content: "Signals:";
+    font-size: medium;
+    font-weight: bolder;
+ }
+
+ .signals {
+    margin-top: 10pt;
+    margin-left: 5pt;
+    margin-right: 5pt;
+ }
+
+ .signals > .signature {
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
+.signals > .description {
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
 pre {
     padding: 8pt;
     border-style: solid;
@@ -114,4 +125,72 @@ td {
 
 table {
     margin-left: 7pt;
+}
+
+.module-leaves {
+    padding-left: 15pt;
+}
+
+.module-name:after {
+    content: "/";
+}
+
+a {
+    text-decoration: none;        
+}
+
+a.name {
+    cursor: default;
+    color: darkgreen;
+}
+
+.nav-item > .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.nav-item > .nav-link:hover {
+    color: white;
+    background-color: darkslategrey;
+    cursor: pointer;
+}
+
+.module-leaf {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.module-leaf:hover {
+    color: white;
+    background-color: darkslategrey;
+    cursor: pointer;
+}
+
+.module-name {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
+code {
+    cursor: default;
+    color: black;
+    background-color: rgb(221, 250, 221);
+}
+
+.offcanvas-header {
+    color: white;
+}
+
+.offcanvas-header > h5 {
+    margin: 0;
+}
+
+.offcanvas-body > a {
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    text-decoration: none;        
+}
+
+.reference:hover {
+    color: white;
+    background-color: darkslategrey;
+    cursor: pointer;
 }

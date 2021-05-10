@@ -8,7 +8,7 @@
 
 ; :returns (and? byte-vector? immutable?)
 ;
-; :signal `SystemError`
+; :signal SystemError
 ;   A system error has occurred.
 (const socket-read-all *builtin*.socket-read-all)
 
@@ -24,35 +24,3 @@
 ; :signal SystemError
 ;   A system error has occurred.
 (const socket-write-all *builtin*.socket-write-all)
-
-
-;; [
-;;     {
-;;         name: "socket-write-all",
-;;         description: "Synchronously write `byte` to `socket`."
-;;         properties:
-;;             [
-;;                 {
-;;                     type: "usage",
-;;                     description: "(socket-write-all socket bytes)"
-;;                 },
-;;                 {
-;;                     type: "parameter", 
-;;                     name: "socket",
-;;                     signature: "socket?",
-;;                     description: "The socket to write `bytes` to"
-;;                 },
-;;                 {
-;;                     type: "parameter", 
-;;                     name: "bytes",
-;;                     signature: "byte-vector?",
-;;                     description: "The bytes to be written to `socket`."
-;;                 },
-;;                 {
-;;                     type: "returns", 
-;;                     name: "SystemError",
-;;                     description: "A system error has occurred."
-;;                 }
-;;             ]
-;;     }
-;; ]

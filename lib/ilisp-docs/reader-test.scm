@@ -60,6 +60,15 @@
             }
         )
     )
+
+    (Unit.assert-equals (Reader.parse "(const (thread?) *builtin*.thread?)\n")
+        (list 
+            {   'description () 
+                'name "thread?" 
+                'properties ()
+            }
+        )
+    )
 )
 
 (Unit.test "parse - just a description"

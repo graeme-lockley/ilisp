@@ -160,7 +160,7 @@
                 (starts-with line "(const ")
                     (do (const start-idx (if (starts-with line "(const (") 8 7))
                         (const rest-of-line (drop line start-idx))
-                        (const name (take-while rest-of-line (proc (c) (not (= c #x20)))))
+                        (const name (take-while rest-of-line (proc (c) (not (or (= c #x20) (= c #x29))))))
                         (@! items (proc (l) (pair (parse-comments name (List.reverse (@ comments))) l)))
                         (@= state 'IN-BETWEEN)
                         (@= comments ())

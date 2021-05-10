@@ -1,5 +1,16 @@
 (const thread? *builtin*.thread?)
 
+; Creates and returns a new thread.  The new thread invokes the passed thunk 
+; within the new thread.  The new thread executes within the enclosing closure.
+;
+; :usage (thread-create p)
+; :parameter p procedure?
+;   The procedure that is invoked without any arguments.
+; :returns thread?
+;   A reference to the newly created thread.
+;
+; :signal SystemError
+;   This signal is raised should the attempt to create a new thread fails.
 (const thread-create *builtin*.thread-create)
 
 (const thread-join *builtin*.thread-join)

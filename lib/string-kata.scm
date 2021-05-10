@@ -18,7 +18,7 @@
     (const numbers (*builtin*.list-map tokens string->number))
 
     (if (any numbers Number.negative?)
-        (raise (filter numbers Number.negative?))
+            (raise (filter numbers Number.negative?))
         (Sequence.sum (filter numbers (proc (n) (<= n 1000))))
     )
 )

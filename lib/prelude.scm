@@ -86,7 +86,7 @@
 (const nth Sequence.nth)
 (const slice Sequence.slice)
 (const starts-with Sequence.starts-with)
-(const string->int Number.string->int)
+(const string->number Number.string->number)
 (const take Sequence.take)
 (const take-right Sequence.take-right)
 

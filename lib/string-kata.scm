@@ -15,7 +15,7 @@
             (Sequence.split input '("," "\n"))
         )
     )
-    (const numbers (*builtin*.list-map tokens string->int))
+    (const numbers (*builtin*.list-map tokens string->number))
 
     (if (any numbers Number.negative?)
         (raise (filter numbers Number.negative?))

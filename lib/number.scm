@@ -1,14 +1,21 @@
-(const (char->int n)
+; Converts the digit in the range `#\0` to `#\9` to the numeric value `0` to `9` respectively.
+;
+; :usage (character->number c)
+; :parameter c character?
+; :returns number?
+; :signal InvalidArgument
+;   `c` is not in the required range
+(const (character->number n)
     (if (<= 48 n 57) (- n 48)
-        (raise 'InvalidArgument {:procedure 'char->int :arg-number 0 :expected "0..9" :received (*builtin*.character->string n)})
+        (raise 'InvalidArgument {:procedure 'character->number :arg-number 0 :expected "0..9" :received (*builtin*.character->string n)})
     )
 )
 
-(const (string->int n)
+(const (string->number n)
     (const (->int n)
         (fold n 0 
             (proc (acc d) 
-                (+ (* 10 acc) (char->int d)) 
+                (+ (* 10 acc) (character->number d)) 
             )
         )
     )

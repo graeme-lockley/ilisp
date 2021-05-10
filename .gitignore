@@ -6,3 +6,4 @@ src/main
 test/*_test
 test/flag
 .DS_Store
+main-mac

@@ -1,3 +1,10 @@
+; Predicate to test whether or not the passed value is a thread.
+;
+; :usage (thread? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a thread otherwise `#f`.
 (const thread? *builtin*.thread?)
 
 ; Creates and returns a new thread.  The new thread invokes the passed thunk 
@@ -13,6 +20,15 @@
 ;   This signal is raised should the attempt to create a new thread fails.
 (const thread-create *builtin*.thread-create)
 
+; Wait for the referenced thread to complete.
+;
+; :usage (thread-join thread)
+; :parameter thread thread?
+;   The running thread which the calling thread is to wait for.
+; :returns any?
+;   The result returned from the running thread.
+; :signal SystemError
+;   This signal is raised should the call fail.
 (const thread-join *builtin*.thread-join)
 
 (const socket-listen *builtin*.socket-listen)

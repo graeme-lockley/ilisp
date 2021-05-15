@@ -24,6 +24,15 @@
 ;   `value` is not a pair.
 (const pair-cdr *builtin*.pair-cdr)
 
+; Determine whether or not the passed value is null.
+;
+; :usage (null? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers is null otherwise `#f`.
+(const null? *builtin*.null?)
+
 ; Determine whether or not the passed value is an integer.
 ;
 ; :usage (integer? value)

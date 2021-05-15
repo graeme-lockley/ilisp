@@ -62,6 +62,27 @@
 
 (const map *builtin*.list-map)
 
+; Similar to the standard `map` procedure however it also passes the offeset
+; into the list of the element being mapped.
+;
+; :usage (map-idx list f)
+; :parameter list list?
+;   The list whose elements are to be mapped using `f`.
+; :parameter f (proc-of? any? integer?)
+;   The mapping procedure which is applied to each element in `list`.
+; :result (and? list? immutable?)
+;   A newly created immutable list composed of elements from `list` which have
+;   been mapped using `f`.
+(const (map-idx l f)
+    (const (runner l' idx)
+        (if (*builtin*.null? l') ()
+            (pair (f (car l') idx) (runner (cdr l') (+ idx 1)))
+        )
+    )
+
+    (runner l 0)
+)
+
 (const nth *builtin*.list-nth)
 
 (const (reverse lst)

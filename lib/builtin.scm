@@ -1,4 +1,48 @@
-; Predicate to test whether or not the passed value is a thread.
+; Construct an atom instance
+;
+; :usage (atom value)
+; :parameter value any?
+; :returns atom?
+;   An atom containing `value`.
+(const atom *builtin*.atom)
+
+; Returns the first element of a pair.
+;
+; :usage (pair-car value)
+; :parameter value pair?
+; :returns any?
+; :signal InvalidArgument
+;   `value` is not a pair.
+(const pair-car *builtin*.pair-car)
+
+; Returns the second element of a pair.
+;
+; :usage (pair-cdr value)
+; :parameter value pair?
+; :returns any?
+; :signal InvalidArgument
+;   `value` is not a pair.
+(const pair-cdr *builtin*.pair-cdr)
+
+; Determine whether or not the passed value is an integer.
+;
+; :usage (integer? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to an integer otherwise `#f`.
+(const integer? *builtin*.integer?)
+
+; Determine whether or not the passed value is a pair.
+;
+; :usage (pair? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a pair otherwise `#f`.
+(const pair? *builtin*.pair?)
+
+; Determine whether or not the passed value is a thread.
 ;
 ; :usage (thread? value)
 ; :parameter value any?

@@ -1,0 +1,26 @@
+(import "./atom.scm" :names atom)
+(import "./builtin.scm" :as Builtin)
+(import "./unit.scm" :as Unit)
+
+(import "./predicate.scm" :as Predicate)
+
+(Unit.test "integer?"
+    (Unit.assert-truthy (Predicate.integer? 1))
+
+    (Unit.assert-falsy (Predicate.integer? (atom 123)))
+    (Unit.assert-falsy (Predicate.integer? ()))
+    (Unit.assert-falsy (Predicate.integer? #t))
+    (Unit.assert-falsy (Predicate.integer? #f))
+    (Unit.assert-falsy (Predicate.integer? #\A))
+    (Unit.assert-falsy (Predicate.integer? "name"))
+    (Unit.assert-falsy (Predicate.integer? 'name))
+    (Unit.assert-falsy (Predicate.integer? :name))
+    (Unit.assert-falsy (Predicate.integer? '(1 2 3)))
+    (Unit.assert-falsy (Predicate.integer? []))
+    (Unit.assert-falsy (Predicate.integer? [1 2 3]))
+    (Unit.assert-falsy (Predicate.integer? {}))
+    (Unit.assert-falsy (Predicate.integer? {:a 1 :b 2 :c 3}))
+    (Unit.assert-falsy (Predicate.integer? (proc (n) (+ n 1))))
+    (Unit.assert-falsy (Predicate.integer? Builtin.pair-car))
+    (Unit.assert-falsy (Predicate.integer? and))
+)

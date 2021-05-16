@@ -6,6 +6,14 @@
 ;   An atom containing `value`.
 (const atom *builtin*.atom)
 
+; Construct a mutable vector from the passed arguments.
+;
+; :usage (mutable-vector . values)
+; :parameter values list?
+; :returns mutable-vector?
+;   A mutable vector composed of elements from `values`.
+(const mutable-vector *builtin*.mutable-vector)
+
 ; Returns the first element of a pair.
 ;
 ; :usage (pair-car value)
@@ -50,6 +58,15 @@
 ; :returns boolean?
 ;   `#t` if `value` refers to a pair otherwise `#f`.
 (const pair? *builtin*.pair?)
+
+; Determine whether or not the passed value is a string.
+;
+; :usage (string? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a string otherwise `#f`.
+(const string? *builtin*.string?)
 
 ; Determine whether or not the passed value is a thread.
 ;

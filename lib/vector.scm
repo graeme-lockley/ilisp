@@ -1,3 +1,7 @@
+(import "./builtin.scm" :as Builtin)
+
+(const mutable-vector Builtin.mutable-vector)
+
 (const count *builtin*.vector-count)
 
 (const (drop v n)

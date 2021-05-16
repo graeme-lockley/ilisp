@@ -29,6 +29,15 @@
 ;   `#t` if `value` refers to an integer otherwise `#f`.
 (const integer? Builtin.integer?)
 
+; Determine whether or not the passed value is a string.
+;
+; :usage (string? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a string otherwise `#f`.
+(const string? Builtin.string?)
+
 ; Negates the result from the passed predicate.
 ;
 ; :usage (not? p)

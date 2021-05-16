@@ -3,7 +3,7 @@
 (import "../list.scm" :as List)
 (import "./reader.scm" :as Reader)
 (import "../string.scm" :as String)
-;; (import "../sequence.scm" :as Sequence)
+(import "../sequence.scm" :as Sequence)
 
 ; Extracts the header text from `content`.  Should the content not contain a
 ; blank line then the signal `InvalidHTTPHeaderContent` is raised.

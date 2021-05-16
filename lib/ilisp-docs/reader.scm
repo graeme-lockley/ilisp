@@ -1,6 +1,6 @@
 (import "../character.scm" :as Character)
 (import "../list.scm" :as List)
-; (import "../sequence.scm" :as Sequence)
+(import "../sequence.scm" :as Sequence)
 (import "../string.scm" :as String)
 
 (const- @ *builtin*.atom-dereference)

@@ -1,10 +1,9 @@
-(import "../list.scm" :names list?)
-(import "../predicate.scm" :names or?)
+(import "../list.scm" :names list? map-idx)
+(import "../vector.scm" :names mutable-vector nth!)
 
 (macro (struct name . fields)
     (const selector-name (*builtin*.symbol (str name "-symbol-name")))
     (const predicate-name (*builtin*.symbol (str "" name "?")))
-    (import "../list.scm" :names map-idx)
 
     (map-idx fields (proc (field idx)
         (if (or (not (list? field)) 
@@ -51,8 +50,6 @@
 (macro (mutable-struct name . fields)
     (const selector-name (*builtin*.symbol (str name "-symbol-name")))
     (const predicate-name (*builtin*.symbol (str "" name "?")))
-    (import "../list.scm" :names map-idx)
-    (import "../vector.scm" :names mutable-vector nth!)
 
     (map-idx fields (proc (field idx)
         (if (or (not (list? field)) 

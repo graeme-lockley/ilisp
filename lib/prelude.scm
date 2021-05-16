@@ -69,26 +69,33 @@
 
 (*builtin*.map-assoc! (*builtin*.pair-car **root**) :unit (module-import "./unit.scm"))
 
-(import "./number.scm" :as Number)
-(import "./sequence.scm" :as Sequence)
+(import "./number.scm" :names 
+  string->number
+)
 
-(const any Sequence.any)
-(const car Sequence.car)
-(const cdr Sequence.cdr)
-(const count Sequence.count)
-(const drop Sequence.drop)
-(const drop-right Sequence.drop-right)
-(const empty? Sequence.empty?)
-(const ends-with Sequence.ends-with)
-(const filter Sequence.filter)
-(const fold Sequence.fold)
-(const fold-right Sequence.fold-right)
-(const nth Sequence.nth)
-(const slice Sequence.slice)
-(const starts-with Sequence.starts-with)
-(const string->number Number.string->number)
-(const take Sequence.take)
-(const take-right Sequence.take-right)
+(import "./sequence.scm" :names 
+  any 
+  car 
+  cdr 
+  count 
+  drop 
+  drop-right 
+  empty? 
+  ends-with 
+  filter 
+  fold 
+  fold-right 
+  nth 
+  slice 
+  starts-with 
+  take 
+  take-right
+)
+
+(import "./predicate.scm" :names
+  not?
+  or?
+)
 
 (const (type-of v)
   (if (*builtin*.null? v) "nil"

@@ -50,6 +50,24 @@
 ;   `#t` if `value` refers to an integer otherwise `#f`.
 (const integer? *builtin*.integer?)
 
+; Determine whether or not the passed value is a character.
+;
+; :usage (character? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a character otherwise `#f`.
+(const character? *builtin*.character?)
+
+; Determine whether or not the passed value is a byte-vector.
+;
+; :usage (byte-vector? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a byte-vector otherwise `#f`.
+(const byte-vector? *builtin*.byte-vector?)
+
 ; Determine whether or not the passed value is a pair.
 ;
 ; :usage (pair? value)
@@ -76,6 +94,19 @@
 ; :returns boolean?
 ;   `#t` if `value` refers to a thread otherwise `#f`.
 (const thread? *builtin*.thread?)
+
+; Converts a string to a byte-vector.
+;
+; :usage (string->byte-vector s)
+; :parameter s string?
+;   The string to be converted
+; :returns byte-vector?
+;   Note that the lenghts of `s` and the result are the same.
+; :signal InvalidArgument
+;   The argument `s` is not a string
+(const string->byte-vector *builtin*.string->byte-vector)
+
+(const byte-vector-nth *builtin*.byte-vector-nth)
 
 ; Creates and returns a new thread.  The new thread invokes the passed thunk 
 ; within the new thread.  The new thread executes within the enclosing closure.

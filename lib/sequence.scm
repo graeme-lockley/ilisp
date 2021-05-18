@@ -1,3 +1,4 @@
+(import "./byte-vector.scm" :as ByteVector)
 (import "./list.scm" :as List)
 (import "./string.scm" :as String)
 (import "./vector.scm" :as Vector)
@@ -69,6 +70,7 @@
       (*builtin*.pair? seq) (List.nth seq n)
       (*builtin*.vector? seq) (Vector.nth seq n)
       (*builtin*.string? seq) (String.nth seq n)
+      (*builtin*.byte-vector? seq) (ByteVector.nth seq n)
       (raise 'InvalidArgument {:procedure 'nth :arg-number 0 :expected-type (list 'pair () 'vector 'string) :received seq})
   )
 )

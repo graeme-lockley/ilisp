@@ -36,4 +36,22 @@
     )
 )
 
+; Returns `n` incremented by 1.
+;
+; :usage (inc n)
+; :parameter n integer?
+; :returns integer?
+(const (inc n)
+    (+ n 1)
+)
+
+; Returns `n` decremented by 1.
+;
+; :usage (dec n)
+; :parameter n integer?
+; :returns integer?
+(const (dec n)
+    (- n 1)
+)
+
 (const (modulo m n) (- m (* n (/ m n))))

@@ -9,7 +9,7 @@
 )
 
 (const (drop-right v n)
-    (slice v 0 (- (count v) n 1))
+    (slice v 0 (- (count v) n))
 )
 
 (const (ends-with v prefix)
@@ -95,7 +95,7 @@
 )
 
 (const (take v n)
-    (slice v 0 (- n 1))
+    (slice v 0 n)
 )
 
 (const (take-right v n)

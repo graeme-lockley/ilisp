@@ -101,8 +101,8 @@
 )
 
 (const (slice lst start end)
-    (if (<= start 0) (take lst (+ end 1))
-        (take (drop lst start) (+ (- end start) 1))
+    (if (<= start 0) (take lst end)
+        (take (drop lst start) (- end start))
     )
 )
 

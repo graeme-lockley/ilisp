@@ -10,7 +10,7 @@
                 )
 
             (starts-with input "//")
-                (Sequence.split (drop input 4) (slice input 2 2))
+                (Sequence.split (drop input 4) (slice input 2 3))
 
             (Sequence.split input '("," "\n"))
         )

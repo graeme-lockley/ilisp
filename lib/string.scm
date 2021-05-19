@@ -12,7 +12,7 @@
 )
 
 (const (drop-right v n)
-    (slice v 0 (- (count v) n 1))
+    (slice v 0 (- (count v) n))
 )
 
 (const (drop-right-while s p)
@@ -21,7 +21,7 @@
     (const (gobble idx)
         (if (<= idx 0) ""
             (p (nth s (- idx 1))) (gobble (- idx 1))
-            (slice s 0 (- idx 1))
+            (slice s 0 idx)
         )
     )
 
@@ -100,7 +100,7 @@
     (const (gobble idx)
         (if (>= idx s-count) s
             (p (nth s idx)) (gobble (+ idx 1))
-            (pair (slice s 0 (- idx 1)) (slice s idx s-count))
+            (pair (slice s 0 idx) (slice s idx s-count))
         )
     )
 
@@ -112,7 +112,7 @@
 (const (string->list s) (fold-right s () pair))
 
 (const (take s n)
-    (slice s 0 (- n 1))
+    (slice s 0 n)
 )
 
 (const (take-right s n)
@@ -125,7 +125,7 @@
     (const (gobble idx)
         (if (>= idx s-count) s
             (p (nth s idx)) (gobble (+ idx 1))
-            (slice s 0 (- idx 1))
+            (slice s 0 idx)
         )
     )
 

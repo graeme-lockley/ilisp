@@ -131,9 +131,9 @@
 
 (Unit.test "slice"
     (Unit.assert-equals (List.slice () 2 3) ())
-    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 2 5) '(2 3 4 5))
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 2 6) '(2 3 4 5))
     (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 6 10) '(6 7))
-    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) (- 10) 2) '(0 1 2))
+    (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) (- 10) 3) '(0 1 2))
     (Unit.assert-equals (List.slice '(0 1 2 3 4 5 6 7) 5 2) ())
 )
 

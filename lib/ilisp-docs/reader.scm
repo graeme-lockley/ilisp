@@ -20,13 +20,13 @@
     (gobble 0)
 )
 
-(const- (drop-right-while s p)
+(const (drop-right-while s p)
     (const s-count (count s))
 
     (const (gobble idx)
         (if (= idx 0) ()
             (p (nth s (- idx 1))) (gobble (- idx 1))
-            (slice s 0 (- idx 1))
+            (slice s 0 idx)
         )
     )
 
@@ -39,7 +39,7 @@
     (const (gobble idx)
         (if (>= idx s-count) s
             (p (nth s idx)) (gobble (+ idx 1))
-            (slice s 0 (- idx 1))
+            (slice s 0 idx)
         )
     )
 

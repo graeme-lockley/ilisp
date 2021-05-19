@@ -1,6 +1,13 @@
 (import "../unit.scm" :as Unit)
 (import "./reader.scm" :as Reader)
 
+(Unit.test "drop-right-while"
+    (Unit.assert-equals 
+        (Reader.drop-right-while '("hello" "") (proc (l) (= l ""))) 
+        '("hello")
+    )
+)
+
 (Unit.test "parse-propery-description"
     (Unit.assert-equals 
         (Reader.parse-property-description ()) 

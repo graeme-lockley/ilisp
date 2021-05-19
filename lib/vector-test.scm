@@ -124,9 +124,9 @@
 
 (Unit.test "slice"
     (Unit.assert-equals (Vector.slice [] 0 10) [])
-    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 2 5) [2 3 4 5])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 2 5) [2 3 4])
     (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 6 10) [6 7])
-    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] (- 10) 2) [0 1 2])
+    (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] (- 10) 2) [0 1])
     (Unit.assert-equals (Vector.slice [0 1 2 3 4 5 6 7] 5 2) [])
 )
 

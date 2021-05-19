@@ -1,3 +1,5 @@
+(import "./sequence.scm" :names split)
+
 (import "./unit.scm" :as Unit)
 
 (Unit.test "car"
@@ -130,11 +132,11 @@
 )
 
 (Unit.test "slice"
-  (Unit.assert-equals (slice [1 2 3 4] 1 2) [2 3])
+  (Unit.assert-equals (slice [1 2 3 4] 1 3) [2 3])
 
-  (Unit.assert-equals (slice '(1 2 3 4 5 6) 1 2) '(2 3))
+  (Unit.assert-equals (slice '(1 2 3 4 5 6) 1 3) '(2 3))
   
-  (Unit.assert-equals (slice "hello world" 1 2) "el")
+  (Unit.assert-equals (slice "hello world" 1 3) "el")
   
   (Unit.assert-signal (slice 123 1 2) 
     (proc (signal)
@@ -162,6 +164,10 @@
       (Unit.assert-equals (map-get (*builtin*.pair-cdr signal) :procedure) 'starts-with)
     )
   )
+)
+
+(Unit.test "split"
+  (Unit.assert-equals (split "hello to the world" " ") '("hello" "to" "the" "world"))
 )
 
 (Unit.test "take"

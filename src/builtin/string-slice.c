@@ -31,12 +31,12 @@ Value *builtin_string_slice_wrapped(Value *parameters, Value *env)
         start = 0;
 
     if (end >= string_count)
-        end = string_count - 1;
+        end = string_count;
 
-    if (start > end)
+    if (start >= end)
         return VEmptyString;
 
-    int result_count = end - start + 1;
+    int result_count = end - start;
     char *result = malloc(result_count + 1);
 
     memcpy(result, string + start, result_count);

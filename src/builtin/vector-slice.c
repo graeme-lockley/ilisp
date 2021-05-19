@@ -32,12 +32,12 @@ Value *builtin_vector_slice_wrapped(Value *parameters, Value *env)
         start = 0;
 
     if (end >= vector_size)
-        end = vector_size - 1;
+        end = vector_size;
 
-    if (start > end)
+    if (start >= end)
         return VEmptyVector;
 
-    int result_size = end - start + 1;
+    int result_size = end - start;
     Value **result = malloc(result_size * sizeof(Value *));
 
     memcpy(result, items + start, result_size * sizeof(Value *));

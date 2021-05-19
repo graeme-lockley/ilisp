@@ -21,7 +21,7 @@
     (const idx (first-index-of content '("\x0d;\x0a;\x0d;\x0a;" "\x0a;\x0a;")))
 
     (if (*builtin*.null? idx) (raise 'InvalidHTTPHeaderContent {:reason "No blank line in content" :content content})
-        (slice content 0 (- (car idx) 1))
+        (slice content 0 (car idx))
     )
 )
 

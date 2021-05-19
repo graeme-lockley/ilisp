@@ -113,11 +113,12 @@
 )
 
 (Unit.test "slice"
-    (Unit.assert-equals (S.slice "hello" 1 1) "e")
-    (Unit.assert-equals (S.slice "hello" 1 3) "ell")
+    (Unit.assert-equals (S.slice "hello" 1 1) "")
+    (Unit.assert-equals (S.slice "hello" 1 2) "e")
+    (Unit.assert-equals (S.slice "hello" 1 4) "ell")
     (Unit.assert-equals (S.slice "hello" 1 10) "ello")
-    (Unit.assert-equals (S.slice "hello" 0 2) "hel")
-    (Unit.assert-equals (S.slice "hello" (- 10) 2) "hel")
+    (Unit.assert-equals (S.slice "hello" 0 3) "hel")
+    (Unit.assert-equals (S.slice "hello" (- 10) 3) "hel")
 )
 
 (Unit.test "starts-with"

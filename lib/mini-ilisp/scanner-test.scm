@@ -13,7 +13,13 @@
 )
 
 (Unit.test "initialise scanner"
-    (const scanner (Scanner.mk-scanner (string->byte-vector "  ")))
+    (const (verify text offset line column)
+        (const scanner (Scanner.mk-scanner (string->byte-vector text)))
 
-    ;; (Unit.assert-equals (Scanner.Scanner-current-token scanner) 0)
+        (Unit.assert-equals (Scanner.Scanner-current-token scanner) (Scanner.Token Scanner.TEOS (Scanner.Coordinate offset line column) ""))
+    )
+
+    (verify "" 0 1 1)
+    (verify " " 1 1 2)
+    (verify "  " 2 1 3)
 )

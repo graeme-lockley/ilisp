@@ -44,9 +44,9 @@
         (Scanner 
             input 
             (count input)
-            (- 1)
-            1
-            0
+            (- 2)  ; offste
+            1      ; line
+            (- 1)  ; column
             #x1
             0
             0
@@ -80,7 +80,7 @@
     )
 
     (const (next-character)
-        (Scanner-offset! scanner (+ (Scanner-offset scanner) 1))
+        (Scanner-offset! scanner (inc (Scanner-offset scanner)))
 
         (if (= (Scanner-next-ch scanner) #xa)
                 (do (Scanner-column! scanner 0)

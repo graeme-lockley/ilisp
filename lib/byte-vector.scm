@@ -15,7 +15,7 @@
 
 (const (slice bv start end)
     (const (runner idx)
-        (if (<= idx end) (pair (nth bv idx) (runner (+ idx 1)))
+        (if (< idx end) (pair (nth bv idx) (runner (+ idx 1)))
             ()
         )
     )

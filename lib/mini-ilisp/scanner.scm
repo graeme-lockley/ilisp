@@ -79,6 +79,11 @@
         (mark-start)
     )
 
+    (const (mark-and-next-character)
+        (mark-start)
+        (next-character)
+    )
+
     (const (next-character)
         (Scanner-offset! scanner (inc (Scanner-offset scanner)))
 
@@ -119,7 +124,18 @@
 
     (const (slice-lexeme)
         (import "../byte-vector.scm" :names slice->string)
-        (slice->string (Scanner-input scanner) (Scanner-start-offset scanner) (Scanner-offset scanner))
+        (slice->string (Scanner-input scanner) (Scanner-start-offset scanner) (inc (Scanner-offset scanner)))
+    )
+
+    (const (while-next p)
+        (const ch (Scanner-next-ch scanner))
+
+        (if (p ch)
+                (do (next-character)
+                    (while-next p)
+                )
+            ()
+        )
     )
 
     (if (= (current-token scanner) TEOS) scanner
@@ -128,14 +144,40 @@
 
             (if (= ch #x0) 
                     (do (next-character-and-mark-start)
-                        (set-token TEOS)
+                        (set-token TEOS "")
                     )
-                (set-token TERROR "")
+                (id? ch)
+                    (do (next-character-and-mark-start)
+                        (while-next (or? id? digit?))
+                        (set-token TIdentifier)
+                    )
+                (do (mark-start) 
+                    (next-character)
+                    (set-token TERROR)
+                )
             )
 
             scanner
         )
     )
+)
+
+; id = '!'-'}' \ ('0'-'9' + '"' + '(' + ')' + ';');
+(const (id? c)
+    (and (<= #x21 c #x7e)
+         (not (or (<= #\0 c #\9)
+                  (= #x22 c) ; '"'
+                  (= #x28 c) ; '('
+                  (= #x29 c) ; ')'
+                  (= #x3b c) ; ';'
+              )
+         )
+    )
+)
+
+; digit = '0'-'9';
+(const (digit? c)
+    (<= #\0 c #\9)
 )
 
 (const- (current-token scanner)

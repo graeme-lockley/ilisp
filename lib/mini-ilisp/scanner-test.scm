@@ -12,21 +12,44 @@
     (Unit.assert-equals (Scanner.Coordinate-column c) 3)
 )
 
-(const (tokens scanner)
-    (const token (Scanner.Scanner-current-token scanner))
+(const- (string->scanner s)
+    (Scanner.mk-scanner (string->byte-vector s))
+)
 
-    ;; (println "tokens: " (pr-str token))
+(const- (string->tokens s)
+    (const (tokens scanner)
+        (const token (Scanner.Scanner-current-token scanner))
 
-    (if (= (Scanner.Token-token token) Scanner.TEOS) (list token)
-        (do (Scanner.next scanner)
-            (pair token (tokens scanner))
+        ;; (println "tokens: " (pr-str token))
+
+        (if (= (Scanner.Token-token token) Scanner.TEOS) (list token)
+            (do (Scanner.next scanner)
+                (pair token (tokens scanner))
+            )
         )
     )
+
+    (tokens (string->scanner s))
+)
+
+(const- (assert-coordinate-token token token-type offset lexeme)
+    (Unit.assert-equals (Scanner.Token-token token) token-type)
+    (Unit.assert-truthy (Scanner.Coordinate? (Scanner.Token-location token)))
+    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Token-location token)) offset)
+    (Unit.assert-equals (Scanner.Token-lexeme token) lexeme)
+)
+
+(const- (assert-range-token token token-type offset-start offset-end lexeme)
+    (Unit.assert-equals (Scanner.Token-token token) token-type)
+    (Unit.assert-truthy (Scanner.Range? (Scanner.Token-location token)))
+    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-start (Scanner.Token-location token))) offset-start)
+    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-end (Scanner.Token-location token))) offset-end)
+    (Unit.assert-equals (Scanner.Token-lexeme token) lexeme)
 )
 
 (Unit.test "initialise scanner"
     (const (verify text offset line column)
-        (const scanner (Scanner.mk-scanner (string->byte-vector text)))
+        (const scanner (string->scanner text))
 
         (Unit.assert-equals (Scanner.Scanner-current-token scanner) (Scanner.Token Scanner.TEOS (Scanner.Coordinate offset line column) ""))
     )
@@ -37,34 +60,29 @@
 )
 
 (Unit.test "match identifier"
-    (const scanner (Scanner.mk-scanner (string->byte-vector "a hello symbol-name?")))
-    (const ts (tokens scanner))
-
-    (const t-a (nth ts 0))
-    (const t-hello (nth ts 1))
-    (const t-symbol-name? (nth ts 2))
-    (const t-eos (nth ts 3))
+    (const ts (string->tokens "a hello symbol-name?"))
 
     ;; (println (pr-str ts))
 
     (Unit.assert-equals (count ts) 4)
 
-    (Unit.assert-equals (Scanner.Token-token t-a) Scanner.TIdentifier)
-    (Unit.assert-truthy (Scanner.Coordinate? (Scanner.Token-location t-a)))
-    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Token-location t-a)) 0)
-    (Unit.assert-equals (Scanner.Token-lexeme t-a) "a")
+    (assert-coordinate-token (nth ts 0) Scanner.TIdentifier 0 "a")
+    (assert-range-token (nth ts 1) Scanner.TIdentifier 2 6 "hello")
+    (assert-range-token (nth ts 2) Scanner.TIdentifier 8 19 "symbol-name?")
+    (assert-coordinate-token (nth ts 3) Scanner.TEOS 20 "")
+)
 
-    (Unit.assert-equals (Scanner.Token-token t-hello) Scanner.TIdentifier)
-    (Unit.assert-truthy (Scanner.Range? (Scanner.Token-location t-hello)))
-    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-start (Scanner.Token-location t-hello))) 2)
-    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-end (Scanner.Token-location t-hello))) 6)
-    (Unit.assert-equals (Scanner.Token-lexeme t-hello) "hello")
+(Unit.test "match literal int"
+    (const ts (string->tokens "0 10 123456789 -0 -10 -123456789"))
 
-    (Unit.assert-equals (Scanner.Token-token t-symbol-name?) Scanner.TIdentifier)
-    (Unit.assert-truthy (Scanner.Range? (Scanner.Token-location t-symbol-name?)))
-    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-start (Scanner.Token-location t-symbol-name?))) 8)
-    (Unit.assert-equals (Scanner.Coordinate-offset (Scanner.Range-end (Scanner.Token-location t-symbol-name?))) 19)
-    (Unit.assert-equals (Scanner.Token-lexeme t-symbol-name?) "symbol-name?")
+    ;; (println (pr-str ts))
 
-    (Unit.assert-equals (Scanner.Token-token t-eos) Scanner.TEOS)
+    (Unit.assert-equals (count ts) 7)
+    (assert-coordinate-token (nth ts 0) Scanner.TLiteralInt 0 "0")
+    (assert-range-token (nth ts 1) Scanner.TLiteralInt 2 3 "10")
+    (assert-range-token (nth ts 2) Scanner.TLiteralInt 5 13 "123456789")
+    (assert-range-token (nth ts 3) Scanner.TLiteralInt 15 16 "-0")
+    (assert-range-token (nth ts 4) Scanner.TLiteralInt 18 20 "-10")
+    (assert-range-token (nth ts 5) Scanner.TLiteralInt 22 31 "-123456789")
+    (assert-coordinate-token (nth ts 6) Scanner.TEOS 32 "")
 )

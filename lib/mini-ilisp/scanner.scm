@@ -14,8 +14,8 @@
 ;
 ; ```
 ; tokens
-;     Identifier = id {digit | id};
-;     LiteralInt = digits;
+;     Identifier = (id \ '-') {digit | id};
+;     LiteralInt = ['-'] digit {digit};
 ;     LiteralString = '"' {!('"' + cr) | "\" '"'}  '"';
 ;     LiteralTrue = "#t";
 ;     LiteralFalse = "#f";
@@ -30,7 +30,6 @@
 ;
 ; fragments
 ;   digit = '0'-'9';
-;   digits = digit {digit};
 ;   id = '!'-'}' \ ('0'-'9' + '"' + '(' + ')' + ';');
 ;   cr = chr(10);
 ; ```
@@ -145,6 +144,20 @@
             (if (= ch #x0) 
                     (do (next-character-and-mark-start)
                         (set-token TEOS "")
+                    )
+                (= ch #\-)
+                    (do (next-character-and-mark-start)
+                        (if (digit? (Scanner-next-ch scanner))
+                            (do (while-next digit?)
+                                (set-token TLiteralInt)
+                            )
+                            (set-token TERROR)
+                        )
+                    )
+                (digit? ch)
+                    (do (next-character-and-mark-start)
+                        (while-next digit?)
+                        (set-token TLiteralInt)
                     )
                 (id? ch)
                     (do (next-character-and-mark-start)

@@ -56,6 +56,17 @@
 ;   `#t` if `value` refers to a string otherwise `#f`.
 (const string? Builtin.string?)
 
+; Creates a predicate that returns `#t` if the passed value equals `v` otherwise
+; returns `#f`.
+;
+; :usage (=? v)
+; :parameter v any?
+; :returns proc?
+;   A predicate which accepts `any?` and returns `boolean?`.
+(const (=? v)
+    (proc (c) (= v c))
+)
+
 ; Negates the result from the passed predicate.
 ;
 ; :usage (not? p)

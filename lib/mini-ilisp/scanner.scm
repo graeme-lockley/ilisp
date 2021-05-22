@@ -57,6 +57,10 @@
     (next scanner)
 )
 
+(const (string->scanner s)
+    (byte-vector->scanner (string->byte-vector s))
+)
+
 (const (next scanner)
     (const (skip-white-space)
         (if (<= #x1 (Scanner-next-ch scanner) #x20)

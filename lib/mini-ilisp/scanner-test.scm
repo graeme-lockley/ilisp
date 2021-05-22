@@ -12,10 +12,6 @@
     (Unit.assert-equals (Scanner.Coordinate-column c) 3)
 )
 
-(const- (string->scanner s)
-    (Scanner.byte-vector->scanner (string->byte-vector s))
-)
-
 (const- (string->tokens s)
     (const (tokens scanner)
         (const token (Scanner.Scanner-current-token scanner))
@@ -29,7 +25,7 @@
         )
     )
 
-    (tokens (string->scanner s))
+    (tokens (Scanner.string->scanner s))
 )
 
 (const- (assert-coordinate-token token token-type offset lexeme)
@@ -49,7 +45,7 @@
 
 (Unit.test "initialise scanner"
     (const (verify text offset line column)
-        (const scanner (string->scanner text))
+        (const scanner (Scanner.string->scanner text))
 
         (Unit.assert-equals (Scanner.Scanner-current-token scanner) (Scanner.Token Scanner.TEOS (Scanner.Coordinate offset line column) ()))
     )

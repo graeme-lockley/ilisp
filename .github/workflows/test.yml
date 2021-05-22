@@ -15,10 +15,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Check LLVM
         run: |
-          llvm-as --version
+          # llvm-as --version
           clang --version
-          llvm-link --version
-          lli --version
+          # llvm-link --version
+          # lli --version
       - name: Install readline
         run: |
           sudo apt-get update

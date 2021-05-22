@@ -1,4 +1,4 @@
-CC=clang-9 -Ofast
+CC=clang -Ofast
 CFLAGS=-g -Wall -Wextra -pedantic -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-parameter
 LDFLAGS=-g -lpthread
 

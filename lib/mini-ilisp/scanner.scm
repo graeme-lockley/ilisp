@@ -75,8 +75,14 @@
 
 (const string->scanner
     (import "../byte-vector.scm" :names string->byte-vector)
-    
+
     (<| byte-vector->scanner string->byte-vector)
+)
+
+(const (next-token scanner)
+    (const token (Scanner-current-token scanner))
+    (next scanner)
+    token
 )
 
 (const (next scanner)

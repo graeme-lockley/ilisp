@@ -74,6 +74,8 @@
 )
 
 (const string->scanner
+    (import "../byte-vector.scm" :names string->byte-vector)
+    
     (<| byte-vector->scanner string->byte-vector)
 )
 

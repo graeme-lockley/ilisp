@@ -1,4 +1,3 @@
-(import "../byte-vector.scm" :names string->byte-vector)
 (import "../unit.scm" :as Unit)
 
 (import "./scanner.scm" :as Scanner)

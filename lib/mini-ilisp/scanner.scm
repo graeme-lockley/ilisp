@@ -73,16 +73,6 @@
         (Scanner-start-column! scanner (Scanner-column scanner))
     )
 
-    (const (next-character-and-mark-start)
-        (next-character)
-        (mark-start)
-    )
-
-    (const (mark-and-next-character)
-        (mark-start)
-        (next-character)
-    )
-
     (const (next-character)
         (Scanner-offset! scanner (inc (Scanner-offset scanner)))
 
@@ -164,7 +154,6 @@
             )
         )
 
-        (next-character-and-mark-start)
         (scan-next)
     )
 
@@ -172,34 +161,30 @@
         (do (skip-white-space)
             (const ch (Scanner-next-ch scanner))
 
+            (next-character)
+            (mark-start)
+
             (if (= ch #x0) 
-                    (do (next-character-and-mark-start)
-                        (set-token TEOS ())
-                    )
+                    (set-token TEOS ())
                 (= ch #\-)
-                    (do (next-character-and-mark-start)
-                        (if (digit? (Scanner-next-ch scanner))
-                            (do (while-next digit?)
-                                (set-token TLiteralInt)
-                            )
-                            (set-token TERROR)
+                    (if (digit? (Scanner-next-ch scanner))
+                        (do (while-next digit?)
+                            (set-token TLiteralInt)
                         )
+                        (set-token TERROR)
                     )
                 (digit? ch)
-                    (do (next-character-and-mark-start)
-                        (while-next digit?)
+                    (do (while-next digit?)
                         (set-token TLiteralInt)
                     )
                 (id? ch)
-                    (do (next-character-and-mark-start)
-                        (while-next (or? id? digit?))
+                    (do (while-next (or? id? digit?))
                         (set-token TIdentifier)
                     )
                 (= ch #x22)
                     (scan-literal-string)
                 (= ch #x23)
-                    (do (next-character-and-mark-start)
-                        (const ch' (Scanner-next-ch scanner))
+                    (do (const ch' (Scanner-next-ch scanner))
 
                         (if (= ch' #\t) 
                                 (do (next-character)
@@ -213,16 +198,10 @@
                         )
                     )
                 (= ch #x28)
-                    (do (next-character-and-mark-start)
-                        (set-token TLParen ())
-                    )
+                    (set-token TLParen ())
                 (= ch #x29)
-                    (do (next-character-and-mark-start)
-                        (set-token TRParen ())
-                    )
-                (do (next-character-and-mark-start)
-                    (set-token TERROR)
-                )
+                    (set-token TRParen ())
+                (set-token TERROR)
             )
 
             scanner
@@ -235,10 +214,10 @@
     (and (<= #x21 c #x7e)
          (not (or (<= #\0 c #\9)
                   (= #x22 c) ; '"'
+                  (= #x23 c) ; '#'
                   (= #x28 c) ; '('
                   (= #x29 c) ; ')'
                   (= #x3b c) ; ';'
-                  (= #x23 c) ; '#'
               )
          )
     )

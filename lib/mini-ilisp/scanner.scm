@@ -30,7 +30,7 @@
 ;
 ; fragments
 ;   digit = '0'-'9';
-;   id = '!'-'}' \ ('0'-'9' + '"' + '(' + ')' + ';');
+;   id = '!'-'}' \ ('0'-'9' + '"' + '(' + ')' + ';' + '#');
 ;   cr = chr(10);
 ; ```
 ;
@@ -174,7 +174,7 @@
 
             (if (= ch #x0) 
                     (do (next-character-and-mark-start)
-                        (set-token TEOS "")
+                        (set-token TEOS ())
                     )
                 (= ch #\-)
                     (do (next-character-and-mark-start)
@@ -197,6 +197,21 @@
                     )
                 (= ch #x22)
                     (scan-literal-string)
+                (= ch #x23)
+                    (do (next-character-and-mark-start)
+                        (const ch' (Scanner-next-ch scanner))
+
+                        (if (= ch' #\t) 
+                                (do (next-character)
+                                    (set-token TLiteralTrue ())
+                                )
+                            (= ch' #\f)
+                                (do (next-character)
+                                    (set-token TLiteralFalse ())
+                                )
+                            (set-token TERROR)
+                        )
+                    )
                 (do (mark-start-and-next-character)
                     (set-token TERROR)
                 )
@@ -215,6 +230,7 @@
                   (= #x28 c) ; '('
                   (= #x29 c) ; ')'
                   (= #x3b c) ; ';'
+                  (= #x23 c) ; '#'
               )
          )
     )
@@ -242,7 +258,7 @@
 (struct Token
     (token (proc (n) (<= TIdentifier n TERROR)))
     (location Location?)
-    (lexeme string?)
+    (lexeme (or? string? null?))
 )
 
 (struct Coordinate

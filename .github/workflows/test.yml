@@ -13,12 +13,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Check LLVM
-        run: |
-          llvm-as-9 --version
-          clang-9 --version
-          llvm-link-9 --version
-          lli-9 --version
+      # - name: Check LLVM
+      #   run: |
+      #     llvm-as-9 --version
+      #     clang-9 --version
+      #     llvm-link-9 --version
+      #     lli-9 --version
       - name: Install readline
         run: |
           sudo apt-get update

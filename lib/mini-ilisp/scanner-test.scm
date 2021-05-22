@@ -86,3 +86,14 @@
     (assert-range-token (nth ts 5) Scanner.TLiteralInt 22 31 "-123456789")
     (assert-coordinate-token (nth ts 6) Scanner.TEOS 32 "")
 )
+
+(Unit.test "match literal string"
+    (const ts (string->tokens "\"\" \"hello world\" \"a\\\"b\""))
+
+    (Unit.assert-equals (count ts) 4)
+
+    (assert-range-token (nth ts 0) Scanner.TLiteralString 0 1 "\"\"")
+    (assert-range-token (nth ts 1) Scanner.TLiteralString 3 15 "\"hello world\"")
+    (assert-range-token (nth ts 2) Scanner.TLiteralString 17 22 "\"a\\\"b\"")
+    (assert-coordinate-token (nth ts 3) Scanner.TEOS 23 "")
+)

@@ -2,7 +2,7 @@
 (import "../data/struct.scm" :names mutable-struct struct)
 (import "../data/union.scm" :names union)
 (import "../number.scm" :names dec inc)
-(import "../predicate.scm" :names byte-vector? character? integer? null? string?)
+(import "../predicate.scm" :names =? byte-vector? character? integer? null? string?)
 
 ; Given a byte vector will return a scanner.  This scanner has a number of
 ; procedures that can be applied to it to determine whether the end of input
@@ -16,7 +16,7 @@
 ; tokens
 ;     Identifier = (id \ '-') {digit | id};
 ;     LiteralInt = ['-'] digit {digit};
-;     LiteralString = '"' {!('"' + cr) | "\" '"'}  '"';
+;     LiteralString = '"' {!('"' + cr) | "\" ('"' + '\'}  '"';
 ;     LiteralTrue = "#t";
 ;     LiteralFalse = "#f";
 ;     LParen = "(";
@@ -137,6 +137,37 @@
         )
     )
 
+    (const (scan-literal-string)
+        (const (scan-next)
+            (const ch (Scanner-next-ch scanner))
+
+            (if (< ch #x20)
+                    (set-token TERROR)
+                (= ch #x5c)
+                    (do (next-character)
+                        (if (or (= ch #x22) (= ch #x5c))
+                                (do (next-character)
+                                    (scan-next)
+                                )
+                            (do (next-character)
+                                (set-token TERROR)
+                            )
+                        )
+                    )
+                (= ch #x22)
+                    (do (next-character)
+                        (set-token TLiteralString)
+                    )
+                (do (next-character)
+                    (scan-next)
+                )
+            )
+        )
+
+        (next-character-and-mark-start)
+        (scan-next)
+    )
+
     (if (= (current-token scanner) TEOS) scanner
         (do (skip-white-space)
             (const ch (Scanner-next-ch scanner))
@@ -164,8 +195,9 @@
                         (while-next (or? id? digit?))
                         (set-token TIdentifier)
                     )
-                (do (mark-start) 
-                    (next-character)
+                (= ch #x22)
+                    (scan-literal-string)
+                (do (mark-start-and-next-character)
                     (set-token TERROR)
                 )
             )
@@ -199,7 +231,7 @@
 
 (const TIdentifier 0)
 (const TLiteralInt 1)
-(const TListernString 2)
+(const TLiteralString 2)
 (const TLiteralTrue 3)
 (const TLiteralFalse 4)
 (const TLParen 5)

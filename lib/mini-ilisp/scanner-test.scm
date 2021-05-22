@@ -97,11 +97,23 @@
 (Unit.test "match literal boolean"
     (const ts (string->tokens "#t #f"))
 
-    ;; (println (pr-str ts))
-
     (Unit.assert-equals (count ts) 3)
 
     (assert-range-token (nth ts 0) Scanner.TLiteralTrue 0 1 ())
     (assert-range-token (nth ts 1) Scanner.TLiteralFalse 3 4 ())
     (assert-coordinate-token (nth ts 2) Scanner.TEOS 5 ())
+)
+
+(Unit.test "match parenthesis"
+    (const ts (string->tokens "( ) ()"))
+
+    ;; (println (pr-str ts))
+
+    (Unit.assert-equals (count ts) 5)
+
+    (assert-coordinate-token (nth ts 0) Scanner.TLParen 0 ())
+    (assert-coordinate-token (nth ts 1) Scanner.TRParen 2 ())
+    (assert-coordinate-token (nth ts 2) Scanner.TLParen 4 ())
+    (assert-coordinate-token (nth ts 3) Scanner.TRParen 5 ())
+    (assert-coordinate-token (nth ts 4) Scanner.TEOS 6 ())
 )

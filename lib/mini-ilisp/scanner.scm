@@ -57,8 +57,24 @@
     (next scanner)
 )
 
-(const (string->scanner s)
-    (byte-vector->scanner (string->byte-vector s))
+(const- identity (proc (n) n))
+
+(const- (<| . fs)
+    (const (apply-rest f' v)
+        (if (null? f') v
+            ((car f') (apply-rest (cdr f') v))
+        )
+    )
+
+    (if (null? fs) identity
+        (proc (v)
+            ((car fs) (apply-rest (cdr fs) v))
+        )
+    )
+)
+
+(const string->scanner
+    (<| byte-vector->scanner string->byte-vector)
 )
 
 (const (next scanner)

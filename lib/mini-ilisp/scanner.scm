@@ -38,7 +38,7 @@
 ; :parameter input byte-vector?
 ;   The input to be scanned.
 ; :returns Scanner?
-(const (mk-scanner input)
+(const (byte-vector->scanner input)
     (const scanner 
         (Scanner 
             input 

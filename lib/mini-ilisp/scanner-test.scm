@@ -13,7 +13,7 @@
 )
 
 (const- (string->scanner s)
-    (Scanner.mk-scanner (string->byte-vector s))
+    (Scanner.byte-vector->scanner (string->byte-vector s))
 )
 
 (const- (string->tokens s)

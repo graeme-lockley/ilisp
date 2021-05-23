@@ -29,6 +29,15 @@
 ;   `#t` if `value` refers to an integer otherwise `#f`.
 (const integer? Builtin.integer?)
 
+; Determine whether or not the passed value is a boolean.
+;
+; :usage (boolean? value)
+; :parameter value any?
+;   The value to test.
+; :returns boolean?
+;   `#t` if `value` refers to a boolean otherwise `#f`.
+(const boolean? Builtin.boolean?)
+
 ; Determine whether or not the passed value is a character.
 ;
 ; :usage (character? value)

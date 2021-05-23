@@ -1,6 +1,6 @@
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
-(import "../predicate.scm" :names string?)
+(import "../predicate.scm" :names boolean? string?)
 (import "./scanner.scm" :as Scanner)
 
 ; A parser for mini-Lisp which accepts a scanner and then returns an AST.
@@ -68,6 +68,14 @@
                 (do (const token' (Scanner.next-token scanner))
                     (LiteralStringExpression (Scanner.Token-lexeme token') (Scanner.Token-location token'))
                 )
+            (= token-type Scanner.TLiteralTrue)
+                (do (const token' (Scanner.next-token scanner))
+                    (LiteralBooleanExpression #t (Scanner.Token-location token'))
+                )
+            (= token-type Scanner.TLiteralFalse)
+                (do (const token' (Scanner.next-token scanner))
+                    (LiteralBooleanExpression #f (Scanner.Token-location token'))
+                )
             (raise 'SyntaxError {:found token-type :expected (list Scanner.TIdentifier) :location (Scanner.Token-location token)})
         )
     )
@@ -94,6 +102,11 @@
 
 (struct LiteralStringExpression
     (value string?)
+    (location Scanner.Location?)
+)
+
+(struct LiteralBooleanExpression
+    (value boolean?)
     (location Scanner.Location?)
 )
 

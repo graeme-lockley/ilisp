@@ -64,6 +64,10 @@
                 (do (const token' (Scanner.next-token scanner))
                     (LiteralIntExpression (Scanner.Token-lexeme token') (Scanner.Token-location token'))
                 )
+            (= token-type Scanner.TLiteralString)
+                (do (const token' (Scanner.next-token scanner))
+                    (LiteralStringExpression (Scanner.Token-lexeme token') (Scanner.Token-location token'))
+                )
             (raise 'SyntaxError {:found token-type :expected (list Scanner.TIdentifier) :location (Scanner.Token-location token)})
         )
     )
@@ -84,6 +88,11 @@
 )
 
 (struct LiteralIntExpression
+    (value string?)
+    (location Scanner.Location?)
+)
+
+(struct LiteralStringExpression
     (value string?)
     (location Scanner.Location?)
 )

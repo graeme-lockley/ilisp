@@ -1,4 +1,4 @@
-(import "./parser.scm" :names IdentifierExpression? IdentifierExpression-id LiteralIntExpression? LiteralIntExpression-value scanner->ast)
+(import "./parser.scm" :names IdentifierExpression? IdentifierExpression-id LiteralIntExpression? LiteralIntExpression-value LiteralStringExpression? LiteralStringExpression-value scanner->ast)
 (import "./scanner.scm" :names string->scanner)
 
 (import "../unit.scm" :as Unit)
@@ -25,4 +25,14 @@
     (const ast' (car ast))
     (Unit.assert-truthy (LiteralIntExpression? ast'))
     (Unit.assert-equals (LiteralIntExpression-value ast') "-123")
+)
+
+(Unit.test "Literal String"
+    (const ast (parse "\"hello\""))
+
+    (Unit.assert-equals (count ast) 1)
+
+    (const ast' (car ast))
+    (Unit.assert-truthy (LiteralStringExpression? ast'))
+    (Unit.assert-equals (LiteralStringExpression-value ast') "\"hello\"")
 )

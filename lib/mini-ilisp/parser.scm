@@ -1,6 +1,6 @@
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
-(import "../predicate.scm" :names boolean? string?)
+(import "../predicate.scm" :names boolean? list-of? string?)
 (import "./scanner.scm" :as Scanner)
 
 ; A parser for mini-Lisp which accepts a scanner and then returns an AST.
@@ -31,6 +31,15 @@
 
     (const (current-token-type)
         (Scanner.Token-token (current-token))
+    )
+
+    (const (match-token-type token-type)
+        (const token (current-token))
+
+        (if (= (Scanner.Token-token token) token-type)
+                (Scanner.next-token scanner)
+            (raise 'SyntaxError {:found (Scanner.Token-token token) :expected (list token-type) :location (Scanner.Token-location token)})
+        )
     )
 
     (const (first-expression?)
@@ -76,12 +85,18 @@
                 (do (const token' (Scanner.next-token scanner))
                     (LiteralBooleanExpression #f (Scanner.Token-location token'))
                 )
+            (= token-type Scanner.TLParen)
+                (do (const lparen (Scanner.next-token scanner))
+                    (const body (expression'))
+                    (const rparen (match-token-type Scanner.TRParen))
+                    (S-Expression body (Scanner.combine (Scanner.Token-location lparen) (Scanner.Token-location rparen)))
+                )
             (raise 'SyntaxError {:found token-type :expected (list Scanner.TIdentifier) :location (Scanner.Token-location token)})
         )
     )
 
     (const es (expression'))
-    ;; (match Scanner.TEOS)
+    (match-token-type Scanner.TEOS)
     es
 )
 
@@ -110,6 +125,11 @@
     (location Scanner.Location?)
 )
 
+(struct S-Expression
+    (expressions (list-of? Expression?))
+    (location Scanner.Location?)
+)
+
 (union Expression
-    IdentifierExpression? LiteralIntExpression?
+    IdentifierExpression? LiteralIntExpression? LiteralStringExpression? LiteralBooleanExpression? S-Expression?
 )

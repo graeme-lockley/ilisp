@@ -65,6 +65,20 @@
 ;   `#t` if `value` refers to a string otherwise `#f`.
 (const string? Builtin.string?)
 
+(const (list? l)
+    (if (*builtin*.null? l) #t
+        (and (*builtin*.pair? l) (list? (cdr l)))
+    )
+)
+
+(const (list-of? element?)
+    (proc (list)
+        (and (list? list)
+             (fold list #t (proc (acc e) (and acc (element? e))))
+        )
+    )
+)
+
 ; Creates a predicate that returns `#t` if the passed value equals `v` otherwise
 ; returns `#f`.
 ;

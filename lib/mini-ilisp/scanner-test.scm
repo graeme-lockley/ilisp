@@ -11,6 +11,48 @@
     (Unit.assert-equals (Scanner.Coordinate-column c) 3)
 )
 
+(Unit.test "combine similar coordinates"
+    (const p1 (Scanner.Coordinate 0 1 2))
+
+    (Unit.assert-equals (Scanner.combine p1 p1) p1)
+)
+
+(Unit.test "combine two ordered coordinates"
+    (const p1 (Scanner.Coordinate 0 1 2))
+    (const p2 (Scanner.Coordinate 3 4 5))
+
+    (Unit.assert-equals (Scanner.combine p1 p2) (Scanner.Range p1 p2))
+)
+
+(Unit.test "combine two reversed coordinates"
+    (const p1 (Scanner.Coordinate 0 1 2))
+    (const p2 (Scanner.Coordinate 3 4 5))
+
+    (Unit.assert-equals (Scanner.combine p2 p1) (Scanner.Range p1 p2))
+)
+
+(Unit.test "combine two ordered ranges"
+    (const p1 (Scanner.Coordinate 0 1 2))
+    (const p2 (Scanner.Coordinate 3 4 5))
+    (const p3 (Scanner.Coordinate 6 7 8))
+    (const p4 (Scanner.Coordinate 9 10 11))
+
+    (Unit.assert-equals (Scanner.combine p1 (Scanner.combine p3 p4)) (Scanner.Range p1 p4))
+    (Unit.assert-equals (Scanner.combine (Scanner.combine p1 p2) p4) (Scanner.Range p1 p4))
+    (Unit.assert-equals (Scanner.combine (Scanner.combine p1 p2) (Scanner.combine p3 p4)) (Scanner.Range p1 p4))
+)
+
+(Unit.test "combine two reversed ranges"
+    (const p1 (Scanner.Coordinate 0 1 2))
+    (const p2 (Scanner.Coordinate 3 4 5))
+    (const p3 (Scanner.Coordinate 6 7 8))
+    (const p4 (Scanner.Coordinate 9 10 11))
+
+    (Unit.assert-equals (Scanner.combine p4 (Scanner.combine p1 p2)) (Scanner.Range p1 p4))
+    (Unit.assert-equals (Scanner.combine (Scanner.combine p3 p4) p1) (Scanner.Range p1 p4))
+    (Unit.assert-equals (Scanner.combine (Scanner.combine p3 p4) (Scanner.combine p1 p2)) (Scanner.Range p1 p4))
+)
+
 (const- (string->tokens s)
     (const (tokens scanner)
         (const token (Scanner.Scanner-current-token scanner))

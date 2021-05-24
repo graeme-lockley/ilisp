@@ -303,3 +303,33 @@
     (start-column integer?)
     (current-token Token?)
 )
+
+(const (combine loc1 loc2)
+    (const (min-coordinate c1 c2)
+        (if (< (Coordinate-offset c1) (Coordinate-offset c2))
+                c1
+            c2
+        )
+    )
+
+    (const (max-coordinate c1 c2)
+        (if (> (Coordinate-offset c1) (Coordinate-offset c2))
+                c1
+            c2
+        )
+    )
+
+    (if (and (Coordinate? loc1) (Coordinate? loc2))
+            (if (= (Coordinate-offset loc1) (Coordinate-offset loc2))
+                    loc1
+                (< (Coordinate-offset loc1) (Coordinate-offset loc2))
+                    (Range loc1 loc2)
+                (Range loc2 loc1)
+            )
+        (Coordinate? loc1)
+            (Range (min-coordinate loc1 (Range-start loc2)) (max-coordinate loc1 (Range-end loc2)))
+        (Coordinate? loc2)
+            (Range (min-coordinate (Range-start loc1) loc2) (max-coordinate (Range-end loc1) loc2))
+        (Range (min-coordinate (Range-start loc1) (Range-start loc2)) (max-coordinate (Range-end loc1) (Range-end loc2)))
+    )
+)

@@ -62,25 +62,31 @@
 
     (Unit.assert-equals (count ast) 1)
 
-    (const ast' (car ast))
-    (Unit.assert-truthy (S-Expression? ast'))
+    (Unit.assert-truthy (S-Expression? (car ast)))
+    (const ast' (S-Expression-expressions (car ast)))
+    (Unit.assert-equals (count ast') 5)
 
-    (const hello' (nth (S-Expression-expressions ast') 0))
+    (const hello' (nth ast' 0))
     (Unit.assert-truthy (IdentifierExpression? hello'))
     (Unit.assert-equals (IdentifierExpression-id hello') "hello")
 
-    (const int' (nth (S-Expression-expressions ast') 1))
+    (const int' (nth ast' 1))
     (Unit.assert-truthy (LiteralIntExpression? int'))
     (Unit.assert-equals (LiteralIntExpression-value int') "1")
 
-    (const string' (nth (S-Expression-expressions ast') 2))
+    (const string' (nth ast' 2))
     (Unit.assert-truthy (LiteralStringExpression? string'))
     (Unit.assert-equals (LiteralStringExpression-value string') "\"a\"")
 
-    (const boolean' (nth (S-Expression-expressions ast') 3))
+    (const boolean' (nth ast' 3))
     (Unit.assert-truthy (LiteralBooleanExpression? boolean'))
     (Unit.assert-truthy (LiteralBooleanExpression-value boolean'))
 
-    (const ast'' (nth (S-Expression-expressions ast') 4))
-    (Unit.assert-truthy (S-Expression? ast''))
+    (Unit.assert-truthy (S-Expression?  (nth ast' 4)))
+    (const ast'' (S-Expression-expressions (nth ast' 4)))
+    (Unit.assert-equals (count ast'') 1)
+
+    (const world' (nth ast'' 0))
+    (Unit.assert-truthy (IdentifierExpression? world'))
+    (Unit.assert-equals (IdentifierExpression-id world') "world")
 )

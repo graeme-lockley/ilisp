@@ -3,7 +3,7 @@
 (import "../predicate.scm" :names boolean? list-of? string?)
 (import "./scanner.scm" :as Scanner)
 
-; A parser for mini-Lisp which accepts a scanner and then returns an AST.
+; A parser for mini-Lisp which accepts a scanner and returns an AST.
 ;
 ; The grammar for this parser, using [Parspiler](https://github.com/littlelanguages/parspiler) notation:
 ; ```
@@ -21,7 +21,7 @@
 ;
 ; :usage (scanner->ast scanner)
 ; :parameter scanner Scanner?
-; :returns Ast?
+; :returns (list-of? Expression?)
 ; :signal SyntaxError
 ;   A syntax error occured whilst parsing.
 (const (scanner->ast scanner)
@@ -100,13 +100,13 @@
     es
 )
 
-
-;; (struct Program
-;;     (es (list-of? Expression?))
-;; )
-
 (struct IdentifierExpression
     (id string?)
+    (location Scanner.Location?)
+)
+
+(struct LiteralBooleanExpression
+    (value boolean?)
     (location Scanner.Location?)
 )
 
@@ -117,11 +117,6 @@
 
 (struct LiteralStringExpression
     (value string?)
-    (location Scanner.Location?)
-)
-
-(struct LiteralBooleanExpression
-    (value boolean?)
     (location Scanner.Location?)
 )
 

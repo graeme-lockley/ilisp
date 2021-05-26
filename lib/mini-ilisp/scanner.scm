@@ -59,7 +59,7 @@
 
 (const- identity (proc (n) n))
 
-(const- (<| . fs)
+(const (<| . fs)
     (const (apply-rest f' v)
         (if (null? f') v
             ((car f') (apply-rest (cdr f') v))

@@ -1,9 +1,9 @@
+(import "./ast.scm" :as AST)
 (import "./environment.scm" :as Env)
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
 (import "../list.scm" :as List)
 (import "./scanner.scm" :as Scanner)
-(import "./parser.scm" :as Parser)
 (import "../predicate.scm" :names list-of? string?)
 (import "../string.scm" :as String)
 
@@ -15,7 +15,7 @@
 ;   amenable to translation into LLVM IR.
 (const (ast->tst ast)
     (const (println-expression->tst env e)
-        (const es (Parser.S-Expression-expressions e))
+        (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
         (CallPrintLn es')
@@ -23,9 +23,9 @@
 
     ;; ; A const binding has 2 forms - single name and list of names.
     ;; (const (const-expression->tst env e)
-    ;;     (const es (Parser.S-Expression-expressions e))
+    ;;     (const es (AST.S-Expression-expressions e))
 
-    ;;     (if (< (count es) 3) (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (Parser.S-Expression-location e))}))
+    ;;     (if (< (count es) 3) (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (AST.S-Expression-location e))}))
 
     ;;     (const args (cadr es))
     ;;     (const body (cddr es))
@@ -41,19 +41,19 @@
     ;; )
 
     (const (expression->tst env e)
-        (if (Parser.IdentifierExpression? e)
-                (if (Env.binding? env (Parser.IdentifierExpression-id e))
-                        (IdentifierReference (Parser.IdentifierExpression-id e) (Parser.IdentifierExpression-location e))
-                    (raise 'UnknownIdentifier {:identifier (Parser.IdentifierExpression-id e) :location (Parser.IdentifierExpression-location e) })
+        (if (AST.IdentifierExpression? e)
+                (if (Env.binding? env (AST.IdentifierExpression-id e))
+                        (IdentifierReference (AST.IdentifierExpression-id e) (AST.IdentifierExpression-location e))
+                    (raise 'UnknownIdentifier {:identifier (AST.IdentifierExpression-id e) :location (AST.IdentifierExpression-location e) })
                 )
-            (Parser.LiteralStringExpression? e)
+            (AST.LiteralStringExpression? e)
                 (string-literal-expression->tst env e)
-            (Parser.S-Expression? e)
-                (do (const expressions (Parser.S-Expression-expressions e))
+            (AST.S-Expression? e)
+                (do (const expressions (AST.S-Expression-expressions e))
                     (const first-expression (car expressions))
 
-                    (if (Parser.IdentifierExpression? first-expression)
-                        (do (const first-expression-identifier (Parser.IdentifierExpression-id first-expression))
+                    (if (AST.IdentifierExpression? first-expression)
+                        (do (const first-expression-identifier (AST.IdentifierExpression-id first-expression))
                             (if (= first-expression-identifier "println") (println-expression->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
@@ -82,7 +82,7 @@
 )
 
 (const (string-literal-expression->tst env e)
-    (const literal (Parser.LiteralStringExpression-value e))
+    (const literal (AST.LiteralStringExpression-value e))
     (const literal-value (String.slice literal 1 (- (count literal) 1)))
     
     (StringLiteral literal-value)

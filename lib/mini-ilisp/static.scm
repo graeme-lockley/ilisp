@@ -1,11 +1,9 @@
+(import "../list.scm" :as List)
+(import "../string.scm" :as String)
+
 (import "./ast.scm" :as AST)
 (import "./environment.scm" :as Env)
-(import "../data/struct.scm" :names struct)
-(import "../data/union.scm" :names union)
-(import "../list.scm" :as List)
-(import "./scanner.scm" :as Scanner)
-(import "../predicate.scm" :names list-of? string?)
-(import "../string.scm" :as String)
+(import "./tst.scm" :as TST)
 
 ; Translate the AST into a typed syntax tree.  The purpose of this 
 ; transformation is:
@@ -18,7 +16,7 @@
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
-        (CallPrintLn es')
+        (TST.CallPrintLn es')
     )
 
     ;; ; A const binding has 2 forms - single name and list of names.
@@ -43,7 +41,7 @@
     (const (expression->tst env e)
         (if (AST.IdentifierExpression? e)
                 (if (Env.binding? env (AST.IdentifierExpression-id e))
-                        (IdentifierReference (AST.IdentifierExpression-id e) (AST.IdentifierExpression-location e))
+                        (TST.IdentifierReference (AST.IdentifierExpression-id e) (AST.IdentifierExpression-location e))
                     (raise 'UnknownIdentifier {:identifier (AST.IdentifierExpression-id e) :location (AST.IdentifierExpression-location e) })
                 )
             (AST.LiteralStringExpression? e)
@@ -85,27 +83,5 @@
     (const literal (AST.LiteralStringExpression-value e))
     (const literal-value (String.slice literal 1 (- (count literal) 1)))
     
-    (StringLiteral literal-value)
-)
-
-(struct DeclareValue
-    (name string?)
-    (expr Expression?)
-)
-
-(struct IdentifierReference
-    (name string?)
-    (location Scanner.Location?)
-)
-
-(struct StringLiteral
-    (value string?)
-)
-
-(union Expression
-    IdentifierReference? StringLiteral?
-)
-
-(struct CallPrintLn
-    (args (list-of? Expression?))
+    (TST.StringLiteral literal-value)
 )

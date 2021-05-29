@@ -1,6 +1,7 @@
 (import "./parser.scm" :as Parser)
 (import "./scanner.scm" :as Scanner)
-(import "./static.scm" :names CallPrintLn-args CallPrintLn? StringLiteral ast->tst)
+(import "./static.scm" :names ast->tst)
+(import "./tst.scm" :as TST)
 
 (import "../unit.scm" :as Unit)
 
@@ -18,8 +19,8 @@
     (Unit.assert-equals (count tst) 1)
     (const tst' (car tst))
 
-    (Unit.assert-truthy (CallPrintLn? tst'))
-    (Unit.assert-equals (CallPrintLn-args tst') (list (StringLiteral "hello world")))
+    (Unit.assert-truthy (TST.CallPrintLn? tst'))
+    (Unit.assert-equals (TST.CallPrintLn-args tst') (list (TST.StringLiteral "hello world")))
 )
 
 ;; (Unit.test "declare constant"

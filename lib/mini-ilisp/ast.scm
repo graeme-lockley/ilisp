@@ -1,6 +1,7 @@
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
 (import "../predicate.scm" :names boolean? list-of? string?)
+(import "./scanner.scm" :as Scanner)
 
 (struct IdentifierExpression
     (id string?)

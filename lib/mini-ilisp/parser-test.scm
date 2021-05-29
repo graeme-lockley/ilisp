@@ -1,10 +1,11 @@
-(import "./parser.scm" :names 
+(import "./ast.scm" :names
     IdentifierExpression? IdentifierExpression-id 
     LiteralBooleanExpression? LiteralBooleanExpression-value 
     LiteralIntExpression? LiteralIntExpression-value 
     LiteralStringExpression? LiteralStringExpression-value 
     S-Expression? S-Expression-expressions
-    scanner->ast)
+)
+(import "./parser.scm" :names scanner->ast)
 (import "./scanner.scm" :names string->scanner)
 
 (import "../unit.scm" :as Unit)

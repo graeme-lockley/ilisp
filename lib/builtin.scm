@@ -6,6 +6,14 @@
 ;   An atom containing `value`.
 (const atom *builtin*.atom)
 
+; Construct a mutable map from the passed arguments.
+;
+; :usage (mutable-map . values)
+; :parameter values list?
+; :returns mutable-map?
+;   A mutable map composed of elements from `values`.
+(const mutable-map *builtin*.mutable-map)
+
 ; Construct a mutable vector from the passed arguments.
 ;
 ; :usage (mutable-vector . values)
@@ -94,6 +102,30 @@
 ; :returns boolean?
 ;   `#t` if `value` refers to a string otherwise `#f`.
 (const string? *builtin*.string?)
+
+
+; Mutate `map` by incorporating the passed bindings.
+; 
+; :usage (map-assoc! map . k1 v1 ... kn vn)
+; :parameter map mutable-map?
+; :parameter k1 any?
+;   The key of the first binding.
+; :parameter v1 any?
+;   The value of the first binding.
+; :parameter kn any?
+;   The key of the last binding.
+; :parameter vn any?
+;   The value of the last binding.
+(const map-assoc! *builtin*.map-assoc!)
+
+; Verifies whether or not `key` is contained in `map`.
+;
+; :usage (map-contains? map key)
+; :parameter map map?
+; :parameter key any?
+; :returns boolean?
+;   `#t` if `key` in `map` otherwise `#f`.
+(const map-contains? *builtin*.map-contains?)
 
 ; Determine whether or not the passed value is a thread.
 ;

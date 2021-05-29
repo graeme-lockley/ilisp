@@ -92,10 +92,45 @@
   take-right
 )
 
+(const identity (proc (n) n))
+(const (constant c) (proc (n) c))
+
 (import "./predicate.scm" :names
+  null?
   not?
   or?
 )
+
+(const (<| . fs)
+    (const (apply-rest f' v)
+        (if (null? f') v
+            ((car f') (apply-rest (cdr f') v))
+        )
+    )
+
+    (if (null? fs) identity
+        (proc (v)
+            ((car fs) (apply-rest (cdr fs) v))
+        )
+    )
+)
+
+(const (|> . fs)
+    (const (apply-rest fs' v)
+        (if (null? fs') v
+            (apply-rest (cdr fs') ((car fs') v))
+        )
+    )
+
+    (proc (v)
+        (apply-rest fs v)
+    )
+)
+
+(const caar (|> car car))
+(const cadr (|> car cdr))
+(const cdar (|> cdr car))
+(const cddr (|> cdr cdr))
 
 (const (type-of v)
   (if (*builtin*.null? v) "nil"

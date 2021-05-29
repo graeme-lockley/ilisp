@@ -57,26 +57,10 @@
     (next scanner)
 )
 
-(const- identity (proc (n) n))
-
-(const (<| . fs)
-    (const (apply-rest f' v)
-        (if (null? f') v
-            ((car f') (apply-rest (cdr f') v))
-        )
-    )
-
-    (if (null? fs) identity
-        (proc (v)
-            ((car fs) (apply-rest (cdr fs) v))
-        )
-    )
-)
-
 (const string->scanner
     (import "../byte-vector.scm" :names string->byte-vector)
 
-    (<| byte-vector->scanner string->byte-vector)
+    (|> string->byte-vector byte-vector->scanner)
 )
 
 (const (next-token scanner)

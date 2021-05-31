@@ -1,6 +1,6 @@
 (import "../../../unit.scm" :as Unit)
 
-(import "./type.scm" :names Array Function i1 i32 Pointer Structure type->string void)
+(import "./type.scm" :names Array Function i1 i32 Pointer Reference Structure type->string void)
 
 (Unit.test "type->string Void"
     (Unit.assert-equals (type->string void) "void")
@@ -33,4 +33,8 @@
 
 (Unit.test "type->string Array"
     (Unit.assert-equals (type->string (Array 4 (Pointer i32))) "[4 x i32*]")
+)
+
+(Unit.test "type->string Reference"
+    (Unit.assert-equals (type->string (Reference "%union.anon")) "%union.anon")
 )

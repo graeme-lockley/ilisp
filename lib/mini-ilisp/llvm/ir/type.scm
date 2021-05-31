@@ -31,8 +31,12 @@
     (element Type?)
 )
 
+(struct Reference
+    (name string?)
+)
+
 (union Type
-    Void? Integer? Pointer?
+    Void? Integer? Pointer? Function? Structure? Array? Reference?
 )
 
 (const void (Void))
@@ -63,6 +67,8 @@
             )
         (Array? type)
             (str "[" (Array-size type) " x " (type->string (Array-element type)) "]")
+        (Reference? type)
+            (Reference-name type)
         (raise 'TODO-type->string type)
     )
 )

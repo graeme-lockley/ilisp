@@ -7,3 +7,8 @@ test/*_test
 test/flag
 .DS_Store
 main-mac
+scratch/lib.bc
+scratch/lib.ll
+scratch/main.ll
+scratch/main.bc
+scratch/main

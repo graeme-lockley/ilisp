@@ -17,6 +17,6 @@
                 (const imports (*builtin*.list-map (rest options) (proc (n) `(const- ~n (map-get (module-import ~name) (quote ~n))))))
                 `(do ~@imports)
             )
-        (raise 'IllegalImportSyntax {:expected ":as symbol"})
+        (raise 'IllegalImportSyntax {:expected ":as or :names symbol"})
     )
 )

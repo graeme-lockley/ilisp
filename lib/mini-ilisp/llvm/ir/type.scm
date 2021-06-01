@@ -43,6 +43,8 @@
 
 (const i1 (Integer 1))
 
+(const i8 (Integer 8))
+
 (const i32 (Integer 32))
 
 (const- (riap l e)

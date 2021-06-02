@@ -11,6 +11,10 @@
     (Builder-declarations! builder (pair (Module.IdentifiedType name type) (Builder-declarations builder)))
 )
 
+(const (declare-external builder name return-type parameter-types)
+    (Builder-declarations! builder (pair (Module.Exteranl name return-type parameter-types) (Builder-declarations builder)))
+)
+
 (mutable-struct Builder
     (id string?)
     (declarations list?)

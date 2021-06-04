@@ -11,12 +11,19 @@
     (type Type?)
 )
 
+(struct CInt
+    (bits number?)
+    (value number?)
+)
+
 (const (untyped-operand->string operand)
     (if (LocalReference? operand) (LocalReference-name operand)
+        (CInt? operand) (str (CInt-value operand))
     )
 )
 
 (const (typed-operand->string operand)
     (if (LocalReference? operand) (str (type->string (LocalReference-type operand)) " " (LocalReference-name operand))
+        (CInt? operand) (str "i" (CInt-bits operand) " " (CInt-value operand))
     )
 )

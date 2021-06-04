@@ -9,3 +9,10 @@
     (Unit.assert-equals (Operand.untyped-operand->string operand) "%1")
     (Unit.assert-equals (Operand.typed-operand->string operand) "%struct.Value* %1")
 )
+
+(Unit.test "operand->string constant int"
+    (const operand (Operand.CInt 8 127))
+
+    (Unit.assert-equals (Operand.untyped-operand->string operand) "127")
+    (Unit.assert-equals (Operand.typed-operand->string operand) "i8 127")
+)

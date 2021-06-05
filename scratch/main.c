@@ -1,13 +1,10 @@
 #include <stdio.h>
+#include <malloc.h>
 
 #include "../ilisp-lib/lib.h"
 
 int main()
 {
-	struct Value v;
-	v.tag = STRING_VALUE;
-	v.string = "hello world";
-
-	_print_value(&v);
-	printf("\n");
+	_print_value(_from_literal_string("hello world"));
+	_print_newline();
 }

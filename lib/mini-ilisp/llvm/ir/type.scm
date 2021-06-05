@@ -47,6 +47,8 @@
 
 (const i32 (Integer 32))
 
+(const i64 (Integer 64))
+
 (const- (riap l e)
     (if (null? l) (list e)
         (pair (car l) (riap (cdr l) e))

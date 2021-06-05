@@ -24,3 +24,7 @@
 (struct CallPrintLn
     (args (list-of? Expression?))
 )
+
+(union Statement
+    CallPrintLn?
+)

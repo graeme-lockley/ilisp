@@ -1,5 +1,6 @@
 (import "./llvm/builder.scm" :as Builder)
 (import "./tst.scm" :as TST)
+(import "./llvm/ir/operand.scm" :as Operand)
 (import "./llvm/ir/type.scm" :as Type)
 
 (const (tst->ir tst)
@@ -18,6 +19,7 @@
             (raise TODO-compile e)
         )
     ))
+    (Builder.ret! main-builder (Operand.CInt 32 0))
 
     ;; (Builder.build-function! main-builder)
     ;; (const main-builder (Builder.declare-function builder "@main" Type.i32 ()))

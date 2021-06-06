@@ -56,8 +56,12 @@
     var
 )
 
+(const (ret! builder value)
+    (include-instruction! builder (Instruction.Ret value))
+)
+
 (const- (include-instruction! builder instruction)
-    ;; (println (Instruction.instruction->string instruction))
+    ;; (print (Instruction.instruction->string instruction))
 
     (FunctionBuilder-instructions! builder (pair instruction (FunctionBuilder-instructions builder)))
 )

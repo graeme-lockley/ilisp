@@ -1,3 +1,5 @@
+(import "../../../list.scm" :as List)
+(import "../../../string.scm" :as String)
 (import "../../../unit.scm" :as Unit)
 
 (import "./type.scm" :as Type)
@@ -15,6 +17,13 @@
 
     (Unit.assert-equals (Operand.untyped-operand->string operand) "127")
     (Unit.assert-equals (Operand.typed-operand->string operand) "i8 127")
+)
+
+(Unit.test "operand->string constant string"
+    (const operand (Operand.string->carray "hello world"))
+
+    (Unit.assert-equals (Operand.untyped-operand->string operand) "[i8 104, i8 101, i8 108, i8 108, i8 111, i8 32, i8 119, i8 111, i8 114, i8 108, i8 100, i8 0]")
+    (Unit.assert-equals (Operand.typed-operand->string operand) "[12 x i8] [i8 104, i8 101, i8 108, i8 108, i8 111, i8 32, i8 119, i8 111, i8 114, i8 108, i8 100, i8 0]")
 )
 
 (Unit.test "operand->string get element ptr"

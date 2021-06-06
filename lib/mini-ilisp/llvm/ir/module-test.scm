@@ -1,5 +1,6 @@
 (import "../../../unit.scm" :as Unit)
 
+(import "./instruction.scm" :as Instruction)
 (import "./module.scm" :as Module)
 (import "./operand.scm" :as Operand)
 (import "./type.scm" :as Type)
@@ -57,5 +58,19 @@
     (Unit.assert-equals 
         (Module.global->string (Module.Global "@.str0" (Type.Array 12 Type.i8) (Operand.string->carray "hello world") #t #t #f 1))
         "@.str0 = private unnamed_addr [12 x i8] [i8 104, i8 101, i8 108, i8 108, i8 111, i8 32, i8 119, i8 111, i8 114, i8 108, i8 100, i8 0], align 1"
+    )
+)
+
+(Unit.test "function->string"
+    (const f (Module.Function "@main" Type.i32 () (list
+        (Instruction.Ret (Operand.CInt 32 0))
+    )))
+
+    (Unit.assert-equals (Module.function->string f)
+        (str
+            "define i32 @main() {\n"
+            "  ret i32 0\n"
+            "}\n"
+        )
     )
 )

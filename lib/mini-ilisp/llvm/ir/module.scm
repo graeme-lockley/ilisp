@@ -2,8 +2,10 @@
 (import "../../../data/struct.scm" :names struct)
 (import "../../../predicate.scm" :names =? boolean? byte-vector? character? integer? list? list-of? null? string?)
 (import "../../../string.scm" :as String)
-(import "./type.scm" :names Type? type->string)
+
+(import "./instruction.scm" :as Instruction)
 (import "./operand.scm" :as Operand)
+(import "./type.scm" :names Type? type->string)
 
 (struct IdentifiedType
     (name string?)
@@ -26,6 +28,13 @@
     (unnamed-addr boolean?)
     (constant boolean?)
     (align number?)
+)
+
+(struct Function
+    (name string?)
+    (return-type Type?)
+    (parameter-types (list-of? Type?))
+    (instructions (list-of? Instruction.Instruction?))
 )
 
 (const (identified-type->string identified-type)
@@ -60,5 +69,17 @@
         " "
         (Operand.untyped-operand->string (Global-value global))
         (if (= 0 (Global-align global)) "" (str ", align " (Global-align global)))
+    )
+)
+
+(const (function->string function)
+    (str
+        "define "
+        (Type.type->string (Function-return-type function))
+        " "
+        (Function-name function)
+        "() {\n"
+        (String.interpolate-with (List.map (Function-instructions function) Instruction.instruction->string) "")
+        "}\n"
     )
 )

@@ -29,3 +29,10 @@
         "  call void @_print_value(%struct.Value* %1)\n"
     )
 )
+
+(Unit.test "instruction->string Ret"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.Ret (Operand.LocalReference "%1" Type.i32)))
+        "  ret i32 %1\n"
+    )
+)

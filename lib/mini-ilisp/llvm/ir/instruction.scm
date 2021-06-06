@@ -18,6 +18,14 @@
     (arguments (list-of? Operand.Operand?))
 )
 
+(struct Ret
+    (value Operand.Operand?)
+)
+
+(union Instruction
+    Call? CallVoid? Ret?
+)
+
 (const (instruction->string instruction)
     (if (Call? instruction)
             (str 
@@ -38,6 +46,12 @@
                 "("
                 (String.interpolate-with (List.map (CallVoid-arguments instruction) Operand.typed-operand->string) ", ")
                 ")\n"
+            )
+        (Ret? instruction)
+            (str
+                "  ret "
+                (Operand.typed-operand->string (Ret-value instruction))
+                "\n"
             )
     )
 )

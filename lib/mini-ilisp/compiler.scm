@@ -19,7 +19,7 @@
     (for-each tst (proc (e)
         (if (TST.CallPrintLn? e)
                 (build-call-print-ln! main-builder e)
-            (raise TODO-compile e)
+            (raise 'TODO-compile e)
         )
     ))
     (Builder.ret! main-builder (Operand.CInt 32 0))

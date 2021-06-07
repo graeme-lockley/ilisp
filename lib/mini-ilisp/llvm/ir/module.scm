@@ -1,5 +1,6 @@
 (import "../../../list.scm" :as List)
 (import "../../../data/struct.scm" :names struct)
+(import "../../../data/union.scm" :names union)
 (import "../../../predicate.scm" :names =? boolean? byte-vector? character? integer? list? list-of? null? string?)
 (import "../../../string.scm" :as String)
 
@@ -35,6 +36,15 @@
     (return-type Type?)
     (parameter-types (list-of? Type?))
     (instructions (list-of? Instruction.Instruction?))
+)
+
+(union Declaration
+    IdentifiedType? External? Global? Function?
+)
+
+(struct Module
+    (name string?)
+    (declarations (list-of? Declaration))
 )
 
 (const (identified-type->string identified-type)
@@ -75,13 +85,33 @@
 (const (function->string function)
     (str
         "define "
-        (Type.type->string (Function-return-type function))
+        (type->string (Function-return-type function))
         " "
         (Function-name function)
         "("
-        (String.interpolate-with (List.map-idx (Function-parameter-types function) (proc (t i) (str (Type.type->string t) " %" i))) ", ")
+        (String.interpolate-with (List.map-idx (Function-parameter-types function) (proc (t i) (str (type->string t) " %" i))) ", ")
         ") {\n"
         (String.interpolate-with (List.map (Function-instructions function) (proc (i) (str "  " (Instruction.instruction->string i) "\n"))) "")
         "}\n"
+    )
+)
+
+(const (declaration->string declaration)
+    (if (IdentifiedType? declaration)
+            (identified-type->string declaration)
+        (External? declaration)
+            (external->string declaration)
+        (Global? declaration)
+            (global->string declaration)
+        (Function? declaration)
+            (function->string declaration)
+    )
+)
+
+(const (module->string module)
+    (str
+        "; ModuleID = '" (Module-name module) "'\n"
+        "\n"
+        (String.interpolate-with (List.map (Module-declarations module) declaration->string) "\n\n")
     )
 )

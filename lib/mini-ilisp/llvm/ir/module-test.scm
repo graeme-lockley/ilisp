@@ -62,13 +62,23 @@
 )
 
 (Unit.test "function->string"
-    (const f (Module.Function "@main" Type.i32 () (list
+    (const f1 (Module.Function "@main" Type.i32 () (list
         (Instruction.Ret (Operand.CInt 32 0))
     )))
-
-    (Unit.assert-equals (Module.function->string f)
+    (Unit.assert-equals (Module.function->string f1)
         (str
             "define i32 @main() {\n"
+            "  ret i32 0\n"
+            "}\n"
+        )
+    )
+
+    (const f2 (Module.Function "@main" Type.i32 (list Type.i32 Type.i32 Type.i32) (list
+        (Instruction.Ret (Operand.CInt 32 0))
+    )))
+    (Unit.assert-equals (Module.function->string f2)
+        (str
+            "define i32 @main(i32 %0, i32 %1, i32 %2) {\n"
             "  ret i32 0\n"
             "}\n"
         )

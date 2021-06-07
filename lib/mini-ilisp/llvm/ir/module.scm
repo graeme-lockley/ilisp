@@ -78,8 +78,10 @@
         (Type.type->string (Function-return-type function))
         " "
         (Function-name function)
-        "() {\n"
-        (String.interpolate-with (List.map (Function-instructions function) Instruction.instruction->string) "")
+        "("
+        (String.interpolate-with (List.map-idx (Function-parameter-types function) (proc (t i) (str (Type.type->string t) " %" i))) ", ")
+        ") {\n"
+        (String.interpolate-with (List.map (Function-instructions function) (proc (i) (str "  " (Instruction.instruction->string i) "\n"))) "")
         "}\n"
     )
 )

@@ -29,7 +29,6 @@
 (const (instruction->string instruction)
     (if (Call? instruction)
             (str 
-                "  "
                 (Operand.LocalReference-name (Call-return instruction))
                 " = call "
                 (Type.type->string (Operand.LocalReference-type (Call-return instruction)))
@@ -37,21 +36,21 @@
                 (Call-name instruction)
                 "("
                 (String.interpolate-with (List.map (Call-arguments instruction) Operand.typed-operand->string) ", ")
-                ")\n"
+                ")"
             )
         (CallVoid? instruction)
             (str 
-                "  call void "
+                "call void "
                 (CallVoid-name instruction)
                 "("
                 (String.interpolate-with (List.map (CallVoid-arguments instruction) Operand.typed-operand->string) ", ")
-                ")\n"
+                ")"
             )
         (Ret? instruction)
             (str
-                "  ret "
+                "ret "
                 (Operand.typed-operand->string (Ret-value instruction))
-                "\n"
+                ""
             )
     )
 )

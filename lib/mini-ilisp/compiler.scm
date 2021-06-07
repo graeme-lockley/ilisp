@@ -1,5 +1,6 @@
 (import "./llvm/builder.scm" :as Builder)
 (import "./tst.scm" :as TST)
+(import "./llvm/ir/module.scm" :as Module)
 (import "./llvm/ir/operand.scm" :as Operand)
 (import "./llvm/ir/type.scm" :as Type)
 
@@ -10,6 +11,8 @@
     (Builder.declare-identified-type! builder "%union.anon" (Type.Structure #f (list (Type.Pointer Type.i32))))
 
     (Builder.declare-external! builder "@_print_value" Type.void (list (Type.Pointer (Type.Reference "%struct.Value"))))
+    (Builder.declare-external! builder "@_print_newline" Type.void ())
+    (Builder.declare-external! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list (Type.Pointer Type.i8)))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -20,13 +23,9 @@
         )
     ))
     (Builder.ret! main-builder (Operand.CInt 32 0))
+    (Builder.declare-function! builder main-builder)
 
-    ;; (Builder.build-function! main-builder)
-    ;; (const main-builder (Builder.declare-function builder "@main" Type.i32 ()))
-
-    ;; (Builder.build-module builder)
-
-    ()
+    (Builder.build-module builder)
 )
 
 (const (compile-expression builder e)

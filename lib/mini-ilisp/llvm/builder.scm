@@ -1,5 +1,6 @@
 (import "../../data/struct.scm" :names mutable-struct)
 (import "../../predicate.scm" :names =? byte-vector? character? integer? list? list-of? null? string?)
+(import "../../list.scm" :as List)
 
 (import "./ir/instruction.scm" :as Instruction)
 (import "./ir/module.scm" :as Module)
@@ -12,7 +13,7 @@
 )
 
 (const (function builder name return-type parameter-types)
-    (FunctionBuilder builder name return-type parameter-types () 1 1)
+    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1))
 )
 
 (const (declare-identified-type! builder name type)
@@ -40,6 +41,25 @@
     )
 )
 
+(const (declare-function! builder function-builder)
+    (include-declaration!
+        builder
+        (Module.Function 
+            (FunctionBuilder-name function-builder) 
+            (FunctionBuilder-return-type function-builder) 
+            (FunctionBuilder-parameter-types function-builder) 
+            (List.reverse (FunctionBuilder-instructions function-builder))
+        )
+    )
+)
+
+(const (build-module builder)
+    (Module.Module
+        (ModuleBuilder-id builder)
+        (List.reverse (ModuleBuilder-declarations builder))
+    )
+)
+
 (const- (include-declaration! builder declaration)
     (ModuleBuilder-declarations! builder (pair declaration (ModuleBuilder-declarations builder)))
 )
@@ -61,7 +81,7 @@
 )
 
 (const- (include-instruction! builder instruction)
-    ;; (print (Instruction.instruction->string instruction))
+    ;; (println (Instruction.instruction->string instruction))
 
     (FunctionBuilder-instructions! builder (pair instruction (FunctionBuilder-instructions builder)))
 )

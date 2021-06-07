@@ -16,12 +16,14 @@
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
-    (for-each tst (proc (e)
-        (if (TST.CallPrintLn? e)
-                (build-call-print-ln! main-builder e)
-            (raise 'TODO-compile e)
+    (for-each tst 
+        (proc (e)
+            (if (TST.CallPrintLn? e)
+                    (build-call-print-ln! main-builder e)
+                (raise 'TODO-compile e)
+            )
         )
-    ))
+    )
     (Builder.ret! main-builder (Operand.CInt 32 0))
     (Builder.declare-function! builder main-builder)
 

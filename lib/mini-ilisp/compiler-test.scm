@@ -1,6 +1,7 @@
 (import "../unit.scm" :as Unit)
 
 (import "./compiler.scm" :as Compiler)
+(import "./llvm/ir/module.scm" :as Module)
 (import "./parser.scm" :as Parser)
 (import "./scanner.scm" :as Scanner)
 (import "./static.scm" :as Static)
@@ -13,7 +14,7 @@
 )
 
 (const (write-file ir name)
-    ()
+    (*builtin*.write-file name (Module.module->string ir))
 )
 
 (Unit.test "hello world"

@@ -734,6 +734,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "vector-reverse", mkNativeProcedure(builtin_vector_reverse_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-slice", mkNativeProcedure(builtin_vector_slice_wrapped));
     add_binding_into_environment(builtin_bindings, "vector-sort!", mkNativeProcedure(builtin_vector_sort_bang_wrapped));
+    add_binding_into_environment(builtin_bindings, "write-file", mkNativeProcedure(builtin_write_file_wrapped));
 
     add_binding_into_environment(root_bindings, "load-file", mkNativeProcedure(builtin_load_source_wrapped));
     add_binding_into_environment(root_bindings, "list", mkNativeProcedure(list));

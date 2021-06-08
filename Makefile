@@ -122,7 +122,8 @@ SRC_OBJECTS=\
 	src/builtin/vector-sort-bang.o \
 	src/builtin/vector-to-list.o \
 	src/builtin/vector-to-mutable-vector.o \
-	src/builtin/vectorp.o
+	src/builtin/vectorp.o \
+	src/builtin/write-file.o
 
 SRC_TARGETS=\
 	src/main

@@ -129,6 +129,7 @@ extern Value *builtin_vector_to_list_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_to_mutable_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vector_wrapped(Value *parameters, Value *env);
 extern Value *builtin_vectorp_wrapped(Value *parameters, Value *env);
+extern Value *builtin_write_file_wrapped(Value *parameters, Value *env);
 
 extern Value *builtins_initialise_environment();
 

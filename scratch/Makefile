@@ -16,4 +16,4 @@ lib.ll: ../ilisp-lib/lib.c
 	clang -emit-llvm -c -S ../ilisp-lib/lib.c -o lib.ll
 
 clean:
-	rm -f main main.ll main.bc lib.ll
+	rm -f main main.ll main.bc lib.ll lib.bc

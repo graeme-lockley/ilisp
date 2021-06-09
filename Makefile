@@ -183,6 +183,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/
 test: $(TEST_INPUT) 
 
 clean:
+	(cd ./scratch ; make clean)
 	rm -f src/*.o
 	rm -f src/builtin/*.o
 	rm -f test/*.o

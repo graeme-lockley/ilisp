@@ -52,9 +52,10 @@
 )
 
 (const (assemble ll-file bc-file)
-    ()
+    (*builtin*.exec (str "llvm-as-10 " ll-file " -o " bc-file))
 )
 
 (const (run bc-file)
-    "hello world\n"
+    (*builtin*.exec (str "clang " bc-file " ./scratch/lib.bc -o a.out 2>&1"))
+    (*builtin*.exec "./a.out")
 )

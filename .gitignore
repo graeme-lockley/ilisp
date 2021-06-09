@@ -12,3 +12,5 @@ scratch/lib.ll
 scratch/main.ll
 scratch/main.bc
 scratch/main
+a.out
+test.bc

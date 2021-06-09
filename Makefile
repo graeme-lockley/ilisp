@@ -164,6 +164,7 @@ all: $(SRC_TARGETS) $(TEST_TARGETS) $(TEST_FLAG)
 	$(CC) $(LDFLAGS) ./test/value_test.o $(SRC_OBJECTS) $(TEST_OBJECTS) $(LDLIBS) -o ./test/value_test
 
 $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/*.scm ./lib/interpreter/*.scm ./lib/ilisp-docs/*.scm ./lib/mini-ilisp/*.scm
+	(cd ./scratch ; make)
 	./test/value_test
 	./test/builtins_test
 	./test/repl_test ./test/t00-basic-repl.txt

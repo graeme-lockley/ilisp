@@ -44,6 +44,7 @@ SRC_OBJECTS=\
 	src/builtin/characterp.o \
 	src/builtin/character-to-string.o \
 	src/builtin/eval.o \
+	src/builtin/exec.o \
 	src/builtin/file-name-relative-to-file-name.o \
 	src/builtin/import-source.o \
 	src/builtin/integerp.o \

@@ -40,6 +40,7 @@ extern Value *builtin_byte_vector_to_string_wrapped(Value *parameters, Value *en
 extern Value *builtin_characterp_wrapped(Value *parameters, Value *env);
 extern Value *builtin_character_to_string_wrapped(Value *parameters, Value *env);
 extern Value *builtin_eval(Value *v, Value *env);
+extern Value *builtin_exec_wrapped(Value *v, Value *env);
 extern Value *builtin_eval_wrapped(Value *parameters, Value *env);
 extern Value *builtin_file_name_relative_to_file_name(char *base_file_name, char *file_name);
 extern Value *builtin_file_name_relative_to_file_name_wrapped(Value *parameters, Value *env);

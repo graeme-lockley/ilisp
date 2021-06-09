@@ -657,6 +657,7 @@ Value *builtins_initialise_environment()
     add_binding_into_environment(builtin_bindings, "character?", mkNativeProcedure(builtin_characterp_wrapped));
     add_binding_into_environment(builtin_bindings, "character->string", mkNativeProcedure(builtin_character_to_string_wrapped));
     add_binding_into_environment(builtin_bindings, "eval", mkNativeProcedure(builtin_eval_wrapped));
+    add_binding_into_environment(builtin_bindings, "exec", mkNativeProcedure(builtin_exec_wrapped));
     add_binding_into_environment(builtin_bindings, "file-name-relative-to-file-name", mkNativeProcedure(builtin_file_name_relative_to_file_name_wrapped));
     add_binding_into_environment(builtin_bindings, "import-source", mkNativeProcedure(builtin_import_source_wrapped));
     add_binding_into_environment(builtin_bindings, "integer?", mkNativeProcedure(builtin_integerp_wrapped));

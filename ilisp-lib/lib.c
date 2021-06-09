@@ -20,6 +20,14 @@ void _print_value(struct Value *value)
     }
 }
 
+struct Value *_from_literal_int(int v)
+{
+    struct Value *r = (struct Value *)malloc(sizeof(struct Value));
+    r->tag = NUMBER_VALUE;
+    r->number = v;
+    return r;
+}
+
 struct Value *_from_literal_string(char *s)
 {
     struct Value *r = (struct Value *)malloc(sizeof(struct Value));

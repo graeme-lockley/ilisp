@@ -14,3 +14,4 @@ scratch/main.bc
 scratch/main
 a.out
 test.bc
+test.ll

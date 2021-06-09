@@ -1,4 +1,5 @@
 (import "../list.scm" :as List)
+(import "../number.scm" :as Number)
 (import "../string.scm" :as String)
 
 (import "./ast.scm" :as AST)
@@ -12,6 +13,13 @@
 ; - Change the S-Expression representation into a representation that is more
 ;   amenable to translation into LLVM IR.
 (const (ast->tst ast)
+    (const (print-expression->tst env e)
+        (const es (AST.S-Expression-expressions e))
+        (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+
+        (TST.CallPrint es')
+    )
+
     (const (println-expression->tst env e)
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
@@ -44,6 +52,8 @@
                         (TST.IdentifierReference (AST.IdentifierExpression-id e) (AST.IdentifierExpression-location e))
                     (raise 'UnknownIdentifier {:identifier (AST.IdentifierExpression-id e) :location (AST.IdentifierExpression-location e) })
                 )
+            (AST.LiteralIntExpression? e)
+                (integer-literal-expression->tst env e)
             (AST.LiteralStringExpression? e)
                 (string-literal-expression->tst env e)
             (AST.S-Expression? e)
@@ -53,6 +63,7 @@
                     (if (AST.IdentifierExpression? first-expression)
                         (do (const first-expression-identifier (AST.IdentifierExpression-id first-expression))
                             (if (= first-expression-identifier "println") (println-expression->tst env e)
+                                (= first-expression-identifier "print") (print-expression->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
                             )
@@ -77,6 +88,13 @@
     ))
 
     (List.map ast (proc (e) (expression->tst env e)))
+)
+
+(const (integer-literal-expression->tst env e)
+    (const literal (AST.LiteralIntExpression-value e))
+    (const literal-value (Number.string->number literal))
+    
+    (TST.IntegerLiteral literal-value)
 )
 
 (const (string-literal-expression->tst env e)

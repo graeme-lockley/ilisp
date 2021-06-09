@@ -12,6 +12,7 @@
 
     (Builder.declare-external! builder "@_print_value" Type.void (list (Type.Pointer (Type.Reference "%struct.Value"))))
     (Builder.declare-external! builder "@_print_newline" Type.void ())
+    (Builder.declare-external! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list Type.i32))
     (Builder.declare-external! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list (Type.Pointer Type.i8)))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
@@ -20,6 +21,8 @@
         (proc (e)
             (if (TST.CallPrintLn? e)
                     (build-call-print-ln! main-builder e)
+                (TST.CallPrint? e)
+                    (build-call-print! main-builder e)
                 (raise 'TODO-compile e)
             )
         )
@@ -35,9 +38,20 @@
             (do (const op (Builder.declare-string-literal! builder (TST.StringLiteral-value e)))
                 (Builder.call! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list op))
             )
+        (TST.IntegerLiteral? e)
+            (Builder.call! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list (Operand.CInt 32 (TST.IntegerLiteral-value e))))
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)
         (raise 'TODO-compile e)
+    )
+)
+
+(const (build-call-print! builder e)
+    (for-each (TST.CallPrint-args e)
+        (proc (arg)
+            (const operand (compile-expression builder arg))
+            (Builder.call-void! builder "@_print_value" (list operand))
+        )
     )
 )
 

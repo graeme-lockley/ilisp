@@ -19,4 +19,10 @@
 
 (Unit.test "hello world"
     (Unit.assert-equals (compile-and-run "(println \"hello world\")") "hello world\n")
+    (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\")") "hello world\n")
+    (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\") (println \"bye bye love\")") "hello world\nbye bye love\n")
+)
+
+(Unit.test "literal - integer"
+    (Unit.assert-equals (compile-and-run "(print 123)") "123")
 )

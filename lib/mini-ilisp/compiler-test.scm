@@ -24,5 +24,5 @@
 )
 
 (Unit.test "literal - integer"
-    (Unit.assert-equals (compile-and-run "(print 123)") "123")
+    (Unit.assert-equals (compile-and-run "(print 123 \" \" -456)") "123 -456")
 )

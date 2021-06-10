@@ -21,6 +21,15 @@
         "stdio.h": "c",
         "string.h": "c",
         "malloc.h": "c",
-        "buffer.h": "c"
+        "buffer.h": "c",
+        "*.tcc": "cpp",
+        "exception": "cpp",
+        "algorithm": "cpp",
+        "cmath": "cpp",
+        "random": "cpp",
+        "fstream": "cpp",
+        "limits": "cpp",
+        "numeric": "cpp",
+        "streambuf": "cpp"
     }
 }

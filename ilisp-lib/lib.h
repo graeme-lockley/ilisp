@@ -1,18 +1,25 @@
 #ifndef __LIB_H__
 #define __LIB_H__
 
-#define NUMBER_VALUE 0
-#define STRING_VALUE 1
+#define BOOLEAN_VALUE 0
+#define INTEGER_VALUE 1
+#define STRING_VALUE 2
 
 struct Value
 {
     int tag;
     union
     {
-        int number;
+        int boolean;
+        int integer;
         char *string;
     };
 };
+
+extern struct Value *VTrue;
+extern struct Value *VFalse;
+
+extern void _initialise_lib();
 
 extern void _print_value(struct Value *value);
 extern void _print_newline(void);

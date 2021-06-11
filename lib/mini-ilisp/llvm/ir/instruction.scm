@@ -18,6 +18,12 @@
     (arguments (list-of? Operand.Operand?))
 )
 
+(struct Load
+    (return Operand.LocalReference?)
+    (value Operand.Operand?)
+    (align number?)
+)
+
 (struct Ret
     (value Operand.Operand?)
 )
@@ -45,6 +51,15 @@
                 "("
                 (String.interpolate-with (List.map (CallVoid-arguments instruction) Operand.typed-operand->string) ", ")
                 ")"
+            )
+        (Load? instruction)
+            (str
+                (Operand.LocalReference-name (Load-return instruction))
+                " = load "
+                (Type.type->string (Operand.LocalReference-type (Load-return instruction)))
+                ", "
+                (Operand.typed-operand->string (Load-value instruction))
+                (if (= 0 (Load-align instruction)) "" (str ", align " (Load-align instruction)))
             )
         (Ret? instruction)
             (str

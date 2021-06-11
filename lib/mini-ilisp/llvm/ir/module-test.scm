@@ -61,6 +61,18 @@
     )
 )
 
+(Unit.test "external-global->string"
+    (Unit.assert-equals 
+        (Module.external-global->string (Module.ExternalGlobal "@_VTrue" (Type.Pointer (Type.Reference "%struct.Value")) 0))
+        "@_VTrue = external global %struct.Value*"
+    )
+
+    (Unit.assert-equals 
+        (Module.external-global->string (Module.ExternalGlobal "@_VTrue" (Type.Pointer (Type.Reference "%struct.Value")) 8))
+        "@_VTrue = external global %struct.Value*, align 8"
+    )
+)
+
 (Unit.test "function->string"
     (const f1 (Module.Function "@main" Type.i32 () (list
         (Instruction.Ret (Operand.CInt 32 0))

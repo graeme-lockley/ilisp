@@ -20,6 +20,12 @@
     (is-var-arg boolean?)
 )
 
+(struct ExternalGlobal
+    (name string?)
+    (type Type?)
+    (align number?)
+)
+
 (struct Global
     (name string?)
     (type Type?)
@@ -68,6 +74,15 @@
     (str "declare " (type->string (External-return-type external)) " " (External-name external) "(" parameters ")")
 )
 
+(const (external-global->string external)
+    (str 
+        (ExternalGlobal-name external) 
+        " = external global " 
+        (type->string (ExternalGlobal-type external)) 
+        (if (= 0 (ExternalGlobal-align external)) "" (str ", align " (ExternalGlobal-align external)))
+    )
+)
+
 (const (global->string global)
     (str
         (Global-name global)
@@ -101,6 +116,8 @@
             (identified-type->string declaration)
         (External? declaration)
             (external->string declaration)
+        (ExternalGlobal? declaration)
+            (external-global->string declaration)
         (Global? declaration)
             (global->string declaration)
         (Function? declaration)

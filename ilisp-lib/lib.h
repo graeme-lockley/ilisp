@@ -16,8 +16,8 @@ struct Value
     };
 };
 
-extern struct Value *VTrue;
-extern struct Value *VFalse;
+extern struct Value *_VTrue;
+extern struct Value *_VFalse;
 
 extern void _initialise_lib();
 

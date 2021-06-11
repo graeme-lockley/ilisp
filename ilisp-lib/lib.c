@@ -7,18 +7,18 @@
 
 #include "./lib.h"
 
-struct Value *VTrue;
-struct Value *VFalse;
+struct Value *_VTrue;
+struct Value *_VFalse;
 
 void _initialise_lib()
 {
-    VTrue = (struct Value *)malloc(sizeof(struct Value));
-    VTrue->tag = BOOLEAN_VALUE;
-    VTrue->boolean = (1 == 1);
+    _VTrue = (struct Value *)malloc(sizeof(struct Value));
+    _VTrue->tag = BOOLEAN_VALUE;
+    _VTrue->boolean = (1 == 1);
 
-    VFalse = (struct Value *)malloc(sizeof(struct Value));
-    VFalse->tag = BOOLEAN_VALUE;
-    VFalse->boolean = (1 == 0);
+    _VFalse = (struct Value *)malloc(sizeof(struct Value));
+    _VFalse->tag = BOOLEAN_VALUE;
+    _VFalse->boolean = (1 == 0);
 }
 
 void _print_value(struct Value *value)

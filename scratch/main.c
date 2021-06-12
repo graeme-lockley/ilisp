@@ -16,4 +16,13 @@ int main()
 
 	_print_value(_plus(_from_literal_int(1), _from_literal_int(2)));
 	_print_newline();
+
+	_print_value(_VNull);
+	_print_newline();
+
+	_print_value(_mk_pair(_from_literal_int(1), _mk_pair(_from_literal_int(2), _mk_pair(_from_literal_int(3), _VNull))));
+	_print_newline();
+
+	_print_value(_mk_pair(_from_literal_int(1), _from_literal_int(2)));
+	_print_newline();
 }

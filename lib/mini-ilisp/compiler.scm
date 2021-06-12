@@ -19,6 +19,7 @@
     (Builder.declare-external! builder "@_print_newline" Type.void ())
     (Builder.declare-external! builder "@_from_literal_int" struct-value-pointer (list Type.i32))
     (Builder.declare-external! builder "@_from_literal_string" struct-value-pointer (list (Type.Pointer Type.i8)))
+    (Builder.declare-external-global! builder "@_VNull" struct-value-pointer 8)
     (Builder.declare-external-global! builder "@_VTrue" struct-value-pointer 8)
     (Builder.declare-external-global! builder "@_VFalse" struct-value-pointer 8)
     (Builder.declare-external! builder "@_plus"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
@@ -49,7 +50,9 @@
 )
 
 (const (compile-expression builder e)
-    (if (TST.StringLiteral? e)
+    (if (TST.NullLiteral? e)
+            (Builder.load! builder (Operand.LocalReference "@_VNull" struct-value-pointer-pointer))
+        (TST.StringLiteral? e)
             (do (const op (Builder.declare-string-literal! builder (TST.StringLiteral-value e)))
                 (Builder.call! builder "@_from_literal_string" struct-value-pointer (list op))
             )

@@ -13,6 +13,9 @@
     (location Scanner.Location?)
 )
 
+(struct NullLiteral
+)
+
 (struct IntegerLiteral
     (value integer?)
 )
@@ -44,7 +47,7 @@
 
 (union Expression
     IdentifierReference? 
-    BooleanLiteral? IntegerLiteral? StringLiteral?
+    NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
 )
 

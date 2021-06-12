@@ -17,10 +17,20 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
+;; (Unit.test "expression - if"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (print (if))
+;;     ") "()")
+;; )
+
 (Unit.test "hello world"
     (Unit.assert-equals (compile-and-run "(println \"hello world\")") "hello world\n")
     (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\")") "hello world\n")
     (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\") (println \"bye bye love\")") "hello world\nbye bye love\n")
+)
+
+(Unit.test "literal - ()"
+    (Unit.assert-equals (compile-and-run "(print ())") "()")
 )
 
 (Unit.test "literal - integer"

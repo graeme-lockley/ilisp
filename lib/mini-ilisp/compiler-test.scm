@@ -44,3 +44,10 @@
         "0 -1 -1 -19"
     )
 )
+
+(Unit.test "operator *"
+    (Unit.assert-equals 
+        (compile-and-run "(print (*) \" \" (* 1) \" \" (* 1 2) \" \" (* 1 2 3 4 5 6))")
+        "1 1 2 720"
+    )
+)

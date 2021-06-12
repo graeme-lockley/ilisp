@@ -35,10 +35,15 @@
     (op2 Expression?)
 )
 
+(struct Multiply
+    (op1 Expression?)
+    (op2 Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     BooleanLiteral? IntegerLiteral? StringLiteral?
-    Plus? Minus?
+    Plus? Minus? Multiply?
 )
 
 (struct CallPrintLn

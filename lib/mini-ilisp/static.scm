@@ -33,6 +33,16 @@
         )
     )
 
+    (const (multiply->tst env e)
+        (const es (AST.S-Expression-expressions e))
+        (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+
+        (if (null? es')  (TST.IntegerLiteral 1)
+            (= (count es') 1) (car es')
+            (fold (cddr es') (TST.Multiply (nth es' 0) (nth es' 1)) TST.Multiply)
+        )
+    )
+
     (const (print-expression->tst env e)
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
@@ -88,6 +98,7 @@
                                 (= first-expression-identifier "print") (print-expression->tst env e)
                                 (= first-expression-identifier "+") (plus->tst env e)
                                 (= first-expression-identifier "-") (minus->tst env e)
+                                (= first-expression-identifier "*") (multiply->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
                             )

@@ -45,10 +45,16 @@
     (op2 Expression?)
 )
 
+(struct Equals
+    (op1 Expression?)
+    (op2 Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     BooleanLiteral? IntegerLiteral? StringLiteral?
     Plus? Minus? Multiply? Divide?
+    Equals?
 )
 
 (struct CallPrintLn

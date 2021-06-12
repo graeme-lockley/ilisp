@@ -112,3 +112,21 @@ struct Value *_divide(struct Value *op1, struct Value *op2)
 
     return _from_literal_int((int)(v1 / v2));
 }
+
+struct Value *_equals(struct Value *op1, struct Value *op2)
+{
+    if (op1->tag != op2->tag)
+        return _VFalse;
+
+    switch (op1->tag)
+    {
+    case BOOLEAN_VALUE:
+        return (op1->boolean == op2->boolean) ? _VTrue : _VFalse;
+    case INTEGER_VALUE:
+        return (op1->integer == op2->integer) ? _VTrue : _VFalse;
+    case STRING_VALUE:
+        return (strcmp(op1->string, op2->string) == 0) ? _VTrue : _VFalse;
+    default:
+        return _VFalse;
+    }
+}

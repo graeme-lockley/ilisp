@@ -58,3 +58,10 @@
         "1 1 2 5"
     )
 )
+
+(Unit.test "operator ="
+    (Unit.assert-equals 
+        (compile-and-run "(print (= 1 1) \" \" (= 1 0) \" \" (= #t #t) \" \" (= #t #f))")
+        "#t #f #t #f"
+    )
+)

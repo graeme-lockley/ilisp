@@ -1,6 +1,6 @@
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
-(import "../predicate.scm" :names boolean? integer? list-of? string?)
+(import "../predicate.scm" :names =? boolean? integer? list-of? or? string?)
 (import "./scanner.scm" :as Scanner)
 
 (struct DeclareValue
@@ -32,12 +32,12 @@
     (op2 Expression?)
 )
 
-(const (binary-operator? op)
-    (or (= '+)
-        (= '-)
-        (= '*)
-        (= '/)
-        (= '=)
+(const binary-operator?
+    (or? (=? '+)
+         (=? '-)
+         (=? '*)
+         (=? '/)
+         (=? '=)
     )
 )
 

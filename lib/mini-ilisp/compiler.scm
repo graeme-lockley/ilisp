@@ -4,6 +4,10 @@
 (import "./llvm/ir/operand.scm" :as Operand)
 (import "./llvm/ir/type.scm" :as Type)
 
+(const- struct-value (Type.Reference "%struct.Value"))
+(const- struct-value-pointer (Type.Pointer struct-value))
+(const- struct-value-pointer-pointer (Type.Pointer struct-value-pointer))
+
 (const (tst->ir tst)
     (const builder (Builder.module "test"))
 
@@ -11,12 +15,12 @@
     (Builder.declare-identified-type! builder "%union.anon" (Type.Structure #f (list (Type.Pointer Type.i32))))
 
     (Builder.declare-external! builder "@_initialise_lib" Type.void ())
-    (Builder.declare-external! builder "@_print_value" Type.void (list (Type.Pointer (Type.Reference "%struct.Value"))))
+    (Builder.declare-external! builder "@_print_value" Type.void (list struct-value-pointer))
     (Builder.declare-external! builder "@_print_newline" Type.void ())
-    (Builder.declare-external! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list Type.i32))
-    (Builder.declare-external! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list (Type.Pointer Type.i8)))
-    (Builder.declare-external-global! builder "@_VTrue" (Type.Pointer (Type.Reference "%struct.Value")) 8)
-    (Builder.declare-external-global! builder "@_VFalse" (Type.Pointer (Type.Reference "%struct.Value")) 8)
+    (Builder.declare-external! builder "@_from_literal_int" struct-value-pointer (list Type.i32))
+    (Builder.declare-external! builder "@_from_literal_string" struct-value-pointer (list (Type.Pointer Type.i8)))
+    (Builder.declare-external-global! builder "@_VTrue" struct-value-pointer 8)
+    (Builder.declare-external-global! builder "@_VFalse" struct-value-pointer 8)
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -41,13 +45,13 @@
 (const (compile-expression builder e)
     (if (TST.StringLiteral? e)
             (do (const op (Builder.declare-string-literal! builder (TST.StringLiteral-value e)))
-                (Builder.call! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list op))
+                (Builder.call! builder "@_from_literal_string" struct-value-pointer (list op))
             )
         (TST.IntegerLiteral? e)
-            (Builder.call! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list (Operand.CInt 32 (TST.IntegerLiteral-value e))))
+            (Builder.call! builder "@_from_literal_int" struct-value-pointer (list (Operand.CInt 32 (TST.IntegerLiteral-value e))))
         (TST.BooleanLiteral? e)
             (do (const name (if (TST.BooleanLiteral-value e) "@_VTrue" "@_VFalse"))
-                (Builder.load! builder (Operand.LocalReference name (Type.Pointer (Type.Pointer (Type.Reference "%struct.Value")))))
+                (Builder.load! builder (Operand.LocalReference name struct-value-pointer-pointer))
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)

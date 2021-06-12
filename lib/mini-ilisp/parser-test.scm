@@ -58,6 +58,16 @@
     (Unit.assert-falsy (LiteralBooleanExpression-value ast-f'))
 )
 
+(Unit.test "Literal ()"
+    (const ast (parse "()"))
+
+    (Unit.assert-equals (count ast) 1)
+
+    (const ast-t' (nth ast 0))
+    (Unit.assert-truthy (S-Expression? ast-t'))
+    (Unit.assert-equals (count (S-Expression-expressions ast-t')) 0)
+)
+
 (Unit.test "Abbreviated S-Expression"
     (const ast (parse "(hello 1 \"a\" #t (world))"))
 

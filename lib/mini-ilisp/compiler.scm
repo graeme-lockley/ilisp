@@ -26,6 +26,7 @@
     (Builder.declare-external! builder "@_multiply"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_divide"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_equals"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
+    (Builder.declare-external! builder "@_less_than"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -77,6 +78,7 @@
         '* "@_multiply"
         '/ "@_divide"
         '= "@_equals"
+        '< "@_less_than"
     }
 )
 

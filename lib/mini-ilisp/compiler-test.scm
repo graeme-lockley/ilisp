@@ -65,3 +65,10 @@
         "#t #f #t #f"
     )
 )
+
+(Unit.test "operator <"
+    (Unit.assert-equals 
+        (compile-and-run "(print (< 1 1) \" \" (< 1 0) \" \" (< 0 1) \" \" (< #t #t) \" \" (< #t #f) \" \" (< #f #t))")
+        "#f #f #t #f #f #t"
+    )
+)

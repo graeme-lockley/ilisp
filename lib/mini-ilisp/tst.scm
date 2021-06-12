@@ -25,36 +25,26 @@
     (value boolean?)
 )
 
-(struct Plus
+(struct BinaryOperator
+    (op binary-operator?)
+
     (op1 Expression?)
     (op2 Expression?)
 )
 
-(struct Minus
-    (op1 Expression?)
-    (op2 Expression?)
-)
-
-(struct Multiply
-    (op1 Expression?)
-    (op2 Expression?)
-)
-
-(struct Divide
-    (op1 Expression?)
-    (op2 Expression?)
-)
-
-(struct Equals
-    (op1 Expression?)
-    (op2 Expression?)
+(const (binary-operator? op)
+    (or (= '+)
+        (= '-)
+        (= '*)
+        (= '/)
+        (= '=)
+    )
 )
 
 (union Expression
     IdentifierReference? 
     BooleanLiteral? IntegerLiteral? StringLiteral?
-    Plus? Minus? Multiply? Divide?
-    Equals?
+    BinaryOperator?
 )
 
 (struct CallPrintLn

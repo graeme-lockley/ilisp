@@ -58,40 +58,26 @@
             (do (const name (if (TST.BooleanLiteral-value e) "@_VTrue" "@_VFalse"))
                 (Builder.load! builder (Operand.LocalReference name struct-value-pointer-pointer))
             )
-        (TST.Plus? e)
-            (do (const op1 (compile-expression builder (TST.Plus-op1 e)))
-                (const op2 (compile-expression builder (TST.Plus-op2 e)))
+        (TST.BinaryOperator? e)
+            (do (const op (TST.BinaryOperator-op e))
+                (const op1 (compile-expression builder (TST.BinaryOperator-op1 e)))
+                (const op2 (compile-expression builder (TST.BinaryOperator-op2 e)))
 
-                (Builder.call! builder "@_plus" struct-value-pointer (list op1 op2))
-            )
-        (TST.Minus? e)
-            (do (const op1 (compile-expression builder (TST.Minus-op1 e)))
-                (const op2 (compile-expression builder (TST.Minus-op2 e)))
-
-                (Builder.call! builder "@_minus" struct-value-pointer (list op1 op2))
-            )
-        (TST.Multiply? e)
-            (do (const op1 (compile-expression builder (TST.Multiply-op1 e)))
-                (const op2 (compile-expression builder (TST.Multiply-op2 e)))
-
-                (Builder.call! builder "@_multiply" struct-value-pointer (list op1 op2))
-            )
-        (TST.Divide? e)
-            (do (const op1 (compile-expression builder (TST.Divide-op1 e)))
-                (const op2 (compile-expression builder (TST.Divide-op2 e)))
-
-                (Builder.call! builder "@_divide" struct-value-pointer (list op1 op2))
-            )
-        (TST.Equals? e)
-            (do (const op1 (compile-expression builder (TST.Equals-op1 e)))
-                (const op2 (compile-expression builder (TST.Equals-op2 e)))
-
-                (Builder.call! builder "@_equals" struct-value-pointer (list op1 op2))
+                (Builder.call! builder (map-get binary-procedure-names op) struct-value-pointer (list op1 op2))
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)
         (raise 'TODO-compile e)
     )
+)
+
+(const binary-procedure-names
+    {   '+ "@_plus" 
+        '- "@_minus"
+        '* "@_multiply"
+        '/ "@_divide"
+        '= "@_equals"
+    }
 )
 
 (const (build-call-print! builder e)

@@ -85,19 +85,19 @@
 ;; )
 
 (const- (plus->tst env e)
-    (arithmetic-op->tst env e (TST.IntegerLiteral 0) TST.Plus)
+    (arithmetic-op->tst env e (TST.IntegerLiteral 0) '+)
 )
 
 (const- (minus->tst env e)
-    (arithmetic-op->tst env e (TST.IntegerLiteral 0) TST.Minus)
+    (arithmetic-op->tst env e (TST.IntegerLiteral 0) '-)
 )
 
 (const- (multiply->tst env e)
-    (arithmetic-op->tst env e (TST.IntegerLiteral 1) TST.Multiply)
+    (arithmetic-op->tst env e (TST.IntegerLiteral 1) '*)
 )
 
 (const- (divide->tst env e)
-    (arithmetic-op->tst env e (TST.IntegerLiteral 1) TST.Divide)
+    (arithmetic-op->tst env e (TST.IntegerLiteral 1) '/)
 )
 
 (const- (arithmetic-op->tst env e unary op)
@@ -105,8 +105,8 @@
     (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
     (if (null? es') unary
-        (= (count es') 1) (op unary (car es'))
-        (fold (cddr es') (op (nth es' 0) (nth es' 1)) op)
+        (= (count es') 1) (TST.BinaryOperator op unary (car es'))
+        (fold (cddr es') (TST.BinaryOperator op (nth es' 0) (nth es' 1)) (proc (l r) (TST.BinaryOperator op l r)))
     )
 )
 
@@ -114,7 +114,7 @@
     (const es (cdr (AST.S-Expression-expressions e)))
     (const es' (List.map es (proc (e') (expression->tst env e'))))
 
-    (if (= (count es') 2) (TST.Equals (nth es' 0) (nth es' 1))
+    (if (= (count es') 2) (TST.BinaryOperator '= (nth es' 0) (nth es' 1))
         (raise 'ArgumentsMismatch {:procedure '= :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
 )

@@ -45,7 +45,7 @@
 )
 
 (union Declaration
-    IdentifiedType? External? Global? Function?
+    IdentifiedType? External? ExternalGlobal? Global? Function?
 )
 
 (struct Module

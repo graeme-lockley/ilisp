@@ -49,6 +49,12 @@
 
 (const i64 (Integer 64))
 
+(const (dereference t)
+    (if (Pointer? t) (Pointer-type t)
+        t
+    )
+)
+
 (const- (riap l e)
     (if (null? l) (list e)
         (pair (car l) (riap (cdr l) e))

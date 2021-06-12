@@ -24,6 +24,10 @@
     (include-declaration! builder (Module.External name return-type parameter-types #f))
 )
 
+(const (declare-external-global! builder name type align)
+    (include-declaration! builder (Module.ExternalGlobal name type align))
+)
+
 (const (declare-string-literal! builder value)
     (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-module-builder builder) builder))
 
@@ -72,6 +76,14 @@
     (const var (Operand.LocalReference (new-variable! builder) return-type))
 
     (include-instruction! builder (Instruction.Call var name arguments))
+
+    var
+)
+
+(const (load! builder operand)
+    (const var (Operand.LocalReference (new-variable! builder) (Type.dereference (Operand.type-of operand))))
+
+    (include-instruction! builder (Instruction.Load var operand 8))
 
     var
 )

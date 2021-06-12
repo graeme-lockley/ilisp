@@ -33,6 +33,18 @@
     LocalReference? GetElementPtr? Constant?
 )
 
+(const (type-of operand)
+    (if (LocalReference? operand)
+            (LocalReference-type operand)
+        (GetElementPtr? operand)
+            (GetElementPtr-type operand)
+        (CInt? operand)
+            (Type.Integer (CInt-bits operand))
+        (CArray operand)
+            (Type.Array (count (CArray-elements operand)) (CArray-element-type operand))
+    )
+)
+
 (union Constant
     CInt? CArray?
 )

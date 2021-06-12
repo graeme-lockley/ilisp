@@ -10,12 +10,17 @@
     (Builder.declare-identified-type! builder "%struct.Value" (Type.Structure #f (list Type.i32 (Type.Reference "%union.anon"))))
     (Builder.declare-identified-type! builder "%union.anon" (Type.Structure #f (list (Type.Pointer Type.i32))))
 
+    (Builder.declare-external! builder "@_initialise_lib" Type.void ())
     (Builder.declare-external! builder "@_print_value" Type.void (list (Type.Pointer (Type.Reference "%struct.Value"))))
     (Builder.declare-external! builder "@_print_newline" Type.void ())
     (Builder.declare-external! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list Type.i32))
     (Builder.declare-external! builder "@_from_literal_string" (Type.Pointer (Type.Reference "%struct.Value")) (list (Type.Pointer Type.i8)))
+    (Builder.declare-external-global! builder "@_VTrue" (Type.Pointer (Type.Reference "%struct.Value")) 8)
+    (Builder.declare-external-global! builder "@_VFalse" (Type.Pointer (Type.Reference "%struct.Value")) 8)
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
+
+    (Builder.call-void! main-builder "@_initialise_lib" ())
 
     (for-each tst 
         (proc (e)
@@ -40,6 +45,10 @@
             )
         (TST.IntegerLiteral? e)
             (Builder.call! builder "@_from_literal_int" (Type.Pointer (Type.Reference "%struct.Value")) (list (Operand.CInt 32 (TST.IntegerLiteral-value e))))
+        (TST.BooleanLiteral? e)
+            (do (const name (if (TST.BooleanLiteral-value e) "@_VTrue" "@_VFalse"))
+                (Builder.load! builder (Operand.LocalReference name (Type.Pointer (Type.Pointer (Type.Reference "%struct.Value")))))
+            )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)
         (raise 'TODO-compile e)

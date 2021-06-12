@@ -29,7 +29,7 @@
 )
 
 (union Instruction
-    Call? CallVoid? Ret?
+    Call? CallVoid? Load? Ret?
 )
 
 (const (instruction->string instruction)

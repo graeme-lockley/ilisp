@@ -1,6 +1,6 @@
 (import "../data/struct.scm" :names struct)
 (import "../data/union.scm" :names union)
-(import "../predicate.scm" :names integer? list-of? string?)
+(import "../predicate.scm" :names boolean? integer? list-of? string?)
 (import "./scanner.scm" :as Scanner)
 
 (struct DeclareValue
@@ -21,8 +21,13 @@
     (value string?)
 )
 
+(struct BooleanLiteral
+    (value boolean?)
+)
+
 (union Expression
-    IdentifierReference? IntegerLiteral? StringLiteral?
+    IdentifierReference? 
+    BooleanLiteral? IntegerLiteral? StringLiteral?
 )
 
 (struct CallPrintLn

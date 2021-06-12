@@ -26,3 +26,7 @@
 (Unit.test "literal - integer"
     (Unit.assert-equals (compile-and-run "(print 123 \" \" -456)") "123 -456")
 )
+
+(Unit.test "literal - boolean"
+    (Unit.assert-equals (compile-and-run "(print #t \" \" #f)") "#t #f")
+)

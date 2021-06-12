@@ -56,6 +56,8 @@
                 (integer-literal-expression->tst env e)
             (AST.LiteralStringExpression? e)
                 (string-literal-expression->tst env e)
+            (AST.LiteralBooleanExpression? e)
+                (TST.BooleanLiteral (AST.LiteralBooleanExpression-value e))
             (AST.S-Expression? e)
                 (do (const expressions (AST.S-Expression-expressions e))
                     (const first-expression (car expressions))

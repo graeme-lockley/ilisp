@@ -60,3 +60,19 @@ void _print_newline(void)
 {
     printf("\n");
 }
+
+struct Value *_plus(struct Value *op1, struct Value *op2)
+{
+    int v1 = op1->tag == INTEGER_VALUE ? op1->integer : 0;
+
+    if (v1 == 0)
+        return op2;
+    else
+    {
+        int v2 = op2->tag == INTEGER_VALUE ? op2->integer : 0;
+        if (v2 == 0)
+            return op1;
+        else
+            return _from_literal_int(v1 + v2);
+    }
+}

@@ -13,6 +13,16 @@
 ; - Change the S-Expression representation into a representation that is more
 ;   amenable to translation into LLVM IR.
 (const (ast->tst ast)
+    (const (plus->tst env e)
+        (const es (AST.S-Expression-expressions e))
+        (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+
+        (if (null? es')  (TST.IntegerLiteral 0)
+            (= (count es') 1) (car es')
+            (fold (cddr es') (TST.Plus (nth es' 0) (nth es' 1)) TST.Plus)
+        )
+    )
+
     (const (print-expression->tst env e)
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
@@ -66,6 +76,7 @@
                         (do (const first-expression-identifier (AST.IdentifierExpression-id first-expression))
                             (if (= first-expression-identifier "println") (println-expression->tst env e)
                                 (= first-expression-identifier "print") (print-expression->tst env e)
+                                (= first-expression-identifier "+") (plus->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
                             )

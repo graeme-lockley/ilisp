@@ -13,4 +13,7 @@ int main()
 	_print_value(_from_literal_string(", "));
 	_print_value(_VFalse);
 	_print_newline();
+
+	_print_value(_plus(_from_literal_int(1), _from_literal_int(2)));
+	_print_newline();
 }

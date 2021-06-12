@@ -21,6 +21,7 @@
     (Builder.declare-external! builder "@_from_literal_string" struct-value-pointer (list (Type.Pointer Type.i8)))
     (Builder.declare-external-global! builder "@_VTrue" struct-value-pointer 8)
     (Builder.declare-external-global! builder "@_VFalse" struct-value-pointer 8)
+    (Builder.declare-external! builder "@_plus"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -52,6 +53,12 @@
         (TST.BooleanLiteral? e)
             (do (const name (if (TST.BooleanLiteral-value e) "@_VTrue" "@_VFalse"))
                 (Builder.load! builder (Operand.LocalReference name struct-value-pointer-pointer))
+            )
+        (TST.Plus? e)
+            (do (const op1 (compile-expression builder (TST.Plus-op1 e)))
+                (const op2 (compile-expression builder (TST.Plus-op2 e)))
+
+                (Builder.call! builder "@_plus" struct-value-pointer (list op1 op2))
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)

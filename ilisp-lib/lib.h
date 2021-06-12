@@ -27,4 +27,6 @@ extern void _print_newline(void);
 extern struct Value *_from_literal_int(int v);
 extern struct Value *_from_literal_string(char *s);
 
+extern struct Value *_plus(struct Value *op1, struct Value *op2);
+
 #endif

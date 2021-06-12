@@ -25,9 +25,15 @@
     (value boolean?)
 )
 
+(struct Plus
+    (op1 Expression?)
+    (op2 Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     BooleanLiteral? IntegerLiteral? StringLiteral?
+    Plus?
 )
 
 (struct CallPrintLn

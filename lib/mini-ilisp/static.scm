@@ -18,7 +18,7 @@
     (for-each '(
         "=" "<"
         "*" "-" "*" "/"
-        "cons" "car" "cdr"
+        "pair" "car" "cdr"
         "null?" "proc?" "integer?" "boolean?"
         "print" "println"
     ) (proc (n) 

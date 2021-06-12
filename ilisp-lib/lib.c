@@ -76,3 +76,15 @@ struct Value *_plus(struct Value *op1, struct Value *op2)
             return _from_literal_int(v1 + v2);
     }
 }
+
+struct Value *_minus(struct Value *op1, struct Value *op2)
+{
+    int v2 = op2->tag == INTEGER_VALUE ? op2->integer : 0;
+    if (v2 == 0)
+        return op1;
+    else
+    {
+        int v1 = op1->tag == INTEGER_VALUE ? op1->integer : 0;
+        return _from_literal_int(v1 - v2);
+    }
+}

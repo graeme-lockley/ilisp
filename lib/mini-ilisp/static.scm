@@ -23,6 +23,16 @@
         )
     )
 
+    (const (minus->tst env e)
+        (const es (AST.S-Expression-expressions e))
+        (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+
+        (if (null? es')  (TST.IntegerLiteral 0)
+            (= (count es') 1) (TST.Minus (TST.IntegerLiteral 0) (car es'))
+            (fold (cddr es') (TST.Minus (nth es' 0) (nth es' 1)) TST.Minus)
+        )
+    )
+
     (const (print-expression->tst env e)
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
@@ -77,6 +87,7 @@
                             (if (= first-expression-identifier "println") (println-expression->tst env e)
                                 (= first-expression-identifier "print") (print-expression->tst env e)
                                 (= first-expression-identifier "+") (plus->tst env e)
+                                (= first-expression-identifier "-") (minus->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
                             )

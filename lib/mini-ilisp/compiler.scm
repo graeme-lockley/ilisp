@@ -22,6 +22,7 @@
     (Builder.declare-external-global! builder "@_VTrue" struct-value-pointer 8)
     (Builder.declare-external-global! builder "@_VFalse" struct-value-pointer 8)
     (Builder.declare-external! builder "@_plus"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
+    (Builder.declare-external! builder "@_minus"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -59,6 +60,12 @@
                 (const op2 (compile-expression builder (TST.Plus-op2 e)))
 
                 (Builder.call! builder "@_plus" struct-value-pointer (list op1 op2))
+            )
+        (TST.Minus? e)
+            (do (const op1 (compile-expression builder (TST.Minus-op1 e)))
+                (const op2 (compile-expression builder (TST.Minus-op2 e)))
+
+                (Builder.call! builder "@_minus" struct-value-pointer (list op1 op2))
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)

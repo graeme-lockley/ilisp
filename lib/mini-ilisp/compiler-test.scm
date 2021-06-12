@@ -31,9 +31,16 @@
     (Unit.assert-equals (compile-and-run "(print #t \" \" #f)") "#t #f")
 )
 
-(Unit.test "operators - +"
+(Unit.test "operator +"
     (Unit.assert-equals 
         (compile-and-run "(print (+) \" \" (+ 1) \" \" (+ 1 2) \" \" (+ 1 2 3 4 5 6))")
         "0 1 3 21"
+    )
+)
+
+(Unit.test "operator -"
+    (Unit.assert-equals 
+        (compile-and-run "(print (-) \" \" (- 1) \" \" (- 1 2) \" \" (- 1 2 3 4 5 6))")
+        "0 -1 -1 -19"
     )
 )

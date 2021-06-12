@@ -18,6 +18,18 @@
     (arguments (list-of? Operand.Operand?))
 )
 
+(struct ICmp
+    (return Operand.LocalReference?)
+    (op iop?)
+    (op1 Operand.Operand?)
+    (op2 Operand.Operand?)
+)
+
+(const iop?
+    (or? (=? 'ne)
+    )
+)
+
 (struct Load
     (return Operand.LocalReference?)
     (value Operand.Operand?)
@@ -29,7 +41,7 @@
 )
 
 (union Instruction
-    Call? CallVoid? Load? Ret?
+    Call? CallVoid? ICmp? Load? Ret?
 )
 
 (const (instruction->string instruction)
@@ -51,6 +63,16 @@
                 "("
                 (String.interpolate-with (List.map (CallVoid-arguments instruction) Operand.typed-operand->string) ", ")
                 ")"
+            )
+        (ICmp? instruction)
+            (str
+                (Operand.LocalReference-name (ICmp-return instruction))
+                " = icmp "
+                (ICmp-op instruction)
+                " "
+                (Operand.typed-operand->string (ICmp-op1 instruction))
+                ", "
+                (Operand.untyped-operand->string (ICmp-op2 instruction))
             )
         (Load? instruction)
             (str

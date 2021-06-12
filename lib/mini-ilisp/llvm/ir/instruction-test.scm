@@ -41,6 +41,13 @@
     )
 )
 
+(Unit.test "instruction->string ICmp"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.ICmp (Operand.LocalReference "%28" Type.i1) 'ne (Operand.LocalReference "%26" struct-value-pointer) (Operand.LocalReference "%27" struct-value-pointer)))
+        "%28 = icmp ne %struct.Value* %26, %27"
+    )
+)
+
 (Unit.test "instruction->string Ret"
     (Unit.assert-equals 
         (Instruction.instruction->string (Instruction.Ret (Operand.LocalReference "%1" Type.i32)))

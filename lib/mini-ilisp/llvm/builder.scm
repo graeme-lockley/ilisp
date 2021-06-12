@@ -80,6 +80,14 @@
     var
 )
 
+(const (icmp! builder op op1 op2)
+    (const var (Operand.LocalReference (new-variable! builder) Type.i1))
+
+    (include-instruction! builder (Instruction.ICmp var op op1 op2))
+
+    var
+)
+
 (const (load! builder operand)
     (const var (Operand.LocalReference (new-variable! builder) (Type.dereference (Operand.type-of operand))))
 
@@ -104,6 +112,14 @@
     (FunctionBuilder-register-count! builder (+ (FunctionBuilder-register-count builder) 1))
 
     variable
+)
+
+(const (new-label! builder)
+    (const label (FunctionBuilder-label-count builder))
+
+    (FunctionBuilder-label-count! builder (+ (FunctionBuilder-label-count builder) 1))
+
+    (str "" label)
 )
 
 (mutable-struct ModuleBuilder

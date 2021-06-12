@@ -17,7 +17,7 @@
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
-        (if (null? es')  (TST.IntegerLiteral 0)
+        (if (null? es') (TST.IntegerLiteral 0)
             (= (count es') 1) (car es')
             (fold (cddr es') (TST.Plus (nth es' 0) (nth es' 1)) TST.Plus)
         )
@@ -27,7 +27,7 @@
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
-        (if (null? es')  (TST.IntegerLiteral 0)
+        (if (null? es') (TST.IntegerLiteral 0)
             (= (count es') 1) (TST.Minus (TST.IntegerLiteral 0) (car es'))
             (fold (cddr es') (TST.Minus (nth es' 0) (nth es' 1)) TST.Minus)
         )
@@ -37,9 +37,19 @@
         (const es (AST.S-Expression-expressions e))
         (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
 
-        (if (null? es')  (TST.IntegerLiteral 1)
+        (if (null? es') (TST.IntegerLiteral 1)
             (= (count es') 1) (car es')
             (fold (cddr es') (TST.Multiply (nth es' 0) (nth es' 1)) TST.Multiply)
+        )
+    )
+
+    (const (divide->tst env e)
+        (const es (AST.S-Expression-expressions e))
+        (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+
+        (if (null? es') (TST.IntegerLiteral 1)
+            (= (count es') 1) (TST.Divide (TST.IntegerLiteral 1) (car es'))
+            (fold (cddr es') (TST.Divide (nth es' 0) (nth es' 1)) TST.Divide)
         )
     )
 
@@ -99,6 +109,7 @@
                                 (= first-expression-identifier "+") (plus->tst env e)
                                 (= first-expression-identifier "-") (minus->tst env e)
                                 (= first-expression-identifier "*") (multiply->tst env e)
+                                (= first-expression-identifier "/") (divide->tst env e)
                                 ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                 (raise 'TODO-1 e)
                             )

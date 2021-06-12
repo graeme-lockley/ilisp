@@ -51,3 +51,10 @@
         "1 1 2 720"
     )
 )
+
+(Unit.test "operator /"
+    (Unit.assert-equals 
+        (compile-and-run "(print (/) \" \" (/ 1) \" \" (/ 4 2) \" \" (/ 500 50 2))")
+        "1 1 2 5"
+    )
+)

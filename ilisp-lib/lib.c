@@ -104,3 +104,11 @@ struct Value *_multiply(struct Value *op1, struct Value *op2)
             return _from_literal_int(v1 * v2);
     }
 }
+
+struct Value *_divide(struct Value *op1, struct Value *op2)
+{
+    int v1 = op1->tag == INTEGER_VALUE ? op1->integer : 0;
+    int v2 = op2->tag == INTEGER_VALUE ? op2->integer : 0;
+
+    return _from_literal_int((int)(v1 / v2));
+}

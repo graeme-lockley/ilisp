@@ -40,10 +40,15 @@
     (op2 Expression?)
 )
 
+(struct Divide
+    (op1 Expression?)
+    (op2 Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     BooleanLiteral? IntegerLiteral? StringLiteral?
-    Plus? Minus? Multiply?
+    Plus? Minus? Multiply? Divide?
 )
 
 (struct CallPrintLn

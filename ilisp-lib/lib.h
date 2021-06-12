@@ -30,5 +30,6 @@ extern struct Value *_from_literal_string(char *s);
 extern struct Value *_plus(struct Value *op1, struct Value *op2);
 extern struct Value *_minus(struct Value *op1, struct Value *op2);
 extern struct Value *_multiply(struct Value *op1, struct Value *op2);
+extern struct Value *_divide(struct Value *op1, struct Value *op2);
 
 #endif

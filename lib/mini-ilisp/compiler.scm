@@ -28,6 +28,7 @@
     (Builder.declare-external! builder "@_divide"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_equals"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_less_than"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
+    (Builder.declare-external! builder "@_mk_pair"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
@@ -91,6 +92,11 @@
 
                 (Builder.label! builder merge-label)
                 (Builder.phi! builder struct-value-pointer e2 e3)
+            )
+        (TST.Pair? e)
+            (do (const e1 (compile-expression builder (TST.Pair-car e)))
+                (const e2 (compile-expression builder (TST.Pair-cdr e)))
+                (Builder.call! builder "@_mk_pair" struct-value-pointer (list e1 e2))
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)

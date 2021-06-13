@@ -51,11 +51,17 @@
     (e3 Expression?)
 )
 
+(struct Pair
+    (car Expression?)
+    (cdr Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
     IfThenElse?
+    Pair?
 )
 
 (struct CallPrintLn

@@ -82,3 +82,9 @@
         (print (if) (if 1) (if (= 4 4) 1 2) (if (= 4 7) 1 2) (if (= 4 7) 1 (= 3 2) 2 3) (if (= 4 7) 1 (= 3 2) 2))
     ") "()1123()")
 )
+
+(Unit.test "function - pair"
+    (Unit.assert-equals (compile-and-run "
+        (print (pair 1 2))
+    ") "(1 . 2)")
+)

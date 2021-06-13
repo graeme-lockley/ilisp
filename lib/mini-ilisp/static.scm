@@ -58,6 +58,8 @@
                                     (= first-expression-identifier "<") (less-than->tst env e)
                                     (= first-expression-identifier "if") (if->tst env e)
                                     (= first-expression-identifier "pair") (pair->tst env e)
+                                    (= first-expression-identifier "car") (car->tst env e)
+                                    (= first-expression-identifier "cdr") (cdr->tst env e)
 
                                     ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                     (raise 'TODO-1 e)
@@ -160,6 +162,26 @@
     (if (= (count es') 2)
             (TST.Pair (nth es' 0) (nth es' 1))
         (raise 'ArgumentsMismatch {:procedure 'pair :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (car->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.Car (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'car :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (cdr->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.Cdr (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'cdr :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
 )
 

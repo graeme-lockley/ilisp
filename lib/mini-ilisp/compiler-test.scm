@@ -88,3 +88,16 @@
         (print (pair 1 2))
     ") "(1 . 2)")
 )
+
+(Unit.test "function - car"
+    (Unit.assert-equals (compile-and-run "
+        (print (car (pair 1 (pair 2 ()))))
+    ") "1")
+)
+
+(Unit.test "function - cdr"
+    (Unit.assert-equals (compile-and-run "
+        (print (cdr (pair 1 (pair 2 ()))))
+    ") "(2)")
+)
+

@@ -194,3 +194,40 @@ struct Value *_less_than(struct Value *op1, struct Value *op2)
         return _VFalse;
     }
 }
+
+static char *_value_type_name(int tag)
+{
+    switch (tag)
+    {
+    case NULL_VALUE:
+        return "()";
+    case BOOLEAN_VALUE:
+        return "boolean";
+    case INTEGER_VALUE:
+        return "integer";
+    case STRING_VALUE:
+        return "string";
+    case PAIR_VALUE:
+        return "pair";
+    default:
+        return "unknown";
+    }
+}
+
+struct Value *_pair_car(struct Value *pair)
+{
+    if (pair->tag == PAIR_VALUE)
+        return pair->pair.car;
+
+    fprintf(stderr, "Error: car: Unable to get car of %s value.\n", _value_type_name(pair->tag));
+    exit(-1);
+}
+
+struct Value *_pair_cdr(struct Value *pair)
+{
+    if (pair->tag == PAIR_VALUE)
+        return pair->pair.cdr;
+
+    fprintf(stderr, "Error: cdr: Unable to get cdr of %s value.\n", _value_type_name(pair->tag));
+    exit(-1);
+}

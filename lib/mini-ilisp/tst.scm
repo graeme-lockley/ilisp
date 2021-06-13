@@ -56,12 +56,20 @@
     (cdr Expression?)
 )
 
+(struct Car
+    (e Expression?)
+)
+
+(struct Cdr
+    (e Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
     IfThenElse?
-    Pair?
+    Pair? Car? Cdr?
 )
 
 (struct CallPrintLn

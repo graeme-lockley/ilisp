@@ -10,6 +10,13 @@
 (const struct-value-pointer (Type.Pointer struct-value))
 (const struct-value-pointer-pointer (Type.Pointer struct-value-pointer))
 
+(Unit.test "instruction->string Br"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.Br "29"))
+        "br label %29"
+    )
+)
+
 (Unit.test "instruction->string Call"
     (Unit.assert-equals 
         (Instruction.instruction->string (Instruction.Call (Operand.LocalReference "%1" Type.i32) "@_fred" ()))

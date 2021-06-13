@@ -7,6 +7,10 @@
 (import "./operand.scm" :as Operand)
 (import "./type.scm" :as Type)
 
+(struct Br
+    (label string?)
+)
+
 (struct Call
     (return Operand.LocalReference?)
     (name string?)
@@ -54,7 +58,12 @@
 )
 
 (const (instruction->string instruction)
-    (if (Call? instruction)
+    (if (Br? instruction)
+            (str
+                "br label %"
+                (Label-name instruction)
+            )
+        (Call? instruction)
             (str 
                 (Operand.LocalReference-name (Call-return instruction))
                 " = call "

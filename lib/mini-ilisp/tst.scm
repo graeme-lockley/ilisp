@@ -45,10 +45,17 @@
     )
 )
 
+(struct IfThenElse
+    (e1 Expression?)
+    (e2 Expression?)
+    (e3 Expression?)
+)
+
 (union Expression
     IdentifierReference? 
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
+    IfThenElse?
 )
 
 (struct CallPrintLn

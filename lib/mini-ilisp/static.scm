@@ -56,6 +56,7 @@
                                     (= first-expression-identifier "/") (divide->tst env e)
                                     (= first-expression-identifier "=") (equals->tst env e)
                                     (= first-expression-identifier "<") (less-than->tst env e)
+                                    (= first-expression-identifier "if") (if->tst env e)
 
                                     ;; (= first-expression-identifier "const") (const-expression->tst env e)
                                     (raise 'TODO-1 e)
@@ -131,6 +132,28 @@
     (if (= (count es') 2) (TST.BinaryOperator '< (nth es' 0) (nth es' 1))
         (raise 'ArgumentsMismatch {:procedure '< :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
+)
+
+(const- (if->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (const (if-expressions->tst es)
+        (if (null? es) (TST.NullLiteral)
+            (do (const es-rest (cdr es))
+                (if (null? es-rest)
+                        (car es)
+                    (TST.IfThenElse (car es) (car es-rest) (if-expressions->tst (cdr es-rest)))
+                )
+            )
+        )
+    )
+
+    (if-expressions->tst es')
+    
+    ;; (if (= (count es') 2) (TST.BinaryOperator '< (nth es' 0) (nth es' 1))
+    ;;     (raise 'ArgumentsMismatch {:procedure '< :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    ;; )
 )
 
 (const- (print-expression->tst env e)

@@ -9,6 +9,12 @@
 (struct LocalReference
     (name string?)
     (type Type?)
+    (block-name string?)
+)
+
+(struct GlobalReference
+    (name string?)
+    (type Type?)
 )
 
 (struct GetElementPtr
@@ -30,12 +36,14 @@
 )
 
 (union Operand
-    LocalReference? GetElementPtr? Constant?
+    Constant? GetElementPtr? GlobalReference? LocalReference? 
 )
 
 (const (type-of operand)
     (if (LocalReference? operand)
             (LocalReference-type operand)
+        (GlobalReference? operand)
+            (GlobalReference-type operand)
         (GetElementPtr? operand)
             (GetElementPtr-type operand)
         (CInt? operand)
@@ -60,6 +68,7 @@
 
 (const (untyped-operand->string operand)
     (if (LocalReference? operand) (LocalReference-name operand)
+        (GlobalReference? operand) (GlobalReference-name operand)
         (CInt? operand) (str (CInt-value operand))
         (CArray? operand) (carray->string operand #f)
         (GetElementPtr? operand) (get-element-ptr->string operand #f)
@@ -68,6 +77,7 @@
 
 (const (typed-operand->string operand)
     (if (LocalReference? operand) (str (type->string (LocalReference-type operand)) " " (LocalReference-name operand))
+        (GlobalReference? operand) (str (type->string (GlobalReference-type operand)) " " (GlobalReference-name operand))
         (CInt? operand) (str "i" (CInt-bits operand) " " (CInt-value operand))
         (CArray? operand) (carray->string operand #t)
         (GetElementPtr? operand) (get-element-ptr->string operand #t)

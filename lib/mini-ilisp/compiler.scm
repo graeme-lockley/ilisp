@@ -51,7 +51,7 @@
 
 (const (compile-expression builder e)
     (if (TST.NullLiteral? e)
-            (Builder.load! builder (Operand.LocalReference "@_VNull" struct-value-pointer-pointer))
+            (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
         (TST.StringLiteral? e)
             (do (const op (Builder.declare-string-literal! builder (TST.StringLiteral-value e)))
                 (Builder.call! builder "@_from_literal_string" struct-value-pointer (list op))
@@ -60,7 +60,7 @@
             (Builder.call! builder "@_from_literal_int" struct-value-pointer (list (Operand.CInt 32 (TST.IntegerLiteral-value e))))
         (TST.BooleanLiteral? e)
             (do (const name (if (TST.BooleanLiteral-value e) "@_VTrue" "@_VFalse"))
-                (Builder.load! builder (Operand.LocalReference name struct-value-pointer-pointer))
+                (Builder.load! builder (Operand.GlobalReference name struct-value-pointer-pointer))
             )
         (TST.BinaryOperator? e)
             (do (const op (TST.BinaryOperator-op e))
@@ -68,6 +68,29 @@
                 (const op2 (compile-expression builder (TST.BinaryOperator-op2 e)))
 
                 (Builder.call! builder (map-get binary-procedure-names op) struct-value-pointer (list op1 op2))
+            )
+        (TST.IfThenElse? e)
+            (do (const e1 (compile-expression builder (TST.IfThenElse-e1 e)))
+                (const false-value (Builder.load! builder (Operand.GlobalReference "@_VFalse" struct-value-pointer-pointer)))
+
+                (const e1-compare (Builder.icmp! builder 'ne e1 false-value))
+
+                (const then-label (Builder.new-label! builder))
+                (const else-label (Builder.new-label! builder))
+                (const merge-label (Builder.new-label! builder))
+
+                (Builder.cond-br! builder e1-compare then-label else-label)
+            
+                (Builder.label! builder then-label)
+                (const e2 (compile-expression builder (TST.IfThenElse-e2 e)))                
+                (Builder.br! builder merge-label)
+            
+                (Builder.label! builder else-label)
+                (const e3 (compile-expression builder (TST.IfThenElse-e3 e)))
+                (Builder.br! builder merge-label)
+
+                (Builder.label! builder merge-label)
+                (Builder.phi! builder struct-value-pointer e2 e3)
             )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)

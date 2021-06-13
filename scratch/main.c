@@ -3,6 +3,14 @@
 
 #include "../ilisp-lib/lib.h"
 
+char *true_string() {
+	return "true";
+}
+
+char *false_string() {
+	return "false";
+}
+
 int main()
 {
 	_initialise_lib();
@@ -25,4 +33,6 @@ int main()
 
 	_print_value(_mk_pair(_from_literal_int(1), _from_literal_int(2)));
 	_print_newline();
+
+	printf("%s\n", _equals(_plus(_from_literal_int(1), _from_literal_int(1)), _from_literal_int(2)) != _VFalse ? true_string() : false_string());
 }

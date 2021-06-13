@@ -106,7 +106,7 @@
         "("
         (String.interpolate-with (List.map-idx (Function-parameter-types function) (proc (t i) (str (type->string t) " %" i))) ", ")
         ") {\n"
-        (String.interpolate-with (List.map (Function-instructions function) (proc (i) (str "  " (Instruction.instruction->string i) "\n"))) "")
+        (String.interpolate-with (List.map (Function-instructions function) (proc (i) (str (if (Instruction.Label? i) "" "  ") (Instruction.instruction->string i) "\n"))) "")
         "}\n"
     )
 )

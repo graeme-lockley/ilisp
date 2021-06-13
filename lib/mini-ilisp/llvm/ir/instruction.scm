@@ -51,7 +51,7 @@
 
 (struct Phi
     (return Operand.LocalReference?)
-    (label-values list?)
+    (values list?)
 )
 
 (struct Ret
@@ -59,7 +59,7 @@
 )
 
 (union Instruction
-    Call? CallVoid? ICmp? Load? Ret?
+    Br? Call? CallVoid? CondBr? ICmp? Label? Load? Phi? Ret?
 )
 
 (const (instruction->string instruction)
@@ -123,13 +123,13 @@
                 " = phi "
                 (Type.type->string (Operand.LocalReference-type (Phi-return instruction)))
                 " "
-                (String.interpolate-with (List.map (Phi-label-values instruction)
+                (String.interpolate-with (List.map (Phi-values instruction)
                     (proc (tv) 
                         (str
                             "[ "
-                            (Operand.untyped-operand->string (car tv))
+                            (Operand.untyped-operand->string tv)
                             ", %"
-                            (cdr tv)
+                            (Operand.LocalReference-block-name tv)
                             " ]"
                         )
                     )) ", ")

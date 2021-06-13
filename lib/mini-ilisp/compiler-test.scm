@@ -17,11 +17,11 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
-;; (Unit.test "expression - if"
-;;     (Unit.assert-equals (compile-and-run "
-;;         (print (if))
-;;     ") "()")
-;; )
+(Unit.test "expression - if"
+    (Unit.assert-equals (compile-and-run "
+        (print (if) (if 1) (if (= 4 4) 1 2) (if (= 4 7) 1 2) (if (= 4 7) 1 (= 3 2) 2 3) (if (= 4 7) 1 (= 3 2) 2))
+    ") "()1123()")
+)
 
 (Unit.test "hello world"
     (Unit.assert-equals (compile-and-run "(println \"hello world\")") "hello world\n")

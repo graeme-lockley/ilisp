@@ -6,7 +6,7 @@
 (import "./operand.scm" :as Operand)
 
 (Unit.test "operand->string local reference"
-    (const operand (Operand.LocalReference "%1" (Type.Pointer (Type.Reference "%struct.Value"))))
+    (const operand (Operand.LocalReference "%1" (Type.Pointer (Type.Reference "%struct.Value")) "Block0"))
 
     (Unit.assert-equals (Operand.untyped-operand->string operand) "%1")
     (Unit.assert-equals (Operand.typed-operand->string operand) "%struct.Value* %1")
@@ -31,7 +31,7 @@
         #t 
         (Type.Pointer Type.i8)
         (Type.Array 12 Type.i8)
-        (Operand.LocalReference "@.str" (Type.Pointer (Type.Array 12 Type.i8)))
+        (Operand.GlobalReference "@.str" (Type.Pointer (Type.Array 12 Type.i8)))
         (list (Operand.CInt 64 0) (Operand.CInt 64 0))
     ))
 

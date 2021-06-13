@@ -13,7 +13,7 @@
 )
 
 (const (function builder name return-type parameter-types)
-    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1))
+    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) "Block0")
 )
 
 (const (declare-identified-type! builder name type)
@@ -40,7 +40,7 @@
         #t 
         (Type.Pointer Type.i8) 
         (Type.Array (+ (count value) 1) Type.i8) 
-        (Operand.LocalReference name (Type.Pointer (Type.Array (+ (count value) 1) Type.i8)))
+        (Operand.GlobalReference name (Type.Pointer (Type.Array (+ (count value) 1) Type.i8)))
         (list (Operand.CInt 64 0) (Operand.CInt 64 0))
     )
 )
@@ -68,30 +68,57 @@
     (ModuleBuilder-declarations! builder (pair declaration (ModuleBuilder-declarations builder)))
 )
 
+(const (br! builder name)
+    (include-instruction! builder (Instruction.Br name))
+
+    ()
+)
+
 (const (call-void! builder name arguments)
     (include-instruction! builder (Instruction.CallVoid name arguments))
 )
 
 (const (call! builder name return-type arguments)
-    (const var (Operand.LocalReference (new-variable! builder) return-type))
+    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
 
     (include-instruction! builder (Instruction.Call var name arguments))
 
     var
 )
 
+(const (cond-br! builder op . labels)
+    (include-instruction! builder (Instruction.CondBr op labels))
+
+    ()
+)
+
 (const (icmp! builder op op1 op2)
-    (const var (Operand.LocalReference (new-variable! builder) Type.i1))
+    (const var (Operand.LocalReference (new-variable! builder) Type.i1 (FunctionBuilder-block-name builder)))
 
     (include-instruction! builder (Instruction.ICmp var op op1 op2))
 
     var
 )
 
+(const (label! builder name)
+    (include-instruction! builder (Instruction.Label name))
+    (FunctionBuilder-block-name! builder name)
+
+    ()
+)
+
 (const (load! builder operand)
-    (const var (Operand.LocalReference (new-variable! builder) (Type.dereference (Operand.type-of operand))))
+    (const var (Operand.LocalReference (new-variable! builder) (Type.dereference (Operand.type-of operand)) (FunctionBuilder-block-name builder)))
 
     (include-instruction! builder (Instruction.Load var operand 8))
+
+    var
+)
+
+(const (phi! builder return-type . value-labels)
+    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
+
+    (include-instruction! builder (Instruction.Phi var value-labels))
 
     var
 )
@@ -119,7 +146,7 @@
 
     (FunctionBuilder-label-count! builder (+ (FunctionBuilder-label-count builder) 1))
 
-    (str "" label)
+    (str "Block" label)
 )
 
 (mutable-struct ModuleBuilder
@@ -136,4 +163,5 @@
     (instructions list?)
     (label-count integer?)
     (register-count integer?)
+    (block-name string?)
 )

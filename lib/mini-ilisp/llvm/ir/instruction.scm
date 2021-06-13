@@ -51,7 +51,7 @@
 
 (struct Phi
     (return Operand.LocalReference?)
-    (values list?)
+    (values (list-of? Operand.LocalReference?))
 )
 
 (struct Ret

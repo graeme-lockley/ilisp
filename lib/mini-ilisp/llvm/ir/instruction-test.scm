@@ -34,6 +34,20 @@
     )
 )
 
+(Unit.test "instruction->string CondBr"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.CondBr (Operand.LocalReference "%28" Type.i1) '("29" "31")))
+        "br i1 %28, label %29, label %31"
+    )
+)
+
+(Unit.test "instruction->string Label"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.Label "29"))
+        "29:"
+    )
+)
+
 (Unit.test "instruction->string Load"
     (Unit.assert-equals 
         (Instruction.instruction->string (Instruction.Load (Operand.LocalReference "%6" struct-value-pointer) (Operand.LocalReference "@_VFalse" struct-value-pointer-pointer) 8))

@@ -18,6 +18,11 @@
     (arguments (list-of? Operand.Operand?))
 )
 
+(struct CondBr
+    (op Operand.Operand?)
+    (labels (list-of? string?))
+)
+
 (struct ICmp
     (return Operand.LocalReference?)
     (op iop?)
@@ -28,6 +33,10 @@
 (const iop?
     (or? (=? 'ne)
     )
+)
+
+(struct Label
+    (name string?)
 )
 
 (struct Load
@@ -64,6 +73,12 @@
                 (String.interpolate-with (List.map (CallVoid-arguments instruction) Operand.typed-operand->string) ", ")
                 ")"
             )
+        (CondBr? instruction)
+            (str
+                "br "
+                (Operand.typed-operand->string (CondBr-op instruction))
+                (String.interpolate-with (List.map (CondBr-labels instruction) (proc (l) (str ", label %" l))) "")
+            )
         (ICmp? instruction)
             (str
                 (Operand.LocalReference-name (ICmp-return instruction))
@@ -73,6 +88,11 @@
                 (Operand.typed-operand->string (ICmp-op1 instruction))
                 ", "
                 (Operand.untyped-operand->string (ICmp-op2 instruction))
+            )
+        (Label? instruction)
+            (str
+                (Label-name instruction)
+                ":"
             )
         (Load? instruction)
             (str

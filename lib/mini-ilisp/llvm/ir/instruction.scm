@@ -49,6 +49,11 @@
     (align number?)
 )
 
+(struct Phi
+    (return Operand.LocalReference?)
+    (label-values list?)
+)
+
 (struct Ret
     (value Operand.Operand?)
 )
@@ -111,6 +116,23 @@
                 ", "
                 (Operand.typed-operand->string (Load-value instruction))
                 (if (= 0 (Load-align instruction)) "" (str ", align " (Load-align instruction)))
+            )
+        (Phi? instruction)
+            (str
+                (Operand.LocalReference-name (Phi-return instruction))
+                " = phi "
+                (Type.type->string (Operand.LocalReference-type (Phi-return instruction)))
+                " "
+                (String.interpolate-with (List.map (Phi-label-values instruction)
+                    (proc (tv) 
+                        (str
+                            "[ "
+                            (Operand.untyped-operand->string (car tv))
+                            ", %"
+                            (cdr tv)
+                            " ]"
+                        )
+                    )) ", ")
             )
         (Ret? instruction)
             (str

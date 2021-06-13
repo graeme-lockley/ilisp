@@ -48,6 +48,13 @@
     )
 )
 
+(Unit.test "instruction->string ICmp"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.ICmp (Operand.LocalReference "%28" Type.i1) 'ne (Operand.LocalReference "%26" struct-value-pointer) (Operand.LocalReference "%27" struct-value-pointer)))
+        "%28 = icmp ne %struct.Value* %26, %27"
+    )
+)
+
 (Unit.test "instruction->string Label"
     (Unit.assert-equals 
         (Instruction.instruction->string (Instruction.Label "29"))
@@ -62,10 +69,13 @@
     )
 )
 
-(Unit.test "instruction->string ICmp"
+(Unit.test "instruction->string Phi"
     (Unit.assert-equals 
-        (Instruction.instruction->string (Instruction.ICmp (Operand.LocalReference "%28" Type.i1) 'ne (Operand.LocalReference "%26" struct-value-pointer) (Operand.LocalReference "%27" struct-value-pointer)))
-        "%28 = icmp ne %struct.Value* %26, %27"
+        (Instruction.instruction->string (Instruction.Phi (Operand.LocalReference "%34" struct-value-pointer) 
+            (list (pair (Operand.LocalReference "%30" struct-value-pointer) "29") 
+                  (pair (Operand.LocalReference "%32" struct-value-pointer) "31"))
+        ))
+        "%34 = phi %struct.Value* [ %30, %29 ], [ %32, %31 ]"
     )
 )
 

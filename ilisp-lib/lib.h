@@ -43,5 +43,10 @@ extern struct Value *_equals(struct Value *op1, struct Value *op2);
 extern struct Value *_less_than(struct Value *op1, struct Value *op2);
 extern struct Value *_pair_car(struct Value *pair);
 extern struct Value *_pair_cdr(struct Value *pair);
+extern struct Value *_nullp(struct Value *v);
+extern struct Value *_booleanp(struct Value *v);
+extern struct Value *_integerp(struct Value *v);
+extern struct Value *_stringp(struct Value *v);
+extern struct Value *_pairp(struct Value *v);
 
 #endif

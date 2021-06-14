@@ -19,7 +19,7 @@
         "=" "<"
         "*" "-" "*" "/"
         "pair" "car" "cdr"
-        "null?" "proc?" "integer?" "boolean?"
+        "null?" "proc?" "integer?" "boolean?" "string?"
         "print" "println"
     ) (proc (n) 
         (Env.define-binding! env n)
@@ -60,8 +60,12 @@
                                     (= first-expression-identifier "pair") (pair->tst env e)
                                     (= first-expression-identifier "car") (car->tst env e)
                                     (= first-expression-identifier "cdr") (cdr->tst env e)
-
-                                    ;; (= first-expression-identifier "const") (const-expression->tst env e)
+                                    (= first-expression-identifier "null?") (null?->tst env e)
+                                    (= first-expression-identifier "boolean?") (boolean?->tst env e)
+                                    (= first-expression-identifier "integer?") (integer?->tst env e)
+                                    (= first-expression-identifier "string?") (string?->tst env e)
+                                    (= first-expression-identifier "pair?") (pair?->tst env e)
+                                    (= first-expression-identifier "const") (const-expression->tst env e)
                                     (raise 'TODO-1 e)
                                 )
                             )
@@ -182,6 +186,56 @@
     (if (= (count es') 1)
             (TST.Cdr (nth es' 0))
         (raise 'ArgumentsMismatch {:procedure 'cdr :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (null?->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.NullP (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'null? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (boolean?->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.BooleanP (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'boolean? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (integer?->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.IntegerP (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'integer? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (string?->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.StringP (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'string? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (pair?->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.PairP (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'pair? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
 )
 

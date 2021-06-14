@@ -231,3 +231,28 @@ struct Value *_pair_cdr(struct Value *pair)
     fprintf(stderr, "Error: cdr: Unable to get cdr of %s value.\n", _value_type_name(pair->tag));
     exit(-1);
 }
+
+struct Value *_nullp(struct Value *v)
+{
+    return v->tag == NULL_VALUE ? _VTrue : _VFalse;
+}
+
+struct Value *_booleanp(struct Value *v)
+{
+    return v->tag == BOOLEAN_VALUE ? _VTrue : _VFalse;
+}
+
+struct Value *_integerp(struct Value *v)
+{
+    return v->tag == INTEGER_VALUE ? _VTrue : _VFalse;
+}
+
+struct Value *_stringp(struct Value *v)
+{
+    return v->tag == STRING_VALUE ? _VTrue : _VFalse;
+}
+
+struct Value *_pairp(struct Value *v)
+{
+    return v->tag == PAIR_VALUE ? _VTrue : _VFalse;
+}

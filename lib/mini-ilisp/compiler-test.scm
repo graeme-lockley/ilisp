@@ -6,8 +6,14 @@
 (import "./scanner.scm" :as Scanner)
 (import "./static.scm" :as Static)
 
+(const (fred x)
+    ;; (println (pr-str x))
+    x
+)
+
 (const (compile-and-run program)
-    (const ir ((|> Scanner.string->scanner Parser.scanner->ast Static.ast->tst Compiler.tst->ir) program))
+    (const ir ((|> Scanner.string->scanner Parser.scanner->ast Static.ast->tst fred Compiler.tst->ir) program))
+    
     (write-file ir "test.ll")
     (Compiler.assemble "test.ll" "test.bc")
     (Compiler.run "test.bc")
@@ -99,5 +105,35 @@
     (Unit.assert-equals (compile-and-run "
         (print (cdr (pair 1 (pair 2 ()))))
     ") "(2)")
+)
+
+(Unit.test "function - null?"
+    (Unit.assert-equals (compile-and-run "
+        (print (null? ()) (null? #t) (null? 1) (null? \"hello\") (null? (pair 1 2)))
+    ") "#t#f#f#f#f")
+)
+
+(Unit.test "function - boolean?"
+    (Unit.assert-equals (compile-and-run "
+        (print (boolean? ()) (boolean? #t) (boolean? 1) (boolean? \"hello\") (boolean? (pair 1 2)))
+    ") "#f#t#f#f#f")
+)
+
+(Unit.test "function - integer?"
+    (Unit.assert-equals (compile-and-run "
+        (print (integer? ()) (integer? #t) (integer? 1) (integer? \"hello\") (integer? (pair 1 2)))
+    ") "#f#f#t#f#f")
+)
+
+(Unit.test "function - string?"
+    (Unit.assert-equals (compile-and-run "
+        (print (string? ()) (string? #t) (string? 1) (string? \"hello\") (string? (pair 1 2)))
+    ") "#f#f#f#t#f")
+)
+
+(Unit.test "function - pair?"
+    (Unit.assert-equals (compile-and-run "
+        (print (pair? ()) (pair? #t) (pair? 1) (pair? \"hello\") (pair? (pair 1 2)))
+    ") "#f#f#f#f#t")
 )
 

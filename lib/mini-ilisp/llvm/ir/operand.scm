@@ -25,6 +25,10 @@
     (indices (list-of? Constant?))
 )
 
+(struct CNull
+    (type Type?)
+)
+
 (struct CInt
     (bits number?)
     (value number?)
@@ -54,7 +58,7 @@
 )
 
 (union Constant
-    CInt? CArray?
+    CNull? CInt? CArray?
 )
 
 (const (string->carray s)
@@ -67,7 +71,8 @@
 )
 
 (const (untyped-operand->string operand)
-    (if (LocalReference? operand) (LocalReference-name operand)
+    (if (CNull? operand) "null"
+        (LocalReference? operand) (LocalReference-name operand)
         (GlobalReference? operand) (GlobalReference-name operand)
         (CInt? operand) (str (CInt-value operand))
         (CArray? operand) (carray->string operand #f)
@@ -76,7 +81,8 @@
 )
 
 (const (typed-operand->string operand)
-    (if (LocalReference? operand) (str (type->string (LocalReference-type operand)) " " (LocalReference-name operand))
+    (if (CNull? operand) (str (type->string (CNull-type operand)) " null")
+        (LocalReference? operand) (str (type->string (LocalReference-type operand)) " " (LocalReference-name operand))
         (GlobalReference? operand) (str (type->string (GlobalReference-type operand)) " " (GlobalReference-name operand))
         (CInt? operand) (str "i" (CInt-bits operand) " " (CInt-value operand))
         (CArray? operand) (carray->string operand #t)

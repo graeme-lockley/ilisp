@@ -39,6 +39,14 @@
         
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
 
+    (for-each tst
+        (proc (e)
+            (if (TST.ValueDeclaration? e)
+                    (Builder.declare-global! builder (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer (Operand.CNull struct-value-pointer) 8)
+            )
+        )
+    )
+
     (Builder.call-void! main-builder "@_initialise_lib" ())
 
     (for-each tst 
@@ -47,7 +55,11 @@
                     (build-call-print-ln! main-builder e)
                 (TST.CallPrint? e)
                     (build-call-print! main-builder e)
-                (raise 'TODO-compile e)
+                (TST.ValueDeclaration? e)
+                    (do (const op (compile-expression main-builder (TST.ValueDeclaration-e e)))
+                        (Builder.store! main-builder op (Operand.GlobalReference (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer-pointer))
+                    )
+                (raise 'TODO-compile-top-level e)
             )
         )
     )
@@ -133,6 +145,8 @@
             (do (const e' (compile-expression builder (TST.PairP-e e)))
                 (Builder.call! builder "@_pairp" struct-value-pointer (list e'))
             )
+        (TST.IdentifierReference? e)
+            (Builder.load! builder (Operand.GlobalReference (str "@" (TST.IdentifierReference-name e)) struct-value-pointer-pointer))
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)
         (raise 'TODO-compile e)

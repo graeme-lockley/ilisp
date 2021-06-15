@@ -28,6 +28,14 @@
     (include-declaration! builder (Module.ExternalGlobal name type align))
 )
 
+(const (declare-global! builder name type value align)
+    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-module-builder builder) builder))
+
+    (include-declaration! builder' (Module.Global name type value #f #f #f 8))
+
+    ()
+)
+
 (const (declare-string-literal! builder value)
     (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-module-builder builder) builder))
 
@@ -125,6 +133,12 @@
 
 (const (ret! builder value)
     (include-instruction! builder (Instruction.Ret value))
+)
+
+(const (store! builder operand address)
+    (include-instruction! builder (Instruction.Store operand address 8))
+
+    ()
 )
 
 (const- (include-instruction! builder instruction)

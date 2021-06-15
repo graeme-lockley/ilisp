@@ -3,6 +3,10 @@
 
 #include "../ilisp-lib/lib.h"
 
+struct Value *x;
+struct Value *y;
+struct Value *z;
+
 char *true_string() {
 	return "true";
 }
@@ -14,6 +18,11 @@ char *false_string() {
 int main()
 {
 	_initialise_lib();
+
+	x = _from_literal_int(10);
+	y = _VTrue;
+	z = _from_literal_string("hello");
+
 	_print_value(_from_literal_string("hello world, "));
 	_print_value(_from_literal_int(123));
 	_print_value(_from_literal_string(", "));
@@ -35,4 +44,9 @@ int main()
 	_print_newline();
 
 	printf("%s\n", _equals(_plus(_from_literal_int(1), _from_literal_int(1)), _from_literal_int(2)) != _VFalse ? true_string() : false_string());
+
+	_print_value(x);
+	_print_value(y);
+	_print_value(z);
+	_print_newline();
 }

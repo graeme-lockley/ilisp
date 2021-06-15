@@ -93,6 +93,11 @@
     NullP? BooleanP? IntegerP? StringP? PairP?
 )
 
+(struct ValueDeclaration
+    (name string?)
+    (e Expression?)
+)
+
 (struct CallPrintLn
     (args (list-of? Expression?))
 )

@@ -1,3 +1,4 @@
+(import "../data/struct.scm" :names struct)
 (import "../list.scm" :as List)
 (import "../number.scm" :as Number)
 (import "../string.scm" :as String)
@@ -15,15 +16,15 @@
 (const (ast->tst ast)
     (const env (Env.empty))
 
-    (for-each '(
-        "=" "<"
-        "*" "-" "*" "/"
-        "pair" "car" "cdr"
-        "null?" "proc?" "integer?" "boolean?" "string?"
-        "print" "println"
-    ) (proc (n) 
-        (Env.define-binding! env n)
-    ))
+    ;; (for-each '(
+    ;;     "=" "<"
+    ;;     "*" "-" "*" "/"
+    ;;     "pair" "car" "cdr"
+    ;;     "null?" "boolean?" "integer?" "string?" "pair?" "proc?" 
+    ;;     "print" "println"
+    ;; ) (proc (n) 
+    ;;     (Env.define-binding! env n)
+    ;; ))
 
     (List.map ast (proc (e) (expression->tst env e)))
 )
@@ -96,6 +97,28 @@
 ;;     ;; - translate body within the context of the new scope
 ;;     ;; - close scope
 ;; )
+
+(const- (const-expression->tst env e)
+    ; form (const x expr)
+
+    (const es (AST.S-Expression-expressions e))
+
+    (if (not (= (count es) 3))
+            (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (AST.S-Expression-location e))})
+    )
+
+    (const name (nth es 1))
+    (const expr (nth es 2))
+
+    (if (not (AST.IdentifierExpression? name))
+            (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (AST.S-Expression-location e))})
+    )
+
+    (const expr' (expression->tst env expr))
+    (Env.define-binding! env (AST.IdentifierExpression-id name))
+    
+    (TST.ValueDeclaration (AST.IdentifierExpression-id name) expr')
+)
 
 (const- (plus->tst env e)
     (arithmetic-op->tst env e (TST.IntegerLiteral 0) '+)

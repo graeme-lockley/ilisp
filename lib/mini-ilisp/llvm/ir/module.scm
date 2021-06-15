@@ -89,7 +89,7 @@
         " = "
         (if (Global-private global) "private " "")
         (if (Global-unnamed-addr global) "unnamed_addr " "")
-        (if (Global-constant global) "constant " "")
+        (if (Global-constant global) "constant " "global ")
         (type->string (Global-type global))
         " "
         (Operand.untyped-operand->string (Global-value global))

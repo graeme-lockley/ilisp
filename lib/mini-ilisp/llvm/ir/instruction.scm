@@ -58,8 +58,14 @@
     (value Operand.Operand?)
 )
 
+(struct Store
+    (value Operand.Operand?)
+    (address (or? Operand.GlobalReference? Operand.LocalReference?))
+    (align number?)
+)
+
 (union Instruction
-    Br? Call? CallVoid? CondBr? ICmp? Label? Load? Phi? Ret?
+    Br? Call? CallVoid? CondBr? ICmp? Label? Load? Phi? Ret? Store?
 )
 
 (const (instruction->string instruction)
@@ -139,6 +145,14 @@
                 "ret "
                 (Operand.typed-operand->string (Ret-value instruction))
                 ""
+            )
+        (Store? instruction)
+            (str
+                "store "
+                (Operand.typed-operand->string (Store-value instruction))
+                ", "
+                (Operand.typed-operand->string (Store-address instruction))
+                (if (= 0 (Store-align instruction)) "" (str ", align " (Store-align instruction)))
             )
     )
 )

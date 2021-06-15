@@ -85,3 +85,10 @@
         "ret i32 %1"
     )
 )
+
+(Unit.test "instruction->string Store"
+    (Unit.assert-equals 
+        (Instruction.instruction->string (Instruction.Store (Operand.LocalReference "%2" struct-value-pointer "Block0") (Operand.GlobalReference "@x" struct-value-pointer-pointer) 8))
+        "store %struct.Value* %2, %struct.Value** @x, align 8"
+    )
+)

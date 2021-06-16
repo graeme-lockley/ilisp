@@ -7,6 +7,11 @@
 (import "./operand.scm" :as Operand)
 (import "./type.scm" :as Type)
 
+(struct Alloca
+    (return Operand.LocalReference?)
+    (align integer?)
+)
+
 (struct Br
     (label string?)
 )
@@ -69,7 +74,14 @@
 )
 
 (const (instruction->string instruction)
-    (if (Br? instruction)
+    (if (Alloca? instruction)
+            (str
+                (Operand.LocalReference-name (Alloca-return instruction))
+                " = alloca "
+                (Type.type->string (Operand.LocalReference-type (Alloca-return instruction)))
+                (if (= 0 (Alloca-align instruction)) "" (str ", align " (Alloca-align instruction)))
+            )
+        (Br? instruction)
             (str
                 "br label %"
                 (Label-name instruction)

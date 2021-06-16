@@ -8,13 +8,23 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
-(const (compile program)
+(const (compile program ilib-file-name)
     (const input-file-name (str program ".mlsp"))
     (const ir ((|> *builtin*.slurp Scanner.string->scanner Parser.scanner->ast Static.ast->tst Compiler.tst->ir) input-file-name))
     
     (write-file ir (str program ".ll"))
     (println (Compiler.assemble (str program ".ll") (str program ".bc")))
-    (println (Compiler.link (str program ".bc") program))
+    (println (Compiler.link (str program ".bc") ilib-file-name program))
 )
 
-(compile "x")
+(const ilib-file-name
+    (try
+        *env*.MINI_ILISP_LIB
+        (proc (s) "lib.bc" )
+    )
+)
+
+(if (not (= 1 (count *args*)))
+        (println "Error: incorrect number of arguments")
+    (compile (car *args*) ilib-file-name)
+)

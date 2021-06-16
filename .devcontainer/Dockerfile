@@ -19,3 +19,4 @@ RUN apt-get -y install libedit-dev
 
 ## Setup iLisp environment
 ENV ILISP_PRELUDE="/workspaces/ilisp/lib/prelude.scm"
+ENV MINI_ILISP_LIB="/workspaces/ilisp/scratch/lib.ll"

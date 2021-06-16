@@ -31,4 +31,5 @@ jobs:
       - name: Build and test
         run: |
           export ILISP_PRELUDE=/home/runner/work/ilisp/ilisp/lib/prelude.scm
+          export MINI_ILISP_LIB=/home/runner/work/ilisp/ilisp/scratch/lib.ll
           make

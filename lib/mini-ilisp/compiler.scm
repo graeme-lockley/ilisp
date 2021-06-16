@@ -240,8 +240,8 @@
     (*builtin*.exec (str "llvm-as-10 " ll-file " -o " bc-file))
 )
 
-(const (link bc-file binary-file)
-    (*builtin*.exec (str "clang " bc-file " ./../../scratch/lib.bc -o " binary-file " 2>&1"))
+(const (link bc-file ilib-file-name binary-file)
+    (*builtin*.exec (str "clang " bc-file " " ilib-file-name " -o " binary-file " 2>&1"))
 )
 
 (const (run bc-file)

@@ -175,7 +175,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/
 	./test/repl_test ./test/t05-macros.txt
 	./test/repl_test ./test/t06-try-catch.txt
 	./src/main ./test/test-runner.scm
-	(cd ./lib/mini-ilisp ; ../../src/main compile.scm x.mlsp ; ./x)
+	(cd ./lib/mini-ilisp ; ../../src/main compile.scm x ; ./x)
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h

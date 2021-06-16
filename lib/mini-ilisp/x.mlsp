@@ -1,0 +1,41 @@
+(const (not b)
+	(if b #f #t)
+)
+
+(const (assert-eq name v1 v2)
+    (if (= v1 v2) (println "- = " name) (println "x = " name))
+)
+
+(const (assert-neq name v1 v2)
+    (if (not (= v1 v2)) (println "- != " name) (println "x != " name))
+)
+
+(assert-eq "() ()" () ())
+(assert-neq "() boolean" () #t)
+(assert-neq "() integer" () 123)
+(assert-neq "() string" () "hello")
+(assert-neq "() pair" () (pair 1 2))
+
+(assert-neq "boolean ()" #t ())
+(assert-eq "boolean boolean" #t #t)
+(assert-neq "boolean integer" #t 123)
+(assert-neq "boolean string" #t "hello")
+(assert-neq "boolean pair" #t (pair 1 2))
+
+(assert-neq "integer ()" 123 ())
+(assert-neq "integer boolean" 123 #t)
+(assert-eq "integer integer" 123 123)
+(assert-neq "integer string" 123 "hello")
+(assert-neq "integer pair" 123 (pair 1 2))
+
+(assert-neq "string ()" "hello" ())
+(assert-neq "string boolean" "hello" #t)
+(assert-neq "string integer" "hello" 123)
+(assert-eq "string string" "hello" "hello")
+(assert-neq "string pair" "hello" (pair 1 2))
+
+(assert-neq "pair ()" (pair 1 2) ())
+(assert-neq "pair boolean" (pair 1 2) #t)
+(assert-neq "pair integer" (pair 1 2) 123)
+(assert-neq "pair string" (pair 1 2) "hello")
+(assert-eq "pair pair" (pair 1 2) (pair 1 2))

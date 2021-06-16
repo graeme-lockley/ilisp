@@ -15,3 +15,7 @@ scratch/main
 a.out
 test.bc
 test.ll
+
+lib/mini-ilisp/x
+lib/mini-ilisp/x.bc
+lib/mini-ilisp/x.ll

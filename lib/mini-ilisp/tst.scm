@@ -91,6 +91,7 @@
     IfThenElse?
     Pair? Car? Cdr?
     NullP? BooleanP? IntegerP? StringP? PairP?
+    CallPrintLn?
 )
 
 (struct ValueDeclaration

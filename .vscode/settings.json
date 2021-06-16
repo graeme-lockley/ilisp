@@ -30,6 +30,7 @@
         "fstream": "cpp",
         "limits": "cpp",
         "numeric": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "lib.h": "c"
     }
 }

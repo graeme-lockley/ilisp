@@ -166,12 +166,16 @@ struct Value *_equals(struct Value *op1, struct Value *op2)
 
     switch (op1->tag)
     {
+    case NULL_VALUE:
+        return _VTrue;
     case BOOLEAN_VALUE:
         return (op1->boolean == op2->boolean) ? _VTrue : _VFalse;
     case INTEGER_VALUE:
         return (op1->integer == op2->integer) ? _VTrue : _VFalse;
     case STRING_VALUE:
         return (strcmp(op1->string, op2->string) == 0) ? _VTrue : _VFalse;
+    case PAIR_VALUE:
+        return _equals(op1->pair.car, op2->pair.car) == _VTrue && _equals(op1->pair.cdr, op2->pair.cdr) == _VTrue ? _VTrue : _VFalse;
     default:
         return _VFalse;
     }

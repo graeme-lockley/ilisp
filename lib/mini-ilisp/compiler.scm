@@ -200,7 +200,9 @@
                 (Builder.call! builder (str "@" (TST.CallProcedure-name e)) struct-value-pointer ops)
             )
         (TST.CallPrintLn? e)
-            (build-call-print-ln! main-builder e)
+            (do (build-call-print-ln! builder e)
+                (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
+            )
         (raise 'TODO-compile e)
     )
 )
@@ -236,6 +238,10 @@
 
 (const (assemble ll-file bc-file)
     (*builtin*.exec (str "llvm-as-10 " ll-file " -o " bc-file))
+)
+
+(const (link bc-file binary-file)
+    (*builtin*.exec (str "clang " bc-file " ./../../scratch/lib.bc -o " binary-file " 2>&1"))
 )
 
 (const (run bc-file)

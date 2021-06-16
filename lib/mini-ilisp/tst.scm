@@ -3,14 +3,14 @@
 (import "../predicate.scm" :names =? boolean? integer? list-of? or? string?)
 (import "./scanner.scm" :as Scanner)
 
-(struct DeclareValue
-    (name string?)
-    (expr Expression?)
-)
-
 (struct IdentifierReference
     (name string?)
     (location Scanner.Location?)
+)
+
+(struct CallProcedure
+    (name string?)
+    (arguments (list-of? Expression?))
 )
 
 (struct NullLiteral
@@ -85,7 +85,7 @@
 )
 
 (union Expression
-    IdentifierReference? 
+    IdentifierReference? CallProcedure?
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
     IfThenElse?
@@ -98,6 +98,12 @@
     (e Expression?)
 )
 
+(struct ProcedureDeclaration
+    (name string?)
+    (arg-names (list-of? string?))
+    (es (list-of? Expression?))
+)
+
 (struct CallPrintLn
     (args (list-of? Expression?))
 )
@@ -106,6 +112,10 @@
     (args (list-of? Expression?))
 )
 
+(struct Do
+    (statements (list-of? Statement?))
+)
+
 (union Statement
-    CallPrint? CallPrintLn?
+    CallPrint? CallPrintLn? Do? Expression?
 )

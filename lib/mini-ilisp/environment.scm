@@ -12,8 +12,8 @@
     (cdr env)
 )
 
-(const (define-binding! env name)
-    (Map.assoc! (car env) name name)
+(const (define-binding! env name value)
+    (Map.assoc! (car env) name value)
 )
 
 (const (in-scope? env name)
@@ -24,5 +24,12 @@
     (if (null? env) #f
         (in-scope? env name) #t
         (binding? (close-scope env) name)
+    )
+)
+
+(const (get env name)
+    (if (null? env) ()
+        (in-scope? env name) (map-get (car env) name)
+        (get (close-scope env) name)
     )
 )

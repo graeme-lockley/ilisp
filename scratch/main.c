@@ -7,12 +7,19 @@ struct Value *x;
 struct Value *y;
 struct Value *z;
 
-char *true_string() {
+char *true_string()
+{
 	return "true";
 }
 
-char *false_string() {
+char *false_string()
+{
 	return "false";
+}
+
+struct Value *add(struct Value *a, struct Value *b)
+{
+	return _plus(a, b);
 }
 
 int main()

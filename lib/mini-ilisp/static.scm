@@ -1,6 +1,7 @@
 (import "../data/struct.scm" :names struct)
 (import "../list.scm" :as List)
 (import "../number.scm" :as Number)
+(import "../predicate.scm" :names integer? list-of? string?)
 (import "../string.scm" :as String)
 
 (import "./ast.scm" :as AST)
@@ -67,7 +68,18 @@
                                     (= first-expression-identifier "string?") (string?->tst env e)
                                     (= first-expression-identifier "pair?") (pair?->tst env e)
                                     (= first-expression-identifier "const") (const-expression->tst env e)
-                                    (raise 'TODO-1 e)
+
+                                    (do (const binding (Env.get env first-expression-identifier))
+
+                                        (if (or (null? binding))
+                                                (raise 'UnknownIdentifier {:identifier first-expression-identifier :location (AST.IdentifierExpression-location first-expression)})
+                                            (not (Function? binding))
+                                                (raise 'IdentifierNoFunction {:identifier first-expression-identifier :location (AST.IdentifierExpression-location first-expression)})
+                                            (not (= (count expressions) (+ 1 (Function-number-of-parameters binding))))
+                                                (raise 'ArgumentsMismatch {:procedure 'pair? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+                                            (TST.CallProcedure first-expression-identifier (List.map (cdr expressions) (proc (e) (expression->tst env e))))
+                                        )
+                                    )
                                 )
                             )
                             (raise 'TODO-2 e)
@@ -99,25 +111,50 @@
 ;; )
 
 (const- (const-expression->tst env e)
-    ; form (const x expr)
+    ; form 1 (const x expr)
+    ; form 2 (const (x1 ... x_n) e1 ... e_m)   n >= 1, m >= 1
 
     (const es (AST.S-Expression-expressions e))
 
-    (if (not (= (count es) 3))
-            (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (AST.S-Expression-location e))})
+    (if (< (count es) 3)
+            (raise 'InvalidForm {:form 'const :syntax es :location (AST.S-Expression-location e)})
     )
 
-    (const name (nth es 1))
-    (const expr (nth es 2))
+    (const args (nth es 1))
+    (const body (cddr es))
 
-    (if (not (AST.IdentifierExpression? name))
-            (raise 'InvalidForm {:form 'const :syntax es :location (const expressions (AST.S-Expression-location e))})
+    (if (AST.IdentifierExpression? args)
+            (if (> (count body) 1)
+                    (raise 'InvalidForm {:form 'const :syntax es :location (AST.S-Expression-location e)})
+                (do (const name args)
+                    (const expr (car body))
+                    (const expr' (expression->tst env expr))
+                    (Env.define-binding! env (AST.IdentifierExpression-id name) (Variable))
+                    (TST.ValueDeclaration (AST.IdentifierExpression-id name) expr')
+                )
+            )
+        (and (AST.S-Expression? args) 
+             ((list-of? AST.IdentifierExpression?) (AST.S-Expression-expressions args)) 
+             (> (count (AST.S-Expression-expressions args)) 0))
+            (do (const args' (List.map (AST.S-Expression-expressions args) AST.IdentifierExpression-id))
+                (const name (car args'))
+                (const arg-names (cdr args'))
+
+                (Env.define-binding! env name (Function (count arg-names)))
+
+                (const env' (Env.open-scope env))
+                (for-each arg-names
+                    (proc (arg-name)
+                        (Env.define-binding! env' arg-name (Parameter))
+                    )
+                )
+
+                (const body' (List.map body (proc (e') (expression->tst env' e'))))
+
+                (TST.ProcedureDeclaration name arg-names body')                
+            )
+        (raise 'InvalidForm {:form 'const :syntax es :location (AST.S-Expression-location e)})        
     )
-
-    (const expr' (expression->tst env expr))
-    (Env.define-binding! env (AST.IdentifierExpression-id name))
-    
-    (TST.ValueDeclaration (AST.IdentifierExpression-id name) expr')
 )
 
 (const- (plus->tst env e)
@@ -288,4 +325,11 @@
     (const literal-value (String.slice literal 1 (- (count literal) 1)))
     
     (TST.StringLiteral literal-value)
+)
+
+(struct Variable)
+(struct Parameter)
+
+(struct Function
+    (number-of-parameters integer?)
 )

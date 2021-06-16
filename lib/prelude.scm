@@ -127,10 +127,10 @@
     )
 )
 
-(const caar (|> car car))
-(const cadr (|> car cdr))
-(const cdar (|> cdr car))
-(const cddr (|> cdr cdr))
+(const caar (<| car car))
+(const cadr (<| car cdr))
+(const cdar (<| cdr car))
+(const cddr (<| cdr cdr))
 
 (const (type-of v)
   (if (*builtin*.null? v) "nil"

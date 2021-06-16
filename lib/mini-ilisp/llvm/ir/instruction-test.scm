@@ -19,7 +19,7 @@
 
 (Unit.test "instruction->string Alloca"
     (Unit.assert-equals 
-        (Instruction.instruction->string (Instruction.Alloca (Operand.LocalReference "%3" struct-value-pointer "Block0") 8))
+        (Instruction.instruction->string (Instruction.Alloca (Operand.LocalReference "%3" struct-value-pointer-pointer "Block0") 8))
         "%3 = alloca %struct.Value*, align 8"
     )
 )

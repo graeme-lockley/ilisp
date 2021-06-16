@@ -57,7 +57,7 @@
 
     (Unit.assert-equals 
         (Module.global->string (Module.Global "@.str0" (Type.Array 12 Type.i8) (Operand.string->carray "hello world") #t #t #f 1))
-        "@.str0 = private unnamed_addr [12 x i8] [i8 104, i8 101, i8 108, i8 108, i8 111, i8 32, i8 119, i8 111, i8 114, i8 108, i8 100, i8 0], align 1"
+        "@.str0 = private unnamed_addr global [12 x i8] [i8 104, i8 101, i8 108, i8 108, i8 111, i8 32, i8 119, i8 111, i8 114, i8 108, i8 100, i8 0], align 1"
     )
 )
 

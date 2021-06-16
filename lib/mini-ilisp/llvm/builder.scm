@@ -1,5 +1,5 @@
 (import "../../data/struct.scm" :names mutable-struct)
-(import "../../predicate.scm" :names =? byte-vector? character? integer? list? list-of? null? string?)
+(import "../../predicate.scm" :names =? any? byte-vector? character? integer? list? list-of? null? string?)
 (import "../../list.scm" :as List)
 
 (import "./ir/instruction.scm" :as Instruction)
@@ -7,13 +7,16 @@
 (import "./ir/operand.scm" :as Operand)
 (import "./ir/type.scm" :names Array i8 Type?)
 (import "./ir/type.scm" :as Type)
+(import "../environment.scm" :as Env)
 
 (const (module id)
-    (ModuleBuilder id () 0)
+    (ModuleBuilder id () 0 (Env.empty))
 )
 
+(const opening-block-name "Block0")
+
 (const (function builder name return-type parameter-types)
-    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) "Block0")
+    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name)
 )
 
 (const (declare-identified-type! builder name type)
@@ -74,6 +77,45 @@
 
 (const- (include-declaration! builder declaration)
     (ModuleBuilder-declarations! builder (pair declaration (ModuleBuilder-declarations builder)))
+)
+
+(const (env builder)
+    (if (ModuleBuilder? builder) 
+            (ModuleBuilder-env builder) 
+        (env (FunctionBuilder-module-builder builder))
+    )
+)
+
+(const- (env! builder env)
+    (if (ModuleBuilder? builder) 
+            (ModuleBuilder-env! builder env) 
+        (env! (FunctionBuilder-module-builder builder) env)
+    )
+)
+
+(const (open-scope! builder)
+    (const ns (Env.open-scope (env builder)))
+    (env! builder ns)
+)
+
+(const (close-scope! builder)
+    (env! builder (Env.close-scope (env builder)))
+)
+
+(const (get-binding builder name)
+    (Env.get (env builder) name)
+)
+
+(const (define-binding! builder name value)
+    (Env.define-binding! (env builder) name value)
+)
+
+(const (alloca! builder return-type)
+    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
+
+    (include-instruction! builder (Instruction.Alloca var 8))
+
+    var
 )
 
 (const (br! builder name)
@@ -167,6 +209,7 @@
     (id string?)
     (declarations list?)
     (literal-string-count number?)
+    (env any?)
 )
 
 (mutable-struct FunctionBuilder

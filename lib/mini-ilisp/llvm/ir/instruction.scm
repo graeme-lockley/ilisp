@@ -70,7 +70,7 @@
 )
 
 (union Instruction
-    Br? Call? CallVoid? CondBr? ICmp? Label? Load? Phi? Ret? Store?
+    Alloca? Br? Call? CallVoid? CondBr? ICmp? Label? Load? Phi? Ret? Store?
 )
 
 (const (instruction->string instruction)
@@ -78,7 +78,7 @@
             (str
                 (Operand.LocalReference-name (Alloca-return instruction))
                 " = alloca "
-                (Type.type->string (Operand.LocalReference-type (Alloca-return instruction)))
+                (Type.type->string (Type.dereference (Operand.LocalReference-type (Alloca-return instruction))))
                 (if (= 0 (Alloca-align instruction)) "" (str ", align " (Alloca-align instruction)))
             )
         (Br? instruction)

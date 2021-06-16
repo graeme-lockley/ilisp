@@ -1,3 +1,4 @@
+(import "../list.scm" :as List)
 (import "./llvm/builder.scm" :as Builder)
 (import "./tst.scm" :as TST)
 (import "./llvm/ir/module.scm" :as Module)
@@ -7,6 +8,13 @@
 (const- struct-value (Type.Reference "%struct.Value"))
 (const- struct-value-pointer (Type.Pointer struct-value))
 (const- struct-value-pointer-pointer (Type.Pointer struct-value-pointer))
+
+(const- (zip l1 l2)
+    (if (null? l1) ()
+        (null? l2) ()
+        (pair (list (car l1) (car l2)) (zip (cdr l1) (cdr l2)))
+    )
+)
 
 (const (tst->ir tst)
     (const builder (Builder.module "test"))
@@ -37,16 +45,55 @@
     (Builder.declare-external! builder "@_stringp"  struct-value-pointer (list struct-value-pointer))
     (Builder.declare-external! builder "@_pairp"  struct-value-pointer (list struct-value-pointer))
         
-    (const main-builder (Builder.function builder "@main" Type.i32 ()))
-
     (for-each tst
         (proc (e)
             (if (TST.ValueDeclaration? e)
-                    (Builder.declare-global! builder (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer (Operand.CNull struct-value-pointer) 8)
+                    (do (Builder.declare-global! builder (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer (Operand.CNull struct-value-pointer) 8)
+                        (Builder.define-binding! builder 
+                            (TST.ValueDeclaration-name e) 
+                            (Operand.GlobalReference (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer-pointer)
+                        )
+                    )
             )
         )
     )
 
+    (for-each tst 
+        (proc (e)
+            (if (TST.ProcedureDeclaration? e)
+                    (do (const proc-builder (Builder.function builder (str "@" (TST.ProcedureDeclaration-name e)) struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
+                        (Builder.open-scope! proc-builder)
+                        
+                        (const arg-ops 
+                            (List.map (TST.ProcedureDeclaration-arg-names e)
+                                (proc (arg)
+                                    (Builder.alloca! proc-builder struct-value-pointer-pointer)
+                                )
+                            )
+                        )
+
+                        (List.map-idx (zip (TST.ProcedureDeclaration-arg-names e) arg-ops) 
+                            (proc (arg idx)
+                                (const name (car arg))
+                                (const op (cadr arg))
+
+                                (Builder.define-binding! proc-builder name op)
+                                (Builder.store! proc-builder (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name) op)
+                            )
+                        )
+                        
+                        (const op (fold (TST.ProcedureDeclaration-es e) () (proc (op e) (compile-expression proc-builder e))))
+                        (const op' (if (null? op) (Builder.load! proc-builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op))
+                        (Builder.ret! proc-builder op')
+                        (Builder.close-scope! proc-builder)
+
+                        (Builder.declare-function! builder proc-builder)
+                    )
+            )
+        )
+    )
+
+    (const main-builder (Builder.function builder "@main" Type.i32 ()))
     (Builder.call-void! main-builder "@_initialise_lib" ())
 
     (for-each tst 
@@ -59,7 +106,8 @@
                     (do (const op (compile-expression main-builder (TST.ValueDeclaration-e e)))
                         (Builder.store! main-builder op (Operand.GlobalReference (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer-pointer))
                     )
-                (raise 'TODO-compile-top-level e)
+                (TST.ProcedureDeclaration? e) ()
+                (compile-expression main-builder e)
             )
         )
     )
@@ -146,7 +194,16 @@
                 (Builder.call! builder "@_pairp" struct-value-pointer (list e'))
             )
         (TST.IdentifierReference? e)
-            (Builder.load! builder (Operand.GlobalReference (str "@" (TST.IdentifierReference-name e)) struct-value-pointer-pointer))
+            (do (const binding (Builder.get-binding builder (TST.IdentifierReference-name e)))
+                (if (null? binding)
+                        (raise 'InternalError {:reason "Binding must exist during compilation" :name (TST.IdentifierReference-name e) :bindings (Builder.env binding)})
+                )
+                (Builder.load! builder binding)
+            )
+        (TST.CallProcedure? e)
+            (do (const ops (List.map (TST.CallProcedure-arguments e) (proc (e') (compile-expression builder e'))))
+                (Builder.call! builder (str "@" (TST.CallProcedure-name e)) struct-value-pointer ops)
+            )
         (TST.CallPrintLn? e)
             (build-call-print-ln! main-builder e)
         (raise 'TODO-compile e)

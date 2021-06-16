@@ -45,58 +45,53 @@
     (Builder.declare-external! builder "@_stringp"  struct-value-pointer (list struct-value-pointer))
     (Builder.declare-external! builder "@_pairp"  struct-value-pointer (list struct-value-pointer))
         
-    (for-each tst
+    (for-each (List.filter tst TST.ValueDeclaration?)
         (proc (e)
-            (if (TST.ValueDeclaration? e)
-                    (do (Builder.declare-global! builder (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer (Operand.CNull struct-value-pointer) 8)
-                        (Builder.define-binding! builder 
-                            (TST.ValueDeclaration-name e) 
-                            (Operand.GlobalReference (str "@" (TST.ValueDeclaration-name e)) struct-value-pointer-pointer)
-                        )
-                    )
-            )
+            (const name (TST.ValueDeclaration-name e))
+            (const qualified-name (str "@" name))
+
+            (Builder.declare-global! builder qualified-name struct-value-pointer (Operand.CNull struct-value-pointer) 8)
+            (Builder.define-binding! builder name (Operand.GlobalReference qualified-name struct-value-pointer-pointer))
         )
     )
 
-    (for-each tst 
+    (for-each (List.filter tst TST.ProcedureDeclaration?)
         (proc (e)
-            (if (TST.ProcedureDeclaration? e)
-                    (do (const proc-builder (Builder.function builder (str "@" (TST.ProcedureDeclaration-name e)) struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
-                        (Builder.open-scope! proc-builder)
-                        
-                        (const arg-ops 
-                            (List.map (TST.ProcedureDeclaration-arg-names e)
-                                (proc (arg)
-                                    (Builder.alloca! proc-builder struct-value-pointer-pointer)
-                                )
-                            )
-                        )
-
-                        (List.map-idx (zip (TST.ProcedureDeclaration-arg-names e) arg-ops) 
-                            (proc (arg idx)
-                                (const name (car arg))
-                                (const op (cadr arg))
-
-                                (Builder.define-binding! proc-builder name op)
-                                (Builder.store! proc-builder (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name) op)
-                            )
-                        )
-                        
-                        (const op (fold (TST.ProcedureDeclaration-es e) () (proc (op e) (compile-expression proc-builder e))))
-                        (const op' (if (null? op) (Builder.load! proc-builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op))
-                        (Builder.ret! proc-builder op')
-                        (Builder.close-scope! proc-builder)
-
-                        (Builder.declare-function! builder proc-builder)
+            (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
+            (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
+            (Builder.open-scope! proc-builder)
+            
+            (const arg-ops 
+                (List.map (TST.ProcedureDeclaration-arg-names e)
+                    (proc (arg)
+                        (Builder.alloca! proc-builder struct-value-pointer-pointer)
                     )
+                )
             )
+
+            (List.map-idx (zip (TST.ProcedureDeclaration-arg-names e) arg-ops) 
+                (proc (arg idx)
+                    (const name (car arg))
+                    (const op (cadr arg))
+
+                    (Builder.define-binding! proc-builder name op)
+                    (Builder.store! proc-builder (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name) op)
+                )
+            )
+            
+            (const op (fold (TST.ProcedureDeclaration-es e) () (proc (op e) (compile-expression proc-builder e))))
+            (const op' (if (null? op) (Builder.load! proc-builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op))
+            (Builder.ret! proc-builder op')
+            (Builder.close-scope! proc-builder)
+
+            (Builder.declare-function! builder proc-builder)
         )
     )
 
     (const main-builder (Builder.function builder "@main" Type.i32 ()))
     (Builder.call-void! main-builder "@_initialise_lib" ())
 
-    (for-each tst 
+    (for-each tst
         (proc (e)
             (if (TST.CallPrintLn? e)
                     (build-call-print-ln! main-builder e)

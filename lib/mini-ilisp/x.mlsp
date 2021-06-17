@@ -55,4 +55,4 @@
   )
 )
 
-(println (sum (range 1 10000)))
+(assert-eq "sum 1..10000" (sum (range 1 10000)) 49995000)

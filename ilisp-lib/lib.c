@@ -199,6 +199,24 @@ struct Value *_less_than(struct Value *op1, struct Value *op2)
     }
 }
 
+struct Value *_greater_than(struct Value *op1, struct Value *op2)
+{
+    if (op1->tag != op2->tag)
+        return _VFalse;
+
+    switch (op1->tag)
+    {
+    case BOOLEAN_VALUE:
+        return (op1->boolean > op2->boolean) ? _VTrue : _VFalse;
+    case INTEGER_VALUE:
+        return (op1->integer > op2->integer) ? _VTrue : _VFalse;
+    case STRING_VALUE:
+        return (strcmp(op1->string, op2->string) > 0) ? _VTrue : _VFalse;
+    default:
+        return _VFalse;
+    }
+}
+
 static char *_value_type_name(int tag)
 {
     switch (tag)

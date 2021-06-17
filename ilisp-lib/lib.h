@@ -41,6 +41,7 @@ extern struct Value *_multiply(struct Value *op1, struct Value *op2);
 extern struct Value *_divide(struct Value *op1, struct Value *op2);
 extern struct Value *_equals(struct Value *op1, struct Value *op2);
 extern struct Value *_less_than(struct Value *op1, struct Value *op2);
+extern struct Value *_greater_than(struct Value *op1, struct Value *op2);
 extern struct Value *_pair_car(struct Value *pair);
 extern struct Value *_pair_cdr(struct Value *pair);
 extern struct Value *_nullp(struct Value *v);

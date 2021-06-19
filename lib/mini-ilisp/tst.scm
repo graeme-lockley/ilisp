@@ -84,16 +84,6 @@
     (e Expression?)
 )
 
-(union Expression
-    IdentifierReference? CallProcedure?
-    NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
-    BinaryOperator?
-    IfThenElse?
-    Pair? Car? Cdr?
-    NullP? BooleanP? IntegerP? StringP? PairP?
-    CallPrintLn?
-)
-
 (struct ValueDeclaration
     (name string?)
     (e Expression?)
@@ -115,6 +105,17 @@
 
 (struct Do
     (statements (list-of? Statement?))
+)
+
+(union Expression
+    IdentifierReference? CallProcedure?
+    NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
+    BinaryOperator?
+    IfThenElse?
+    Pair? Car? Cdr?
+    NullP? BooleanP? IntegerP? StringP? PairP?
+    CallPrintLn? CallPrint? Do?
+    ValueDeclaration? ProcedureDeclaration?
 )
 
 (union Statement

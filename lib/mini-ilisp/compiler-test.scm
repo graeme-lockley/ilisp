@@ -23,6 +23,23 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
+;; (Unit.test "nested const procedure"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (f a b)
+;;             (const sum (+ a b))
+
+;;             (const (g x) 
+;;                 (const sum2 (+ a b sum))
+;;                 (+ sum2 x)
+;;             ) 
+            
+;;             (g sum)
+;;         ) 
+        
+;;         (print (f 1 2))
+;;     ") "7")
+;; )
+
 (Unit.test "hello world"
     (Unit.assert-equals (compile-and-run "(println \"hello world\")") "hello world\n")
     (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\")") "hello world\n")

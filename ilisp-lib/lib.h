@@ -6,6 +6,13 @@
 #define INTEGER_VALUE 2
 #define STRING_VALUE 3
 #define PAIR_VALUE 4
+#define CLOSURE_VALUE 5
+
+struct Frame
+{
+	struct Frame *enclosing;
+	struct Value **bindings;
+};
 
 struct Value
 {
@@ -19,6 +26,11 @@ struct Value
             struct Value *car;
             struct Value *cdr;
         } pair;
+        struct Closure {
+            void *procedure;
+            int number_arguments;
+            struct Frame *frame;
+        } closure;
     };
 };
 
@@ -34,6 +46,9 @@ extern void _print_newline(void);
 extern struct Value *_from_literal_int(int v);
 extern struct Value *_from_literal_string(char *s);
 extern struct Value *_mk_pair(struct Value *car, struct Value *cdr);
+extern struct Value *_from_procedure(void *procedure, struct Frame *frame, int number_arguments);
+
+extern struct Value *_call_closure_1(struct Value *c, struct Value *a1);
 
 extern struct Value *_plus(struct Value *op1, struct Value *op2);
 extern struct Value *_minus(struct Value *op1, struct Value *op2);

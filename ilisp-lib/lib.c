@@ -93,6 +93,43 @@ struct Value *_from_literal_string(char *s)
     return r;
 }
 
+struct Value *_from_procedure(void *procedure, struct Frame *frame, int number_arguments)
+{
+    struct Value *r = (struct Value *)malloc(sizeof(struct Value));
+    r->tag = CLOSURE_VALUE;
+    r->closure.procedure = procedure;
+    r->closure.frame = frame;
+    r->closure.number_arguments = number_arguments;
+    return r;
+}
+
+struct Value *_call_closure_1(struct Value *c, struct Value *a1)
+{
+    if (c->tag != CLOSURE_VALUE)
+    {
+        fprintf(stderr, "Error: call closure: Attempt to call value as if a closure: %d\n", c->tag);
+        exit(-1);
+    }
+    if (c->closure.number_arguments != 1)
+    {
+        fprintf(stderr, "Error: call closure: Expected %d arguments but received 1\n", c->closure.number_arguments);
+        exit(-1);
+    }
+
+    if (c->closure.frame == NULL)
+    {
+        struct Value *(*procedure)(struct Value * a1) = c->closure.procedure;
+
+        return (*procedure)(a1);
+    }
+    else
+    {
+        struct Value *(*procedure)(struct Frame * f, struct Value * a1) = c->closure.procedure;
+
+        return (*procedure)(c->closure.frame, a1);
+    }
+}
+
 struct Value *_mk_pair(struct Value *car, struct Value *cdr)
 {
     struct Value *r = (struct Value *)malloc(sizeof(struct Value));

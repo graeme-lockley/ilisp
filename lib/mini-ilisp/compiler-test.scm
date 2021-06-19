@@ -40,6 +40,14 @@
 ;;     ") "7")
 ;; )
 
+;; (Unit.test "nested nested const value"
+;;     ()
+;; )
+
+;; (Unit.test "nested nested const procedure"
+;;     ()
+;; )
+
 (Unit.test "hello world"
     (Unit.assert-equals (compile-and-run "(println \"hello world\")") "hello world\n")
     (Unit.assert-equals (compile-and-run "(println \"hello\" \" \" \"world\")") "hello world\n")
@@ -160,4 +168,16 @@
 
 (Unit.test "top-level - const procedure"
     (Unit.assert-equals (compile-and-run "(const (f a b) (+ a b)) (print (f 1 2))") "3")
+)
+
+(Unit.test "nested const value"
+    (Unit.assert-equals (compile-and-run "
+        (const (f a b)
+            (const sum (+ a b))
+
+            (+ sum sum)
+        ) 
+        
+        (print (f 1 2))
+    ") "6")
 )

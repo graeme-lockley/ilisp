@@ -53,7 +53,7 @@
             (const qualified-name (str "@" name))
 
             (Builder.declare-global! builder qualified-name struct-value-pointer (Operand.CNull struct-value-pointer) 8)
-            (Builder.define-binding! builder name (Operand.GlobalReference qualified-name struct-value-pointer-pointer))
+            (Builder.define-name! builder name (Builder.GlobalValue))
         )
     )
 
@@ -61,7 +61,6 @@
         (proc (e)
             (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
             (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
-            (Builder.open-scope! proc-builder)
             
             (const arg-ops 
                 (List.map (TST.ProcedureDeclaration-arg-names e)
@@ -84,7 +83,6 @@
             (const op (fold (TST.ProcedureDeclaration-es e) () (proc (op e) (compile-expression proc-builder e))))
             (const op' (if (null? op) (Builder.load! proc-builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op))
             (Builder.ret! proc-builder op')
-            (Builder.close-scope! proc-builder)
 
             (Builder.declare-function! builder proc-builder)
         )
@@ -195,13 +193,22 @@
                 (Builder.call! builder "@_pairp" struct-value-pointer (list e'))
             )
         (TST.IdentifierReference? e)
-            (do (const binding (Builder.get-binding builder (TST.IdentifierReference-name e)))
-                (if (null? binding)
-                        (raise 'InternalError {:reason "Binding must exist during compilation" :name (TST.IdentifierReference-name e) :bindings (Builder.env binding)})
-                )
+            (do (const identifier-name (TST.IdentifierReference-name e))
+                (const binding (Builder.get-binding builder identifier-name))
 
-                (if (Operand.GlobalReference? binding)
-                        (Builder.load! builder binding)
+                (if (null? binding)
+                        (do (const name (Builder.get-name builder identifier-name))
+
+                            (if (null? name)
+                                    (raise 'InternalError {:reason "Binding must exist during compilation" :name (TST.IdentifierReference-name e) :names (Builder.FunctionBuilder-names builder) :bindings (Builder.FunctionBuilder-bindings builder)})
+                                (do (const qualified-name (str "@" identifier-name))
+                                    (const op (Operand.GlobalReference qualified-name struct-value-pointer-pointer))
+                                    (const op' (Builder.load! builder op))
+                                    (Builder.define-binding! builder identifier-name op')
+                                    op'
+                                )
+                            )
+                        )
                     binding
                 )
             )
@@ -216,9 +223,40 @@
         (TST.ValueDeclaration? e)
             (do (const op (compile-expression builder (TST.ValueDeclaration-e e)))
 
+                (Builder.define-name! builder (TST.ValueDeclaration-name e) (Builder.LocalValue))
                 (Builder.define-binding! builder (TST.ValueDeclaration-name e) op)
 
                 op
+            )
+        (TST.ProcedureDeclaration? e)
+            (do (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
+                (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
+
+                (const arg-ops 
+                    (List.map (TST.ProcedureDeclaration-arg-names e)
+                        (proc (arg-name)
+                            (Builder.alloca! proc-builder struct-value-pointer-pointer)
+                        )
+                    )
+                )
+
+                (List.map-idx (zip (TST.ProcedureDeclaration-arg-names e) arg-ops) 
+                    (proc (arg idx)
+                        (const name (car arg))
+                        (const op (cadr arg))
+
+                        (Builder.store! proc-builder (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name) op)
+                        (Builder.define-binding! proc-builder name (Builder.load! proc-builder op))
+                    )
+                )
+                
+                (const op (fold (TST.ProcedureDeclaration-es e) () (proc (op e) (compile-expression proc-builder e))))
+                (const op' (if (null? op) (Builder.load! proc-builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op))
+                (Builder.ret! proc-builder op')
+
+                (Builder.declare-function! builder proc-builder)
+
+                (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
             )
         (raise 'TODO-compile e)
     )

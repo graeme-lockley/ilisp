@@ -103,6 +103,7 @@
 ;   `#t` if `value` refers to a string otherwise `#f`.
 (const string? *builtin*.string?)
 
+(const map? *builtin*.map?)
 
 ; Mutate `map` by incorporating the passed bindings.
 ; 

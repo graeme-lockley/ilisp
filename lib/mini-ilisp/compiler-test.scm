@@ -23,7 +23,63 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
-;; (Unit.test "nested const procedure"
+(Unit.test "top-level - const value"
+    (Unit.assert-equals (compile-and-run "(const x (+ 5 7 (- 6 8))) (const y #t) (const z \"hello\") (print x y z)") "10#thello")
+)
+
+(Unit.test "top-level - const procedure"
+    (Unit.assert-equals (compile-and-run "(const (f a b) (+ a b)) (print (f 1 2))") "3")
+)
+
+(Unit.test "nested const value"
+    (Unit.assert-equals (compile-and-run "
+        (const (f a b)
+            (const sum (+ a b))
+
+            (+ sum sum)
+        ) 
+        
+        (print (f 1 2))
+    ") "6")
+)
+
+(Unit.test "nested const procedure without free variables"
+    (Unit.assert-equals (compile-and-run "
+        (const (f a b)
+            (const sum (+ a b))
+
+            (const (g x) 
+                (+ x x)
+            ) 
+            
+            (g sum)
+        )
+        
+        (print (f 1 2))
+    ") "6")
+)
+
+;; (Unit.test "nested const procedure without free variables and name clash"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (g x)
+;;             (- 0 x)
+;;         )
+
+;;         (const (f a b)
+;;             (const sum (+ a b))
+
+;;             (const (g x) 
+;;                 (+ x x)
+;;             ) 
+            
+;;             (g sum)
+;;         )
+        
+;;         (print (f 1 2))
+;;     ") "6")
+;; )
+
+;; (Unit.test "nested const procedure with free variables"
 ;;     (Unit.assert-equals (compile-and-run "
 ;;         (const (f a b)
 ;;             (const sum (+ a b))
@@ -34,7 +90,7 @@
 ;;             ) 
             
 ;;             (g sum)
-;;         ) 
+;;         )
         
 ;;         (print (f 1 2))
 ;;     ") "7")
@@ -162,22 +218,3 @@
     ") "#f#f#f#f#t")
 )
 
-(Unit.test "top-level - const value"
-    (Unit.assert-equals (compile-and-run "(const x (+ 5 7 (- 6 8))) (const y #t) (const z \"hello\") (print x y z)") "10#thello")
-)
-
-(Unit.test "top-level - const procedure"
-    (Unit.assert-equals (compile-and-run "(const (f a b) (+ a b)) (print (f 1 2))") "3")
-)
-
-(Unit.test "nested const value"
-    (Unit.assert-equals (compile-and-run "
-        (const (f a b)
-            (const sum (+ a b))
-
-            (+ sum sum)
-        ) 
-        
-        (print (f 1 2))
-    ") "6")
-)

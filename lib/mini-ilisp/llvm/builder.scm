@@ -1,5 +1,5 @@
-(import "../../data/struct.scm" :names mutable-struct)
-(import "../../predicate.scm" :names =? any? byte-vector? character? integer? list? list-of? null? string?)
+(import "../../data/struct.scm" :names mutable-struct struct)
+(import "../../predicate.scm" :names =? any? byte-vector? character? integer? list? list-of? map? null? string?)
 (import "../../list.scm" :as List)
 
 (import "./ir/instruction.scm" :as Instruction)
@@ -16,7 +16,18 @@
 (const opening-block-name "Block0")
 
 (const (function builder name return-type parameter-types)
-    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name)
+    (if (ModuleBuilder? builder)
+            (do (const names (Env.open-scope (ModuleBuilder-names builder)))
+                (const bindings (Env.empty))
+
+                (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names bindings)
+            )
+        (do (const names (Env.open-scope (FunctionBuilder-names builder)))
+            (const bindings (Env.empty))
+
+            (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names bindings)
+        )
+    )
 )
 
 (const (declare-identified-type! builder name type)
@@ -57,14 +68,17 @@
 )
 
 (const (declare-function! builder function-builder)
-    (include-declaration!
-        builder
-        (Module.Function 
-            (FunctionBuilder-name function-builder) 
-            (FunctionBuilder-return-type function-builder) 
-            (FunctionBuilder-parameter-types function-builder) 
-            (List.reverse (FunctionBuilder-instructions function-builder))
-        )
+    (if (ModuleBuilder? builder)
+            (include-declaration!
+                builder
+                (Module.Function 
+                    (FunctionBuilder-name function-builder) 
+                    (FunctionBuilder-return-type function-builder) 
+                    (FunctionBuilder-parameter-types function-builder) 
+                    (List.reverse (FunctionBuilder-instructions function-builder))
+                )
+            )
+        (declare-function! (FunctionBuilder-module-builder builder) function-builder)
     )
 )
 
@@ -79,35 +93,24 @@
     (ModuleBuilder-declarations! builder (pair declaration (ModuleBuilder-declarations builder)))
 )
 
-(const (env builder)
-    (if (ModuleBuilder? builder) 
-            (ModuleBuilder-env builder) 
-        (env (FunctionBuilder-module-builder builder))
-    )
+(const (get-name builder name)
+    (const env (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder))
+
+    (Env.get env name)
 )
 
-(const- (env! builder env)
-    (if (ModuleBuilder? builder) 
-            (ModuleBuilder-env! builder env) 
-        (env! (FunctionBuilder-module-builder builder) env)
-    )
-)
+(const (define-name! builder name type)
+    (const env (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
 
-(const (open-scope! builder)
-    (const ns (Env.open-scope (env builder)))
-    (env! builder ns)
-)
-
-(const (close-scope! builder)
-    (env! builder (Env.close-scope (env builder)))
+    (Env.define-binding! env name type)
 )
 
 (const (get-binding builder name)
-    (Env.get (env builder) name)
+    (Env.get (FunctionBuilder-bindings builder) name)
 )
 
-(const (define-binding! builder name value)
-    (Env.define-binding! (env builder) name value)
+(const (define-binding! builder name op)
+    (Env.define-binding! (FunctionBuilder-bindings builder) name op)
 )
 
 (const (alloca! builder return-type)
@@ -209,11 +212,11 @@
     (id string?)
     (declarations list?)
     (literal-string-count number?)
-    (env any?)
+    (names list?)
 )
 
 (mutable-struct FunctionBuilder
-    (module-builder ModuleBuilder?)
+    (module-builder (or? ModuleBuilder? FunctionBuilder?))
     (name string?)
     (return-type Type?)
     (parameter-types (list-of? Type?))
@@ -221,4 +224,15 @@
     (label-count integer?)
     (register-count integer?)
     (block-name string?)
+    (names list?)
+    (bindings (list-of? map?))
+)
+
+(struct Procedure
+)
+
+(struct GlobalValue
+)
+
+(struct LocalValue
 )

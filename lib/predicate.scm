@@ -79,6 +79,8 @@
     )
 )
 
+(const map? Builtin.map?)
+
 ; Creates a predicate that returns `#t` if the passed value equals `v` otherwise
 ; returns `#f`.
 ;

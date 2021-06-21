@@ -1,6 +1,7 @@
 (import "../../data/struct.scm" :names mutable-struct struct)
 (import "../../predicate.scm" :names =? any? byte-vector? character? integer? list? list-of? map? null? string?)
 (import "../../list.scm" :as List)
+(import "../../string.scm" :as String)
 
 (import "./ir/instruction.scm" :as Instruction)
 (import "./ir/module.scm" :as Module)
@@ -229,10 +230,22 @@
 )
 
 (struct Procedure
+    (qualified-name string?)
 )
 
 (struct GlobalValue
 )
 
 (struct LocalValue
+)
+
+(const (nested-procedure-name builder)
+    (const (calculate b)
+        (if (FunctionBuilder? b)
+                (pair (String.drop (FunctionBuilder-name b) 1) (calculate (FunctionBuilder-module-builder b)))
+            ()
+        )
+    )
+
+    (str (String.interpolate-with (calculate builder) "_"))
 )

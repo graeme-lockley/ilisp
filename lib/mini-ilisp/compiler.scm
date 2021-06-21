@@ -213,8 +213,17 @@
                 )
             )
         (TST.CallProcedure? e)
-            (do (const ops (List.map (TST.CallProcedure-arguments e) (proc (e') (compile-expression builder e'))))
-                (Builder.call! builder (str "@" (TST.CallProcedure-name e)) struct-value-pointer ops)
+            (do (const procedure-name (TST.CallProcedure-name e))
+                (const name (Builder.get-name builder procedure-name))
+
+                (const qualified-name
+                    (if (null? name) (str "@" procedure-name)
+                        (Builder.Procedure-qualified-name name)
+                    )
+                )
+                
+                (const ops (List.map (TST.CallProcedure-arguments e) (proc (e') (compile-expression builder e'))))
+                (Builder.call! builder qualified-name struct-value-pointer ops)
             )
         (TST.CallPrintLn? e)
             (do (build-call-print-ln! builder e)
@@ -229,7 +238,17 @@
                 op
             )
         (TST.ProcedureDeclaration? e)
-            (do (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
+            (do (const nested-procedure-name (Builder.nested-procedure-name builder))
+                (const qualified-name
+                    (str 
+                        "@" 
+                        (if (= "" nested-procedure-name) 
+                                (TST.ProcedureDeclaration-name e)
+                            (str (TST.ProcedureDeclaration-name e) "_" nested-procedure-name)
+                        )
+                    )
+                )
+                (Builder.define-name! builder (TST.ProcedureDeclaration-name e) (Builder.Procedure qualified-name))
                 (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
 
                 (const arg-ops 

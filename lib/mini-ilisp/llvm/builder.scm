@@ -17,18 +17,10 @@
 (const opening-block-name "Block0")
 
 (const (function builder name return-type parameter-types)
-    (if (ModuleBuilder? builder)
-            (do (const names (Env.open-scope (ModuleBuilder-names builder)))
-                (const bindings (Env.empty))
-
-                (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names bindings)
-            )
-        (do (const names (Env.open-scope (FunctionBuilder-names builder)))
-            (const bindings (Env.empty))
-
-            (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names bindings)
-        )
-    )
+    (const names (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
+    (const names' (Env.open-scope names))
+    
+    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names')
 )
 
 (const (declare-identified-type! builder name type)
@@ -104,14 +96,6 @@
     (const env (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
 
     (Env.define-binding! env name type)
-)
-
-(const (get-binding builder name)
-    (Env.get (FunctionBuilder-bindings builder) name)
-)
-
-(const (define-binding! builder name op)
-    (Env.define-binding! (FunctionBuilder-bindings builder) name op)
 )
 
 (const (alloca! builder return-type)
@@ -226,7 +210,6 @@
     (register-count integer?)
     (block-name string?)
     (names list?)
-    (bindings (list-of? map?))
 )
 
 (struct Procedure
@@ -236,7 +219,12 @@
 (struct GlobalValue
 )
 
+(struct Parameter
+    (idx number?)
+)
+
 (struct LocalValue
+    (op (or? Operand.Operand? null?))
 )
 
 (const (nested-procedure-name builder)

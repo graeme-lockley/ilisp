@@ -23,26 +23,6 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
-(Unit.test "nested const procedure without free variables and name clash"
-    (Unit.assert-equals (compile-and-run "
-        (const (g x)
-            (- 0 x)
-        )
-
-        (const (f a b)
-            (const sum (+ a b))
-
-            (const (g x) 
-                (+ x x)
-            ) 
-            
-            (g sum)
-        )
-        
-        (print (f 1 2))
-    ") "6")
-)
-
 (Unit.test "top-level - const value"
     (Unit.assert-equals (compile-and-run "(const x (+ 5 7 (- 6 8))) (const y #t) (const z \"hello\") (print x y z)") "10#thello")
 )
@@ -63,6 +43,20 @@
     ") "6")
 )
 
+(Unit.test "nested const forward value"
+    (Unit.assert-equals (compile-and-run "
+        (const a 9)
+
+        (const (f)
+            (print a)
+            (const a 10)
+            (print a)
+        )
+        
+        (f)
+    ") "()10")
+)
+
 (Unit.test "nested const procedure without free variables"
     (Unit.assert-equals (compile-and-run "
         (const (f a b)
@@ -79,7 +73,83 @@
     ") "6")
 )
 
+(Unit.test "nested const procedure without free variables and name clash"
+    (Unit.assert-equals (compile-and-run "
+        (const (g x)
+            (- 0 x)
+        )
+
+        (const (f a b)
+            (const sum (+ a b))
+
+            (const (g x)
+                (+ x x)
+            )
+
+            (g sum)
+        )
+        
+        (print (f 1 2))
+    ") "6")
+)
+
+(Unit.test "nested const procedure without free variables and name clash with a forward declaration"
+    (Unit.assert-equals (compile-and-run "
+        (const (g x)
+            (- 0 x)
+        )
+
+        (const (f a b)
+            (const sum (+ a b))
+
+            (const v (g sum))
+
+            (const (g x)
+                (+ x x)
+            )
+
+            v
+        )
+        
+        (print (f 1 2))
+    ") "6")
+)
+
 ;; (Unit.test "nested const procedure with free variables"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (f a b)
+;;             (const sum (+ a b))
+
+;;             (const (g x) 
+;;                 (const sum2 (+ a b sum))
+;;                 (+ sum2 x)
+;;             ) 
+            
+;;             (g sum)
+;;         )
+        
+;;         (print (f 1 2))
+;;     ") "7")
+;; )
+
+;; (Unit.test "nested const procedure with free variables and local declaration"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (f a b)
+;;             (const sum (+ a b))
+
+;;             (const (g x) 
+;;                 (const sum2 (+ a b))
+;;                 (+ sum2 x)
+;;             ) 
+            
+;;             (g sum)
+;;         )
+        
+;;         (print (f 1 2))
+;;     ") "7")
+;; )
+
+;; (Unit.test "nested const procedure with free variables and local declaration"
 ;;     (Unit.assert-equals (compile-and-run "
 ;;         (const (f a b)
 ;;             (const sum (+ a b))

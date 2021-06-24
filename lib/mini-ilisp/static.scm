@@ -149,12 +149,31 @@
                     )
                 )
 
-                (const body' (List.map body (proc (e') (expression->tst env' e'))))
+                (const body' (expressions->tst env' body))
 
                 (TST.ProcedureDeclaration name arg-names body')                
             )
         (raise 'InvalidForm {:form 'const :syntax es :location (AST.S-Expression-location e)})        
     )
+)
+
+(const- (expressions->tst env es)
+    (for-each es
+        (proc (e)
+            (if (AST.S-Expression? e)
+                    (do (const es (AST.S-Expression-expressions e))
+                        (if (and (= (count es) 3) 
+                                 (AST.IdentifierExpression? (nth es 0)) 
+                                 (= (AST.IdentifierExpression-id (nth es 0)) "const") 
+                                 (AST.IdentifierExpression? (nth es 1)))
+                                (Env.define-binding! env (AST.IdentifierExpression-id (nth es 1)) (Variable))
+                        )
+                    )
+            )
+        )
+    )
+
+    (List.map es (proc (e') (expression->tst env e')))
 )
 
 (const- (plus->tst env e)

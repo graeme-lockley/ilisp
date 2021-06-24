@@ -122,10 +122,17 @@ struct Value *closure2(struct Value *n)
 }
 
 
+void something(int *x) {
+
+}
+
 int main()
 {
 	_initialise_lib();
 
+	int vv = 11;
+	something(&vv);
+	printf("%d\n", vv);
 	x = _from_literal_int(10);
 	y = _VTrue;
 	z = _from_literal_string("hello");

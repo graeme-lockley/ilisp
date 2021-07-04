@@ -28,7 +28,13 @@
 )
 
 (Unit.test "top-level - const procedure"
-    (Unit.assert-equals (compile-and-run "(const (f a b) (+ a b)) (print (f 1 2))") "3")
+    (Unit.assert-equals (compile-and-run "
+        (const (f a b) 
+            (+ a b)
+        ) 
+        
+        (print (f 1 2))
+    ") "3")
 )
 
 (Unit.test "nested const value"

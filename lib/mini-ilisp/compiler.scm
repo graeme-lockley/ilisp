@@ -20,9 +20,11 @@
     (const builder (Builder.module "test"))
 
     (Builder.declare-identified-type! builder "%struct.Value" (Type.Structure #f (list Type.i32 (Type.Reference "%union.anon"))))
-    (Builder.declare-identified-type! builder "%union.anon" (Type.Structure #f (list (Type.Pointer Type.i32))))
-    (Builder.declare-identified-type! builder "%struct.Closure" (Type.Structure #f (list (Type.Pointer Type.i8) Type.i32 (Type.Pointer (Type.Reference "%struct.Frame")))))
-    (Builder.declare-identified-type! builder "%struct.Frame" (Type.Structure #f (list (Type.Pointer (Type.Reference "%struct.Frame")) (Type.Pointer (Type.Pointer (Type.Reference "%struct.Value"))))))
+    (Builder.declare-identified-type! builder "%union.anon" (Type.Structure #f (list (Type.Reference "%struct.NativeClosure"))))
+    (Builder.declare-identified-type! builder "%struct.Pair" (Type.Structure #f (list struct-value-pointer struct-value-pointer)))
+    (Builder.declare-identified-type! builder "%struct.Vector" (Type.Structure #f (list Type.i32 struct-value-pointer-pointer)))
+    (Builder.declare-identified-type! builder "%struct.NativeClosure" (Type.Structure #f (list (Type.Pointer Type.i8) Type.i32 (Type.Pointer Type.i8))))
+    (Builder.declare-identified-type! builder "%struct.DynamicClosure" (Type.Structure #f (list (Type.Pointer Type.i8) Type.i32 struct-value-pointer)))
 
     (Builder.declare-external! builder "@_initialise_lib" Type.void ())
     (Builder.declare-external! builder "@_print_value" Type.void (list struct-value-pointer))

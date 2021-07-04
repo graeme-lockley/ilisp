@@ -6,13 +6,9 @@
 #define INTEGER_VALUE 2
 #define STRING_VALUE 3
 #define PAIR_VALUE 4
-#define CLOSURE_VALUE 5
-
-struct Frame
-{
-	struct Frame *enclosing;
-	struct Value **bindings;
-};
+#define VECTOR_VALUE 5
+#define NATIVE_CLOSURE_VALUE 6
+#define DYNAMIC_CLOSURE_VALUE 7
 
 struct Value
 {
@@ -22,15 +18,28 @@ struct Value
         int boolean;
         int integer;
         char *string;
-        struct Pair {
+        struct Pair
+        {
             struct Value *car;
             struct Value *cdr;
         } pair;
-        struct Closure {
+        struct Vector
+        {
+            int length;
+            struct Value **items;
+        } vector;
+        struct NativeClosure
+        {
             void *procedure;
             int number_arguments;
-            struct Frame *frame;
-        } closure;
+            void *native_procedure;
+        } native_closure;
+        struct DynamicClosure
+        {
+            void *procedure;
+            int number_arguments;
+            struct Value *frame;
+        } dynamic_closure;
     };
 };
 
@@ -46,9 +55,14 @@ extern void _print_newline(void);
 extern struct Value *_from_literal_int(int v);
 extern struct Value *_from_literal_string(char *s);
 extern struct Value *_mk_pair(struct Value *car, struct Value *cdr);
-extern struct Value *_from_procedure(void *procedure, struct Frame *frame, int number_arguments);
+extern struct Value *_from_native_procedure(void *procedure, int number_arguments);
+extern struct Value *_from_dynamic_procedure(void *procedure, int number_arguments, struct Value *frame);
 
-extern struct Value *_call_closure_1(struct Value *c, struct Value *a1);
+extern void _assert_callable_closure(struct Value *closure, int number_arguments);
+extern struct Value *_mk_frame(struct Value *parent, int size);
+extern struct Value *_get_frame_value(struct Value *frame, int depth, int offset);
+extern void _set_frame_value(struct Value *frame, int depth, int offset, struct Value *value);
+extern struct Value *_call_closure_1(struct Value *closure, struct Value *a1);
 
 extern struct Value *_plus(struct Value *op1, struct Value *op2);
 extern struct Value *_minus(struct Value *op1, struct Value *op2);

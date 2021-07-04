@@ -93,41 +93,92 @@ struct Value *_from_literal_string(char *s)
     return r;
 }
 
-struct Value *_from_procedure(void *procedure, struct Frame *frame, int number_arguments)
+struct Value *_wrap_native_1(void *native_procedure, struct Value *a1)
+{
+    struct Value *(*f)(struct Value *) = native_procedure;
+    return f(a1);
+}
+
+struct Value *_from_native_procedure(void *procedure, int number_arguments)
 {
     struct Value *r = (struct Value *)malloc(sizeof(struct Value));
-    r->tag = CLOSURE_VALUE;
-    r->closure.procedure = procedure;
-    r->closure.frame = frame;
-    r->closure.number_arguments = number_arguments;
+    r->tag = NATIVE_CLOSURE_VALUE;
+    r->native_closure.procedure = &_wrap_native_1;
+    r->native_closure.number_arguments = number_arguments;
+    r->native_closure.native_procedure = procedure;
+
     return r;
 }
 
-struct Value *_call_closure_1(struct Value *c, struct Value *a1)
+struct Value *_from_dynamic_procedure(void *procedure, int number_arguments, struct Value *frame)
 {
-    if (c->tag != CLOSURE_VALUE)
+    struct Value *r = (struct Value *)malloc(sizeof(struct Value));
+    r->tag = DYNAMIC_CLOSURE_VALUE;
+    r->dynamic_closure.procedure = procedure;
+    r->dynamic_closure.number_arguments = number_arguments;
+    r->dynamic_closure.frame = frame;
+
+    return r;
+}
+
+void _assert_callable_closure(struct Value *closure, int number_arguments)
+{
+    if (closure->tag != NATIVE_CLOSURE_VALUE && closure->tag != DYNAMIC_CLOSURE_VALUE)
     {
-        fprintf(stderr, "Error: call closure: Attempt to call value as if a closure: %d\n", c->tag);
+        fprintf(stderr, "Error: call closure: Attempt to call value as if a closure: %d\n", closure->tag);
         exit(-1);
     }
-    if (c->closure.number_arguments != 1)
+    if (closure->native_closure.number_arguments != number_arguments)
     {
-        fprintf(stderr, "Error: call closure: Expected %d arguments but received 1\n", c->closure.number_arguments);
+        fprintf(stderr, "Error: call closure: Expected %d arguments but received %d\n", number_arguments, closure->native_closure.number_arguments);
         exit(-1);
     }
+}
 
-    if (c->closure.frame == NULL)
+struct Value *_mk_frame(struct Value *parent, int size)
+{
+    struct Value *frame = (struct Value *)malloc(sizeof(struct Value));
+    frame->tag = VECTOR_VALUE;
+    frame->vector.length = 1;
+    frame->vector.items = (struct Value **)malloc(sizeof(struct Value *) * (1 + size));
+    frame->vector.items[0] = parent;
+
+    while (size > 0)
     {
-        struct Value *(*procedure)(struct Value * a1) = c->closure.procedure;
-
-        return (*procedure)(a1);
+        frame->vector.items[size] = _VNull;
+        size -= 1;
     }
-    else
+
+    return frame;
+}
+
+struct Value *_get_frame_value(struct Value *frame, int depth, int offset)
+{
+    while (depth > 0)
     {
-        struct Value *(*procedure)(struct Frame * f, struct Value * a1) = c->closure.procedure;
-
-        return (*procedure)(c->closure.frame, a1);
+        frame = frame->vector.items[0];
+        depth -= 1;
     }
+    return frame->vector.items[offset];
+}
+
+void _set_frame_value(struct Value *frame, int depth, int offset, struct Value *value)
+{
+    while (depth > 0)
+    {
+        frame = frame->vector.items[0];
+        depth -= 1;
+    }
+    frame->vector.items[offset] = value;
+}
+
+struct Value *_call_closure_1(struct Value *closure, struct Value *a1)
+{
+    _assert_callable_closure(closure, 1);
+
+    struct Value *(*f)(struct Value *, struct Value *) = closure->dynamic_closure.procedure;
+
+    return f(closure->dynamic_closure.frame, a1);
 }
 
 struct Value *_mk_pair(struct Value *car, struct Value *cdr)

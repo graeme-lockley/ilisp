@@ -169,8 +169,13 @@
                 (Builder.define-name! builder (TST.ProcedureDeclaration-name e) (Builder.Procedure qualified-name (Builder.nested-procedure-depth proc-builder)))
 
                 (const frame-size (calculate-frame-size e))
-                (const v-null-op (compile-expression proc-builder (TST.NullLiteral)))
-                (const v-frame-op (Builder.call! proc-builder "@_mk_frame" struct-value-pointer (list v-null-op (Operand.CInt 32 frame-size))))
+                (const v-parent-frame-op 
+                    (if is-top-level-procedure
+                            (compile-expression proc-builder (TST.NullLiteral))
+                        (Operand.LocalReference "%0" struct-value-pointer Builder.opening-block-name)
+                    )
+                )
+                (const v-frame-op (Builder.call! proc-builder "@_mk_frame" struct-value-pointer (list v-parent-frame-op (Operand.CInt 32 frame-size))))
 
                 (Builder.define-op! proc-builder "%frame" v-frame-op)
 

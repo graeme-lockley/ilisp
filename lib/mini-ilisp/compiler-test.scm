@@ -139,40 +139,6 @@
     ") "9")
 )
 
-;; (Unit.test "nested const procedure with free variables and local declaration"
-;;     (Unit.assert-equals (compile-and-run "
-;;         (const (f a b)
-;;             (const sum (+ a b))
-
-;;             (const (g x) 
-;;                 (const sum2 (+ a b))
-;;                 (+ sum2 x)
-;;             ) 
-            
-;;             (g sum)
-;;         )
-        
-;;         (print (f 1 2))
-;;     ") "7")
-;; )
-
-;; (Unit.test "nested const procedure with free variables and local declaration"
-;;     (Unit.assert-equals (compile-and-run "
-;;         (const (f a b)
-;;             (const sum (+ a b))
-
-;;             (const (g x) 
-;;                 (const sum2 (+ a b sum))
-;;                 (+ sum2 x)
-;;             ) 
-            
-;;             (g sum)
-;;         )
-        
-;;         (print (f 1 2))
-;;     ") "7")
-;; )
-
 ;; (Unit.test "nested nested const value"
 ;;     ()
 ;; )

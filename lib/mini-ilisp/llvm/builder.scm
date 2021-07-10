@@ -1,6 +1,7 @@
 (import "../../data/struct.scm" :names mutable-struct struct)
 (import "../../predicate.scm" :names =? any? byte-vector? character? integer? list? list-of? map? null? string?)
 (import "../../list.scm" :as List)
+(import "../../map.scm" :as Map)
 (import "../../string.scm" :as String)
 
 (import "./ir/instruction.scm" :as Instruction)
@@ -20,7 +21,7 @@
     (const names (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
     (const names' (Env.open-scope names))
     
-    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) opening-block-name names')
+    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) (count parameter-types) opening-block-name names' (Map.mutable))
 )
 
 (const (declare-identified-type! builder name type)
@@ -36,7 +37,7 @@
 )
 
 (const (declare-global! builder name type value align)
-    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-module-builder builder) builder))
+    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-builder builder) builder))
 
     (include-declaration! builder' (Module.Global name type value #f #f #f 8))
 
@@ -44,7 +45,7 @@
 )
 
 (const (declare-string-literal! builder value)
-    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-module-builder builder) builder))
+    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-builder builder) builder))
 
     (const name (str "@.str" (ModuleBuilder-literal-string-count builder')))
 
@@ -71,7 +72,7 @@
                     (List.reverse (FunctionBuilder-instructions function-builder))
                 )
             )
-        (declare-function! (FunctionBuilder-module-builder builder) function-builder)
+        (declare-function! (FunctionBuilder-builder builder) function-builder)
     )
 )
 
@@ -96,6 +97,18 @@
     (const env (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
 
     (Env.define-binding! env name type)
+)
+
+(const (op? builder name)
+    (Map.contains? (FunctionBuilder-ops builder) name)
+)
+
+(const (get-op builder name)
+    (map-get (FunctionBuilder-ops builder) name)
+)
+
+(const (define-op! builder name op)
+    (Map.assoc! (FunctionBuilder-ops builder) name op)
 )
 
 (const (alloca! builder return-type)
@@ -201,15 +214,17 @@
 )
 
 (mutable-struct FunctionBuilder
-    (module-builder (or? ModuleBuilder? FunctionBuilder?))
+    (builder (or? ModuleBuilder? FunctionBuilder?))
     (name string?)
     (return-type Type?)
     (parameter-types (list-of? Type?))
     (instructions list?)
     (label-count integer?)
     (register-count integer?)
+    (const-count integer?)
     (block-name string?)
     (names list?)
+    (ops map?)
 )
 
 (struct Procedure
@@ -220,17 +235,33 @@
 )
 
 (struct Parameter
-    (idx number?)
+    (frame-level number?)
+    (frame-offset number?)
 )
 
 (struct LocalValue
-    (op (or? Operand.Operand? null?))
+    (frame-level number?)
+    (frame-offset number?)
+)
+
+(const (nested-procedure-depth builder)
+    (const (runner b)
+        (if (FunctionBuilder? b)
+                (+ 1 (runner (FunctionBuilder-builder b)))
+            0
+        )
+    )
+
+    (if (FunctionBuilder? builder)
+            (runner (FunctionBuilder-builder builder))
+        0
+    )
 )
 
 (const (nested-procedure-name builder)
     (const (calculate b)
         (if (FunctionBuilder? b)
-                (pair (String.drop (FunctionBuilder-name b) 1) (calculate (FunctionBuilder-module-builder b)))
+                (pair (String.drop (FunctionBuilder-name b) 1) (calculate (FunctionBuilder-builder b)))
             ()
         )
     )

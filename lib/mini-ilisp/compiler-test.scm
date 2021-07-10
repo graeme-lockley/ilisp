@@ -29,10 +29,10 @@
 
 (Unit.test "top-level - const procedure"
     (Unit.assert-equals (compile-and-run "
-        (const (f a b) 
+        (const (f a b)
             (+ a b)
-        ) 
-        
+        )
+
         (print (f 1 2))
     ") "3")
 )
@@ -43,7 +43,7 @@
             (const sum (+ a b))
 
             (+ sum sum)
-        ) 
+        )
         
         (print (f 1 2))
     ") "6")
@@ -58,7 +58,7 @@
             (const a 10)
             (print a)
         )
-        
+
         (f)
     ") "()10")
 )

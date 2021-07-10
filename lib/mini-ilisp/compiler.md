@@ -63,3 +63,16 @@ Okay so, given that, this is the approach:
 - Embedded procedures will receive the frame regardless of whether or not they have any free variables.
 - All top-level procedures will have a closure created for them as part of a module's initialisation.
 - Once this is all working then optimisation can take place.
+
+To do:
+
+- Calculate how many elements are needed for a frame
+- In a top-level procedure, create the frame
+- Populate the frame in a top-level procedure
+- In a nested procedure, add the parent frame as an argumnet and then create the frame
+- Populate the frame in a nested procedure
+- Pass the frame to nested procedure invocations
+- Create a static closure value for each top-level procedure
+- Pass a static closure
+- Pass a dynamic closure
+- Have a drink!

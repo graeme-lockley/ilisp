@@ -1,4 +1,4 @@
-(import "../list.scm" :as List)
+ (import "../list.scm" :as List)
 (import "./llvm/builder.scm" :as Builder)
 (import "./tst.scm" :as TST)
 (import "./llvm/ir/module.scm" :as Module)
@@ -27,6 +27,8 @@
     (Builder.declare-identified-type! builder "%struct.DynamicClosure" (Type.Structure #f (list (Type.Pointer Type.i8) Type.i32 struct-value-pointer)))
 
     (Builder.declare-external! builder "@_initialise_lib" Type.void ())
+    (Builder.declare-external! builder "@_mk_frame" struct-value-pointer (list struct-value-pointer Type.i32))
+    (Builder.declare-external! builder "@_set_frame_value" Type.void (list struct-value-pointer Type.i32 Type.i32 struct-value-pointer))
     (Builder.declare-external! builder "@_print_value" Type.void (list struct-value-pointer))
     (Builder.declare-external! builder "@_print_newline" Type.void ())
     (Builder.declare-external! builder "@_from_literal_int" struct-value-pointer (list Type.i32))
@@ -63,17 +65,25 @@
         (proc (e)
             (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
             (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
-            
+
+            (const frame-size (calculate-frame-size e))
+            (const v-null-op (compile-expression proc-builder (TST.NullLiteral)))
+            (const v-frame-op (Builder.call! proc-builder "@_mk_frame" struct-value-pointer (list v-null-op (Operand.CInt 32 frame-size))))
+
             (List.map-idx (TST.ProcedureDeclaration-arg-names e)
                 (proc (arg-name idx)
-                    (Builder.define-name! proc-builder arg-name (Builder.Parameter idx))
+                    (Builder.define-name! proc-builder arg-name (Builder.Parameter (Builder.nested-procedure-depth proc-builder) idx))
+                    (Builder.define-op! proc-builder arg-name (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name))
+
+                    (Builder.call-void! proc-builder "@_set_frame_value" (list v-frame-op (Operand.CInt 32 0) (Operand.CInt 32 (+ idx 1)) (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name)))
                 )
             )
 
-            (for-each (List.filter tst TST.ValueDeclaration?)
-                (proc (e)
+            (const number-of-arguments (count (TST.ProcedureDeclaration-arg-names e)))
+            (List.map-idx (List.filter tst TST.ValueDeclaration?)
+                (proc (e idx)
                     (const name (TST.ValueDeclaration-name e))
-                    (Builder.define-name! proc-builder name (Builder.LocalValue ()))
+                    (Builder.define-name! proc-builder name (Builder.LocalValue 0 (+ number-of-arguments idx)))
                 )
             )
 
@@ -108,6 +118,12 @@
     (Builder.build-module builder)
 )
 
+(const (calculate-frame-size procedure-decl)
+    (+ (count (TST.ProcedureDeclaration-arg-names procedure-decl))
+       (count (List.filter (TST.ProcedureDeclaration-es procedure-decl) TST.ValueDeclaration?))
+    )
+)
+
 (const (compile-expressions builder es)
     (for-each (List.filter es TST.ProcedureDeclaration?)
         (proc (e)
@@ -124,18 +140,26 @@
                 (Builder.define-name! builder (TST.ProcedureDeclaration-name e) (Builder.Procedure qualified-name))
                 (const proc-builder (Builder.function builder qualified-name struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
 
+                (const frame-size (calculate-frame-size e))
+                (const v-null-op (compile-expression proc-builder (TST.NullLiteral)))
+                (const v-frame-op (Builder.call! proc-builder "@_mk_frame" struct-value-pointer (list v-null-op (Operand.CInt 32 frame-size))))
+
                 (List.map-idx (TST.ProcedureDeclaration-arg-names e)
                     (proc (arg-name idx)
-                        (Builder.define-name! proc-builder arg-name (Builder.Parameter idx))
+                        (Builder.define-name! proc-builder arg-name (Builder.Parameter (Builder.nested-procedure-depth proc-builder) idx))
+                        (Builder.define-op! proc-builder arg-name (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name))
+
+                        (Builder.call-void! proc-builder "@_set_frame_value" (list v-frame-op (Operand.CInt 32 0) (Operand.CInt 32 (+ idx 1)) (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name)))
                     )
                 )
 
                 (const es (TST.ProcedureDeclaration-es e))
 
-                (for-each (List.filter es TST.ValueDeclaration?)
-                    (proc (e)
+                (const number-of-arguments (count (TST.ProcedureDeclaration-arg-names e)))
+                (List.map-idx (List.filter es TST.ValueDeclaration?)
+                    (proc (e idx)
                         (const name (TST.ValueDeclaration-name e))
-                        (Builder.define-name! proc-builder name (Builder.LocalValue ()))
+                        (Builder.define-name! proc-builder name (Builder.LocalValue 0 (+ number-of-arguments idx)))
                     )
                 )
 
@@ -149,7 +173,7 @@
 
     (const op (fold es () (proc (op e) (compile-expression builder e))))
 
-    (if (null? op) (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer)) op)
+    (if (null? op) (compile-expression builder (TST.NullLiteral)) op)
 )
 
 (const (compile-expression builder e)
@@ -233,13 +257,13 @@
                 (const name (Builder.get-name builder identifier-name))
 
                 (if (null? name)
-                        (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
+                        (compile-expression builder (TST.NullLiteral))
                     (Builder.Parameter? name)
-                        (Operand.LocalReference (str "%" (Builder.Parameter-idx name)) struct-value-pointer Builder.opening-block-name)
+                        (Builder.get-op builder identifier-name)
                     (Builder.LocalValue? name)
-                        (if (null? (Builder.LocalValue-op name))
-                                (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
-                            (Builder.LocalValue-op name)
+                        (if (Builder.op? builder identifier-name)
+                                (Builder.get-op builder identifier-name)
+                            (compile-expression builder (TST.NullLiteral))
                         )
                     (do (const qualified-name (str "@" identifier-name))
                         (const op (Operand.GlobalReference qualified-name struct-value-pointer-pointer))
@@ -262,21 +286,22 @@
             )
         (TST.CallPrint? e)
             (do (build-call-print! builder e)
-                (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
+                (compile-expression builder (TST.NullLiteral))
             )
         (TST.CallPrintLn? e)
             (do (build-call-print-ln! builder e)
-                (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
+                (compile-expression builder (TST.NullLiteral))
             )
         (TST.ValueDeclaration? e)
             (do (const op (compile-expression builder (TST.ValueDeclaration-e e)))
 
-                (Builder.define-name! builder (TST.ValueDeclaration-name e) (Builder.LocalValue op))
+                (Builder.define-name! builder (TST.ValueDeclaration-name e) (Builder.LocalValue 0 0))
+                (Builder.define-op! builder (TST.ValueDeclaration-name e) op)
 
                 op
             )
         (TST.ProcedureDeclaration? e)
-            (Builder.load! builder (Operand.GlobalReference "@_VNull" struct-value-pointer-pointer))
+            (compile-expression builder (TST.NullLiteral))
         (raise 'TODO-compile e)
     )
 )

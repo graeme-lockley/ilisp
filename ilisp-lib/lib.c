@@ -152,14 +152,19 @@ struct Value *_mk_frame(struct Value *parent, int size)
     return frame;
 }
 
-struct Value *_get_frame_value(struct Value *frame, int depth, int offset)
+struct Value *_get_frame(struct Value *frame, int depth)
 {
     while (depth > 0)
     {
         frame = frame->vector.items[0];
         depth -= 1;
     }
-    return frame->vector.items[offset];
+    return frame;
+}
+
+struct Value *_get_frame_value(struct Value *frame, int depth, int offset)
+{
+    return _get_frame(frame, depth)->vector.items[offset];
 }
 
 void _set_frame_value(struct Value *frame, int depth, int offset, struct Value *value)

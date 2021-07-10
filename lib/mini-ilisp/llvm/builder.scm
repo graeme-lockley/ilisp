@@ -229,6 +229,7 @@
 
 (struct Procedure
     (qualified-name string?)
+    (frame-level number?)
 )
 
 (struct GlobalValue
@@ -255,6 +256,13 @@
     (if (FunctionBuilder? builder)
             (runner (FunctionBuilder-builder builder))
         0
+    )
+)
+
+(const (top-level-procedure? builder)
+    (if (FunctionBuilder? builder)
+            (ModuleBuilder? (FunctionBuilder-builder builder))
+        #f
     )
 )
 

@@ -62,6 +62,7 @@ extern void _assert_callable_closure(struct Value *closure, int number_arguments
 extern struct Value *_mk_frame(struct Value *parent, int size);
 extern struct Value *_get_frame_value(struct Value *frame, int depth, int offset);
 extern void _set_frame_value(struct Value *frame, int depth, int offset, struct Value *value);
+extern struct Value *_get_frame(struct Value *frame, int depth);
 extern struct Value *_call_closure_1(struct Value *closure, struct Value *a1);
 
 extern struct Value *_plus(struct Value *op1, struct Value *op2);

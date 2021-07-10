@@ -17,11 +17,28 @@
 
 (const opening-block-name "Block0")
 
-(const (function builder name return-type parameter-types)
+(const- struct-value (Type.Reference "%struct.Value"))
+
+(const- struct-value-pointer (Type.Pointer struct-value))
+
+(const (function builder name top-level return-type parameter-types)
     (const names (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
     (const names' (Env.open-scope names))
     
-    (FunctionBuilder builder name return-type parameter-types () 1 (+ (count parameter-types) 1) (count parameter-types) opening-block-name names' (Map.mutable))
+    (FunctionBuilder 
+        builder 
+        name 
+        return-type 
+        (if top-level parameter-types (pair struct-value-pointer parameter-types))
+        () 
+        1 
+        ;; (+ (count parameter-types) 1) 
+        (if top-level (+ (count parameter-types) 1) (+ (count parameter-types) 2))
+        (+ (count parameter-types) 1) 
+        opening-block-name 
+        names' 
+        (Map.mutable)
+    )
 )
 
 (const (declare-identified-type! builder name type)
@@ -204,6 +221,12 @@
     (FunctionBuilder-label-count! builder (+ (FunctionBuilder-label-count builder) 1))
 
     (str "Block" label)
+)
+
+(const (next-const-offset! builder)
+    (const r (FunctionBuilder-const-count builder))
+    (FunctionBuilder-const-count! builder (+ r 1))
+    r
 )
 
 (mutable-struct ModuleBuilder

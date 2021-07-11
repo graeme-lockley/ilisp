@@ -121,30 +121,58 @@
     ") "6")
 )
 
-(Unit.test "nested const procedure with free variables"
-    (Unit.assert-equals (compile-and-run "
-        (const (f a b)
-            (const sum (+ a b))
+;; (Unit.test "nested const procedure with free variables"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (f a b)
+;;             (const sum (+ a b))
 
-            (const (g x) 
-                (const sum2 (+ a b sum))
+;;             (const (g x) 
+;;                 (const sum2 (+ a b sum))
 
-                (+ sum2 x)
-            ) 
+;;                 (+ sum2 x)
+;;             ) 
             
-            (g sum)
-        )
+;;             (g sum)
+;;         )
         
-        (print (f 1 2))
-    ") "9")
-)
-
-;; (Unit.test "nested nested const value"
-;;     ()
+;;         (print (f 1 2))
+;;     ") "9")
 ;; )
 
-;; (Unit.test "nested nested const procedure"
-;;     ()
+;; (Unit.test "max procedure"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (max a b)
+;;             (if (< a b) b a)
+;;         )
+
+        
+;;         (print (max 1 2))
+;;     ") "2")
+;; )
+
+;; (Unit.test "nested nested const value"
+;;     (Unit.assert-equals (compile-and-run "
+;;         (const (nested a)
+;;             (const a' (+ a 1))
+
+;;             (const (nested-nested b)
+;;                 (const b' (+ b 1))
+
+;;                 (const (nested-nested-nested c)
+;;                     (const c' (+ c 1))
+
+;;                     (+ a b c a' b' c')
+;;                 )
+
+;;                 (nested-nested-nested b')
+;;             )
+
+;;             (nested-nested a')
+;;         )
+
+        
+;;         (print (nested 1))
+;;     ") "15")
 ;; )
 
 (Unit.test "hello world"

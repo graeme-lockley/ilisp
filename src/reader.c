@@ -456,7 +456,9 @@ static Value *parse(Lexer *lexer)
                 // if (strcmp(s, "pair") == 0)
                 //     printf("%s:%d:%d\n", lexer->source_name, lexer->start.line, lexer->start.column);
 
-                return mkSymbolUse(s);
+                Value *result = mkSymbol(s);
+                free(s);
+                return result;
             }
         }
     }

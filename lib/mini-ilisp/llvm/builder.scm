@@ -116,10 +116,6 @@
     (Env.define-binding! env name type)
 )
 
-(const (op? builder name)
-    (Map.contains? (FunctionBuilder-ops builder) name)
-)
-
 (const (get-op builder name)
     (map-get (FunctionBuilder-ops builder) name)
 )

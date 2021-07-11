@@ -6,18 +6,13 @@
 #include "printer.h"
 #include "value.h"
 
-static Value VNil_Value = {VP_IMMUTABLE, {0}};
-static Value VTrue_Value = {VT_TO_TAG(VT_BOOLEAN) | VP_IMMUTABLE, {1}};
-static Value VFalse_Value = {VT_TO_TAG(VT_BOOLEAN) | VP_IMMUTABLE, {0}};
-static Value VEmptyString_Value = {VT_TO_TAG(VT_STRING), {""}};
-static Value *VEmptyVector_Value_Buffer = {0};
-static Value VEmptyVector_Value = {VT_TO_TAG(VT_VECTOR) | VP_IMMUTABLE, {0, &VEmptyVector_Value_Buffer}};
+Value *VNull;
+Value *VTrue;
+Value *VFalse;
+Value *VEmptyString;
+Value *VEmptyVector;
 
-Value *VNull = &VNil_Value;
-Value *VTrue = &VTrue_Value;
-Value *VFalse = &VFalse_Value;
-Value *VEmptyString = &VEmptyString_Value;
-Value *VEmptyVector = &VEmptyVector_Value;
+static Value *symbols;
 
 Value *mkNull()
 {
@@ -33,19 +28,17 @@ static Value *mkValue(enum ValueType type)
 
 Value *mkSymbol(char *string)
 {
-    if (strcmp(string, "t") == 0)
-        return VTrue;
-    if (strcmp(string, "f") == 0)
-        return VFalse;
+    Value *result = map_string_find(symbols, string);
 
-    return mkSymbolUse(strdup(string));
-}
-
-Value *mkSymbolUse(char *string)
-{
-    Value *value = mkValue(VT_SYMBOL);
-    value->strV = string;
-    return value;
+    if (result == NULL)
+    {
+        Value *key = mkValue(VT_SYMBOL);
+        key->strV = strdup(string);
+        map_set_bang(symbols, key, key);
+        return key;
+    }
+    else
+        return result;
 }
 
 Value *mkKeyword(char *string)
@@ -238,6 +231,16 @@ static int sgn(int v)
     return 0;
 }
 
+int Value_string_compare(Value *a, char *b)
+{
+    int tag_compare = sgn(TAG_TO_VT(a) - VT_SYMBOL);
+
+    if (tag_compare == 0)
+        return sgn(strcmp(STRING(a), b));
+    else
+        return tag_compare;
+}
+
 int Value_compare(Value *a, Value *b)
 {
     if (a == b)
@@ -252,6 +255,8 @@ int Value_compare(Value *a, Value *b)
             return 0;
 
         case VT_SYMBOL:
+            // return sgn(a - b);
+
         case VT_KEYWORD:
         case VT_STRING:
             return sgn(strcmp(STRING(a), STRING(b)));
@@ -354,6 +359,21 @@ int Value_compare(Value *a, Value *b)
     return tag_compare;
 }
 
+unsigned long Value_string_hash(char *str)
+{
+    unsigned long hash = 5381;
+    int c = *str;
+
+    while (c != 0)
+    {
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        str += 1;
+        c = *str;
+    }
+
+    return hash;
+}
+
 unsigned long Value_hash(Value *v)
 {
     switch (TAG_TO_VT(v))
@@ -361,21 +381,7 @@ unsigned long Value_hash(Value *v)
     case VT_SYMBOL:
     case VT_KEYWORD:
     case VT_STRING:
-    {
-        char *str = STRING(v);
-
-        unsigned long hash = 5381;
-        int c = *str;
-
-        while (c != 0)
-        {
-            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-            str += 1;
-            c = *str;
-        }
-
-        return hash;
-    }
+        return Value_string_hash(STRING(v));
 
     case VT_CHARACTER:
         return CHARACTER(v);
@@ -423,11 +429,27 @@ unsigned long Value_hash(Value *v)
         return SOCKET(v);
 
     case VT_FILE_HANDLE:
-        return (unsigned long) FILE_HANDLE(v);
+        return (unsigned long)FILE_HANDLE(v);
 
     case VT_MUTEX:
-        return (unsigned long) MUTEX(v);
+        return (unsigned long)MUTEX(v);
     }
 
     return 0;
+}
+
+void value_initialise()
+{
+    VNull = mkValue(VT_NULL);
+    VTrue = mkValue(VT_BOOLEAN);
+    VTrue->intV = 1;
+    VFalse = mkValue(VT_BOOLEAN);
+    VFalse->intV = 0;
+    VEmptyString = mkValue(VT_STRING);
+    VEmptyString->strV = strdup("");
+    VEmptyVector = mkValue(VT_VECTOR);
+    VEmptyVector->vectorV.length = 0;
+    VEmptyVector->vectorV.items = malloc(0);
+
+    symbols = map_create(1023);
 }

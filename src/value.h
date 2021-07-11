@@ -129,7 +129,10 @@ typedef struct ValueStruct Value;
 extern int Value_truthy(Value *v);
 extern Value *Value_equals(Value *a, Value *b);
 extern int Value_compare(Value *a, Value *b);
+extern int Value_string_compare(Value *a, char *b);
 extern unsigned long Value_hash(Value *v);
+extern unsigned long Value_string_hash(char *str);
+
 
 extern Value *VNull;
 extern Value *mkNull();
@@ -140,7 +143,6 @@ extern Value *VFalse;
 
 #define SYMBOL(v) (((v)->strV))
 extern Value *mkSymbol(char *string);
-extern Value *mkSymbolUse(char *string);
 #define SYMBOL(v) (((v)->strV))
 
 extern Value *mkKeyword(char *string);
@@ -205,5 +207,7 @@ extern Value *mkMutex(pthread_mutex_t *mutex);
 #define MUTEX(v) ((v)->mutexV)
 
 #define IS_SUCCESSFUL(v) (!IS_EXCEPTION(v))
+
+extern void value_initialise();
 
 #endif

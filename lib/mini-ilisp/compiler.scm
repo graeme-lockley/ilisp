@@ -77,7 +77,6 @@
             (List.map-idx (TST.ProcedureDeclaration-arg-names e)
                 (proc (arg-name idx)
                     (Builder.define-name! proc-builder arg-name (Builder.Parameter (Builder.nested-procedure-depth proc-builder) (+ idx 1)))
-                    (Builder.define-op! proc-builder arg-name (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name))
 
                     (Builder.call-void! proc-builder "@_set_frame_value" (list v-frame-op (Operand.CInt 32 0) (Operand.CInt 32 (+ idx 1)) (Operand.LocalReference (str "%" idx) struct-value-pointer Builder.opening-block-name)))
                 )
@@ -190,7 +189,6 @@
 
                         (Builder.define-name! proc-builder arg-name (Builder.Parameter (Builder.nested-procedure-depth proc-builder) idx'))
                         (const op (Operand.LocalReference (str "%" idx') struct-value-pointer Builder.opening-block-name))
-                        (Builder.define-op! proc-builder arg-name op)
 
                         (Builder.call-void! proc-builder "@_set_frame_value" (list v-frame-op (Operand.CInt 32 0) (Operand.CInt 32 (+ idx 1)) op))
                     )
@@ -252,7 +250,7 @@
                 (Builder.cond-br! builder e1-compare then-label else-label)
             
                 (Builder.label! builder then-label)
-                (const e2 (compile-expression builder (TST.IfThenElse-e2 e)))                
+                (const e2 (compile-expression builder (TST.IfThenElse-e2 e)))
                 (Builder.br! builder merge-label)
             
                 (Builder.label! builder else-label)
@@ -309,8 +307,14 @@
                 (if (null? name)
                         (compile-expression builder (TST.NullLiteral))
                     (Builder.Parameter? name)
-                        (if (Builder.op? builder identifier-name)
-                                (Builder.get-op builder identifier-name)
+                        (if (= (Builder.Parameter-frame-level name) (Builder.nested-procedure-depth builder))
+                                (Builder.call! builder "@_get_frame_value" struct-value-pointer 
+                                    (list 
+                                        (Builder.get-op builder "%frame")
+                                        (Operand.CInt 32 0)
+                                        (Operand.CInt 32 (Builder.Parameter-frame-offset name))
+                                    )
+                                )
                             (do (const op (Builder.call! builder "@_get_frame_value" struct-value-pointer 
                                         (list 
                                             (Operand.LocalReference "%0" struct-value-pointer Builder.opening-block-name)
@@ -319,16 +323,19 @@
                                         )
                                     )
                                 )
-                                (Builder.define-op! builder identifier-name op)
 
                                 op
                             )
                         )
                     (Builder.LocalValue? name)
-                        (if (Builder.op? builder identifier-name)
-                                (Builder.get-op builder identifier-name)
-                            (= (Builder.LocalValue-frame-level name) (Builder.nested-procedure-depth builder))
-                                (compile-expression builder (TST.NullLiteral))
+                        (if (= (Builder.LocalValue-frame-level name) (Builder.nested-procedure-depth builder))
+                                (Builder.call! builder "@_get_frame_value" struct-value-pointer 
+                                    (list 
+                                        (Builder.get-op builder "%frame")
+                                        (Operand.CInt 32 0)
+                                        (Operand.CInt 32 (Builder.LocalValue-frame-offset name))
+                                    )
+                                )
                             (do (const op (Builder.call! builder "@_get_frame_value" struct-value-pointer 
                                         (list 
                                             (Operand.LocalReference "%0" struct-value-pointer Builder.opening-block-name)
@@ -337,7 +344,6 @@
                                         )
                                     )
                                 )
-                                (Builder.define-op! builder identifier-name op)
 
                                 op
                             )
@@ -397,12 +403,10 @@
             (do (const op (compile-expression builder (TST.ValueDeclaration-e e)))
 
                 (const name (Builder.get-name builder (TST.ValueDeclaration-name e)))
-                (Builder.define-op! builder (TST.ValueDeclaration-name e) op)
 
                 (if (Builder.LocalValue? name)
                         (Builder.call-void! builder "@_set_frame_value"
                             (list
-                                ;; (Operand.LocalReference "%0" struct-value-pointer Builder.opening-block-name)
                                 (Builder.get-op builder "%frame")
                                 (Operand.CInt 32 0)
                                 (Operand.CInt 32 (Builder.LocalValue-frame-offset name))

@@ -129,6 +129,8 @@ static char *test_suite()
 
 int main()
 {
+    value_initialise();
+
     printf("| Builtins Test\n");
 
     k1 = mkString("a");

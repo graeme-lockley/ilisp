@@ -59,6 +59,8 @@ static void run_prelude(char *prelude_file_name, Value *env)
 
 int main(int argc, char *argv[], char *envp[])
 {
+    value_initialise();
+
     init_genrand(time(NULL));
 
     char *prelude_file_name = getenv("ILISP_PRELUDE");

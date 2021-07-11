@@ -321,6 +321,8 @@ static char *test_suite()
 
 int main()
 {
+    value_initialise();
+
     printf("| Value Test\n");
     char *result = test_suite();
     if (result != 0)

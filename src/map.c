@@ -199,6 +199,27 @@ Value *map_containsp(Value *map, Value *key)
     }
 }
 
+Value *map_string_find(Value *map, char *key)
+{
+    MapNode *snode = MAP(map).nodes[Value_string_hash(key) % MAP(map).hash_size];
+
+    while (1)
+    {
+        if (snode == NULL)
+            return NULL;
+
+        int c = Value_string_compare(snode->key, key);
+
+        if (c == 0)
+            return snode->value;
+
+        if (c < 0)
+            snode = snode->left;
+        else
+            snode = snode->right;
+    }
+}
+
 static void assoc_list(Value **buffer, int *idx, MapNode *map)
 {
     if (map == NULL)

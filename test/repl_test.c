@@ -135,6 +135,8 @@ static void validateTest(Value *env)
 
 int main(int argc, char *argv[])
 {
+    value_initialise();
+    
     if (argc != 2)
     {
         printf("Error: expected a single input file.\n");

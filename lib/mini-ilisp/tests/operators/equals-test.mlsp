@@ -47,18 +47,3 @@
 (assert-neq "pair string" (pair 1 2) "hello")
 (assert-eq "pair pair" (pair 1 2) (pair 1 2))
 
-(const (range low high)
-  (if (< low high) 
-        (pair low (range (+ 1 low) high))
-      ()
-  )
-)
-
-(const (sum integers)
-  (if (null? integers) 
-        0
-      (+ (car integers) (sum (cdr integers)))
-  )
-)
-
-(assert-eq "sum 1..10000" (sum (range 1 10000)) 49995000)

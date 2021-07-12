@@ -64,6 +64,10 @@
     (e Expression?)
 )
 
+(struct Exit
+    (e Expression?)
+)
+
 (struct NullP
     (e Expression?)
 )
@@ -112,7 +116,7 @@
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
     IfThenElse?
-    Pair? Car? Cdr?
+    Pair? Car? Cdr? Exit?
     NullP? BooleanP? IntegerP? StringP? PairP?
     CallPrintLn? CallPrint? Do?
     ValueDeclaration? ProcedureDeclaration?

@@ -163,7 +163,7 @@ all: $(SRC_TARGETS) $(TEST_TARGETS) $(TEST_FLAG)
 ./test/value_test: $(SRC_OBJECTS) $(TEST_OBJECTS) ./test/value_test.o
 	$(CC) $(LDFLAGS) ./test/value_test.o $(SRC_OBJECTS) $(TEST_OBJECTS) $(LDLIBS) -o ./test/value_test
 
-$(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/*.scm ./lib/interpreter/*.scm ./lib/ilisp-docs/*.scm ./lib/mini-ilisp/*.scm ./lib/mini-ilisp/*.mlsp
+$(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/*.scm ./lib/interpreter/*.scm ./lib/ilisp-docs/*.scm ./lib/mini-ilisp/*.scm ./lib/mini-ilisp/tests/*.mlsp
 	(cd ./scratch ; make)
 	./test/value_test
 	./test/builtins_test
@@ -175,7 +175,7 @@ $(TEST_FLAG): $(TEST_TARGETS) $(TEST_INPUT) ./lib/*.scm ./lib/data/*.scm ./test/
 	./test/repl_test ./test/t05-macros.txt
 	./test/repl_test ./test/t06-try-catch.txt
 	./src/main ./test/test-runner.scm
-	(cd ./lib/mini-ilisp ; ../../src/main compile.scm x ; ./x)
+	(cd ./lib/mini-ilisp/tests ; make )
 	echo saweet > $(TEST_FLAG)
 
 %.o: %.c ./src/*.h ./test/*.h
@@ -185,6 +185,7 @@ test: $(TEST_INPUT)
 
 clean:
 	(cd ./scratch ; make clean)
+	(cd ./lib/mini-ilisp/tests ; make clean )
 	rm -f src/*.o
 	rm -f src/builtin/*.o
 	rm -f test/*.o

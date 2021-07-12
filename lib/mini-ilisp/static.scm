@@ -67,6 +67,7 @@
                                     (= first-expression-identifier "integer?") (integer?->tst env e)
                                     (= first-expression-identifier "string?") (string?->tst env e)
                                     (= first-expression-identifier "pair?") (pair?->tst env e)
+                                    (= first-expression-identifier "exit") (exit->tst env e)
                                     (= first-expression-identifier "const") (const-expression->tst env e)
 
                                     (do (const binding (Env.get env first-expression-identifier))
@@ -315,6 +316,16 @@
     (if (= (count es') 1)
             (TST.PairP (nth es' 0))
         (raise 'ArgumentsMismatch {:procedure 'pair? :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (exit->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.Exit (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'exit :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
 )
 

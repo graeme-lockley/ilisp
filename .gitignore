@@ -16,6 +16,7 @@ a.out
 test.bc
 test.ll
 
-lib/mini-ilisp/x
-lib/mini-ilisp/x.bc
-lib/mini-ilisp/x.ll
+lib/mini-ilisp/tests/equals-test
+lib/mini-ilisp/tests/*.bc
+lib/mini-ilisp/tests/*.ll
+lib/mini-ilisp/tests/flag

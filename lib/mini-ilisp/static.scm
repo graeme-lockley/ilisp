@@ -68,6 +68,11 @@
                                     (= first-expression-identifier "string?") (string?->tst env e)
                                     (= first-expression-identifier "pair?") (pair?->tst env e)
                                     (= first-expression-identifier "exit") (exit->tst env e)
+                                    (= first-expression-identifier "assert-eq") (assert_eq->tst env e)
+                                    (= first-expression-identifier "assert-neq") (assert_neq->tst env e)
+                                    (= first-expression-identifier "assert-true") (assert_true->tst env e)
+                                    (= first-expression-identifier "assert-false") (assert_false->tst env e)
+                                    (= first-expression-identifier "fail") (fail->tst env e)
                                     (= first-expression-identifier "const") (const-expression->tst env e)
 
                                     (do (const binding (Env.get env first-expression-identifier))
@@ -326,6 +331,56 @@
     (if (= (count es') 1)
             (TST.Exit (nth es' 0))
         (raise 'ArgumentsMismatch {:procedure 'exit :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (assert_eq->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 3)
+            (TST.AssertEq (nth es' 0) (nth es' 1) (nth es' 2))
+        (raise 'ArgumentsMismatch {:procedure 'assert-eq :expected 3 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (assert_neq->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 3)
+            (TST.AssertNeq (nth es' 0) (nth es' 1) (nth es' 2))
+        (raise 'ArgumentsMismatch {:procedure 'assert-neq :expected 3 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (assert_true->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 2)
+            (TST.AssertTrue (nth es' 0) (nth es' 1))
+        (raise 'ArgumentsMismatch {:procedure 'assert-true :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (assert_false->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 2)
+            (TST.AssertFalse (nth es' 0) (nth es' 1))
+        (raise 'ArgumentsMismatch {:procedure 'assert-false :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
+    )
+)
+
+(const- (fail->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (if (= (count es') 1)
+            (TST.Fail (nth es' 0))
+        (raise 'ArgumentsMismatch {:procedure 'fail :expected 1 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
     )
 )
 

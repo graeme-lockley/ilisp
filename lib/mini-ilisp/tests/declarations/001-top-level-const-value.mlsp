@@ -1,0 +1,11 @@
+(const x 
+    (+ 5 7 (- 6 8))
+) 
+
+(const y #t) 
+
+(const z "hello") 
+
+(assert-eq "constant integer" x 10)
+(assert-eq "constant boolean" y #t)
+(assert-eq "constant string" z "hello")

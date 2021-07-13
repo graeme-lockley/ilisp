@@ -23,10 +23,6 @@
     (*builtin*.write-file name (Module.module->string ir))
 )
 
-(Unit.test "top-level - const value"
-    (Unit.assert-equals (compile-and-run "(const x (+ 5 7 (- 6 8))) (const y #t) (const z \"hello\") (print x y z)") "10#thello")
-)
-
 (Unit.test "top-level - const procedure"
     (Unit.assert-equals (compile-and-run "
         (const (f a b)

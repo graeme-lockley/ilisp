@@ -68,6 +68,32 @@
     (e Expression?)
 )
 
+(struct AssertEq
+    (msg Expression?)
+    (v1 Expression?)
+    (v2 Expression?)
+)
+
+(struct AssertNeq
+    (msg Expression?)
+    (v1 Expression?)
+    (v2 Expression?)
+)
+
+(struct AssertTrue
+    (msg Expression?)
+    (v Expression?)
+)
+
+(struct AssertFalse
+    (msg Expression?)
+    (v Expression?)
+)
+
+(struct Fail
+    (msg Expression?)
+)
+
 (struct NullP
     (e Expression?)
 )
@@ -117,6 +143,7 @@
     BinaryOperator?
     IfThenElse?
     Pair? Car? Cdr? Exit?
+    AssertEq? AssertNeq? AssertTrue? AssertFalse? Fail?
     NullP? BooleanP? IntegerP? StringP? PairP?
     CallPrintLn? CallPrint? Do?
     ValueDeclaration? ProcedureDeclaration?

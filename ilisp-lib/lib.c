@@ -371,3 +371,61 @@ struct Value *_pairp(struct Value *v)
 {
     return v->tag == PAIR_VALUE ? _VTrue : _VFalse;
 }
+
+void _assert_eq(struct Value *msg, struct Value *v1, struct Value *v2)
+{
+    if (_equals(v1, v2) != _VTrue)
+    {
+        printf("x = %s\n", msg->string);
+        exit(1);
+    }
+    else
+    {
+        printf("- = %s\n", msg->string);
+    }
+}
+
+void _assert_neq(struct Value *msg, struct Value *v1, struct Value *v2)
+{
+    if (_equals(v1, v2) != _VFalse)
+    {
+        printf("x = %s\n", msg->string);
+        exit(1);
+    }
+    else
+    {
+        printf("- = %s\n", msg->string);
+    }
+}
+
+void _assert_true(struct Value *msg, struct Value *v)
+{
+    if (_equals(v, _VTrue) != _VTrue)
+    {
+        printf("x = %s\n", msg->string);
+        exit(1);
+    }
+    else
+    {
+        printf("- = %s\n", msg->string);
+    }
+}
+
+void _assert_false(struct Value *msg, struct Value *v)
+{
+    if (_equals(v, _VFalse) != _VTrue)
+    {
+        printf("x = %s\n", msg->string);
+        exit(1);
+    }
+    else
+    {
+        printf("- = %s\n", msg->string);
+    }
+}
+
+void _fail(struct Value *msg)
+{
+    printf("x = %s\n", msg->string);
+    exit(1);
+}

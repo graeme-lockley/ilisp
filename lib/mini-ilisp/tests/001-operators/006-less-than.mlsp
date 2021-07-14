@@ -1,0 +1,6 @@
+(assert-false "(< 1 1)" (< 1 1))
+(assert-false "(< 1 0)" (< 1 0))
+(assert-true "(< 0 1)" (< 0 1))
+(assert-false "(< #t #t)" (< #t #t))
+(assert-false "(< #t #f)" (< #t #f))
+(assert-true "(< #f #t)" (< #f #t))

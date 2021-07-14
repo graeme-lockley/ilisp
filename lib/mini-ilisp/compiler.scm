@@ -303,7 +303,7 @@
             )
         (TST.AssertFalse? e)
             (do (const msg (compile-expression builder (TST.AssertFalse-msg e)))
-                (const v (compile-expression builder (TST.AssertFAlse-v e)))
+                (const v (compile-expression builder (TST.AssertFalse-v e)))
                 (Builder.call! builder "@_assert_false" struct-value-pointer (list msg v))
             )
         (TST.Fail? e)

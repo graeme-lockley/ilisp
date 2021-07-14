@@ -41,48 +41,6 @@
     (Unit.assert-equals (compile-and-run "(print #t \" \" #f)") "#t #f")
 )
 
-(Unit.test "operator +"
-    (Unit.assert-equals 
-        (compile-and-run "(print (+) \" \" (+ 1) \" \" (+ 1 2) \" \" (+ 1 2 3 4 5 6))")
-        "0 1 3 21"
-    )
-)
-
-(Unit.test "operator -"
-    (Unit.assert-equals 
-        (compile-and-run "(print (-) \" \" (- 1) \" \" (- 1 2) \" \" (- 1 2 3 4 5 6))")
-        "0 -1 -1 -19"
-    )
-)
-
-(Unit.test "operator *"
-    (Unit.assert-equals 
-        (compile-and-run "(print (*) \" \" (* 1) \" \" (* 1 2) \" \" (* 1 2 3 4 5 6))")
-        "1 1 2 720"
-    )
-)
-
-(Unit.test "operator /"
-    (Unit.assert-equals 
-        (compile-and-run "(print (/) \" \" (/ 1) \" \" (/ 4 2) \" \" (/ 500 50 2))")
-        "1 1 2 5"
-    )
-)
-
-(Unit.test "operator ="
-    (Unit.assert-equals 
-        (compile-and-run "(print (= 1 1) \" \" (= 1 0) \" \" (= #t #t) \" \" (= #t #f))")
-        "#t #f #t #f"
-    )
-)
-
-(Unit.test "operator <"
-    (Unit.assert-equals 
-        (compile-and-run "(print (< 1 1) \" \" (< 1 0) \" \" (< 0 1) \" \" (< #t #t) \" \" (< #t #f) \" \" (< #f #t))")
-        "#f #f #t #f #f #t"
-    )
-)
-
 (Unit.test "expression - if"
     (Unit.assert-equals (compile-and-run "
         (print (if) (if 1) (if (= 4 4) 1 2) (if (= 4 7) 1 2) (if (= 4 7) 1 (= 3 2) 2 3) (if (= 4 7) 1 (= 3 2) 2))

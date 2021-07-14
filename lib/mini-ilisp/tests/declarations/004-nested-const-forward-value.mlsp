@@ -1,0 +1,10 @@
+(const a 9)
+
+(const (f)
+    (const v1 a)
+    (const a 10)
+    (const v2 a)
+    (pair v1 v2)
+)
+
+(assert-eq "(f)" (f) (pair () 10))

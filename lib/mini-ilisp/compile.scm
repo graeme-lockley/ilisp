@@ -14,7 +14,7 @@
     
     (write-file ir (str program ".ll"))
     (println (Compiler.assemble (str program ".ll") (str program ".bc")))
-    (println (Compiler.link (str program ".bc") ilib-file-name program))
+    (println (Compiler.link (str program ".bc") ilib-file-name (str program ".bin")))
 )
 
 (const ilib-file-name

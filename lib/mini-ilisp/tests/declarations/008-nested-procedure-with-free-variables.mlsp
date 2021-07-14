@@ -1,0 +1,13 @@
+(const (f a b)
+    (const sum (+ a b))
+
+    (const (g x) 
+        (const sum2 (+ a b sum))
+
+        (+ sum2 x)
+    ) 
+    
+    (g sum)
+)
+        
+(assert-eq "(f 1 2)" (f 1 2) 9)

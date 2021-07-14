@@ -1,0 +1,20 @@
+(const (nested a)
+    (const a' (+ a 1))
+
+    (const (nested-nested b)
+        (const b' (+ b 1))
+
+        (const (nested-nested-nested c)
+            (const c' (+ c 1))
+
+            (+ a b c a' b' c')
+        )
+
+        (nested-nested-nested b')
+    )
+
+    (nested-nested a')
+)
+
+
+(assert-eq "(nested 1)" (nested 1) 15)

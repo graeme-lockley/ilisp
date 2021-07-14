@@ -16,10 +16,7 @@ a.out
 test.bc
 test.ll
 
+lib/mini-ilisp/tests/**/*.bin
 lib/mini-ilisp/tests/**/*.bc
 lib/mini-ilisp/tests/**/*.ll
 lib/mini-ilisp/tests/flag.txt
-
-lib/mini-ilisp/tests/procedure-test
-lib/mini-ilisp/tests/operators/equals-test
-lib/mini-ilisp/tests/declarations/001-top-level-const-value

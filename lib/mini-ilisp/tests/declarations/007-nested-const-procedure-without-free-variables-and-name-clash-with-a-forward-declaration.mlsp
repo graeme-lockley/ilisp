@@ -1,0 +1,17 @@
+(const (g x)
+    (- 0 x)
+)
+
+(const (f a b)
+    (const sum (+ a b))
+
+    (const v (g sum))
+
+    (const (g x)
+        (+ x x)
+    )
+
+    v
+)
+
+(assert-eq "(f 1 2)" (f 1 2) 6)

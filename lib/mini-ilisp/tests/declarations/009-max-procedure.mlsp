@@ -1,0 +1,20 @@
+(const (max a b)
+    (if (< a b) b a)
+)
+
+(const (maxs items)
+    (const (max-helper largest rest)
+        (if (null? rest) 
+                largest
+            (max-helper (max largest (car rest)) (cdr rest))
+        )
+    )
+
+    (if (null? items)
+            ()
+        (max-helper (car items) (cdr items))
+    )
+)
+
+(assert-eq "(max 1 2)" (max 1 2) 2)
+(assert-eq "(maxs (pair 1 (pair 2 (pair 3 (pair 4 ())))))" (maxs (pair 1 (pair 2 (pair 3 (pair 4 ()))))) 4)

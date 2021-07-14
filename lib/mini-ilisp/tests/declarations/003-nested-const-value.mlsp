@@ -1,0 +1,7 @@
+(const (f a b)
+    (const sum (+ a b))
+
+    (+ sum sum)
+)
+
+(assert-eq "(f 1 2)" (f 1 2) 6)

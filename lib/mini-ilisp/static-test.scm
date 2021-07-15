@@ -22,10 +22,3 @@
     (Unit.assert-truthy (TST.CallPrintLn? tst'))
     (Unit.assert-equals (TST.CallPrintLn-args tst') (list (TST.StringLiteral "hello world")))
 )
-
-;; (Unit.test "declare constant"
-;;     (Unit.assert-signal-name (string->tst "(const)") 'InvalidForm)
-;;     (Unit.assert-signal-name (string->tst "(const x)") 'InvalidForm)
-;;
-;;     (string->tst "(const x 10)")
-;; )

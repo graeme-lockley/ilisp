@@ -1,0 +1,6 @@
+(assert-true "(string? \"hello\")" (string? "hello"))
+
+(assert-false "(string? ())" (string? ()))
+(assert-false "(string? #t)" (string? #t))
+(assert-false "(string? 123)" (string? 123))
+(assert-false "(string? (pair 1 2))" (string? (pair 1 2)))

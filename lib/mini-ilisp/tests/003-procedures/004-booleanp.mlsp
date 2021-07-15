@@ -1,0 +1,6 @@
+(assert-true "(boolean? #t)" (boolean? #t))
+(assert-false "(boolean? ())" (boolean? ())
+)
+(assert-false "(boolean? 123)" (boolean? 123))
+(assert-false "(boolean? (pair 1 2))" (boolean? (pair 1 2)))
+(assert-false "(boolean? \"hello\")" (boolean? "hello"))

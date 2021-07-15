@@ -1,0 +1,6 @@
+(assert-true "(integer? 123)" (integer? 123))
+
+(assert-false "(integer? ())" (integer? ()))
+(assert-false "(integer? #t)" (integer? #t))
+(assert-false "(integer? (pair 1 2))" (integer? (pair 1 2)))
+(assert-false "(integer? \"hello\")" (integer? "hello"))

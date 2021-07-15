@@ -1,0 +1,6 @@
+(assert-true "(null? ())" (null? ()))
+
+(assert-false "(null? #t)" (null? #t))
+(assert-false "(null? 123)" (null? 123))
+(assert-false "(null? (pair 1 2))" (null? (pair 1 2)))
+(assert-false "(null? \"hello\")" (null? "hello"))

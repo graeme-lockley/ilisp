@@ -60,7 +60,9 @@
     (Builder.declare-external! builder "@_assert_false"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_fail"  struct-value-pointer (list struct-value-pointer))
         
-    (for-each (List.filter tst TST.ValueDeclaration?)
+    (const tst' (flatten-do-expressions tst))
+
+    (for-each (List.filter tst' TST.ValueDeclaration?)
         (proc (e)
             (const name (TST.ValueDeclaration-name e))
             (const qualified-name (str "@" name))
@@ -70,7 +72,7 @@
         )
     )
 
-    (for-each (List.filter tst TST.ProcedureDeclaration?)
+    (for-each (List.filter tst' TST.ProcedureDeclaration?)
         (proc (e)
             (const qualified-name (str "@" (TST.ProcedureDeclaration-name e)))
             (const proc-builder (Builder.function builder qualified-name #t struct-value-pointer (List.map (TST.ProcedureDeclaration-arg-names e) (constant struct-value-pointer))))
@@ -107,7 +109,7 @@
     (const main-builder (Builder.function builder "@main" #t Type.i32 ()))
     (Builder.call-void! main-builder "@_initialise_lib" ())
 
-    (for-each tst
+    (for-each tst'
         (proc (e)
             (if (TST.CallPrintLn? e)
                     (build-call-print-ln! main-builder e)
@@ -134,8 +136,22 @@
     )
 )
 
+(const (flatten-do-expressions es)
+    (if (null? es) 
+            es
+        (do (const h (car es))
+            (if (TST.Do? h)
+                    (flatten-do-expressions (concat (TST.Do-es h) (cdr es)))
+                (pair h (flatten-do-expressions (cdr es)))
+            )
+        )
+    )
+)
+
 (const (compile-expressions builder es)
-    (for-each (List.filter es TST.ValueDeclaration?)
+    (const es' (flatten-do-expressions es))
+
+    (for-each (List.filter es' TST.ValueDeclaration?)
         (proc (e)
             (Builder.define-name! 
                 builder 
@@ -148,7 +164,7 @@
         )
     )
 
-    (for-each (List.filter es TST.ProcedureDeclaration?)
+    (for-each (List.filter es' TST.ProcedureDeclaration?)
         (proc (e)
             (do (const nested-procedure-name (Builder.nested-procedure-name builder))
                 (const qualified-name
@@ -219,7 +235,7 @@
         )
     )
 
-    (const op (fold es () (proc (op e) (compile-expression builder e))))
+    (const op (fold es' () (proc (op e) (compile-expression builder e))))
 
     (if (null? op) (compile-expression builder (TST.NullLiteral)) op)
 )
@@ -267,6 +283,8 @@
                 (Builder.label! builder merge-label)
                 (Builder.phi! builder struct-value-pointer e2 e3)
             )
+        (TST.Do? e)
+            (compile-expressions builder (TST.Do-es e))
         (TST.Pair? e)
             (do (const e1 (compile-expression builder (TST.Pair-car e)))
                 (const e2 (compile-expression builder (TST.Pair-cdr e)))

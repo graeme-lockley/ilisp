@@ -1,0 +1,8 @@
+(const v1 1)
+
+(do (assert-eq "v1" v1 1)
+    (const v2 v1)
+    (assert-eq "v2" v2 1)
+)
+
+(assert-eq "v2" v2 1)

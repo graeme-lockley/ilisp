@@ -134,14 +134,14 @@
 )
 
 (struct Do
-    (statements (list-of? Statement?))
+    (es (list-of? Statement?))
 )
 
 (union Expression
     IdentifierReference? CallProcedure?
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?
-    IfThenElse?
+    IfThenElse? Do?
     Pair? Car? Cdr? Exit?
     AssertEq? AssertNeq? AssertTrue? AssertFalse? Fail?
     NullP? BooleanP? IntegerP? StringP? PairP?

@@ -59,6 +59,7 @@
                                     (= first-expression-identifier "=") (equals->tst env e)
                                     (= first-expression-identifier "<") (less-than->tst env e)
                                     (= first-expression-identifier "if") (if->tst env e)
+                                    (= first-expression-identifier "do") (do->tst env e)
                                     (= first-expression-identifier "pair") (pair->tst env e)
                                     (= first-expression-identifier "car") (car->tst env e)
                                     (= first-expression-identifier "cdr") (cdr->tst env e)
@@ -242,6 +243,13 @@
     )
 
     (if-expressions->tst es')
+)
+
+(const- (do->tst env e)
+    (const es (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map es (proc (e') (expression->tst env e'))))
+
+    (TST.Do es')
 )
 
 (const- (pair->tst env e)

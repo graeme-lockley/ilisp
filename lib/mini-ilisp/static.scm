@@ -1,7 +1,7 @@
 (import "../data/struct.scm" :names struct)
 (import "../list.scm" :as List)
 (import "../number.scm" :as Number)
-(import "../predicate.scm" :names integer? list-of? string?)
+(import "../predicate.scm" :names integer? list-of? not? or? string?)
 (import "../string.scm" :as String)
 
 (import "./ast.scm" :as AST)
@@ -27,30 +27,43 @@
     ;;     (Env.define-binding! env n)
     ;; ))
 
-    (const es (List.map ast (proc (e) (expression->tst env e))))
+    (const es (flatten-do-expressions (List.map ast (proc (e) (expression->tst env e)))))
+
+    (const value-declarations (List.filter es TST.ValueDeclaration?))
+    (const procedure-declarations (List.filter es TST.ProcedureDeclaration?))
 
     (const main 
-        (
-            TST.ProcedureDeclaration 
+        (TST.ProcedureDeclaration 
             "_main"
             ()
             (concat 
-                (List.map (List.filter es TST.ValueDeclaration?)
+                (List.map value-declarations
                     (proc (e)
                         (TST.AssignVariable (TST.ValueDeclaration-name e) (TST.ValueDeclaration-e e))
                     )
                 )
                 
-                (List.filter es 
-                    (proc (e) 
-                        (not (or (TST.ProcedureDeclaration? e) (TST.ValueDeclaration? e)))
-                    )
-                )
+                (List.filter es (not? (or? TST.ProcedureDeclaration? TST.ValueDeclaration?)))
             )
         )
     )
 
-    (pair main es)
+    (TST.Module
+        (List.map value-declarations TST.ValueDeclaration-name)
+        (pair main procedure-declarations)
+    )
+)
+
+(const- (flatten-do-expressions es)
+    (if (null? es) 
+            es
+        (do (const h (car es))
+            (if (TST.Do? h)
+                    (flatten-do-expressions (concat (TST.Do-es h) (cdr es)))
+                (pair h (flatten-do-expressions (cdr es)))
+            )
+        )
+    )
 )
 
 (const- (expression->tst env e)

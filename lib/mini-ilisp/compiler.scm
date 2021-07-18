@@ -60,25 +60,17 @@
     (Builder.declare-external! builder "@_assert_false"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_fail"  struct-value-pointer (list struct-value-pointer))
 
-    (const tst' (flatten-do-expressions tst))
+    (for-each (TST.Module-value-names tst)
+        (proc (name)
+            (const qualified-name (str "@" name))
 
-    (for-each tst'
-        (proc (e)
-            (if (TST.ValueDeclaration? e)
-                    (do (const name (TST.ValueDeclaration-name e))
-                        (const qualified-name (str "@" name))
-
-                        (Builder.declare-global! builder qualified-name struct-value-pointer (Operand.CNull struct-value-pointer) 8)
-                        (Builder.define-name! builder name (Builder.GlobalValue))
-                    )
-            )
+            (Builder.declare-global! builder qualified-name struct-value-pointer (Operand.CNull struct-value-pointer) 8)
+            (Builder.define-name! builder name (Builder.GlobalValue))
         )
     )
-    (for-each tst'
+    (for-each (TST.Module-procedure-declarations tst)
         (proc (e)
-            (if (TST.ProcedureDeclaration? e)
-                    (compile-procedure-declaration builder e)
-            )
+            (compile-procedure-declaration builder e)
         )
     )
 

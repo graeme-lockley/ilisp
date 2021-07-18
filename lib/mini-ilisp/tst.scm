@@ -139,7 +139,7 @@
 )
 
 (struct Do
-    (es (list-of? Statement?))
+    (es (list-of? Expression?))
 )
 
 (union Expression
@@ -155,6 +155,7 @@
     ValueDeclaration? ProcedureDeclaration?
 )
 
-(union Statement
-    CallPrint? CallPrintLn? Do? Expression?
+(struct Module
+    (value-names (list-of? string?))
+    (procedure-declarations (list-of? ProcedureDeclaration?))
 )

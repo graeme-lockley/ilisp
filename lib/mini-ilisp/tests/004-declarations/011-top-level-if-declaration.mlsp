@@ -1,0 +1,22 @@
+(const v1 1)
+
+(const v2
+    (if (= v1 1)
+            (do (const v2 (+ v1 10))
+                v2
+            )
+        0
+    )
+)
+
+(const v3
+    (if (= v1 2)
+            (do (const v2 (+ v1 10))
+                v2
+            )
+        0
+    )
+)
+
+(assert-eq "v2" v2 11)
+(assert-eq "v3" v3 0)

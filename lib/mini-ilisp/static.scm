@@ -36,14 +36,13 @@
         (TST.ProcedureDeclaration 
             "_main"
             ()
-            (concat 
-                (List.map value-declarations
-                    (proc (e)
-                        (TST.AssignVariable (TST.ValueDeclaration-name e) (TST.ValueDeclaration-e e))
+            (List.map (List.filter es (not? TST.ProcedureDeclaration?))
+                (proc (e)
+                    (if (TST.ValueDeclaration? e)
+                            (TST.AssignVariable (TST.ValueDeclaration-name e) (TST.ValueDeclaration-e e))
+                        e
                     )
                 )
-                
-                (List.filter es (not? (or? TST.ProcedureDeclaration? TST.ValueDeclaration?)))
             )
         )
     )

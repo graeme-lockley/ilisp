@@ -41,6 +41,10 @@
     )
 )
 
+(const (open-scope builder)
+    (ScopeBuilder builder (Env.open-scope (FunctionBuilder-names builder)) (Map.mutable))
+)
+
 (const (declare-identified-type! builder name type)
     (include-declaration! builder (Module.IdentifiedType name type))
 )
@@ -105,124 +109,187 @@
 )
 
 (const (get-name builder name)
-    (const env (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder))
+    (const env 
+        (if (ModuleBuilder? builder) 
+                (ModuleBuilder-names builder) 
+            (FunctionBuilder? builder)
+                (FunctionBuilder-names builder)
+            (ScopeBuilder-names builder)
+        )
+    )
 
     (Env.get env name)
 )
 
 (const (define-name! builder name type)
-    (const env (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
+    (const env 
+        (if (ModuleBuilder? builder) 
+                (ModuleBuilder-names builder) 
+            (FunctionBuilder? builder)
+                (FunctionBuilder-names builder)
+            (ScopeBuilder-names builder)
+        )
+    )
 
     (Env.define-binding! env name type)
 )
 
 (const (get-op builder name)
-    (map-get (FunctionBuilder-ops builder) name)
+    (if (FunctionBuilder? builder)
+            (map-get (FunctionBuilder-ops builder) name)
+        (Map.contains? (ScopeBuilder-ops builder) name)
+            (map-get (ScopeBuilder-ops builder) name)
+        (get-op (ScopeBuilder-builder builder) name)
+    )
 )
 
 (const (define-op! builder name op)
-    (Map.assoc! (FunctionBuilder-ops builder) name op)
+    (const ops
+        (if (FunctionBuilder? builder)
+                (FunctionBuilder-ops builder)
+            (ScopeBuilder-ops builder)
+        )
+    )
+
+    (Map.assoc! ops name op)
 )
 
 (const (alloca! builder return-type)
-    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
+    (const builder' (function-builder builder))
 
-    (include-instruction! builder (Instruction.Alloca var 8))
+    (const var (Operand.LocalReference (new-variable! builder') return-type (FunctionBuilder-block-name builder')))
+
+    (include-instruction! builder' (Instruction.Alloca var 8))
 
     var
 )
 
 (const (br! builder name)
-    (include-instruction! builder (Instruction.Br name))
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.Br name))
 
     ()
 )
 
 (const (call-void! builder name arguments)
-    (include-instruction! builder (Instruction.CallVoid name arguments))
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.CallVoid name arguments))
 )
 
 (const (call! builder name return-type arguments)
-    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
+    (const builder' (function-builder builder))
 
-    (include-instruction! builder (Instruction.Call var name arguments))
+    (const var (Operand.LocalReference (new-variable! builder') return-type (FunctionBuilder-block-name builder')))
+
+    (include-instruction! builder' (Instruction.Call var name arguments))
 
     var
 )
 
 (const (cond-br! builder op . labels)
-    (include-instruction! builder (Instruction.CondBr op labels))
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.CondBr op labels))
 
     ()
 )
 
 (const (icmp! builder op op1 op2)
-    (const var (Operand.LocalReference (new-variable! builder) Type.i1 (FunctionBuilder-block-name builder)))
+    (const builder' (function-builder builder))
 
-    (include-instruction! builder (Instruction.ICmp var op op1 op2))
+    (const var (Operand.LocalReference (new-variable! builder') Type.i1 (FunctionBuilder-block-name builder')))
+
+    (include-instruction! builder' (Instruction.ICmp var op op1 op2))
 
     var
 )
 
 (const (label! builder name)
-    (include-instruction! builder (Instruction.Label name))
-    (FunctionBuilder-block-name! builder name)
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.Label name))
+    (FunctionBuilder-block-name! builder' name)
 
     ()
 )
 
 (const (load! builder operand)
-    (const var (Operand.LocalReference (new-variable! builder) (Type.dereference (Operand.type-of operand)) (FunctionBuilder-block-name builder)))
+    (const builder' (function-builder builder))
 
-    (include-instruction! builder (Instruction.Load var operand 8))
+    (const var (Operand.LocalReference (new-variable! builder') (Type.dereference (Operand.type-of operand)) (FunctionBuilder-block-name builder')))
+
+    (include-instruction! builder' (Instruction.Load var operand 8))
 
     var
 )
 
 (const (phi! builder return-type . value-labels)
-    (const var (Operand.LocalReference (new-variable! builder) return-type (FunctionBuilder-block-name builder)))
+    (const builder' (function-builder builder))
 
-    (include-instruction! builder (Instruction.Phi var value-labels))
+    (const var (Operand.LocalReference (new-variable! builder') return-type (FunctionBuilder-block-name builder')))
+
+    (include-instruction! builder' (Instruction.Phi var value-labels))
 
     var
 )
 
 (const (ret! builder value)
-    (include-instruction! builder (Instruction.Ret value))
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.Ret value))
 )
 
 (const (store! builder operand address)
-    (include-instruction! builder (Instruction.Store operand address 8))
+    (const builder' (function-builder builder))
+
+    (include-instruction! builder' (Instruction.Store operand address 8))
 
     ()
 )
 
 (const- (include-instruction! builder instruction)
+    (const builder' (function-builder builder))
+
     ;; (println (Instruction.instruction->string instruction))
 
-    (FunctionBuilder-instructions! builder (pair instruction (FunctionBuilder-instructions builder)))
+    (FunctionBuilder-instructions! builder' (pair instruction (FunctionBuilder-instructions builder')))
 )
 
 (const- (new-variable! builder)
-    (const variable (str "%" (FunctionBuilder-register-count builder)))
+    (const builder' (function-builder builder))
 
-    (FunctionBuilder-register-count! builder (+ (FunctionBuilder-register-count builder) 1))
+    (const variable (str "%" (FunctionBuilder-register-count builder')))
+
+    (FunctionBuilder-register-count! builder' (+ (FunctionBuilder-register-count builder') 1))
 
     variable
 )
 
 (const (new-label! builder)
-    (const label (FunctionBuilder-label-count builder))
+    (const builder' (function-builder builder))
 
-    (FunctionBuilder-label-count! builder (+ (FunctionBuilder-label-count builder) 1))
+    (const label (FunctionBuilder-label-count builder'))
+
+    (FunctionBuilder-label-count! builder' (+ (FunctionBuilder-label-count builder') 1))
 
     (str "Block" label)
 )
 
 (const (next-const-offset! builder)
-    (const r (FunctionBuilder-const-count builder))
-    (FunctionBuilder-const-count! builder (+ r 1))
+    (const builder' (function-builder builder))
+
+    (const r (FunctionBuilder-const-count builder'))
+    (FunctionBuilder-const-count! builder' (+ r 1))
     r
+)
+
+(const- (function-builder builder)
+    (if (ScopeBuilder? builder)
+            (function-builder (ScopeBuilder-builder builder))
+        builder
+    )
 )
 
 (mutable-struct ModuleBuilder
@@ -242,6 +309,13 @@
     (register-count integer?)
     (const-count integer?)
     (block-name string?)
+    (names list?)
+    (ops map?)
+)
+
+(mutable-struct ScopeBuilder
+    (builder (or? FunctionBuilder? ScopeBuilder?))
+
     (names list?)
     (ops map?)
 )
@@ -266,20 +340,26 @@
 
 (const (nested-procedure-depth builder)
     (const (runner b)
-        (if (FunctionBuilder? b)
+        (if (ScopeBuilder? b)
+                (runner (ScopeBuilder-builder b))
+            (FunctionBuilder? b)
                 (+ 1 (runner (FunctionBuilder-builder b)))
             0
         )
     )
 
-    (if (FunctionBuilder? builder)
+    (if (ScopeBuilder? builder)
+            (nested-procedure-depth (ScopeBuilder-builder builder))
+        (FunctionBuilder? builder)
             (runner (FunctionBuilder-builder builder))
         0
     )
 )
 
 (const (top-level-procedure? builder)
-    (if (FunctionBuilder? builder)
+    (if (ScopeBuilder? builder)
+            (top-level-procedure? (ScopeBuilder-builder builder))
+        (FunctionBuilder? builder)
             (ModuleBuilder? (FunctionBuilder-builder builder))
         #f
     )
@@ -287,7 +367,9 @@
 
 (const (nested-procedure-name builder)
     (const (calculate b)
-        (if (FunctionBuilder? b)
+        (if (ScopeBuilder? b)
+                (calculate (ScopeBuilder-builder b))
+            (FunctionBuilder? b)
                 (pair (String.drop (FunctionBuilder-name b) 1) (calculate (FunctionBuilder-builder b)))
             ()
         )

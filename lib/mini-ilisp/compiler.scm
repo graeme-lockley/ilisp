@@ -59,8 +59,10 @@
     (Builder.declare-external! builder "@_assert_true"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_assert_false"  struct-value-pointer (list struct-value-pointer struct-value-pointer))
     (Builder.declare-external! builder "@_fail"  struct-value-pointer (list struct-value-pointer))
-        
-    (for-each (flatten-do-expressions tst)
+
+    (const tst' (flatten-do-expressions tst))
+
+    (for-each tst'
         (proc (e)
             (if (TST.ValueDeclaration? e)
                     (do (const name (TST.ValueDeclaration-name e))
@@ -69,7 +71,12 @@
                         (Builder.declare-global! builder qualified-name struct-value-pointer (Operand.CNull struct-value-pointer) 8)
                         (Builder.define-name! builder name (Builder.GlobalValue))
                     )
-                (TST.ProcedureDeclaration? e)
+            )
+        )
+    )
+    (for-each tst'
+        (proc (e)
+            (if (TST.ProcedureDeclaration? e)
                     (compile-procedure-declaration builder e)
             )
         )
@@ -304,7 +311,7 @@
             (do (const identifier-name (TST.IdentifierReference-name e))
                 (const name (Builder.get-name builder identifier-name))
 
-                ;; (if (= identifier-name "a")
+                ;; (if (= identifier-name "v1")
                 ;;         (do (println "Name: " identifier-name)
                 ;;             (println (pr-str name))
                 ;;             (println (pr-str (Builder.FunctionBuilder-names builder)))

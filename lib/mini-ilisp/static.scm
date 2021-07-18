@@ -27,7 +27,30 @@
     ;;     (Env.define-binding! env n)
     ;; ))
 
-    (List.map ast (proc (e) (expression->tst env e)))
+    (const es (List.map ast (proc (e) (expression->tst env e))))
+
+    (const main 
+        (
+            TST.ProcedureDeclaration 
+            "_main"
+            ()
+            (concat 
+                (List.map (List.filter es TST.ValueDeclaration?)
+                    (proc (e)
+                        (TST.AssignVariable (TST.ValueDeclaration-name e) (TST.ValueDeclaration-e e))
+                    )
+                )
+                
+                (List.filter es 
+                    (proc (e) 
+                        (not (or (TST.ProcedureDeclaration? e) (TST.ValueDeclaration? e)))
+                    )
+                )
+            )
+        )
+    )
+
+    (pair main es)
 )
 
 (const- (expression->tst env e)

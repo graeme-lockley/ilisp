@@ -125,6 +125,11 @@
     (es (list-of? Expression?))
 )
 
+(struct AssignVariable
+    (name string?)
+    (e Expression?)
+)
+
 (struct CallPrintLn
     (args (list-of? Expression?))
 )
@@ -138,6 +143,7 @@
 )
 
 (union Expression
+    AssignVariable?
     IdentifierReference? CallProcedure?
     NullLiteral? BooleanLiteral? IntegerLiteral? StringLiteral?
     BinaryOperator?

@@ -12,13 +12,3 @@
 (Unit.test "error - unknown identifier"
     (Unit.assert-signal-name (string->tst "y") 'UnknownIdentifier)
 )
-
-(Unit.test "hello world"
-    (const tst (string->tst "(println \"hello world\")"))
-
-    (Unit.assert-equals (count tst) 1)
-    (const tst' (car tst))
-
-    (Unit.assert-truthy (TST.CallPrintLn? tst'))
-    (Unit.assert-equals (TST.CallPrintLn-args tst') (list (TST.StringLiteral "hello world")))
-)

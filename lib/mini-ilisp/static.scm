@@ -170,7 +170,7 @@
                     (raise 'InvalidForm {:form 'const :syntax es :location (AST.S-Expression-location e)})
                 (do (const name args)
                     (const expr (car body))
-                    (const expr' (expression->tst env expr))
+                    (const expr' (expression->tst (Env.open-scope env) expr))
                     (Env.define-binding! env (AST.IdentifierExpression-id name) (Variable))
                     (TST.ValueDeclaration (AST.IdentifierExpression-id name) expr')
                 )
@@ -277,7 +277,8 @@
 )
 
 (const- (do->tst env e)
-    (const es' (s-expressions->tst env e))
+    (const rest-es' (cdr (AST.S-Expression-expressions e)))
+    (const es' (List.map rest-es' (proc (e') (expression->tst env e'))))
 
     (TST.Do es')
 )
@@ -436,7 +437,7 @@
 
 (const- (s-expressions->tst env e)
     (const rest-es' (cdr (AST.S-Expression-expressions e)))
-    (List.map rest-es' (proc (e') (expression->tst env e')))
+    (List.map rest-es' (proc (e') (expression->tst (Env.open-scope env) e')))
 )
 
 (struct Variable)

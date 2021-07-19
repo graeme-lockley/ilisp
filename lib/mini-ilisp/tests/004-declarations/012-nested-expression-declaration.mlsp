@@ -1,0 +1,12 @@
+(const (f n)
+    (if (= n 1)
+            (do (const v4 (+ n 10))
+                v4
+            )
+        0
+    )
+
+)
+
+(assert-eq "(f 1)" (f 1) 11)
+(assert-eq "(f 2)" (f 2) 0)

@@ -235,8 +235,7 @@
 )
 
 (const- (arithmetic-op->tst env e unary op)
-    (const es (AST.S-Expression-expressions e))
-    (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (null? es') unary
         (= (count es') 1) (TST.BinaryOperator op unary (car es'))
@@ -245,8 +244,7 @@
 )
 
 (const- (equals->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 2) (TST.BinaryOperator '= (nth es' 0) (nth es' 1))
         (raise 'ArgumentsMismatch {:procedure '= :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
@@ -254,8 +252,7 @@
 )
 
 (const- (less-than->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 2) (TST.BinaryOperator '< (nth es' 0) (nth es' 1))
         (raise 'ArgumentsMismatch {:procedure '< :expected 2 :actual (count es') :location (AST.S-Expression-location e) :arguments es})
@@ -263,8 +260,7 @@
 )
 
 (const- (if->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (const (if-expressions->tst es)
         (if (null? es) (TST.NullLiteral)
@@ -281,15 +277,13 @@
 )
 
 (const- (do->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (TST.Do es')
 )
 
 (const- (pair->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 2)
             (TST.Pair (nth es' 0) (nth es' 1))
@@ -298,8 +292,7 @@
 )
 
 (const- (car->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.Car (nth es' 0))
@@ -308,8 +301,7 @@
 )
 
 (const- (cdr->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.Cdr (nth es' 0))
@@ -318,8 +310,7 @@
 )
 
 (const- (null?->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.NullP (nth es' 0))
@@ -328,8 +319,7 @@
 )
 
 (const- (boolean?->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.BooleanP (nth es' 0))
@@ -338,8 +328,7 @@
 )
 
 (const- (integer?->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.IntegerP (nth es' 0))
@@ -348,8 +337,7 @@
 )
 
 (const- (string?->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.StringP (nth es' 0))
@@ -358,8 +346,7 @@
 )
 
 (const- (pair?->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.PairP (nth es' 0))
@@ -368,8 +355,7 @@
 )
 
 (const- (exit->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.Exit (nth es' 0))
@@ -378,8 +364,7 @@
 )
 
 (const- (assert_eq->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 3)
             (TST.AssertEq (nth es' 0) (nth es' 1) (nth es' 2))
@@ -388,8 +373,7 @@
 )
 
 (const- (assert_neq->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 3)
             (TST.AssertNeq (nth es' 0) (nth es' 1) (nth es' 2))
@@ -398,8 +382,7 @@
 )
 
 (const- (assert_true->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 2)
             (TST.AssertTrue (nth es' 0) (nth es' 1))
@@ -408,8 +391,7 @@
 )
 
 (const- (assert_false->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 2)
             (TST.AssertFalse (nth es' 0) (nth es' 1))
@@ -418,8 +400,7 @@
 )
 
 (const- (fail->tst env e)
-    (const es (cdr (AST.S-Expression-expressions e)))
-    (const es' (List.map es (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (if (= (count es') 1)
             (TST.Fail (nth es' 0))
@@ -428,15 +409,13 @@
 )
 
 (const- (print-expression->tst env e)
-    (const es (AST.S-Expression-expressions e))
-    (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (TST.CallPrint es')
 )
 
 (const- (println-expression->tst env e)
-    (const es (AST.S-Expression-expressions e))
-    (const es' (List.map (cdr es) (proc (e') (expression->tst env e'))))
+    (const es' (s-expressions->tst env e))
 
     (TST.CallPrintLn es')
 )
@@ -453,6 +432,11 @@
     (const literal-value (String.slice literal 1 (- (count literal) 1)))
     
     (TST.StringLiteral literal-value)
+)
+
+(const- (s-expressions->tst env e)
+    (const rest-es' (cdr (AST.S-Expression-expressions e)))
+    (List.map rest-es' (proc (e') (expression->tst env e')))
 )
 
 (struct Variable)

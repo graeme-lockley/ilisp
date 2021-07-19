@@ -537,11 +537,11 @@
 )
 
 (const (build-call-print! builder e)
-    (print-args builder (TST.CallPrint-args e))
+    (print-args! builder (TST.CallPrint-args e))
 )
 
 (const (build-call-print-ln! builder e)
-    (print-args builder (TST.CallPrintLn-args e))
+    (print-args! builder (TST.CallPrintLn-args e))
     (Builder.call-void! builder "@_print_newline" ())
 )
 

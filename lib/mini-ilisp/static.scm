@@ -113,7 +113,7 @@
 
                                     (do (const binding (Env.get env first-expression-identifier))
 
-                                        (if (or (null? binding))
+                                        (if (null? binding)
                                                 (raise 'UnknownIdentifier {:identifier first-expression-identifier :location (AST.IdentifierExpression-location first-expression)})
                                             (not (Function? binding))
                                                 (raise 'IdentifierNoFunction {:identifier first-expression-identifier :location (AST.IdentifierExpression-location first-expression)})

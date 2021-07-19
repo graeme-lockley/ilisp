@@ -22,7 +22,7 @@
 (const- struct-value-pointer (Type.Pointer struct-value))
 
 (const (function builder name top-level return-type parameter-types)
-    (const names (if (ModuleBuilder? builder) (ModuleBuilder-names builder) (FunctionBuilder-names builder)))
+    (const names (names builder))
     (const names' (Env.open-scope names))
     
     (FunctionBuilder 
@@ -36,13 +36,22 @@
         (if top-level (+ (count parameter-types) 1) (+ (count parameter-types) 2))
         (+ (count parameter-types) 1) 
         opening-block-name 
-        names' 
+        names'
         (Map.mutable)
     )
 )
 
 (const (open-scope builder)
-    (ScopeBuilder builder (Env.open-scope (FunctionBuilder-names builder)) (Map.mutable))
+    (ScopeBuilder builder (Env.open-scope (names builder)) (Map.mutable))
+)
+
+(const- (names builder)
+    (if (ModuleBuilder? builder) 
+            (ModuleBuilder-names builder) 
+        (FunctionBuilder? builder)
+            (FunctionBuilder-names builder)
+        (ScopeBuilder-names builder)
+    )
 )
 
 (const (declare-identified-type! builder name type)
@@ -58,7 +67,7 @@
 )
 
 (const (declare-global! builder name type value align)
-    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-builder builder) builder))
+    (const builder' (module-builder builder))
 
     (include-declaration! builder' (Module.Global name type value #f #f #f 8))
 
@@ -66,7 +75,7 @@
 )
 
 (const (declare-string-literal! builder value)
-    (const builder' (if (FunctionBuilder? builder) (FunctionBuilder-builder builder) builder))
+    (const builder' (module-builder builder))
 
     (const name (str "@.str" (ModuleBuilder-literal-string-count builder')))
 
@@ -83,17 +92,16 @@
 )
 
 (const (declare-function! builder function-builder)
-    (if (ModuleBuilder? builder)
-            (include-declaration!
-                builder
-                (Module.Function 
-                    (FunctionBuilder-name function-builder) 
-                    (FunctionBuilder-return-type function-builder) 
-                    (FunctionBuilder-parameter-types function-builder) 
-                    (List.reverse (FunctionBuilder-instructions function-builder))
-                )
-            )
-        (declare-function! (FunctionBuilder-builder builder) function-builder)
+    (const builder' (module-builder builder))
+
+    (include-declaration!
+        builder'
+        (Module.Function 
+            (FunctionBuilder-name function-builder) 
+            (FunctionBuilder-return-type function-builder) 
+            (FunctionBuilder-parameter-types function-builder) 
+            (List.reverse (FunctionBuilder-instructions function-builder))
+        )
     )
 )
 
@@ -105,7 +113,9 @@
 )
 
 (const- (include-declaration! builder declaration)
-    (ModuleBuilder-declarations! builder (pair declaration (ModuleBuilder-declarations builder)))
+    (const builder' (module-builder builder))
+
+    (ModuleBuilder-declarations! builder' (pair declaration (ModuleBuilder-declarations builder')))
 )
 
 (const (get-name builder name)
@@ -283,6 +293,15 @@
     (const r (FunctionBuilder-const-count builder'))
     (FunctionBuilder-const-count! builder' (+ r 1))
     r
+)
+
+(const- (module-builder builder)
+    (if (FunctionBuilder? builder)
+            (module-builder (FunctionBuilder-builder builder))
+        (ScopeBuilder? builder)
+            (module-builder (ScopeBuilder-builder builder))
+        builder
+    )
 )
 
 (const- (function-builder builder)
